@@ -226,6 +226,80 @@ class SchemaAndIdentityTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "INCOMPLETE_EVENT_IDENTITY"):
             self.key(event_discriminator="")
 
+    def test_forged_event_key_direct_constructor_is_rejected(self):
+        valid = self.key()
+        fields = {f.name: getattr(valid, f.name) for f in dataclasses.fields(valid)}
+        fields["detection_event_key"] = "RESEARCH-KEY-FAKE"
+        with self.assertRaisesRegex(ValueError, "DETECTION_EVENT_KEY_INTEGRITY_MISMATCH"):
+            EventIdentity(**fields)
+        # A faithful direct reconstruction remains valid, preserving frozen IDs.
+        reconstructed = EventIdentity(**{f.name: getattr(valid, f.name)
+                                          for f in dataclasses.fields(valid)})
+        self.assertEqual(reconstructed, valid)
+        self.assertEqual(reconstructed.detection_event_key, valid.detection_event_key)
+
+    def test_replace_key_or_any_canonical_identity_field_rejected(self):
+        valid = self.key()
+        changes = {
+            "detection_event_key": "RESEARCH-KEY-FAKE",
+            "asset_id": "BINANCE:SPOT:ETHUSDT",
+            "horizon": Horizon.SWING,
+            "direction": Direction.DOWN,
+            "setup_type": "OTHER_RESEARCH_SETUP",
+            "decision_candle_close_at": valid.decision_candle_close_at + timedelta(minutes=30),
+            "rule_version": "03A_ALTERNATE",
+            "event_discriminator": "independent-B",
+        }
+        for name, changed in changes.items():
+            with self.subTest(changed=name):
+                with self.assertRaisesRegex(ValueError, "DETECTION_EVENT_KEY_INTEGRITY_MISMATCH"):
+                    dataclasses.replace(valid, **{name: changed})
+
+    def test_invalid_spot_asset_schema_and_enum_types_fail_closed(self):
+        valid = self.key()
+        for invalid_asset in ("BINANCE:FUTURES:BTCUSDT", "BINANCE:SPOT:BTC",
+                              "BINANCE:SPOT:USDT", "BINANCE:SPOT:BTC/USDT",
+                              "BINANCE:SPOT:BTCUSDT ", "BTCUSDT", ""):
+            with self.subTest(asset=invalid_asset):
+                with self.assertRaisesRegex(ValueError, "INVALID_SPOT_ASSET_ID"):
+                    dataclasses.replace(valid, asset_id=invalid_asset)
+        with self.assertRaisesRegex(ValueError, "UNSUPPORTED_EVENT_IDENTITY_SCHEMA"):
+            dataclasses.replace(valid, schema_version="03A.FORGED")
+        with self.assertRaisesRegex(ValueError, "UNSUPPORTED_EVENT_IDENTITY_SCHEMA"):
+            dataclasses.replace(valid, schema_version="")
+        for name, wrong in (("horizon", "INTRADAY"), ("direction", "UP"),
+                            ("horizon", None), ("direction", 1)):
+            with self.subTest(field=name, wrong=wrong):
+                with self.assertRaisesRegex(ValueError, "INVALID_EVENT_HORIZON_OR_DIRECTION"):
+                    dataclasses.replace(valid, **{name: wrong})
+
+    def test_canonical_key_accepts_utc_equivalent_timestamp_and_short_symbol(self):
+        valid = self.key()
+        # Normalizing aware datetimes must preserve the original SHA256 bytes.
+        plus_three = timezone(timedelta(hours=3))
+        same_close = valid.decision_candle_close_at.astimezone(plus_three)
+        same = dataclasses.replace(valid, decision_candle_close_at=same_close)
+        self.assertEqual(same, valid)
+        self.assertEqual(same.detection_event_key, valid.detection_event_key)
+        short = self.key(symbol="SUSDT")
+        self.assertEqual(short.asset_id, "BINANCE:SPOT:SUSDT")
+        with self.assertRaisesRegex(ValueError, "timestamp must be timezone-aware"):
+            dataclasses.replace(valid, decision_candle_close_at=datetime(2026, 10, 28))
+
+    def test_registry_cannot_be_tricked_by_mismatched_key_or_fields(self):
+        valid = self.key()
+        registry = ResearchKeyRegistry()
+        self.assertEqual(registry.observe(valid), "NEW_RESEARCH_EVENT")
+        with self.assertRaisesRegex(ValueError, "DETECTION_EVENT_KEY_INTEGRITY_MISMATCH"):
+            dataclasses.replace(valid, detection_event_key=self.key(
+                event_discriminator="candidate-B").detection_event_key)
+        self.assertEqual(registry.observe(self.key()), "DUPLICATE_RETRY")
+        independent = self.key(event_discriminator="candidate-B")
+        self.assertEqual(registry.observe(independent), "NEW_RESEARCH_EVENT")
+        # Same-symbol later decision window is also a genuinely different research key.
+        later = self.key(decision_candle_close_at=T0 + timedelta(minutes=60))
+        self.assertEqual(registry.observe(later), "NEW_RESEARCH_EVENT")
+
     def test_lifecycle_enum_but_no_qualified_transition(self):
         self.assertEqual(Lifecycle.QUALIFIED_SIGNAL.value, "QUALIFIED_SIGNAL")
         self.assertEqual(Lifecycle.EARLY_WATCH.value, "EARLY_WATCH")
@@ -413,6 +487,15 @@ class SchemaAndIdentityTests(unittest.TestCase):
             self.assertIsNone(data["entry_zone_low"])
             self.assertFalse(data["trade_ready"])
             self.assertTrue(data["manual_spot_only"])
+
+    def test_trade_plan_rejects_any_issued_signal_id_in_03a(self):
+        plan = TradePlan(None, Direction.UP)
+        self.assertIsNone(plan.signal_id)
+        self.assertIsNone(plan.as_dict()["signal_id"])
+        with self.assertRaisesRegex(ValueError, "TRADE_PLAN_CANNOT_REFERENCE_ISSUED_SIGNAL_ID"):
+            TradePlan("SG-UNAUTHORIZED-1", Direction.UP)
+        with self.assertRaisesRegex(ValueError, "TRADE_PLAN_CANNOT_REFERENCE_ISSUED_SIGNAL_ID"):
+            dataclasses.replace(plan, signal_id="SG-UNAUTHORIZED-2")
 
     def test_trade_ready_futures_and_fake_levels_rejected(self):
         with self.assertRaisesRegex(ValueError, "TRADE_READY_REQUIRES"):
