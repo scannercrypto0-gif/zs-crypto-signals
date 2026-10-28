@@ -6,6 +6,8 @@ real-source-like receipt metadata; the LIVE Actions workflow is separate.
 from __future__ import annotations
 
 import dataclasses
+import io
+from unittest.mock import patch
 import json
 import unittest
 from datetime import datetime, timedelta, timezone
@@ -17,7 +19,7 @@ from zs_smart_gate.mtf_contracts import CandleWindow, ReconciliationTolerance, r
 from zs_smart_gate.research_metrics import Metric, VERSION, describe
 from zs_smart_gate.stage03a_contracts import Direction, Horizon
 from zs_smart_gate.stage03b1_live import (
-    CONFIG, SOURCE_ID, deviations, parse_kline, probe_once,
+    CONFIG, SOURCE_ID, deviations, parse_kline, probe_once, main,
 )
 
 UTC = timezone.utc
@@ -102,6 +104,12 @@ class LiveProbeFixtureTests(unittest.TestCase):
         getter = fake or FixtureTransport(horizon)
         return probe_once(horizon=horizon, symbol="BTCUSDT", getter=getter,
                           local_ms=lambda: NOW_MS + 1000, **kw)
+
+    def test_live_cli_requires_explicit_opt_in_before_network(self):
+        with patch("sys.stderr", new_callable=io.StringIO):
+            with self.assertRaises(SystemExit) as exc:
+                main(["--horizon", "INTRADAY"])
+        self.assertEqual(exc.exception.code, 2)
 
     def test_intraday_real_core_mtf_identity_both_directions_e2e(self):
         fake = FixtureTransport()
