@@ -201,6 +201,10 @@ class SessionTests(unittest.TestCase):
         self.assertFalse(summary["independent_predictive_evidence"])
         self.assertIsNone(summary["approved_threshold"])
         self.assertEqual(summary["failed_or_missing_sessions"],0)
+        dist=summary["descriptive_distributions"]["DEVELOPMENT|INTRADAY|UP"]
+        self.assertEqual(dist["n_asset_windows"],3)
+        self.assertEqual(dist["feature_distribution"]["BASELINE_PARENT_QUOTE_VOLUME"]["n_valid"],3)
+        self.assertEqual(dist["uncertainty"],"NOT_ESTIMABLE_FROM_SPARSE_RETROSPECTIVE_SAMPLE")
 
     def test_invalid_or_missing_history_never_has_features(self):
         for mode in ("missing","duplicate","stale","wrong_parent",
