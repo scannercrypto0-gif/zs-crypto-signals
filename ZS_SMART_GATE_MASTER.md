@@ -1,10 +1,10 @@
 # ZS Crypto Signals "GITHUB Version" — SMART GATE
 
-## ملف الحوكمة والمواصفات الرئيسي — MASTER v1.5
+## ملف الحوكمة والمواصفات الرئيسي — MASTER v1.6
 
-**التحديث:** 28 أكتوبر 2026 | **الإصدار:** v1.5 | **الاسم الرسمي:** `ZS_SMART_GATE_MASTER.md`.
+**التحديث:** 28 أكتوبر 2026 | **الإصدار:** v1.6 | **الاسم الرسمي:** `ZS_SMART_GATE_MASTER.md`.
 
-**المصدر:** MASTER v1.5 يحافظ على تصميم SMART GATE v2.1 المعتمد والـBlueprint التاريخي، ويسجل قبول ودمج FOUNDATION-002 واختبارات main بعد الدمج. 14 مرحلة مستمرة، والمرحلة 03 NEXT / DECISION-GATED؛ لا يُفهم من نجاح النواة والماسح المحدود اكتمال نظام الإشارات أو Telegram أو Scoring V2.
+**المصدر:** MASTER v1.6 يحافظ على SMART GATE Unified Design v2.1 والـBlueprint التاريخي ويوثق إغلاق **03A Contracts-Only** على main بعد دمج PR #3 واختبارات CI. خارطة **14 مرحلة 00–13** ثابتة؛ المراحل **00–02 VERIFIED**، والمرحلة **03 IN PROGRESS: 03A VERIFIED / 03B RESEARCH & OWNER-DECISION GATED**. لا تشغيل إشارات أو Telegram أو حساب V2 نهائي في هذا الإنجاز.
 
 **الرابط الرسمي للمستودع:** https://github.com/scannercrypto0-gif/zs-crypto-signals  
 **تنبيه:** المستودع `Private`؛ الوصول إليه يتطلب حساب GitHub مخولًا واتصالًا صالحًا. وجود الرابط في Project Resources لا يمنح أي محادثة صلاحية GitHub تلقائيًا.
@@ -187,7 +187,7 @@
 **14 مرحلة ما زالت 00–13**؛ الجديد هو مخرجات إلزامية وتبعيات داخل المراحل، وليس «Phase 14» فارغة:
 - **00–01 VERIFIED:** تأسيس ومستوى النواة البحثية + 1-symbol public Binance LIVE؛ لا تغيير للتاريخ.
 - **02 VERIFIED / PR #2 MERGED:** bounded Spot/USDT universe inventory + 1–4 symbol sample + 8 wire-attempt ceiling, measured coverage and PIT ResearchCandidate. This is a completed **bounded-sample** slice, not a full-market 24/7 scanner or Signal Event generator.
-- **03 PLANNED:** عقود `signal_id`, `detection_event_key`, `schema_version`, 30m/4h qualification، V2 Score، Minimum viable BOS/CHoCH PIT، `trade_plan` objects + `RESEARCH_ONLY`; لا Telegram live دون مراحلها.
+- **03 IN PROGRESS (03A VERIFIED / 03B NEXT RESEARCH-GATED):** انتهت عقود 30m↔6×5m و4h↔4×1h PIT، والبصمة البحثية الموثقة، وV2 group schema وRESEARCH_ONLY، لكن `signal_id` النهائي والتأهيل والمعادلات الرقمية وBOS/CHoCH وTrade Ready غير منفذة أو معتمدة؛ لا Telegram live.
 - **04 PLANNED:** GitHub permanent data evidence, readback, manifests, event/store/outbox & recovery، تصميم backend يحتاج قرار.
 - **05 PLANNED — 3 sub-slices:** (05A) Primary bot إلى 2 IDs مع كل الإشارات/الخطط، (05B) **Analytical Bot الكامل** إلى 1 ID (human + JSON + SHA + canonical refs)، (05C) **Interactive Primary Bot** authorized queries؛ Tests عبر 3 destinations مع Signal ID واحد وno duplicates.
 - **06 PLANNED — 2 sub-slices:** (06A) Historical/Forward outcome evaluator مع entry/SL/TP chronology، (06B) اختبار Telegram Export→SQL import/dedup/missing attachments.
@@ -206,15 +206,15 @@
 
 **Not yet scientifically or operationally verified:** 30% close/45% body thresholds، numeric pivot/BOS/CHoCH formulas and penalties، score normalization & DOWN calibration، RVOL Base vs Quote scoring choice، Early/Qualified transition/dedup and EXTENDED period، Entry/SL/TP price algorithm and exits، fees/slippage/precision، scanner cadence cost/accuracy، GitHub storage backend/outage/secret management، Telegram retry/exact-delivery semantics، historical data availability، probability calibration. **SD shall propose/test and receive required approval before hardcoding them as normative trading rules.**
 
-**CURRENT IMPLEMENTED:** Phases **00, 01 and 02 VERIFIED ON main** within their explicitly bounded scopes; PR #2 merged at `babaab27fdab9172c7e2e425c54bb74f193269ac` after 81/81 offline tests ×4 environments, Binance LIVE bounded 3/3, and main post-merge CI [#40671318148](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40671318148) 4/4 success. No V2 qualified signals, interactive bot, Analytics JSON, trade plans, full-market scanner or 24/7 execution claimed.
+**CURRENT IMPLEMENTED:** Phases **00–02 VERIFIED ON main** within their strictly scoped objectives; **Phase 03A Contracts-Only VERIFIED** on [PR #3](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/3), merge `6b9267b6193423b305f8d8f72bf6b347c18cd9f7`, **124/124 tests per OS/Python ×4**, [post-merge main CI #40675804185](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40675804185) SUCCESS. MTF reconciliation 30m/6×5m and 4h/4×1h and PIT research event schemas exist, with **no live 30m/4h ingestion, qualification, assigned signal_id, numeric V2 Score, approved Trade Ready, Telegram, Analytics JSON, storage or 24/7 scanner**. Full Phase 03 NOT VERIFIED; 03B NEXT research/decision gated.
 
 ---
 
-## SMART GATE — MASTER ROADMAP v1.5 (خطة التطوير الرسمية: 14 مرحلة)
+## SMART GATE — MASTER ROADMAP v1.6 (خطة التطوير الرسمية: 14 مرحلة)
 
 **اعتماد المالك:** خارطة 14 مرحلة + التصميم التشغيلي الموحد v2.1 أعلاه معتمدان كهدف تطوير. حالة التنفيذ أدناه أحدث من أوصاف v1.2 التاريخية؛ نص الـTechnical Blueprint التاريخي محفوظ. الحدود/المعادلات/طرق التنفيذ غير المختبرة لا تُفهم كقواعد تشغيل جاهزة.
 
-**إجمالي المراحل: 14، من 00 إلى 13.** **المكتمل والمتحقق: 00 و01 و02 = 3 مراحل** ضمن نطاق قبول كل منها. **المرحلة القادمة: 03 — Qualification / Signal Identity / Scoring & Plan Contracts (DECISION-GATED).** **المتبقي: 11 مرحلة**؛ بعضها قابل لدفعات متوازية ولكن ليس بإلغاء الاعتماد والاختبارات. لا تُفسَّر نسبة عدد المراحل على أنها نسبة الإنجاز بالوقت أو النجاح التنبؤي.
+**إجمالي المراحل: 14 (00–13).** **المراحل المكتملة بالكامل: 00 و01 و02 = 3 مراحل**؛ **03A مكتملة كشريحة برمجية داخل المرحلة 03** وليست مرحلة خامسة عشرة أو اعتمادًا لمرحلة 03 بالكامل. **03B NEXT = Research / Decision-Gated**؛ 03 ككل IN PROGRESS، و04–13 PLANNED. المتبقي من المراحل الأصلية غير المكتملة **11 مرحلة (03–13)**. لا يُقاس تقدم المشروع بعدد الاختبارات أو المراحل وحده.
 
 **أحدث الأدلة:** FOUNDATION-001 PR #1 merged commit `e5b07f228e606f3b23e3cd2087782a30f20801e0`، 51 اختبارًا ×4 و[main CI #40658793880](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40658793880). **FOUNDATION-002 PR #2 [MERGED](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/2) commit `babaab27fdab9172c7e2e425c54bb74f193269ac`**؛ head المقبول `0ca402598c115841efea8030356fc90f0b5bc1f8`، [81/81 tests ×4](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40670260147) + [Binance Spot LIVE samples 3/3](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40670254662) + **[post-merge main CI 4/4 SUCCESS #40671318148](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40671318148)**. LIVE observed 770 USDT pairs / 43 eligible at time of sample; **ONLY 2 or 4 symbols' candles actually fetched per bounded cycle** (4.65% / 9.30% of eligible). Ubuntu and Windows Actions PASS؛ Windows owner's PC 24/7 not tested. Do not claim full-market scanning, Signal Events, V2 Scoring or Telegram.
 
@@ -237,7 +237,7 @@
 | 00 | GitHub Private Repository + Governance | **VERIFIED** | README وMASTER ومصدر حقيقة مستقل |
 | 01 | FOUNDATION-001 — Point-in-Time Core & one-symbol Binance LIVE | **VERIFIED / MERGED** | Candle/Market Contracts وSpread/RVOL/Price وResearchCandidate مع LIVE sample |
 | 02 | FOUNDATION-002 — Bounded Binance Spot Scanner & Universe | **VERIFIED / MERGED** | جرد Spot/USDT كامل لعينة وقتية، مسح شموع 1–4 أصول فقط بالدورة، 8 HTTP wire attempts كحد، تغطية صريحة وLIVE bounded + CI main |
-| 03 | Qualification 30m/4h + Signal Identity + Scoring V2 + Trade Plan Contracts | **NEXT / DECISION-GATED** | بدء 03A العقود الزمنية والهوية وScore/Plan schemas دون عتبات تداول غير معتمدة؛ 03B بعد البحث والقرارات |
+| 03 | Qualification 30m/4h + Signal Identity + Scoring V2 + Trade Plan Contracts | **IN PROGRESS — 03A VERIFIED / 03B NEXT RESEARCH-GATED** | عقود PIT وMTF والهوية البحثية وScore/Plan schema VERIFIED؛ التأهيل الرقمي وBOS/CHoCH وTrade Ready وSignal ID الدائم غير معتمدين |
 | 04 | GitHub Durable Event/Data Records + Recovery | PLANNED / DECISION-GATED | سجلات Signal/Plan/Delivery/Analytics/Outcomes وreadback/recovery GitHub-only |
 | 05 | Telegram 05A Primary + 05B Analytics JSON + 05C Interactive | PLANNED / DECISION-GATED | Signal ID موحّد، خطط صفقات وأرشيف JSON، Queries آمنة والوجهات الثلاث |
 | 06 | 06A Historical/Forward Outcomes + 06B Telegram Export→SQL | PLANNED | تقييم دخول/TP/SL بالترتيب الزمني + dedup لاستيراد ثلاثة شاتات |
@@ -273,12 +273,14 @@
 
 - **Decision requests:** cadence/weight budget، تعريف freshness/stale، سياسة الفشل عند انقطاع Binance، وعدم اعتماد تخزين دائم بديل.
 
-#### 03 — Early Impulse, MTF and Signal/Score Definitions | NEXT / DECISION-GATED
-**v2.1 mandatory future scope:** Define 30m+6×5m and 4h+4×1h qualification contracts, minimal non-repainting BOS/CHoCH for Swing, score_version + Intraday/Swing V2 weights with unresolved numerical formula status, stable signal_id/detection_event_key/schema_version, TRADE_READY/RESEARCH_ONLY Trade Plan schema and tests. Preserve V1 frozen and no live Telegram until phase 05.
+#### 03 — Early Impulse, MTF and Signal/Score Definitions | IN PROGRESS — 03A VERIFIED / 03B RESEARCH-GATED
+**v2.1 scope/gates:** Stage **03A (COMPLETE on main)** implemented typed PIT-safe closed-window/child reconciliation, source receipt/availability contracts, immutable prototype research events, canonical SHA-256 research detection key, V2 horizon group maximums with `SCORE_UNAVAILABLE`, and research-only Spot plan schemas. All `QUALIFIED_SIGNAL` publication and `signal_id` issuance are prohibited, no actual Binance 30m/4h LIVE ingestion tested. **03B (NEXT; research, not approved numeric production rules)** must investigate directional strong-close/6×5m & 4h/4×1h signal quality, PIT BOS/CHoCH formulas, V2 normalized components, missingness, impulse/EXTENDED and justified Trade Plan methods with independent historical replay/edge tests. Only separately owner-approved/formally tested formulas may become normative. Preserve V1; Telegram after further gates, never within 03A.
 - **Data:** 5m/15m/30m/1h/4h/Daily/Weekly closed aligned OHLCV، timestamp availability، outcomes المنفصلة.
 - **Indicators:** Price impulse مرجعي ±0.7%، RVOL>=2، EXTENDED ±8% فقط بعد تثبيت نافذته، Signed Net/Path MTF Alignment على 3×5m و3×15m بعد اعتماد المعادلة، Momentum Consistency، Scoring V1 weights 35/25/20/10/10.
 - **Filters/Scanning:** تعريف Raw Observation مقابل Research Candidate مقابل Signal Event؛ UP وDOWN، حالات missing، Signal Identity/Dedup/Updates؛ لا تحجب Signal بسبب Score منخفض؛ لا احتمال موثوق قبل Calibration.
-- **Build/Tests:** عقود Price Basis وRVOL type وEXTENDED وMTF وDOWN score، دوال scoring صحيحة، Signal snapshot وreason codes، اختبارات الحدود وMTF PIT وMissing SCORE وعدم اختلاق أرقام. **موافقة المالك مطلوبة قبل تثبيت التعريفات المفتوحة.**
+- **Build/Tests:** العقود المكتملة 03A تسجل raw values وPIT/MTF reasons وSCORE_UNAVAILABLE بلا قيم Score مختلقة. 03B يبدأ تقييم Price Basis وRVOL نوعًا ومصدرًا، وEXTENDED window، وstrong close/down direction، ومكونات V2 وBOS/CHoCH وTrade Plan بالمقارنة التاريخية. لا صلاحية إعلان Signal مؤهلة أو نسبة فوز قبل اعتماد الصيغ وإثبات OOS. **موافقة المالك مطلوبة قبل تثبيت التعريفات العددية المفتوحة.**
+- **03A verified evidence (2026-10-28):** [PR #3 MERGED](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/3), reviewed head `1c836b53d13315afd4c933c627daf4cdd69fc424`, merge commit `6b9267b6193423b305f8d8f72bf6b347c18cd9f7`; [CI #40673906928](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40673906928) 124/124 × Ubuntu/Windows Python 3.11/3.12; [main post-merge CI #40675804185](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40675804185) all 4 jobs SUCCESS. Three source/test files added, ingestion path unchanged; Stage-02 Binance LIVE is **not** a 03A 30m/4h LIVE proof. **03A VERIFIED does NOT mark Phase 03 VERIFIED.**
+
 
 #### 04 — GitHub Permanent Data / Provenance / Recovery | PLANNED, OWNER GATE
 **v2.1 mandatory future scope:** GitHub-authoritative versioned Signal/Candidate/TradePlan/Delivery/Analytical JSON/Outcome/ScanCycle records; immutable manifest/readback/sha256/recovery; identify and handle outage, retries and secrets. Design/quotas need separate approval.
@@ -350,7 +352,7 @@
 
 ### 4. ترتيبات المرحلة التالية وتحديث الحالة
 
-**Current: 00 + 01 + 02 VERIFIED على main. المرحلة التالية 03 NEXT / DECISION-GATED.** بعد اكتمال PR #2 ومدرجات CI، يبدأ SD / Coding بـ**03A contracts-only**: reconciliation of 30m↔6×closed5m and 4h↔4×closed1h with UTC/available_at, event lifecycle and stable `signal_id`/`detection_event_key` schema, deterministic missingness/Score V2 groups/types (`SCORE_UNAVAILABLE`) and Trade Plan `RESEARCH_ONLY`/`TRADE_READY` schemas only؛ اختبار non-repainting pivots والأفق الزمني، دون عتبات عددية تداول أو إصدار توصيات تلقائيًا. **03B numeric research** يُقترح لاحقًا لا يُعتمد دون أدلة وقرار مالك منفصل. لا Telegram live أو Github event backend أو تداول آلي أو Scanner 24/7 تحت مرحلة 03A.
+**Current: 00–02 VERIFIED, و03A VERIFIED كجزء من Phase 03.** [PR #3](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/3) اندمج وتأكد post-merge CI. **Next: 03B SCIENTIFIC RESEARCH / OWNER DECISION GATE**, وليس اعتمادًا تلقائيًا لقواعد Scoring/qualification. يكلَّف SD بجمع وقياس evidence-level source-aligned MTF 30m↔6×5m، 4h↔4×1h، وصياغة صيغ بديلة للـstrong-close/structure/Score/Entry مع replay PIT ومقارنات Base/Quote وUp/Down وmissingness وablation. تُقدم النتائج والمقترحات للمالك وPM **قبل** تحويل الصيغ إلى قواعد تداول. لا Signal Events live، لا Telegram أو تخزين دائم جديد، ولا 24/7 أو مراكز Futures.
 
 PM يصدر الأمر التنفيذي في PR Conversation حيث يقع العمل ويراجع بالأدلة. موافقة المالك على مرحلة في الخارطة لا تعني الموافقة تلقائيًا على قرارات الصيغ الناقصة، أسرار التشغيل، التخزين أو التداول الحقيقي. تُحدَّث نسخة Project Resources يدويًا من نفس MASTER عند اعتماد إصدار GitHub الجديد؛ إنشاء نسخة على GitHub لا يزامنها تلقائيًا.
 
@@ -2257,6 +2259,12 @@ GitHub هو مصدر الحقيقة لكود هذا المشروع.
 ## بداية الملف: 10_CHANGELOG.md
 
 # سجل تغييرات حزمة الحوكمة
+
+## 1.6 — 2026-10-28 (STAGE 03A CONTRACTS-ONLY VERIFIED / 03B NEXT)
+
+- PM راجع التصحيح F03A-FIX-01 لبصمة `detection_event_key` ومنع `signal_id` غير المصرح في TradePlan، واختبارات PIT/MTF/ResearchCandidate→03A schema. نشر [ACCEPT #6467125150](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/3#issuecomment-6467125150)، ودمج PR #3 head `1c836b53d13315afd4c933c627daf4cdd69fc424` في main commit `6b9267b6193423b305f8d8f72bf6b347c18cd9f7`.
+- [124/124 unit+integration+synthetic E2E × 4 runners](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40673906928) و[post-merge main CI #40675804185 SUCCESS 4/4](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40675804185). لا Binance LIVE جديد لـ30m/4h لأن ingestion لم يتغير؛ LIVE المرحلة 02 يثبت ingestion فقط.
+- **03A = VERIFIED Contracts-Only**، **03 FULL = IN PROGRESS / NOT VERIFIED**، **03B = NEXT Research/Decision-Gated**. لا تغيير في خارطة 14 مرحلة أو نموذج Telegram/Spot المعتمد، ولا اعتماد صيغ رقمية أو إرسال Signal/Score/Trade Ready حقيقي حتى تكمل أدلتها وموافقاتها.
 
 ## 1.5 — 2026-10-28 (FOUNDATION-002 VERIFIED ON MAIN; STAGE 03 NEXT)
 
