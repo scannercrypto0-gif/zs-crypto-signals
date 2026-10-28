@@ -121,6 +121,38 @@ def unavailable_score(horizon: Horizon, direction: Direction) -> ScoreV2:
     return ScoreV2(horizon, direction, V2_VERSION[horizon], groups)
 
 
+def _canonical_research_event_key(*, asset_id: str, horizon: Horizon,
+                                  direction: Direction, setup_type: str,
+                                  decision_candle_close_at: datetime,
+                                  rule_version: str, event_discriminator: str,
+                                  schema_version: str) -> str:
+    """One canonical field encoding for both factory and direct constructors.
+
+    This is an ephemeral *research* detection key, never a durable signal_id.
+    The serialization/field order must stay byte-identical to Stage 03A IDs.
+    """
+    if schema_version != STAGE_03A_SCHEMA:
+        raise ValueError("UNSUPPORTED_EVENT_IDENTITY_SCHEMA")
+    if not isinstance(horizon, Horizon) or not isinstance(direction, Direction):
+        raise ValueError("INVALID_EVENT_HORIZON_OR_DIRECTION")
+    if not isinstance(asset_id, str) or not asset_id.startswith("BINANCE:SPOT:"):
+        raise ValueError("INVALID_SPOT_ASSET_ID")
+    symbol = asset_id[len("BINANCE:SPOT:"):]
+    # No arbitrary ticker-length gate: valid short exchange symbols must remain usable.
+    if (len(symbol) <= len("USDT") or not symbol.endswith("USDT")
+            or ":" in symbol or "/" in symbol
+            or any(ch.isspace() or ord(ch) < 32 for ch in symbol)):
+        raise ValueError("INVALID_SPOT_ASSET_ID")
+    if any(not isinstance(field, str) or not field.strip() or field != field.strip()
+           for field in (setup_type, rule_version, event_discriminator)):
+        raise ValueError("INCOMPLETE_EVENT_IDENTITY")
+    close = utc(decision_candle_close_at)
+    fields = [schema_version, asset_id, horizon.value, direction.value,
+              setup_type, close.isoformat(), rule_version, event_discriminator]
+    payload = json.dumps(fields, ensure_ascii=True, separators=(",", ":"))
+    return "RESEARCH-KEY-" + hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
 @dataclass(frozen=True)
 class EventIdentity:
     asset_id: str
@@ -140,15 +172,12 @@ class EventIdentity:
                      rule_version: str, event_discriminator: str) -> "EventIdentity":
         """Dedupe *key proposal*, not durable assign-once signal_id or emission."""
         decision_candle_close_at = utc(decision_candle_close_at)
-        if (not symbol or not symbol.endswith("USDT") or
-                not setup_type or not rule_version or not event_discriminator):
-            raise ValueError("INCOMPLETE_EVENT_IDENTITY")
-        asset = "BINANCE:SPOT:" + symbol
-        fields = [STAGE_03A_SCHEMA, asset, horizon.value, direction.value,
-                  setup_type, decision_candle_close_at.isoformat(),
-                  rule_version, event_discriminator]
-        payload = json.dumps(fields, ensure_ascii=True, separators=(",", ":"))
-        key = "RESEARCH-KEY-" + hashlib.sha256(payload.encode("utf-8")).hexdigest()
+        asset = "BINANCE:SPOT:" + symbol if isinstance(symbol, str) else ""
+        key = _canonical_research_event_key(
+            asset_id=asset, horizon=horizon, direction=direction,
+            setup_type=setup_type, decision_candle_close_at=decision_candle_close_at,
+            rule_version=rule_version, event_discriminator=event_discriminator,
+            schema_version=STAGE_03A_SCHEMA)
         return cls(asset, horizon, direction, setup_type, decision_candle_close_at,
                    rule_version, event_discriminator, key)
 
@@ -156,6 +185,13 @@ class EventIdentity:
         object.__setattr__(self, "decision_candle_close_at", utc(self.decision_candle_close_at))
         if self.signal_id is not None:
             raise ValueError("STAGE_03A_CANNOT_ASSIGN_SIGNAL_ID")
+        expected = _canonical_research_event_key(
+            asset_id=self.asset_id, horizon=self.horizon, direction=self.direction,
+            setup_type=self.setup_type, decision_candle_close_at=self.decision_candle_close_at,
+            rule_version=self.rule_version, event_discriminator=self.event_discriminator,
+            schema_version=self.schema_version)
+        if type(self.detection_event_key) is not str or self.detection_event_key != expected:
+            raise ValueError("DETECTION_EVENT_KEY_INTEGRITY_MISMATCH")
 
     def as_dict(self) -> dict:
         return {
@@ -358,6 +394,8 @@ class TradePlan:
     trade_plan_id: str | None = None
 
     def __post_init__(self) -> None:
+        if self.signal_id is not None:
+            raise ValueError("STAGE_03A_TRADE_PLAN_CANNOT_REFERENCE_ISSUED_SIGNAL_ID")
         if self.plan_status != "RESEARCH_ONLY":
             raise ValueError("TRADE_READY_REQUIRES_APPROVED_ALGORITHM")
         if self.trade_action not in ("OBSERVE_ONLY", "BUY_SPOT", "SELL_OWNED_SPOT"):
