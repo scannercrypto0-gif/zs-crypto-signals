@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import argparse
 from collections import Counter
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 import json
 import sys
@@ -25,8 +25,8 @@ from .core import (
 )
 
 MAX_SYMBOLS_PER_CYCLE = 4  # small explicit research sample, NOT a scheduled market cadence
-MAX_HTTP_REQUESTS = 8     # time + 3 inventory endpoints + <=4 klines
-MAX_CYCLE_SECONDS = 60    # smoke safety cap, NOT an accepted 24/7 latency SLA
+MAX_HTTP_REQUESTS = 8     # actual outbound attempts, INCLUDING failed/retried GETs
+SOFT_PRE_REQUEST_GUARD_SECONDS = 60  # checked before attempts, NOT in-flight cancellation/SLA
 STOP_USED_WEIGHT_1M = 1000  # conservative observation threshold, NOT an exchange quota claim
 FIVE_MINUTE_MS = 300_000
 
@@ -52,12 +52,14 @@ class SymbolScan:
     candidate: ResearchCandidate | None
     last_closed_at: datetime | None
     elapsed_ms: float
+    candle_fetch_completed: bool = False  # successful klines GET, even if quality validation fails
 
     def as_dict(self) -> dict:
         return {"symbol": self.symbol, "status": self.status,
                 "reasons": list(self.reasons),
                 "last_closed_at": self.last_closed_at.isoformat() if self.last_closed_at else None,
                 "elapsed_ms": self.elapsed_ms,
+                "candle_fetch_completed": self.candle_fetch_completed,
                 "candidate": self.candidate.as_dict() if self.candidate else None}
 
 
@@ -75,6 +77,9 @@ class ScanReport:
     elapsed_ms: float
     peak_allocated_kib: float
     request_budget: int
+    attempted_http_paths: tuple[str, ...]
+    deadline_exceeded: bool
+    reason_codes: tuple[str, ...]
 
     def as_dict(self, *, include_inventory: bool = False) -> dict:
         counts = Counter(x.status for x in self.universe)
@@ -82,28 +87,65 @@ class ScanReport:
         cohorts = Counter(x.cohort for x in self.universe)
         result_counts = Counter(x.status for x in self.results)
         eligible = [x.symbol for x in self.universe if x.status == "ELIGIBLE"]
+        candles_fetched = sum(x.candle_fetch_completed for x in self.results)
+        not_scanned = max(0, len(eligible) - candles_fetched)
+        inventory_complete = all(x.status not in ("MISSING_DATA", "INVALID_DATA") for x in self.universe)
+        coverage_reasons = []
+        if not eligible:
+            coverage_reasons.append("NO_ELIGIBLE_SYMBOLS")
+        if not_scanned:
+            coverage_reasons.append("ELIGIBLE_CANDLES_NOT_SCANNED")
+        if not inventory_complete:
+            coverage_reasons.append("INVENTORY_MISSING_OR_INVALID")
+        if candles_fetched != len(self.results):
+            coverage_reasons.append("SAMPLED_CANDLE_FETCH_INCOMPLETE")
         payload = {
             "stage": "FOUNDATION-002_BOUNDED_RESEARCH_ONLY", "cycle_id": self.cycle_id,
-            "status": self.status, "created_at": self.created_at.isoformat(),
+            "status": self.status, "reason_codes": list(self.reason_codes),
+            "created_at": self.created_at.isoformat(),
             "universe": {"total_spot_usdt_inventory": len(self.universe),
+                         "inventory_count": len(self.universe),
                          "eligible_count": len(eligible),
                          "statuses": dict(sorted(counts.items())),
                          "reasons": dict(sorted(reasons.items())),
                          "cohorts": dict(sorted(cohorts.items())),
                          "eligible_symbols": eligible,
-                         "inventory_complete": all(x.status not in ("MISSING_DATA", "INVALID_DATA") for x in self.universe)},
+                         "inventory_complete": inventory_complete},
             "selection": {"selected_symbols": list(self.selections),
                           "selected_count": len(self.selections),
                           "processed_count": len(self.results),
                           "result_statuses": dict(sorted(result_counts.items()))},
+            "coverage": {
+                "scope": "BOUNDED_SELECTED_SAMPLE_NOT_FULL_MARKET",
+                "inventory_count": len(self.universe),
+                "eligible_count": len(eligible),
+                "selected_count": len(self.selections),
+                "processed_count": len(self.results),
+                "candles_fetched_count": candles_fetched,
+                "not_scanned_eligible_count": not_scanned,
+                "eligible_candle_fetch_pct": (
+                    round(100 * candles_fetched / len(eligible), 2) if eligible else None),
+                "all_eligible_candles_fetched_in_this_cycle": (
+                    bool(eligible) and not_scanned == 0),
+                "reason_codes": coverage_reasons,
+                "inventory_complete": inventory_complete,
+            },
             "results": [x.as_dict() for x in self.results],
             "measurements": {
                 "clock_offset_ms": self.clock_offset_ms, "clock_rtt_ms": self.clock_rtt_ms,
                 "elapsed_ms": self.elapsed_ms, "peak_python_allocated_kib": self.peak_allocated_kib,
-                "calls_made": len(self.calls), "request_budget": self.request_budget,
+                "calls_made": len(self.calls),  # legacy: successful logical endpoints
+                "logical_calls_succeeded": len(self.calls),
+                "http_attempts_made": len(self.attempted_http_paths),
+                "http_attempt_paths": list(self.attempted_http_paths),
+                "request_budget": self.request_budget,
+                "soft_pre_request_guard_seconds": SOFT_PRE_REQUEST_GUARD_SECONDS,
+                "deadline_exceeded": self.deadline_exceeded,
+                "deadline_kind": "SOFT_PRE_REQUEST_ONLY_NOT_HARD_CANCELLATION",
                 "http": [{key: value for key, value in call.items()
                           if key in ("path", "http_status", "latency_ms", "used_weight_1m")} for call in self.calls]},
             "limitations": ["one ephemeral bounded sample, not whole-market scan",
+                            "60s guard is soft pre-request only; in-flight HTTP not preempted",
                             "source publication times unavailable on public ticker/book endpoints",
                             "no production freshness SLA, scheduler, persistence, Signal Events or Telegram",
                             "peak_python_allocated_kib measures tracemalloc allocations, not OS RSS"],
@@ -220,10 +262,11 @@ def inspect_candles(item: UniverseItem, klines: object,
 
 def scan_once(*, limit: int = 2, offset: int = 0,
               getter: Callable = get_json) -> ScanReport:
-    """At most 8 public GETs, sequential/no workers, and no writes/side effects.
+    """At most 8 *actual outbound HTTP attempts*, sequential and read-only.
 
-    getter is an injectable public market data interface used by offline contract/E2E
-    tests. Never re-purpose this as a 24/7 scheduler without a new owner decision.
+    getter must accept keyword on_attempt(path), invoking it immediately before
+    every physical send (including retries). 60s guard is SOFT, pre-attempt only.
+    No scheduler or 24/7 service; no durable writes or Telegram.
     """
     if not isinstance(limit, int) or isinstance(limit, bool) or not 1 <= limit <= MAX_SYMBOLS_PER_CYCLE:
         raise ValueError("SAMPLE_LIMIT_OUT_OF_BOUNDS")
@@ -234,17 +277,23 @@ def scan_once(*, limit: int = 2, offset: int = 0,
     if started_tracing:
         tracemalloc.start()
     calls: list[dict] = []
+    attempted_http_paths: list[str] = []
     try:
-        def limited_get(path: str, params: dict | None = None) -> tuple[object, dict]:
-            if len(calls) >= MAX_HTTP_REQUESTS:
-                raise LiveBlocked("HTTP_REQUEST_BUDGET_EXHAUSTED")
-            if time.perf_counter() - start > MAX_CYCLE_SECONDS:
-                raise LiveBlocked("SMOKE_CYCLE_TIME_BUDGET_EXCEEDED")
+        def pre_attempt(path: str) -> None:
+            # Count BEFORE every physical send; a retry is a distinct attempt.
+            if len(attempted_http_paths) >= MAX_HTTP_REQUESTS:
+                raise LiveBlocked("HTTP_ATTEMPT_BUDGET_EXHAUSTED")
+            if time.perf_counter() - start > SOFT_PRE_REQUEST_GUARD_SECONDS:
+                raise LiveBlocked("SOFT_PRE_REQUEST_CYCLE_GUARD_EXCEEDED")
             if calls:
                 used = calls[-1].get("used_weight_1m")
                 if used is not None and int(used) >= STOP_USED_WEIGHT_1M:
                     raise LiveBlocked("OBSERVED_EXCHANGE_WEIGHT_SAFETY_STOP")
-            payload, metadata = getter(path, params)
+            attempted_http_paths.append(path)
+
+        def limited_get(path: str, params: dict | None = None) -> tuple[object, dict]:
+            # No successful-endpoint counter is used as a proxy for outbound attempts.
+            payload, metadata = getter(path, params, on_attempt=pre_attempt)
             if not isinstance(metadata, dict) or not isinstance(metadata.get("received_local_ms"), (int, float)):
                 raise LiveFailure("RECEIPT_METADATA_MISSING")
             calls.append(dict(metadata))
@@ -280,8 +329,10 @@ def scan_once(*, limit: int = 2, offset: int = 0,
                 # This does not retroactively change any previously frozen decision.
                 decision = max(timestamp(time.time() * 1000 + offset_ms),
                                receipt, entry.market.observed_at)
-                results.append(inspect_candles(entry, klines, receipt, decision,
-                                               round((time.perf_counter() - symbol_start) * 1000, 2)))
+                results.append(replace(
+                    inspect_candles(entry, klines, receipt, decision,
+                                    round((time.perf_counter() - symbol_start) * 1000, 2)),
+                    candle_fetch_completed=True))
             except LiveBlocked as exc:
                 results.append(SymbolScan(entry.symbol, "BLOCKED", (str(exc),), None, None,
                                           round((time.perf_counter() - symbol_start) * 1000, 2)))
@@ -297,6 +348,13 @@ def scan_once(*, limit: int = 2, offset: int = 0,
         if state == "PASS" and any(x.status in ("MISSING_DATA", "INVALID_DATA")
                                   for x in universe):
             state = "FAIL"  # Incomplete all-symbol coverage is explicitly NOT a PASS.
+        elapsed_ms = round((time.perf_counter() - start) * 1000, 2)
+        deadline_exceeded = elapsed_ms > SOFT_PRE_REQUEST_GUARD_SECONDS * 1000
+        reason_codes = []
+        if deadline_exceeded:
+            reason_codes.append("SOFT_CYCLE_GUARD_OVERRUN_IN_FLIGHT")
+            if state == "PASS":
+                state = "FAIL"  # A slow completed response must not be labelled compliant.
         peak = tracemalloc.get_traced_memory()[1] / 1024
         return ScanReport(
             cycle_id="RESEARCH-CYCLE-" + str(int(clock["t0_local_ms"])),
@@ -304,8 +362,24 @@ def scan_once(*, limit: int = 2, offset: int = 0,
             universe=universe, selections=tuple(x.symbol for x in selected),
             results=tuple(results), calls=tuple(calls), clock_offset_ms=round(offset_ms, 2),
             clock_rtt_ms=round(clock_rtt, 2),
-            elapsed_ms=round((time.perf_counter() - start) * 1000, 2),
-            peak_allocated_kib=round(peak, 2), request_budget=MAX_HTTP_REQUESTS)
+            elapsed_ms=elapsed_ms,
+            peak_allocated_kib=round(peak, 2), request_budget=MAX_HTTP_REQUESTS,
+            attempted_http_paths=tuple(attempted_http_paths),
+            deadline_exceeded=deadline_exceeded,
+            reason_codes=tuple(reason_codes))
+    except (LiveBlocked, LiveFailure) as exc:
+        # Inventory/bootstrap failures still expose truthful failed-attempt counters.
+        elapsed_ms = round((time.perf_counter() - start) * 1000, 2)
+        exc.cycle_telemetry = {
+            "http_attempts_made": len(attempted_http_paths),
+            "http_attempt_paths": list(attempted_http_paths),
+            "logical_calls_succeeded": len(calls),
+            "request_budget": MAX_HTTP_REQUESTS,
+            "elapsed_ms": elapsed_ms,
+            "deadline_exceeded": elapsed_ms > SOFT_PRE_REQUEST_GUARD_SECONDS * 1000,
+            "deadline_kind": "SOFT_PRE_REQUEST_ONLY_NOT_HARD_CANCELLATION",
+        }
+        raise
     finally:
         if started_tracing:
             tracemalloc.stop()
@@ -328,12 +402,16 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(output, sort_keys=True))
         return 0 if result.status == "PASS" else 2 if result.status == "BLOCKED" else 1
     except LiveBlocked as exc:
-        print(json.dumps({"stage": "FOUNDATION-002", "status": "BLOCKED",
-                          "reason": str(exc), "utc": started}, sort_keys=True))
+        out = {"stage": "FOUNDATION-002", "status": "BLOCKED",
+               "reason": str(exc), "utc": started}
+        out.update(getattr(exc, "cycle_telemetry", {}))
+        print(json.dumps(out, sort_keys=True))
         return 2
     except (LiveFailure, ValueError) as exc:
-        print(json.dumps({"stage": "FOUNDATION-002", "status": "FAIL",
-                          "reason": str(exc), "utc": started}, sort_keys=True))
+        out = {"stage": "FOUNDATION-002", "status": "FAIL",
+               "reason": str(exc), "utc": started}
+        out.update(getattr(exc, "cycle_telemetry", {}))
+        print(json.dumps(out, sort_keys=True))
         return 1
 
 
