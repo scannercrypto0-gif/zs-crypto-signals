@@ -113,6 +113,20 @@ class BoundedScannerTests(unittest.TestCase):
         self.assertIn("SPOT_NOT_TRADABLE", row["NOTSPOTUSDT"].reasons)
         self.assertEqual(row["AAAUSDT"].market.quote_volume_24h, Decimal("50000000"))
 
+    def test_short_base_asset_names_are_not_lost_from_universe(self):
+        exchange = {"symbols": [
+            {"symbol": "AIUSDT", "quoteAsset": "USDT", "status": "TRADING",
+             "isSpotTradingAllowed": True},
+            {"symbol": "SUSDT", "quoteAsset": "USDT", "status": "TRADING",
+             "isSpotTradingAllowed": True},
+        ]}
+        tickers = [{"symbol": s, "quoteVolume": "20000000"} for s in ("AIUSDT", "SUSDT")]
+        books = [{"symbol": s, "bidPrice": "100", "askPrice": "100.01"}
+                 for s in ("AIUSDT", "SUSDT")]
+        rows = build_universe(exchange, tickers, books, datetime.now(timezone.utc))
+        self.assertEqual([r.symbol for r in rows], ["AIUSDT", "SUSDT"])
+        self.assertEqual([r.status for r in rows], ["ELIGIBLE", "ELIGIBLE"])
+
     def test_missing_ticker_book_and_invalid_market_are_explicit(self):
         tickers, books = market_rows()
         tickers = [t for t in tickers if t["symbol"] != "AAAUSDT"]

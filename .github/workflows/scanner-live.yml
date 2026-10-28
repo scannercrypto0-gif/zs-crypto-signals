@@ -23,3 +23,16 @@ jobs:
         env:
           PYTHONPATH: src
         run: python -m zs_smart_gate.scanner --live --limit 4 --offset 2
+  live-windows:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[scanner-live]')
+    runs-on: windows-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Windows public Binance Spot read-only 2-symbol sample
+        env:
+          PYTHONPATH: src
+        run: python -m zs_smart_gate.scanner --live --limit 2 --offset 0

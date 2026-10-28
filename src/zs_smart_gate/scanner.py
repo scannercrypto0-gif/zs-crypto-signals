@@ -30,7 +30,7 @@ MAX_HTTP_REQUESTS = 8     # time + 3 inventory endpoints + <=4 klines
 MAX_CYCLE_SECONDS = 60    # smoke safety cap, NOT an accepted 24/7 latency SLA
 STOP_USED_WEIGHT_1M = 1000  # conservative observation threshold, NOT an exchange quota claim
 FIVE_MINUTE_MS = 300_000
-SYMBOL_RE = re.compile(r"[A-Z0-9]{3,24}USDT\Z")
+SYMBOL_RE = re.compile(r"[A-Z0-9]{1,24}USDT\Z")
 
 
 @dataclass(frozen=True)
@@ -261,7 +261,8 @@ def scan_once(*, limit: int = 2, offset: int = 0,
             raise LiveFailure("LOCAL_CLOCK_MOVED_BACKWARD")
         offset_ms = server_ms - (clock["t0_local_ms"] + clock["received_local_ms"]) / 2
         exchange, exchange_meta = limited_get("/api/v3/exchangeInfo")
-        tickers, ticker_meta = limited_get("/api/v3/ticker/24hr")
+        # MINI retains quoteVolume while avoiding unused 24hr fields and excess memory.
+        tickers, ticker_meta = limited_get("/api/v3/ticker/24hr", {"type": "MINI"})
         books, book_meta = limited_get("/api/v3/ticker/bookTicker")
         observed = timestamp(max(m["received_local_ms"] for m in
                                  (exchange_meta, ticker_meta, book_meta)) + offset_ms)
