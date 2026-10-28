@@ -1,10 +1,10 @@
 # ZS Crypto Signals "GITHUB Version" — SMART GATE
 
-## ملف الحوكمة والمواصفات الرئيسي — MASTER v1.2
+## ملف الحوكمة والمواصفات الرئيسي — MASTER v1.3
 
-**التحديث:** 28 أكتوبر 2026 | **الإصدار:** v1.2 | **الاسم الموحد المقترح:** `ZS_SMART_GATE_MASTER.md`.
+**التحديث:** 28 أكتوبر 2026 | **الإصدار:** v1.3 | **الاسم الرسمي:** `ZS_SMART_GATE_MASTER.md`.
 
-**المصدر:** نسخة الحوكمة v1.1 الموحدة، بجميع أقسامها الإحدى عشرة والـTechnical Blueprint الأصلي، مع تحديث وقائع التأسيس. **جرى إنشاء مستودع GitHub خاص والتحقق منه بالفعل**؛ أما تطوير SMART GATE والبيانات البحثية والتشغيل والاختبارات فلم يثبت تنفيذها بعد.
+**المصدر:** الحوكمة v1.2 بجميع الأقسام الأحد عشر والـTechnical Blueprint الأصلي محفوظًا، مع تحديث v1.3 بخارطة 14 مرحلة وحالة FOUNDATION-001 المدمجة والمختبرة. لا يمثل دمج النواة أو اختبار Binance لعينة واحدة جاهزية SMART GATE بالكامل.
 
 **الرابط الرسمي للمستودع:** https://github.com/scannercrypto0-gif/zs-crypto-signals  
 **تنبيه:** المستودع `Private`؛ الوصول إليه يتطلب حساب GitHub مخولًا واتصالًا صالحًا. وجود الرابط في Project Resources لا يمنح أي محادثة صلاحية GitHub تلقائيًا.
@@ -13,6 +13,142 @@
 
 ---
 
+
+
+---
+
+
+## SMART GATE — MASTER ROADMAP v1.3 (خطة التطوير الرسمية: 14 مرحلة)
+
+**اعتماد المالك:** اعتماد عرض مراحل التطوير ومتابعتها في MASTER وربطها بأدلة GitHub، بتاريخ 28 أكتوبر 2026. **تنبيه:** تخطيط مرحلة لا يعني الموافقة تلقائيًا على القرارات الهندسية المفتوحة أو بدء الخدمة الحية. هذا القسم هو أحدث مرجع للحالة التنفيذية ويعلو أوصاف v1.2 التاريخية التي كانت تشير إلى عدم وجود كود؛ نص الـTechnical Blueprint التاريخي يبقى دون تعديل.
+
+**إجمالي المراحل: 14، من 00 إلى 13.** **المكتمل والمتحقق: 00 و01 = مرحلتان**. **المرحلة القادمة: 02 (FOUNDATION-002).** **المتبقي: 12 مرحلة**؛ بعضها قد ينجز في دفعات متوازية مع الحفاظ على العقود والاعتماد. لا تُفسَّر نسبة عدد المراحل على أنها نسبة الإنجاز بالوقت أو النجاح التنبؤي.
+
+**أحدث الأدلة:** FOUNDATION-001 / PR #1 مدمج في main عند commit e5b07f228e606f3b23e3cd2087782a30f20801e0. نجاح 51 اختبارًا لكل من 4 بيئات (Ubuntu/Windows وPython 3.11/3.12)، وCI main post-merge ناجح: https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40658793880 . اختبار Binance Spot LIVE read-only على BTCUSDT لعينة واحدة: https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40657215090 . هذا إثبات تكامل النواة المنفذة وبيانات حقيقية لعينة، **وليس** إثبات تغطية كل السوق أو استمرار 24/7 أو جميع مؤشرات SMART GATE.
+
+### 1. قواعد إدارة الخطة والتكامل
+
+1. لكل مرحلة: Data → Features/Indicators → Eligibility/Filters → Scanner/Decision Output → Evidence/Acceptance. لا يُعتبر إنشاء ملفات وحده إنجازًا.
+2. حالات المراحل: VERIFIED (موجود على main وPM فحص أدلته)، IN_PROGRESS (PR تحت التطوير)، PLANNED/PROPOSED (غير منفذ)، BLOCKED (قرار/صلاحية/بيانات ناقصة)، REJECTED (لم يُقبل). كل مرحلة لها PR/Commits/CI URLs وقرار PM ACCEPT/REJECT قبل تغيير الحالة.
+3. هدف «END-TO-END INTEGRATED 100%» يعني نجاح **كل اختبارات المسارات الإلزامية للمكونات المنفذة والمعنية بالتغيير**، من الإدخال إلى المخرج، دون ادعاء أن وحدات مستقبلية موجودة أو أن دقة التوقعات 100%. تقرير CI أخضر دون اختبار تكامل حقيقي لا يكفي.
+4. كل تعديل برمجي: Unit + Integration + Regression + PIT/missingness + اختبار Binance Spot LIVE read-only عندما يمس مسار بيانات السوق، ثم لاحقًا اختبارات Telegram/Recovery الفعلية بعد اعتماد أسرارها؛ قياس latency والـAPI weights وCoverage والـclock offset، مع تفريق PASS/FAIL/BLOCKED لا محاكاة مُضللة.
+5. **الأولوية الزمنية:** UTC دائمًا، مع source_close_at وreceived_at وavailable_at وdecision_at، وتحقق الشموع المغلقة، ولا استخدام لاحق لمعلومة لم تكن متاحة وقت القرار. سجل Coverage/Versions وسبب كل Missing/Rejected، ولا تقلب عدم التوافر إلى صفر.
+6. شروط النطاق المعتمدة ثابتة: جميع Binance Spot USDT المؤهلة تُراقب بالتساوي؛ Baseline quoteVolume24h>=10M USDT وspread<=20bps وTRADING و5m closed؛ low-liquidity cohort منفصل. جميع **Signal Events المكتشفة** تُرسل مهما كان Score بعد اعتماد تعريف Signal. DOWN تحذير هبوط و/أو بيع Spot مملوك حسب الحالة. Intraday 1–24h، Swing 1–30d.
+7. **التخزين الدائم داخل خدمات GitHub فقط**، وWindows Runtime فقط. طريقة GitHub storage والتعامل مع الانقطاع/الأسرار والنظام النهائي غير معتمدة ويجب عرض الخيارات/التكلفة/المخاطر للموافقة أولًا. لا التداول الحقيقي، Account/Order API، Token مكشوف، أو اشتراك مدفوع دون تفويض مستقل.
+8. الأوامر التنفيذية وتقارير SD/PM ونتائج القبول داخل **PR Conversation**. **README.md وZS_SMART_GATE_MASTER.md فقط وثيقتا المشروع الإدارية الدائمتان**؛ باقي الملفات كود SMART GATE واختباراته/CI/تكوينه وبيانات مشروعة معتمدة. بعد كل Milestone، يحدّث PM جدول الحالات داخل MASTER وملخص README ولا ينشئ Markdown آخر.
+9. فلاتر البحث الجديدة تُقاس وتُنسخ قبل اعتمادها كقواعد تشغيل؛ ولا تحول فلتر Scoring/Feature إلى حجب لرسائل Telegram بغير قرار مالك. تنجز أول دورة بحثية End-to-End مبكرًا، ثم تضاف المؤشرات الثقيلة وفق أدلة ablation لا بتجميع كل شيء دفعة واحدة.
+
+### 2. جدول متابعة المراحل
+
+| ID | المرحلة | الحالة | النتيجة التراكمية بعد القبول |
+|---|---|---|---|
+| 00 | GitHub Private Repository + Governance | **VERIFIED** | README وMASTER ومصدر حقيقة مستقل |
+| 01 | FOUNDATION-001 — Point-in-Time Core & one-symbol Binance LIVE | **VERIFIED / MERGED** | Candle/Market Contracts وSpread/RVOL/Price وResearchCandidate مع LIVE sample |
+| 02 | FOUNDATION-002 — Bounded Binance Spot Scanner & Universe | **NEXT / PLANNED** | مسح متعدد العملات ودورات قابلة للقياس دون Telegram حقيقي |
+| 03 | Early Impulse + Multi-Timeframe + Signal/Scoring Contracts | PLANNED / DECISION-GATED | اكتشاف UP/DOWN بنسخ عقود وتقييم Research Score الصحيح |
+| 04 | GitHub Durable Research Storage & Recovery | PLANNED / DECISION-GATED | سجلات السوق والإشارات/النتائج قابلة للاسترداد من GitHub |
+| 05 | Telegram Primary + Analytics, 3 destinations | PLANNED / DECISION-GATED | تسليم جميع الإشارات إلى جهتين وتحليل تفصيلي إلى ثالثة |
+| 06 | Historical Data / Replay / Outcomes / Forward | PLANNED | نتائج Research حقيقية ومقارنة Baselines دون Look-ahead |
+| 07 | Intraday Temporal / Pre-move Features | PLANNED | اكتشاف مبكر 1–24h وتقييم lead time |
+| 08 | Trend Indicators / EMA / Weekly MA / RSI / MACD | PLANNED | مجموعات Trend/Structure مستقلة ومختبرة |
+| 09 | Fixed Range Volume Profile / POC / VWAP | PLANNED | مستويات حجم/سعر دقيقة مع معرفات مصدر وتوقيت |
+| 10 | OI / Funding / CVD / Depth / Liquidations | PLANNED | سياق Futures/Order Flow اختياري موثق |
+| 11 | BTC Regime / Breadth / Relative Strength / News | PLANNED | تحليل سياق السوق وأثره على فرص كل أصل |
+| 12 | Predictive Intraday & Swing / Calibrated Models | PLANNED | توقعات قابلة للتقييم، ومستويات Entry/SL/TP بحثية عند إثباتها |
+| 13 | Windows 24/7 / Performance / Integrated Recovery | PLANNED | قبول تشغيل شامل مثبت بقياسات Soak وRecovery |
+
+### 3. تفاصيل كل مرحلة: الداتا والمؤشرات والفلاتر وما سيعمل
+
+#### 00 — تأسيس المستودع والحوكمة | VERIFIED
+- **Data:** هوية المشروع وقرارات المالك وTechnical Blueprint وإصدار الحوكمة والصلاحيات. **Indicators/Filters:** لا مؤشرات سوق برمجية بعد؛ تعريف Universe/Score/Telegram في المرجع.
+- **Development:** إنشاء private repo مع README وMASTER وmain؛ PR Conversation لمسار التنفيذ وإبقاء المشروع مستقلًا.
+- **Acceptance:** رابط Repo صحيح وصلاحية Private والحوكمة مقروءة، دون اعتبار ذلك نجاح Scanner. **مكتملة.**
+
+#### 01 — Research Core Foundation + bounded Binance LIVE | VERIFIED
+- **Data:** MarketSnapshot: symbol, Spot/tradable, quote asset, quote volume24h, bid/ask, observed_at؛ 21 شمعة OHLCV (Base/Quote) مكتملة على 5m مع UTC timestamps.
+- **Indicators:** price_change_5m Close-to-Close وOpen-to-Close، RVOL_BASE_20 وRVOL_QUOTE_20، spread_bps؛ مكونات **Scoring V1 جزئية** (Price, Volume, Liquidity)، وProbe RVOL>=2 و±0.7% تجريبي، لا Score كامل وEXTENDED/MTF غير معروفين.
+- **Scanning filters:** Binance Spot/USDT TRADING؛ quoteVolume24h >= 10M؛ spread <= 20bps؛ 21 شمعة متتابعة مغلقة صحيحة؛ رفض المستقبل/البيانات الناقصة مع Reasons؛ لا إصدار Signal Event.
+- **Implemented:** typed Python core، ResearchCandidate serializable وBinance public read-only adapter (5 requests) لعينة BTCUSDT واحدة؛ **ليس Scheduler أو ماسح السوق**.
+- **Acceptance:** 51/51 لكل بيئة من 4، تكامل Offline فعلي، Binance LIVE لعملة واحدة، وmain CI post-merge 4/4. PR #1 merged commit e5b07f228e606f3b23e3cd2087782a30f20801e0. **مكتملة ضمن هذا النطاق.**
+
+#### 02 — FOUNDATION-002: Bounded Market Scanner | NEXT
+- **Data:** Binance exchangeInfo لكل Spot USDT، 24h ticker quoteVolume، bookTicker bid/ask، klines 5m، server time وtimestamp/source/receipt، request weight والlatency.
+- **Indicators/Filters:** إعادة استخدام Base/Quote RVOL وPrice Changes وSpread؛ تطبيق نفس شروط Eligibility (10M USDT، 20bps، TRADING، 21 closed consecutive 5m) مع أسباب استبعاد كل أصل؛ cohort منخفض السيولة **منفصل تجريبي**.
+- **Build:** Scan Cycle ID وتسجيل universe/coverage/per-symbol status؛ Network clients محدودة وRate-Limit handling وbounded workers، وربط الإدخال الحي بالنواة وإنتاج ResearchCandidates لكل أصل ضمن sample→expanded batches. من غير تخزين دائم/إرسال Telegram/إشارات متداولة حتى اعتماد عقودها.
+- **Tests/acceptance:** PIT/UTC والشمعة الحالية غير المغلقة، عدم ازدواج الأصول، timeout/429/retry، حدود API memory/load، مقارنة inventory بالـexchangeInfo، تكامل Offline لكل pipeline، LIVE bounded multi-symbol sample وقياس زمن دورة، Windows run evidence عند تشغيله. أي أجزاء غير معتمدة تظل adapters/mock وليست production. **لم يبدأ بعد.**
+- **Decision requests:** cadence/weight budget، تعريف freshness/stale، سياسة الفشل عند انقطاع Binance، وعدم اعتماد تخزين دائم بديل.
+
+#### 03 — Early Impulse, MTF and Signal/Score Definitions | PLANNED
+- **Data:** 5m/15m/30m/1h/4h/Daily/Weekly closed aligned OHLCV، timestamp availability، outcomes المنفصلة.
+- **Indicators:** Price impulse مرجعي ±0.7%، RVOL>=2، EXTENDED ±8% فقط بعد تثبيت نافذته، Signed Net/Path MTF Alignment على 3×5m و3×15m بعد اعتماد المعادلة، Momentum Consistency، Scoring V1 weights 35/25/20/10/10.
+- **Filters/Scanning:** تعريف Raw Observation مقابل Research Candidate مقابل Signal Event؛ UP وDOWN، حالات missing، Signal Identity/Dedup/Updates؛ لا تحجب Signal بسبب Score منخفض؛ لا احتمال موثوق قبل Calibration.
+- **Build/Tests:** عقود Price Basis وRVOL type وEXTENDED وMTF وDOWN score، دوال scoring صحيحة، Signal snapshot وreason codes، اختبارات الحدود وMTF PIT وMissing SCORE وعدم اختلاق أرقام. **موافقة المالك مطلوبة قبل تثبيت التعريفات المفتوحة.**
+
+#### 04 — GitHub Permanent Data / Provenance / Recovery | PLANNED, OWNER GATE
+- **Data:** raw market/source snapshots، eligibility/candidates/signals، immutable decision snapshots وlater outcomes، experiment manifests، hashes وversions وtimestamps.
+- **Filters:** Integrity/Schema/Completeness/PIT/Idempotency checks (ليست شروط سعرية) ورفض الاعتراف بنجاح كتابة قبل readback.
+- **Build:** دراسة Git Repository/Releases/LFS أو خيار GitHub صالح، قياس حجم ووتيرة البيانات/quotas/cost/API limits، append-only evidence، restart/replay وGitHub outage policy.
+- **Tests:** crash/duplicate/concurrent write/retrieval/restore from GitHub only، checksum، لا أسرار، توثيق حدود فقد البيانات. **لا Backend دائم أو Windows permanent storage بدون قرار المالك.**
+
+#### 05 — Telegram Dual Bot / Triple Delivery | PLANNED, OWNER GATE
+- **Data:** signal_id/decision_at/direction/horizon/score/reasons/features PIT، delivery statuses/timestamps لكل وجهة، future outcomes كملحق لا يغير المصدر.
+- **Filters:** **إرسال كل Signal مكتشف بغض النظر عن درجته**؛ فقط تعريف Event/Dedup معتمد، لا Score threshold. DOWN = bearish alert و/أو Sell Existing Spot، لا Short Futures تلقائي.
+- **Build:** Primary Telegram bot إلى **اثنين Chat IDs** مع Score؛ Analytics Bot مستقل إلى **Chat ID واحد** برسالة غنية بكل البيانات البحثية المسموحة؛ Retry/Idempotency/Rate-limit/Failure isolation وتوقيت كل رسالة.
+- **Tests:** UP/DOWN × Intraday/Swing × high/low/unavailable score، 3 delivery receipts، فشل جهة لا يخفي الأخرى، duplicate/restart، No Tokens in logs، integration with GitHub storage. **قرارات مطلوبة:** Signal Lifecycle/Score unavailable/Outbox policy/secrets/GitHub-vs-alert latency.
+
+#### 06 — Historical Library / Scientific Replay / Forward Outcome Tracker | PLANNED
+- **Data:** تاريخ Spot OHLCV لكل أزواج مؤهلة وعينات quiet/negative/faded/delisted عند توفر source، نسخ universe، baseline labels ونتائج مستقبلية خارج features.
+- **Indicators/Filters:** إعادة إنتاج Price/Volume/RVOL/Impulse/MTF وScore على الحالة الزمنية الصحيحة؛ outcomes success/failure/inconclusive وlead time وpersistence وMFE/MAE؛ فلاتر quality تمنع نتائج تاريخية ناقصة.
+- **Build:** Replay وBacktest point-in-time وForward observation، تجارب frozen manifest ونتائج versioned على GitHub، cohort منخفض السيولة منفصل، Intraday 1–24h وSwing 1–30d.
+- **Tests:** منع look-ahead/survivorship/selection bias، إعادة الإنتاج، حفظ negative results، precision/recall/FPR/uncertainty، لا حساب historical ضمن Forward. نطاق البيانات وآلية تخزينها يحتاجان قرارًا.
+
+#### 07 — Intraday Temporal and Pre-Move Discovery | PLANNED
+- **Data:** rolling six 5m مقابل aligned 30m وpartial 30m موسوم، 1h/4h supporting trend، تغيرات السعر والحجم خلال زمن الحركة.
+- **Indicators:** price/volume acceleration، HH/HL/LH/LL، wick/body، pullback depth، volatility compression/expansion، gain retention، price-volume agreement، progression of momentum.
+- **Filters/Scanning:** early leading buy/sell pressure وcontinuation vs short-pump fade (بحث/Ranking فقط قبل إثباته)؛ لا تنتظر تحقق Impulse بعد الحركة لكل المرشحين.
+- **Build/Tests:** Intraday UP/DOWN research stream وحساب lead-time للأفق 1–24h؛ PIT والـpartial candle لا تتحول إلى closed، ablation/false positives، E2E في scan→signals/outcomes بعد توفرها.
+
+#### 08 — Trend, Moving Averages, RSI/MACD and Structure | PLANNED
+- **Data:** Historical OHLCV 5m→Weekly، warmup/seed وcoverage، UTC Daily/Weekly close.
+- **Indicators:** EMA20/50/100/200 في الأطر المناسبة، Daily/Weekly EMA50/100/200، 50-week MA (SMA أو EMA **يحتاج تحديدًا**)، RSI/MACD، crossover/slope/separation/order/distance/reclaim، Higher-High/Low، BOS/CHoCH بعد اعتماد تعريفاتها.
+- **Filters/Scanning:** cross/reclaim/breakdown/MA stack/trend agreement/RSI-MACD momentum or divergence كـresearch features لا فلاتر Telegram؛ غياب Weekly200 = INSUFFICIENT_HISTORY لا رفض العملة آليًا.
+- **Tests:** reference calculations/seed/warmup, confirmed bars only، indicator overlap، statistical contribution/ablation، E2E مع الماسح الأساسي.
+
+#### 09 — Fixed Range Volume Profile, POC, VWAP | PLANNED
+- **Data:** Spot Trades/AggTrades عند جدوى المصدر، أو OHLCV approximation معلن، windows 1h/4h/Daily/Previous Completed Week، anchors/bin sizes/source completeness.
+- **Indicators:** Fixed Range Volume Profile، POC، VAH/VAL إن ثبتت الفائدة، VWAP 1h/4h/Daily/previous complete week، signed/absolute distance، cross/retest/hold/rejection وtime since cross.
+- **Filters/Scanning:** قرب/اختراق/استعادة/رفض مناطق الحجم مع Price/Volume context؛ لا افتراض أن POC قربه bullish دائمًا ولا خلط developing week مع completed week.
+- **Tests:** deterministic binning/tie-break and source-time alignment، exact vs approximated tag، coverage/API cost، comparative ablation، end-to-end candidate feature integration.
+
+#### 10 — Futures Context, Order Flow and Liquidity | PLANNED
+- **Data:** OI current/history، Funding timing، Long/Short ratios، AggTrades for CVD buyer-is-maker، depth/book snapshots، **actual** liquidations حيث متاحة، data gaps and API weights.
+- **Indicators:** OI delta/Price-OI relation، Funding crowding، CVD aggressive buy–sell delta/divergence، depth imbalance/liquidity zones، real liquidation spikes.
+- **Filters/Scanning:** supporting UP/DOWN confidence evidence، but Futures metrics **not mandatory** Spot eligibility؛ no Missing→zero، ولا افتراض OI↑ يعني long positions فقط.
+- **Tests:** paginate/ID gaps/duplicates/completeness/windows/source availability، heavy-source isolation from base Scanner، evaluate improvement by ablation and latency cost.
+
+#### 11 — BTC Regime, Market Breadth, Relative Strength, optional News | PLANNED
+- **Data:** BTC price/trend/volatility across MTF، breadth across eligible assets، RS vs BTC، cross-asset correlations؛ ETH/BTC/dominance/events فقط مع مصادر موثوقة وأوقات نشر معروفة.
+- **Indicators:** BTC macro/trend regime، market breadth%، relative strength، volatility regime، correlations، optional news/event tags with publication/availability time.
+- **Filters/Scanning:** market context supporting Intraday/Swing UP/DOWN confidence, not automatic silent rejection on missing regime/news؛ separate news-discovery research requires its own approved scope.
+- **Tests:** source PIT/alignment/coverage، compare with/without market context، no hindsight event tagging، API/cost and source reliability.
+
+#### 12 — Predictive Research, Intraday/Swing Models, Trading Levels | PLANNED
+- **Data:** validated historical+forward labeled datasets, wins/fails/quiet candidates, versioned features and regimes, realistic fees/slippage assumptions.
+- **Indicators/models:** early probability for UP/DOWN calibrated only after evidence؛ distinct Intraday 1–24h and Swing 1–30d models، Score vs Probability separation، onset/lead-time/persistence/MAE/MFE، scientific ML only if beating simpler baseline.
+- **Filters/Scanning:** rank evidence, confidence and horizon without suppressing owner-required all detected signals; Entry Zone/SL/TP1–3 only after price structure/volatility/execution risk validation. No real trading.
+- **Tests:** frozen hypotheses, walk-forward, OOS, forward research, PR-AUC/Brier/calibration/precision/recall/lead-time/statistical uncertainty, asset/year/regime splits، avoid multiple-testing leakage and unvalidated profitability claims.
+
+#### 13 — Full Operational Acceptance on Windows / Recovery / Stability | PLANNED
+- **Data:** cycle and component logs، API weights/latency، storage checksum/ack، Telegram delivery receipts، research outcomes، resource usage/health، source coverage and time drift.
+- **Filters:** operational quality gates: stale/future/incomplete candle، duplicate scanner، insufficient coverage، API saturation، storage/delivery failure؛ لا مؤشرات سوق جديدة.
+- **Build:** actual Windows 24/7 bounded Scanner integrating all **approved implemented** features and both Horizons, GitHub-authoritative recovery, 2 Telegram bots / 3 destinations, isolation of heavy research, repeatable restart/network outage.
+- **Tests/Acceptance:** pre-agreed Soak duration/scan counts, full End-to-End module matrix, Binance LIVE coverage, p50/p95 cycle latency, API quota stability، failure/recovery/restore from GitHub، zero plaintext secrets. Any required gate FAIL/BLOCKED => NOT READY. Trading with real money remains separately unauthorized.
+
+### 4. ترتيبات المرحلة التالية وتحديث الحالة
+
+**Current: 00 + 01 VERIFIED, 02 NEXT.** SD / Coding يبدأ FOUNDATION-002 على PR جديد بعد قراءة أحدث main والـMASTER v1.3. ينفذ أول Slice آمن ببيانات Binance العامة فقط: ExchangeInfo inventory → 24h ticker/book → closed 5m candles → Eligibility → ResearchCandidate per symbol → bounded cycle metrics؛ Offline E2E + Live Spot read-only (عينة محدودة متدرجة). لا Scanner 24/7، لا Telegram live، ولا GitHub permanent storage backend قبل الموافقات التقنية المنفصلة.
+
+PM يصدر الأمر التنفيذي في PR Conversation حيث يقع العمل ويراجع بالأدلة. موافقة المالك على مرحلة في الخارطة لا تعني الموافقة تلقائيًا على قرارات الصيغ الناقصة، أسرار التشغيل، التخزين أو التداول الحقيقي. تُحدَّث نسخة Project Resources يدويًا من نفس MASTER عند اعتماد إصدار GitHub الجديد؛ إنشاء نسخة على GitHub لا يزامنها تلقائيًا.
 
 
 ---
@@ -1917,6 +2053,14 @@ GitHub هو مصدر الحقيقة لكود هذا المشروع.
 ## بداية الملف: 10_CHANGELOG.md
 
 # سجل تغييرات حزمة الحوكمة
+
+## 1.3 — 2026-10-28 (خارطة 14 مرحلة وFOUNDATION-001 على main)
+
+- اعتماد المالك تقسيم المشروع 14 مرحلة من 00 إلى 13 مع بيانات/مؤشرات/فلاتر/Scanner/اختبارات/حالة لكل مرحلة وتحديثها في MASTER وREADME.
+- PR #1 مدمج في main عند e5b07f228e606f3b23e3cd2087782a30f20801e0 مع CI post-merge ناجح run #40658793880؛ 51 اختبارًا لكل بيئة في أربع بيئات، وBinance LIVE read-only BTCUSDT ناجح لعينة واحدة.
+- المرحلة 00 و01 VERIFIED؛ 02 NEXT؛ 02–13 PLANNED. أي عبارة تاريخية في v1.2 تنفي وجود Repo/Code تُقرأ بحسب تاريخها ولا تنسخ هذه الحالة الأحدث.
+- PR Conversation لسجل الأوامر والمراجعات، وREADME وMASTER فقط كوثائق دائمة. لا نشر أكواد تداول حقيقي أو تخزين دائم جديد دون قرارات منفصلة.
+- يلزم رفع نسخة v1.3 المطابقة إلى Project Resources يدويًا؛ المزامنة ليست تلقائية.
 
 ## 1.2 — 2026-10-28 (بعد إنشاء Repository)
 
