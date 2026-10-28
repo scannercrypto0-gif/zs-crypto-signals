@@ -269,19 +269,22 @@ class AutoScheduleTests(unittest.TestCase):
                         main(["--scheduled","--cron",SCHEDULE[0][0],"--output-dir","not-created"])
             self.assertEqual(ctx.exception.code,2)
 
-    def test_workflow_crons_main_only_no_rerun_and_cleanup_required(self):
-        workflow=(Path(__file__).resolve().parent.parent/
-                  ".github/workflows/stage03b3-auto.yml").read_text(encoding="utf-8")
-        self.assertEqual(workflow.count("- cron:"),4)
-        for expr,_,_ in SCHEDULE:
-            self.assertIn("cron: '"+expr+"'",workflow)
-        self.assertIn("github.run_attempt == 1",workflow)
-        self.assertIn("github.ref == 'refs/heads/main'",workflow)
-        self.assertIn("cancel-in-progress: false",workflow)
-        self.assertNotIn("workflow_dispatch:",workflow)
-        self.assertNotIn("push:\n",workflow)
-        self.assertIn("retention-days: 7",workflow)
-        self.assertIn("PM must DELETE the schedule",workflow)
+    def test_owner_cancelled_study_has_no_active_github_workflows(self):
+        # The ORIGINAL frozen calendar/manifest are historical references
+        # only. On 2026-10-28 the owner stopped this study and all remote
+        # triggering workflows were deleted. Do not revive GH scheduling.
+        root = Path(__file__).resolve().parents[1]
+        for name in (
+            "stage03b3-auto.yml",
+            "stage03b3-capture.yml",
+            "stage03b3-select.yml",
+            "stage03b3-preclose.yml",
+        ):
+            with self.subTest(workflow=name):
+                self.assertFalse(
+                    (root / ".github" / "workflows" / name).exists(),
+                    "OWNER_CANCELLED_STAGE03B3_MUST_NOT_BE_TRIGGERABLE",
+                )
 
 
 if __name__=="__main__":
