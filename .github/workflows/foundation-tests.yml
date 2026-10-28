@@ -33,5 +33,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
+          $env:TEMP = $env:RUNNER_TEMP
+          $env:TMP = $env:RUNNER_TEMP
           python -m venv .runner-test-venv
           ./tests/windows-runner.Tests.ps1 -PythonPath (Resolve-Path .runner-test-venv/Scripts/python.exe).Path
