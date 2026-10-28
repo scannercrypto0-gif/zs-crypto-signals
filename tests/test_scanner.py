@@ -8,7 +8,7 @@ import json
 import time
 import unittest
 from collections import Counter
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 from urllib.parse import urlsplit
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
@@ -158,6 +158,8 @@ class FakeHTTPTransport:
         if self.mode == "blocked_429" and path == "/api/v3/klines":
             raise HTTPError(request.full_url, 429, "rate limit",
                             {"Retry-After": "0"}, io.BytesIO(b""))
+        if self.mode == "network_blocked" and path == "/api/v3/klines":
+            raise URLError("simulated connection reset")
         if self.mode == "eighth_500" and len(self.calls) == 8:
             raise HTTPError(request.full_url, 500, "retry", {}, io.BytesIO(b""))
         if self.mode == "initial_418" and len(self.calls) == 1:
@@ -426,6 +428,17 @@ class BoundedScannerTests(unittest.TestCase):
         self.assertEqual(report.as_dict()["measurements"]["http_attempts_made"], 6)
         self.assertEqual(report.as_dict()["measurements"]["logical_calls_succeeded"], 4)
         self.assertIn("SAMPLED_CANDLE_FETCH_INCOMPLETE", report.as_dict()["coverage"]["reason_codes"])
+
+    def test_network_retry_is_counted_before_stop(self):
+        report, error, transport, calls = transport_cycle("network_blocked", limit=3)
+        self.assertIsNone(error)
+        self.assertEqual(report.status, "BLOCKED")
+        self.assertEqual(calls, 6)  # four successful inventory + two failed GETs
+        self.assertEqual(report.as_dict()["measurements"]["http_attempts_made"], 6)
+        self.assertEqual(report.as_dict()["measurements"]["logical_calls_succeeded"], 4)
+        self.assertEqual(len(transport.calls), 6)
+        self.assertEqual(len(report.results), 1)
+        self.assertIn("NETWORK_UNAVAILABLE", report.results[0].reasons[0])
 
     def test_retry_near_attempt_eight_cannot_send_ninth_get(self):
         report, error, transport, calls = transport_cycle("eighth_500", limit=4)
