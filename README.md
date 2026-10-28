@@ -33,15 +33,15 @@
 | Liquidity Quality | 5 | Liquidity Quality | 5 |
 | **الإجمالي** | **100** | **الإجمالي** | **100** |
 
-**الأوزان V2 نقطة انطلاق بحثية وافق المالك على اختبارها، وليست دقة مثبتة أو Probability.** تظل معادلات ونتائج **Scoring V1 (35/25/20/10/10)** محفوظة مستقلة. قيم EMA/RSI/MACD/POC/VWAP/OI/CVD/BTC وغيرها تُسجل مع مصدرها وزمنها وتخضع لاختبار الفائدة قبل أي أوزان جديدة. Score منخفض **لا يمنع إرسال Signal مؤهلة**؛ وعند فقد قيمة أساسية تظهر \`SCORE_UNAVAILABLE\` بدل رقم مختلق.
+**الأوزان V2 نقطة انطلاق بحثية وافق المالك على اختبارها، وليست دقة مثبتة أو Probability.** تظل معادلات ونتائج **Scoring V1 (35/25/20/10/10)** محفوظة مستقلة. قيم EMA/RSI/MACD/POC/VWAP/OI/CVD/BTC وغيرها تُسجل مع مصدرها وزمنها وتخضع لاختبار الفائدة قبل أي أوزان جديدة. Score منخفض **لا يمنع إرسال Signal مؤهلة**؛ وعند فقد قيمة أساسية تظهر `SCORE_UNAVAILABLE` بدل رقم مختلق.
 
 ## نظام Telegram والتحليل المستقبلي
 
-- **Primary Bot → Chat A + Chat B:** **كل Signal مؤهلة**، مع \`signal_id\` وScore والإطار والاتجاه و\`trade_plan_status\` و**Entry Zone/SL/TP1/TP2/TP3 إن ثبتت خطة صالحة**؛ وإلا \`RESEARCH_ONLY\` بوضوح. DOWN تحذير هبوط أو Sell Existing Spot؛ ليس Short.
+- **Primary Bot → Chat A + Chat B:** **كل Signal مؤهلة**، مع `signal_id` وScore والإطار والاتجاه و`trade_plan_status` و**Entry Zone/SL/TP1/TP2/TP3 إن ثبتت خطة صالحة**؛ وإلا `RESEARCH_ONLY` بوضوح. DOWN تحذير هبوط أو Sell Existing Spot؛ ليس Short.
 - **Analytical Bot → Chat C واحد فقط:** ملخص إنساني و**JSON machine-readable** لكل Signal بمصدر/إصدار/بصمة SHA-256، يضم مكونات Score وOHLCV والشموع الداخلية والهيكل والفلاتر وجميع قيم المؤشرات **المنفذة والمتاحة** وبيانات القرار/الإرسال وخطة الصفقة وReason Codes. لا توثيق مزيف لمؤشر لم يُبنَ.
-- **Shared Primary Key:** نفس \`signal_id\` في رسائل الوجهات الثلاث؛ معرفات \`bot/chat/message\` تخص عمليات الإرسال، وتُدمج صادرات Telegram في **إشارة واحدة** مع Deliveries منفصلة. بيانات JSON الدائمة على **GitHub** وفق آلية Storage سيتم اعتمادها؛ Telegram Export وحده ليس ضمانًا لوجود جميع المرفقات.
-- **Interactive Primary Bot:** \`/analyze\`, \`/intraday\`, \`/swing\`, \`/structure\`, \`/indicators\`, \`/signal\`, \`/plan\`, \`/status\` لمستخدم/Chat مصرح له. كل طلب له \`analysis_request_id\` منفصل ولا يُحسب كإشارة Scanner جديدة.
-- **Outcome Research:** تقييم الوصول إلى Entry وبعدها SL/TP بالترتيب **بعد وقت إتاحة الرسالة**، مع \`NOT_TRIGGERED\` و\`AMBIGUOUS_SEQUENCE\` عند عدم إمكان إثبات المسار، واحتفاظ بتاريخ الإشارة الأصلي دون إعادة كتابة.
+- **Shared Primary Key:** نفس `signal_id` في رسائل الوجهات الثلاث؛ معرفات `bot/chat/message` تخص عمليات الإرسال، وتُدمج صادرات Telegram في **إشارة واحدة** مع Deliveries منفصلة. بيانات JSON الدائمة على **GitHub** وفق آلية Storage سيتم اعتمادها؛ Telegram Export وحده ليس ضمانًا لوجود جميع المرفقات.
+- **Interactive Primary Bot:** `/analyze`, `/intraday`, `/swing`, `/structure`, `/indicators`, `/signal`, `/plan`, `/status` لمستخدم/Chat مصرح له. كل طلب له `analysis_request_id` منفصل ولا يُحسب كإشارة Scanner جديدة.
+- **Outcome Research:** تقييم الوصول إلى Entry وبعدها SL/TP بالترتيب **بعد وقت إتاحة الرسالة**، مع `NOT_TRIGGERED` و`AMBIGUOUS_SEQUENCE` عند عدم إمكان إثبات المسار، واحتفاظ بتاريخ الإشارة الأصلي دون إعادة كتابة.
 
 ## حالة الإنجاز — 28 أكتوبر 2026
 
