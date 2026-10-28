@@ -370,7 +370,9 @@ class BoundedScannerTests(unittest.TestCase):
         self.assertIsNone(row.candidate.rvol_base_20)
 
     def test_api_getter_receipt_metadata_mandatory(self):
-        def corrupt(path, params=None):
+        def corrupt(path, params=None, *, on_attempt=None):
+            if on_attempt is not None:
+                on_attempt(path)
             return {"serverTime": int(time.time() * 1000)}, {}
         with self.assertRaisesRegex(LiveFailure, "RECEIPT_METADATA"):
             scan_once(limit=1, getter=corrupt)
