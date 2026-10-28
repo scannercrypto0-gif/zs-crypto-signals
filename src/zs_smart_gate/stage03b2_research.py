@@ -152,6 +152,30 @@ def compare_study(records: Sequence[dict], manifest: StudyManifest = MANIFEST) -
                             value = feature.get("value")
                             vals[feature_name] = None if value is None else str(decimal(value))
                     samples[name] = {"n_windows":len(group),"feature_values":vals}
+    # Cross-asset distributions are descriptive only. With three declared
+    # assets and one observation per split/horizon, these are NOT confidence
+    # intervals, not holdout tuning input and not historical regime estimates.
+    distributions = {}
+    for partition in Partition:
+        for horizon in manifest.horizons:
+            for direction in manifest.directions:
+                group = [r for r in valid if r["partition"] == partition.value
+                         and r["horizon"] == horizon.value]
+                label = "|".join((partition.value, horizon.value, direction.value))
+                names = set().union(*(set(r["features"][direction.value]) for r in group))
+                values = {}
+                for name in sorted(names):
+                    numeric = [decimal(r["features"][direction.value][name]["value"])
+                               for r in group
+                               if r["features"][direction.value].get(name,{}).get("value") is not None]
+                    values[name] = {"n_valid": len(numeric),
+                                    "min": str(min(numeric)) if numeric else None,
+                                    "median": str(median(numeric)) if numeric else None,
+                                    "max": str(max(numeric)) if numeric else None}
+                distributions[label] = {
+                    "n_asset_windows":len(group),
+                    "feature_distribution":values,
+                    "uncertainty":"NOT_ESTIMABLE_FROM_SPARSE_RETROSPECTIVE_SAMPLE"}
     expected = manifest.planned_sessions
     return {"study_id":manifest.study_id,
             "status":"INSUFFICIENT_EVIDENCE",
@@ -163,6 +187,7 @@ def compare_study(records: Sequence[dict], manifest: StudyManifest = MANIFEST) -
                                      for p in Partition},
             "rejected":rejected,
             "descriptive_strata":samples,
+            "descriptive_distributions":distributions,
             "forward_outcomes":None,"fees":None,"slippage":None,
             "predictive_probability":None,"approved_threshold":None,
             "notes":[
