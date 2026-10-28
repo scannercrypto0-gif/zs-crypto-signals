@@ -126,8 +126,7 @@ class FoundationTests(unittest.TestCase):
         m = dataclasses.replace(market, quote_asset="BTC", spot_enabled=False,
                                 trading_status="HALT", observed_at=now + timedelta(seconds=1))
         reasons = check_eligibility(m, now)
-        self.assertEqual(set(reasons), {"NOT_USDT_PAIR", "SPOT_NOT_TRADABLE",
-                                        "MARKET_SNAPSHOT_FROM_FUTURE"})
+        self.assertEqual(reasons, ("MARKET_SNAPSHOT_FROM_FUTURE",))
 
     def test_invalid_snapshot_spread(self):
         m, _, now = fixture()
@@ -213,6 +212,39 @@ class FoundationTests(unittest.TestCase):
         c = build_candidate(m, cs, now)
         self.assertNotIn("telegram", c.as_dict())
         self.assertNotIn("order", c.as_dict())
+
+
+    def test_future_market_snapshot_is_completely_suppressed(self):
+        market, candles, now = fixture()
+        future = now + timedelta(seconds=30)
+        a = dataclasses.replace(market, observed_at=future)
+        b = dataclasses.replace(a, bid=1, ask=300, quote_volume_24h=0,
+                                trading_status="HALT", spot_enabled=False, quote_asset="BTC")
+        first, second = build_candidate(a, candles, now), build_candidate(b, candles, now)
+        self.assertEqual(first.as_dict(), second.as_dict())
+        self.assertEqual(first.status, "UNAVAILABLE_MARKET")
+        self.assertEqual(first.eligibility_reasons, ("MARKET_SNAPSHOT_FROM_FUTURE",))
+        for key in ("spread_bps", "c2c_pct", "oc_pct", "rvol_base_20",
+                    "rvol_quote_20", "score"):
+            self.assertIsNone(first.as_dict()[key])
+        self.assertNotIn("LOW_24H_QUOTE_VOLUME", first.reason_codes)
+
+    def test_partial_score_rejects_negative_and_nonfinite_rvol(self):
+        for value in (-1, "-0.01", "NaN", "Infinity"):
+            with self.subTest(rvol=value), self.assertRaises(ValueError):
+                score_v1_partial(1, value, 1)
+
+    def test_partial_score_rejects_invalid_spread(self):
+        for value in (-1, "-0.01", "NaN", "Infinity"):
+            with self.subTest(spread=value), self.assertRaises(ValueError):
+                score_v1_partial(1, 3, value)
+
+    def test_partial_score_accepts_zero_rvol_and_spread(self):
+        result = score_v1_partial(1, 0, 0)
+        self.assertEqual(result["components"]["volume_expansion_25"], "0")
+        self.assertEqual(result["components"]["liquidity_quality_10"], "10")
+        self.assertIsNone(result["total"])
+
 
 
 if __name__ == "__main__":

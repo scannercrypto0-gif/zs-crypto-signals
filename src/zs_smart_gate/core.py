@@ -145,13 +145,15 @@ def spread_bps(bid: Decimal, ask: Decimal) -> Decimal:
 
 def check_eligibility(market: MarketSnapshot, decision_at: datetime) -> tuple[str, ...]:
     decision_at = utc(decision_at)
+    # An observation made later cannot supply *any* PIT eligibility or market feature.
+    # Do not inspect quote volume, bid/ask, trading flags or quote asset in this case.
+    if market.observed_at > decision_at:
+        return ("MARKET_SNAPSHOT_FROM_FUTURE",)
     reasons: list[str] = []
     if not market.symbol or market.quote_asset != "USDT" or not market.symbol.endswith("USDT"):
         reasons.append("NOT_USDT_PAIR")
     if not market.spot_enabled or market.trading_status != "TRADING":
         reasons.append("SPOT_NOT_TRADABLE")
-    if market.observed_at > decision_at:
-        reasons.append("MARKET_SNAPSHOT_FROM_FUTURE")
     if market.quote_volume_24h < MIN_QUOTE_VOLUME:
         reasons.append("LOW_24H_QUOTE_VOLUME")
     try:
@@ -225,10 +227,16 @@ def score_v1_partial(price_change_pct: Decimal | None, observed_rvol: Decimal | 
         p = max(decimal(price_change_pct), Decimal("0"))
         components["price_momentum_35"] = str(Decimal("35") * p / (p + Decimal("0.7")))
     if observed_rvol is not None:
-        v = max(decimal(observed_rvol) - 1, Decimal("0"))
+        observed_rvol = decimal(observed_rvol)
+        if observed_rvol < 0:
+            raise ValueError("INVALID_RVOL")
+        v = max(observed_rvol - 1, Decimal("0"))
         components["volume_expansion_25"] = str(Decimal("25") * v / (v + 1))
-    if spread is not None and decimal(spread) >= 0:
-        components["liquidity_quality_10"] = str(Decimal("10") * Decimal("20") / (Decimal("20") + decimal(spread)))
+    if spread is not None:
+        spread = decimal(spread)
+        if spread < 0:
+            raise ValueError("INVALID_SPREAD")
+        components["liquidity_quality_10"] = str(Decimal("10") * Decimal("20") / (Decimal("20") + spread)
     return {"total": None, "status": "SCORE_UNAVAILABLE", "version": "V1_PARTIAL_RESEARCH_ONLY",
             "components": components}
 
@@ -238,6 +246,12 @@ def build_candidate(market: MarketSnapshot, candles: Sequence[Candle],
     decision_at = utc(decision_at)
     eligibility = check_eligibility(market, decision_at)
     errors = validate_candles(candles, decision_at)
+    if "MARKET_SNAPSHOT_FROM_FUTURE" in eligibility:
+        # Fail closed before exposing any computed market/candle research feature.
+        return ResearchCandidate(
+            market.symbol, decision_at, "UNAVAILABLE_MARKET", eligibility, errors,
+            None, None, None, None, None, "UNRESOLVED_CONTRACT", None,
+            "SCORE_UNAVAILABLE", ("MARKET_SNAPSHOT_FROM_FUTURE", "NO_SIGNAL_EVENT"))
     if errors:
         return ResearchCandidate(
             market.symbol, decision_at, "INVALID_CANDLES", eligibility, errors,
