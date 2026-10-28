@@ -16,6 +16,7 @@ from decimal import Decimal
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
+from typing import Callable
 
 from .core import Candle, MarketSnapshot, build_candidate, decimal
 
@@ -42,7 +43,13 @@ def timestamp(ms: float | int) -> datetime:
     return datetime.fromtimestamp(float(ms) / 1000, tz=timezone.utc)
 
 
-def get_json(path: str, params: dict[str, str] | None = None) -> tuple[object, dict]:
+def get_json(path: str, params: dict[str, str] | None = None,
+             *, on_attempt: Callable[[str], None] | None = None) -> tuple[object, dict]:
+    """Read public JSON; optional hook is invoked BEFORE EACH physical GET attempt.
+
+    Stage-01 callers remain source-compatible. A cycle can refuse a retry in
+    the hook without spending a request. Failed attempts still invoke it.
+    """
     if path not in ALLOW_PATHS:
         raise ValueError("UNAUTHORIZED_ENDPOINT")
     url = BASE + path + (("?" + urlencode(params)) if params else "")
@@ -51,12 +58,20 @@ def get_json(path: str, params: dict[str, str] | None = None) -> tuple[object, d
         started = time.perf_counter()
         try:
             req = Request(url, headers={"Accept": "application/json", "User-Agent": "ZS-SMART-GATE-research-smoke/1"})
+            if on_attempt is not None:
+                on_attempt(path)
             with urlopen(req, timeout=HTTP_TIMEOUT_S) as response:
                 status = response.status
-                body = response.read(2_000_001)
+                # Full public universe payloads are larger than single-symbol smoke
+                # responses; keep a hard finite per-endpoint response-size ceiling.
+                max_bytes = (24_000_000 if path in (
+                    "/api/v3/exchangeInfo", "/api/v3/ticker/24hr",
+                    "/api/v3/ticker/bookTicker") and (not params or params == {"type": "MINI"})
+                    else 2_000_000)
+                body = response.read(max_bytes + 1)
                 received_ms = time.time() * 1000
-                if len(body) > 2_000_000:
-                    raise LiveFailure("OVERSIZED_HTTP_RESPONSE")
+                if len(body) > max_bytes:
+                    raise LiveFailure("OVERSIZED_HTTP_RESPONSE_" + path)
                 if status != 200:
                     raise LiveFailure("HTTP_STATUS_" + str(status))
                 try:
