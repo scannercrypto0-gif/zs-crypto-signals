@@ -10,7 +10,6 @@ from collections import Counter
 from dataclasses import dataclass
 from datetime import datetime, timezone
 import json
-import re
 import sys
 import time
 import tracemalloc
@@ -30,7 +29,6 @@ MAX_HTTP_REQUESTS = 8     # time + 3 inventory endpoints + <=4 klines
 MAX_CYCLE_SECONDS = 60    # smoke safety cap, NOT an accepted 24/7 latency SLA
 STOP_USED_WEIGHT_1M = 1000  # conservative observation threshold, NOT an exchange quota claim
 FIVE_MINUTE_MS = 300_000
-SYMBOL_RE = re.compile(r"[A-Z0-9]{1,24}USDT\Z")
 
 
 @dataclass(frozen=True)
@@ -141,9 +139,11 @@ def build_universe(exchange_payload: object, tickers: object, books: object,
     for symbol, info in sorted(entries.items()):
         if info.get("quoteAsset") != "USDT":
             continue
-        if not SYMBOL_RE.fullmatch(symbol):
+        # The authoritative exchangeInfo controls symbol names. Do not impose
+        # an extra invented naming filter that silently excludes eligible assets.
+        if len(symbol) <= 4 or not symbol.endswith("USDT"):
             inventory.append(UniverseItem(symbol, "INVALID_DATA",
-                                          ("INVALID_SYMBOL_FORMAT",), "BASELINE", None))
+                                          ("INVALID_SYMBOL_IDENTITY",), "BASELINE", None))
             continue
         ticker = ticker_map.get(symbol)
         book = book_map.get(symbol)
@@ -275,7 +275,11 @@ def scan_once(*, limit: int = 2, offset: int = 0,
                 klines, meta = limited_get("/api/v3/klines",
                                            {"symbol": entry.symbol, "interval": "5m", "limit": "22"})
                 receipt = timestamp(meta["received_local_ms"] + offset_ms)
-                decision = timestamp(time.time() * 1000 + offset_ms)
+                # A decision is created AFTER the data receipt. Microsecond rounding
+                # of float UTC conversions must not make received_at > decision_at.
+                # This does not retroactively change any previously frozen decision.
+                decision = max(timestamp(time.time() * 1000 + offset_ms),
+                               receipt, entry.market.observed_at)
                 results.append(inspect_candles(entry, klines, receipt, decision,
                                                round((time.perf_counter() - symbol_start) * 1000, 2)))
             except LiveBlocked as exc:
@@ -290,6 +294,9 @@ def scan_once(*, limit: int = 2, offset: int = 0,
                  else "PASS")
         if len(results) < len(selected):
             state = "BLOCKED"
+        if state == "PASS" and any(x.status in ("MISSING_DATA", "INVALID_DATA")
+                                  for x in universe):
+            state = "FAIL"  # Incomplete all-symbol coverage is explicitly NOT a PASS.
         peak = tracemalloc.get_traced_memory()[1] / 1024
         return ScanReport(
             cycle_id="RESEARCH-CYCLE-" + str(int(clock["t0_local_ms"])),

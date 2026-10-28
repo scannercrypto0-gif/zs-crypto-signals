@@ -141,6 +141,26 @@ class BoundedScannerTests(unittest.TestCase):
         self.assertEqual(rows["CCCUSDT"].status, "INVALID_DATA")
         self.assertIn("INVALID_MARKET_FIELDS", rows["CCCUSDT"].reasons)
 
+    def test_unusual_exchange_symbol_name_is_not_silently_filtered(self):
+        exchange = {"symbols": [
+            {"symbol": "A_BUSDT", "quoteAsset": "USDT", "status": "TRADING",
+             "isSpotTradingAllowed": True}]}
+        ticker = [{"symbol": "A_BUSDT", "quoteVolume": "20000000"}]
+        book = [{"symbol": "A_BUSDT", "bidPrice": "100", "askPrice": "100.01"}]
+        row = build_universe(exchange, ticker, book, datetime.now(timezone.utc))[0]
+        self.assertEqual(row.status, "ELIGIBLE")
+
+    def test_decision_time_cannot_precede_last_receipt_by_rounding(self):
+        fake = FakeGetter()
+        # Emulate clock/float rounding immediately after a response arrives.
+        # The actual candidate must never use a decision timestamp earlier than receipt.
+        with patch("zs_smart_gate.scanner.time.time",
+                   return_value=(fake.now_ms - 1) / 1000):
+            report = scan_once(limit=1, getter=fake)
+        self.assertEqual(report.status, "PASS")
+        self.assertEqual(report.results[0].status, "PASS")
+        self.assertEqual(report.results[0].candidate.candle_errors, ())
+
     def test_duplicate_exchange_and_book_are_rejected(self):
         tickers, books = market_rows()
         ex = sample_exchange()
@@ -213,6 +233,7 @@ class BoundedScannerTests(unittest.TestCase):
         output = scan_once(limit=2, getter=fake).as_dict(include_inventory=True)
         self.assertEqual(output["universe"]["eligible_count"], 4)
         self.assertFalse(output["universe"]["inventory_complete"])
+        self.assertEqual(output["status"], "FAIL")
         match = [x for x in output["inventory"] if x["symbol"] == "CCCUSDT"][0]
         self.assertEqual(match["status"], "MISSING_DATA")
         self.assertEqual(match["reasons"], ["MISSING_24H_TICKER"])
