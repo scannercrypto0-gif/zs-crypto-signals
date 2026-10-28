@@ -1,0 +1,42 @@
+name: STAGE-03B3 four-date one-shot AUTO PIT capture (expires 2026-10-28)
+on:
+  # GitHub cron executes on default main only. Delivery can be delayed/dropped.
+  # These recurring syntax anchors are inert beyond 2026-10-28: Python UTC
+  # guards block every HTTP on any later date; PM must DELETE the schedule.
+  schedule:
+    - cron: '1 14 28 10 *'
+    - cron: '31 14 28 10 *'
+    - cron: '1 16 28 10 *'
+    - cron: '1 20 28 10 *'
+permissions:
+  contents: read
+# Does NOT supply a transactional cross-run deduplication guarantee.
+concurrency:
+  group: stage03b3-one-shot-${{ github.event.schedule }}
+  cancel-in-progress: false
+jobs:
+  fixed-three-symbol-batch:
+    if: github.event_name == 'schedule' && github.ref == 'refs/heads/main' && github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Exactly one frozen UTC slot, exactly three sequential Spot symbols (max 24 physical GETs)
+        env:
+          PYTHONPATH: src
+          SCHEDULE_EXPR: ${{ github.event.schedule }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_RUN_ATTEMPT: ${{ github.run_attempt }}
+          GITHUB_REF: ${{ github.ref }}
+        run: python -m zs_smart_gate.stage03b3_auto --scheduled --cron "$SCHEDULE_EXPR" --output-dir evidence
+      - name: Sealed per-symbol research evidence, TEMPORARY 7-day retention only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: 03b3-auto-${{ github.run_id }}-${{ github.run_attempt }}
+          path: evidence/*
+          if-no-files-found: warn
+          retention-days: 7
