@@ -4,7 +4,7 @@
 
 ## اقرأ المرجع الرسمي أولًا
 
-**[ZS_SMART_GATE_MASTER.md — MASTER v1.9](./ZS_SMART_GATE_MASTER.md)** هو مصدر الحوكمة والمواصفات المُجمعة وقرارات المالك. يتضمن في بدايته **SMART GATE — UNIFIED DESIGN v2.1**، ثم خارطة **14 مرحلة (00–13)**، وإصدارات Score، وعقود Telegram/Analytical Data/Trade Plans، وسجل القرارات، والـTechnical Blueprint التاريخي محفوظًا. عند تعارض مقترح قديم مع قسم التصميم الموحد المعتمد، تُطبَّق قواعد الأسبقية داخل MASTER.
+**[ZS_SMART_GATE_MASTER.md — MASTER v1.10](./ZS_SMART_GATE_MASTER.md)** هو مصدر الحوكمة والمواصفات المُجمعة وقرارات المالك. يتضمن في بدايته **SMART GATE — UNIFIED DESIGN v2.1**، ثم خارطة **14 مرحلة (00–13)**، وإصدارات Score، وعقود Telegram/Analytical Data/Trade Plans، وسجل القرارات، والـTechnical Blueprint التاريخي محفوظًا. عند تعارض مقترح قديم مع قسم التصميم الموحد المعتمد، تُطبَّق قواعد الأسبقية داخل MASTER.
 
 **حالة الاعتماد:** المالك **وافق على تصميم SMART GATE v2.1 كهدف للمشروع** في 28 أكتوبر 2026؛ الحدود العددية غير المُختبرة ومعادلات BOS/CHoCH/Score النهائية، وسعر الخطة ونظام تخزين GitHub العملي تبقى **قيد التصميم والاختبار/الموافقة الفنية**؛ لا يصح وصف الميزات المخطط لها بأنها منفذة أو مجربة.
 
@@ -52,17 +52,21 @@
 
 ### سجل القرارات والاختبارات غير المحسومة — مرجع واحد
 
-ارجع إلى [سجل `Active Evidence & Release-Gate Register — v1.9` في MASTER](./ZS_SMART_GATE_MASTER.md) للحالات الست: الاختبارات الحمراء القديمة أصبحت **SUPERSEDED** بعد إثبات نجاح آخر كود؛ الدراسة التاريخية 03B2 **CLOSED WITH LIMITATIONS** وليست انتظار 12/12؛ رصد 03B3 الحي **PENDING** حتى اكتمال مواعيده؛ وأدلة التخزين والتوقيت وScoring النهائي غير معتمدة. لا تُغيّر السجلات القديمة لإظهارها خضراء، ولا تعتبر دمج PR دليلًا على نجاح LIVE.
+ارجع إلى [سجل `Active Evidence & Release-Gate Register — v1.10` في MASTER](./ZS_SMART_GATE_MASTER.md) للحالات السبع: الاختبارات الحمراء القديمة أصبحت **SUPERSEDED** بعد إثبات نجاح آخر كود؛ الدراسة التاريخية 03B2 **CLOSED WITH LIMITATIONS** وليست انتظار 12/12؛ رصد 03B3 الحي **PENDING** حتى اكتمال مواعيده؛ وأدلة التخزين والتوقيت وScoring النهائي غير معتمدة. لا تُغيّر السجلات القديمة لإظهارها خضراء، ولا تعتبر دمج PR دليلًا على نجاح LIVE.
 
-**التشغيل اليدوي الحالي فقط:** [إجراء 03B3 على GitHub Actions](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/workflows/stage03b3-capture.yml) متاح بعد دمج PR #6 على `main`، لكنه **لا يعمل تلقائيًا**. لكل موعد من المواعيد الأربعة يُشغَّل مرة منفصلة لكل أصل من `BTCUSDT` و`ETHUSDT` و`AAVEUSDT`، داخل عشر دقائق بعد إغلاق الشمعة، دون إعادة محاولة لنفس الخانة. المواعيد بتوقيت السعودية يوم **28 أكتوبر 2026**: 17:00 (I1/30m)، 17:30 (I2/30m)، 19:00 (S1/4h)، 23:00 (S2/4h). نهاية الدراسة **29 أكتوبر 2026 الساعة 16:00 السعودية**؛ ما لم يُرصد في وقته يُسجل `LATE` أو `NOT_ATTEMPTED` ولا يُسترجع بأثر رجعي.
+**03B3 auto capture (current original-study executor):** [PR #7 merged](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/7), `stage03b3-auto.yml` on `main`, attempts exactly four scheduled UTC anchor batches on 2026-10-28 at 14:01, 14:31, 16:01, 20:01 (Saudi 17:01,17:31,19:01,23:01), with 3 fixed symbols each and ≤600-second window from parent close. It can be delayed/dropped by GitHub; check individual recorded statuses, not green CI. **Do not manually run `stage03b3-capture.yml` in parallel or replay missed candle windows.** Terminal audit 2026-10-29 13:00 UTC. **No Windows LIVE for this frozen study.**
 
 **شرط الإغلاق:** توثيق جميع الـ12 خانة وفق نتائجها الفعلية، ووجود عينة LIVE صحيحة واحدة على الأقل لكل أفق لإثبات مسار الاتصال؛ وإلا يتم الإغلاق كعجز بيانات موثق. **لا شريحة 03B4، لا خادم مستمر، لا تخزين دائم جديد، ولا تعليمات تداول** قبل قرار PM جديد ومستقل.
 
+### Windows local runner — engineering accepted; runtime still blocked
+
+[PR #9](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/9) **merged as OFFLINE/DISABLED engineering pilot** with [215 tests ×4](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40730659031) and [postmerge main CI](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40732887106) PASS. Independent [PM decision](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/9#issuecomment-6475518562). Owner's PC executed offline code tests and no-HTTP CLI dry-run, **not** a real scheduled task: Windows Time stopped and TaskScheduler Operational history disabled, no task registered. [Existing Issue #8](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/8) carries the one local enablement/clock/two scheduled simulations closure (owner consent required for OS configuration). State: `WINDOWS_LOCAL_NOT_VERIFIED`; no Binance LIVE, permanent local database, signal/trading operations, nor production scheduler activation.
+
 ## قواعد العمل للمحادثات وSD / Coding
 
-1. اقرأ أحدث MASTER v1.9 وREADME وحالة **main/PRs/CI** مباشرة قبل أي عمل؛ لا تعتمد على عبارات حالة تاريخية داخل Blueprint قديم أو على Project Resources متأخرة. **مزامنة Project Resources مع GitHub ليست تلقائية.**
+1. اقرأ أحدث MASTER v1.10 وREADME وحالة **main/PRs/CI** مباشرة قبل أي عمل؛ لا تعتمد على عبارات حالة تاريخية داخل Blueprint قديم أو على Project Resources متأخرة. **مزامنة Project Resources مع GitHub ليست تلقائية.**
 2. **PR Conversation** للأوامر وتقارير الاختبارات وقبول PM. لا ملفات Markdown جديدة للحَوْكمة؛ **README وMASTER فقط**. الكود والاختبارات وCI/config والبيانات التشغيلية المعتمدة مسموحة حسب مراحلها.
 3. **02 و03A و03B1 متحقق منها ضمن نطاق كل جزء، و03B2 مُدمج ككود بحثي مع نتيجة علمية نهائية غير كافية، و03B3 كودها مدمج ولكن الرصد الحي غير متحقق بعد.** لا تُكرر تجربة 03B2 أو تفتح مرحلة بحثية جديدة قبل إغلاق 03B3، ولا تُفعّل Scoring رقمي أو Signal أو خطط تداول دون اعتماد منفصل.
 4. **GitHub هو مصدر الحقيقة لكل البيانات الدائمة**؛ Windows جهاز Runtime 24/7 فقط. لا أسرار داخل Repo، ولا قرارات Storage Backend/تكلفة/تداول حقيقي دون موافقة المالك. الاختبارات يجب أن تثبت تكامل المسار المنفذ فقط؛ لا ادعاء اكتمال SMART GATE غير المبني.
 
-**Repository:** [scannercrypto0-gif/zs-crypto-signals](https://github.com/scannercrypto0-gif/zs-crypto-signals) · **Private** · **MASTER v1.9 / Unified Design v2.1** · **Verified full phases 00–02 / 14; 03A/03B1 VERIFIED; 03B2 code accepted, original study closed insufficient 8/12; 03B3 code merged, offline PASS, postclose LIVE PENDING; Phase 03 IN PROGRESS; no new research until terminal disposition**.
+**Repository:** [scannercrypto0-gif/zs-crypto-signals](https://github.com/scannercrypto0-gif/zs-crypto-signals) · **Private** · **MASTER v1.10 / Unified Design v2.1** · **Verified full phases 00–02 / 14; 03A/03B1 VERIFIED; 03B2 code accepted, original study closed insufficient 8/12; 03B3 code merged, offline PASS, postclose LIVE PENDING; Phase 03 IN PROGRESS; no new research until terminal disposition**.
