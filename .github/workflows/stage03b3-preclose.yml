@@ -1,0 +1,26 @@
+name: STAGE-03B3 prospective preclose no-network safety proof (one-shot)
+on:
+  push:
+    branches: [stage-03b3-prospective-pit-evidence]
+permissions:
+  contents: read
+jobs:
+  preclose-safety:
+    if: contains(github.event.head_commit.message, '[03b3-preclose]')
+    strategy:
+      fail-fast: false
+      matrix:
+        horizon: [INTRADAY, SWING]
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Prove no historical preclose retrieval and no outbound GET
+        env:
+          PYTHONPATH: src
+        shell: bash
+        run: |
+          python -c "import json; from zs_smart_gate.stage03a_contracts import Horizon; from zs_smart_gate.stage03b3_capture import capture_once; h=Horizon('${{ matrix.horizon }}'); r=capture_once(symbol='BTCUSDT', horizon=h, slot_label='I1' if h is Horizon.INTRADAY else 'S1'); print(json.dumps({'status':r['status'],'reason':r.get('reason'),'attempts':r['telemetry']['physical_http_attempts'],'study_id':r['study_id']},sort_keys=True)); assert r['status']=='NOT_ATTEMPTED' and r['telemetry']['physical_http_attempts']==0, 'Future-slot safety gate blocked or time has advanced; this CI is not LIVE PIT proof'"
