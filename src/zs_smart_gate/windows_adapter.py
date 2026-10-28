@@ -22,8 +22,8 @@ class GitHubEvidence(Protocol):
 
 def live_gate(now, *, pm_accepted=False, timer_verified=False, clock_verified=False,
               evidence_approved=False):
-    if now < CUTOFF:
-        return 'LIVE_GATE_BLOCKED: FROZEN_03B3_ACTIVE'
+    # Original 03B3 was canceled by the owner; its old terminal date is not a gate.
+    # A NEW immutable manifest/evidence approval is still required, never old data.
     for name, passed in [('PM_PINNED_CODE', pm_accepted), ('LOCAL_TIMER', timer_verified),
                          ('INDEPENDENT_EXCHANGE_CLOCK', clock_verified),
                          ('GITHUB_EVIDENCE_POLICY', evidence_approved)]:

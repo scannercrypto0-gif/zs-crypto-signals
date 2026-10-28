@@ -1,5 +1,6 @@
 param([Parameter(Mandatory)][string]$PythonPath)
 $ErrorActionPreference='Stop'
+$PythonPath=Join-Path (Split-Path $PythonPath) 'pythonw.exe'
 $repo=Split-Path $PSScriptRoot
 $runner=Join-Path $repo 'scripts/windows-runner.ps1'
 . (Join-Path $repo 'scripts/windows-storage.ps1')

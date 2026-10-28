@@ -77,7 +77,7 @@ else: raise AssertionError('socket allowed')
 
 class AdapterTests(unittest.TestCase):
     def test_live_gate_never_arms_transport(self):
-        self.assertIn('FROZEN_03B3_ACTIVE',live_gate(CUTOFF-timedelta(seconds=1)))
+        self.assertIn('PM_PINNED_CODE',live_gate(CUTOFF-timedelta(seconds=1)))
         self.assertIn('PM_PINNED_CODE',live_gate(CUTOFF))
         self.assertIn('GITHUB_EVIDENCE_POLICY',live_gate(CUTOFF,pm_accepted=True,timer_verified=True,clock_verified=True))
         self.assertIn('NO_APPROVED_TRANSPORT',live_gate(CUTOFF,pm_accepted=True,timer_verified=True,clock_verified=True,evidence_approved=True))

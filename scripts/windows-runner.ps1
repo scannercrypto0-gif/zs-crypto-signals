@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [ValidateSet('Plan','Install','Enable','Disable','Status','Stop','Uninstall')][string]$Action='Plan',
-    [string]$PythonPath='D:\ZS-SMART-GATE\.venv\Scripts\python.exe',
+    [string]$PythonPath='D:\ZS-SMART-GATE\.venv\Scripts\pythonw.exe',
     [string]$WorkingDirectory='D:\ZS-SMART-GATE\repo',
     [string]$StateDirectory='D:\ZS-SMART-GATE\runtime',
     [string]$LogDirectory='D:\ZS-SMART-GATE\logs',
@@ -28,6 +28,7 @@ if ($Action -in @('Stop','Disable','Uninstall')) {
     return
 }
 $PythonPath=Assert-DPath $PythonPath
+if([IO.Path]::GetFileName($PythonPath) -ne 'pythonw.exe') { throw 'NO_CONSOLE_PYTHONW_REQUIRED' }
 $WorkingDirectory=Assert-DPath $WorkingDirectory
 $StateDirectory=Assert-DPath $StateDirectory
 $LogDirectory=Assert-DPath $LogDirectory
