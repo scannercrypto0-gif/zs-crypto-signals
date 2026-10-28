@@ -19,7 +19,7 @@
 
 ## حالة التنفيذ
 
-**28 أكتوبر 2026:** أنشئ المستودع الخاص على الفرع `main`، وتم رفع ملف الحوكمة الرئيسي v1.2. لا يُعتبر ذلك إثباتًا على بناء Scanner أو تشغيل Telegram أو نجاح اختبارات أو نماذج تنبؤية.
+**28 أكتوبر 2026 — آخر حالة متحققة:** اكتملت المرحلتان **00 و01** من أصل **14 مرحلة (00–13)**. تم دمج FOUNDATION-001 / PR #1 في `main`، مع **51 اختبارًا ناجحًا بكل بيئة من أربع**، ونجاح قراءة Binance Spot LIVE لعينة BTCUSDT واحدة، ونجاح CI بعد الدمج. **المرحلة القادمة: 02 — FOUNDATION-002 (Bounded Market Scanner).** لا يوجد بعد ماسح شامل أو Telegram حقيقي أو نموذج تنبؤي معتمد. اقرأ [خارطة المراحل التفصيلية](./ZS_SMART_GATE_MASTER.md#smart-gate--master-roadmap-v13-خطة-التطوير-الرسمية-14-مرحلة) داخل MASTER.
 
 ## للمحادثات والجهات المنفذة
 
@@ -28,4 +28,4 @@
 3. افصل بين `OWNER_APPROVED` و`PROPOSED` و`VERIFIED`، واعرض أي قرار هندسي جديد على المالك قبل اعتماده.
 4. ابدأ العمل من النطاق الذي أذن به المالك فقط، ولا ترفع مفاتيح Telegram أو API secrets أو بيانات اعتماد إلى المستودع.
 
-**Repository:** [scannercrypto0-gif/zs-crypto-signals](https://github.com/scannercrypto0-gif/zs-crypto-signals) · **Visibility:** Private · **Governance master:** v1.2
+**Repository:** [scannercrypto0-gif/zs-crypto-signals](https://github.com/scannercrypto0-gif/zs-crypto-signals) · **Visibility:** Private · **Governance master:** v1.3 · **Verified phases:** 00, 01 / 14
