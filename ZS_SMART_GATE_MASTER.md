@@ -1,10 +1,10 @@
 # ZS Crypto Signals "GITHUB Version" — SMART GATE
 
-## ملف الحوكمة والمواصفات الرئيسي — MASTER v1.9
+## ملف الحوكمة والمواصفات الرئيسي — MASTER v1.10
 
-**التحديث:** 28 أكتوبر 2026 | **الإصدار:** v1.9 | **الاسم الرسمي:** `ZS_SMART_GATE_MASTER.md`.
+**التحديث:** 28 أكتوبر 2026 | **الإصدار:** v1.10 | **الاسم الرسمي:** `ZS_SMART_GATE_MASTER.md`.
 
-**المصدر:** MASTER v1.9 يحفظ SMART GATE Unified Design v2.1 والـBlueprint التاريخي، ويضيف **سجل أدلة وقرارات إغلاق واحد داخل الملف** لحماية المشروع من تراكم اختبارات غير محسومة. 14 مرحلة 00–13 ثابتة؛ 00–02 VERIFIED في نطاقاتها، 03A/03B1 VERIFIED، 03B2 CODE ACCEPTED ومُدمج مع إغلاق دراسته القديمة رسميًا بنتيجة PARTIAL 8/12 وINSUFFICIENT_EVIDENCE، و**03B3 CODE ACCEPTED/MERGED، OFFLINE VERIFIED، لكن POST-CLOSE LIVE PENDING (0/12 عند التسليم)**. Phase 03 IN PROGRESS، و**لا مراحل بحثية جديدة حتى الإغلاق الزمني الموثق لـ03B3**. لا Scoring V2 إنتاجي أو Signal أو تداول.
+**المصدر:** MASTER v1.10 يحفظ SMART GATE Unified Design v2.1 والـBlueprint التاريخي، ويضيف **سجل أدلة وقرارات إغلاق واحد داخل الملف** لحماية المشروع من تراكم اختبارات غير محسومة. 14 مرحلة 00–13 ثابتة؛ 00–02 VERIFIED في نطاقاتها، 03A/03B1 VERIFIED، 03B2 CODE ACCEPTED ومُدمج مع إغلاق دراسته القديمة رسميًا بنتيجة PARTIAL 8/12 وINSUFFICIENT_EVIDENCE، و**03B3 CODE ACCEPTED/MERGED، OFFLINE VERIFIED، لكن POST-CLOSE LIVE PENDING (0/12 عند التسليم)**. Phase 03 IN PROGRESS، و**لا مراحل بحثية جديدة حتى الإغلاق الزمني الموثق لـ03B3**. لا Scoring V2 إنتاجي أو Signal أو تداول.
 
 **الرابط الرسمي للمستودع:** https://github.com/scannercrypto0-gif/zs-crypto-signals  
 **تنبيه:** المستودع `Private`؛ الوصول إليه يتطلب حساب GitHub مخولًا واتصالًا صالحًا. وجود الرابط في Project Resources لا يمنح أي محادثة صلاحية GitHub تلقائيًا.
@@ -206,11 +206,11 @@
 
 **Not yet scientifically or operationally verified:** 30% close/45% body thresholds، numeric pivot/BOS/CHoCH formulas and penalties، score normalization & DOWN calibration، RVOL Base vs Quote scoring choice، Early/Qualified transition/dedup and EXTENDED period، Entry/SL/TP price algorithm and exits، fees/slippage/precision، scanner cadence cost/accuracy، GitHub storage backend/outage/secret management، Telegram retry/exact-delivery semantics، historical data availability، probability calibration. **SD shall propose/test and receive required approval before hardcoding them as normative trading rules.**
 
-**CURRENT IMPLEMENTED:** 00–02 VERIFIED; 03A contracts-only VERIFIED; 03B1 bounded public Binance MTF VERIFIED. [03B2 PR #5 MERGED](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/5), 161 tests×4, LIVE #40682977963 **FAILURE overall/8 of 12** (4 ADAUSDT current liquidity blocks), historical study immutable and scientifically **CLOSED WITH INSUFFICIENT_EVIDENCE**, not prospective PIT proof. [03B3 PR #6 MERGED](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/6) under explicit owner limited acceptance; merge `38f7fa6fff3bc3fd7520306b7dbb98fff400db65`, [182 tests×4 final-head](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40688359811), [preclose 2/2 NO_HTTP](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40688352323), one-time Binance preselection AAVEUSDT, [main postmerge CI #40693383443 SUCCESS](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40693383443). **03B3 prospective 0/12 at code acceptance / NEW path 30m & 4h postclose LIVE UNPROVEN.** Full Phase 03 IN PROGRESS; no numerical V2, genuine Signal, assigned ID, TradeReady, Telegram, 24/7 or predictive edge proved.
+**CURRENT IMPLEMENTED:** Offline-only Windows Runner pilot engineering merged via PR #9 (215 tests ×4 and main CI success); actual Windows local TaskScheduler runtime `NOT VERIFIED`. 00–02 VERIFIED; 03A contracts-only VERIFIED; 03B1 bounded public Binance MTF VERIFIED. [03B2 PR #5 MERGED](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/5), 161 tests×4, LIVE #40682977963 **FAILURE overall/8 of 12** (4 ADAUSDT current liquidity blocks), historical study immutable and scientifically **CLOSED WITH INSUFFICIENT_EVIDENCE**, not prospective PIT proof. [03B3 PR #6 MERGED](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/6) under explicit owner limited acceptance; merge `38f7fa6fff3bc3fd7520306b7dbb98fff400db65`, [182 tests×4 final-head](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40688359811), [preclose 2/2 NO_HTTP](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40688352323), one-time Binance preselection AAVEUSDT, [main postmerge CI #40693383443 SUCCESS](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40693383443). **03B3 prospective 0/12 at code acceptance / NEW path 30m & 4h postclose LIVE UNPROVEN.** Full Phase 03 IN PROGRESS; no numerical V2, genuine Signal, assigned ID, TradeReady, Telegram, 24/7 or predictive edge proved.
 
 ---
 
-## Active Evidence & Release-Gate Register — v1.9 (single authoritative open/closed ledger)
+## Active Evidence & Release-Gate Register — v1.10 (single authoritative open/closed ledger)
 
 **Governance accepted by owner 2026-10-28:** The register here is the **single source of truth** for unresolved code, operational tests, research evidence and owner-controlled gates. Do not create duplicate review tasks, `.md` files, or new research slices merely because old Actions entries remain red. Preserve every historical CI/LIVE result verbatim; report **superseded test failure**, **actual data-quality fail**, **unperformed LIVE**, and **confirmed implementation regression** as distinct types. Update a row only with a pinned commit, run evidence, and explicit PM ACCEPT / REJECT / BLOCKED. **No empty promises or perpetual pending status.**
 
@@ -222,6 +222,7 @@
 | GATE-04 | Cross-run 96 physical-attempt budget / exactly-once global dispatch (operator + future Stage04) | **OPEN KNOWN LIMITATION:** per-job 8 attempt enforced in code; 12 manual Actions jobs can be dispatched more than once because there is no approved transactional shared ledger. Terminal auditor detects duplicate records after fact; does not prevent duplicate outbound GETs. | Operator triggers each fixed slot at most once, logs unique run URLs. Global transactional exactly-once not claimed. Structural solution only after explicit owner authorization for durable Stage04 event store. | **ACCEPTED LIMITATION; NO CLAIM OF GLOBAL GUARANTEE** |
 | GATE-05 | PIT artifact retention / clock and source uncertainty (PM) | **OPEN KNOWN LIMITATION:** original wire bytes, publisher time, tight UTC uncertainty unavailable; Actions JSON artifacts retained **7 days**, not permanent independent archive. | Record run URL, checksum and honest missing fields for each slot promptly; if artifacts expire, mark evidence unavailable. No new permanent backend or invented PIT source time without owner's Stage04 decision. | **LIMITED EVIDENCE; OWNER-GATED STORAGE** |
 | GATE-06 | Numeric scoring, qualification, structure, Trade Ready, Telegram/trading (owner + PM) | **DEFERRED / NOT IMPLEMENTED or NOT APPROVED:** green integration tests do not prove trading viability. V2 numerical thresholds/entry levels/prediction remain gated. | Owner approves specific formulas after genuinely independent prospective/OOS evidence, outcomes, costs; otherwise keep `SCORE_UNAVAILABLE`, `RESEARCH_ONLY`, null issued `signal_id`. | **NOT AUTHORIZED** |
+| GATE-07 | Windows owner-PC runtime pilot | **CODE ACCEPTED ONLY:** [PR #9 merged](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/9), SHA `f6e57b164150c13e4d198baf09f67ab15cefe028`, merge `005f08dacf26ee5f8ae13391ada4f479e870aef4`; [CI 215 tests×4](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40730659031), [postmerge main CI #40732887106](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40732887106) PASS. Owner-PC offline unit tests/CLI Dry-run reported zero HTTP; **no actual scheduled task installed/enabled or scheduled execution**, W32Time STOPPED, TaskScheduler Operational history disabled. | Keep [Issue #8](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/8) OPEN for trusted clock + history/TaskScheduler proof after explicit owner OS-configuration consent; install disabled no-HTTP task; record **two actual local-PC scheduled simulated timing/restart cycles** and disable/uninstall. No live or permanent local store. | **ACCEPT ENGINEERING / WINDOWS_LOCAL_NOT_VERIFIED** |
 
 **Frozen 03B3 execution calendar — 2026-10-28 (one manual action per asset per UTC close, maximum 3 per close):**
 
@@ -232,13 +233,13 @@
 | `S1` / 4h | 16:00 | 19:00 | Same 3, 16:00–16:10 UTC | No historical PIT backfill |
 | `S2` / 4h | 20:00 | 23:00 | Same 3, 20:00–20:10 UTC | End study at 2026-10-29 13:00 UTC |
 
-**Operator runbook:** Open [STAGE-03B3 manual capture](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/workflows/stage03b3-capture.yml), choose **Run workflow**, branch `main`, choose exactly one listed `symbol`, matching `horizon` and `slot`, and submit only within the real parent-close 600-second grace. Record each GitHub Actions run URL; do **not** rerun a slot even if it fails, and never run all slot combinations early. Each manual job's queue/runner latency could exceed grace; count it as missed/late if so. **An operator or separately authorized scheduler is required:** merging code alone does not automatically fire this workflow. **No continuous monitoring or recurring job has been enabled.**
+**Updated runbook (2026-10-28):** Original Stage03B3 source/manifest remains immutable; [PR #7](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/7) merged the **primary time-limited four-cron automatic GitHub Actions workflow** `.github/workflows/stage03b3-auto.yml` (14:01,14:31,16:01,20:01 UTC on October 28 2026). The older `stage03b3-capture.yml` is manual emergency fallback only: **do not manually dispatch duplicates or run from Windows**. GitHub schedules may be delayed/dropped, and workflow SUCCESS is **not** proof of three genuine `OBSERVED_PIT` records; inspect per-symbol sealed records and 600-second postclose receipt. No backfill or new frozen slot. Study terminal audit at 2026-10-29 13:00 UTC must record all 12 statuses and remove the temporary cron thereafter. The Windows pilot PR #9 is **offline dry-run only** and does not replace this original study collector.
 
 **Stop rule:** At 12 accounted planned slots or 2026-10-29 13:00 UTC, whichever comes first, run immutable terminal auditor on available JSON evidence (only once, no source re-fetch), record observed/ineligible/failed/late/not-attempted and exact budget. PM issues independent **ACCEPT engineering vs BLOCKED/PARTIAL evidence**; no 03B4 or new research campaign automatically. Full Phase 03 remains `IN PROGRESS`.
 
 ---
 
-## SMART GATE — MASTER ROADMAP v1.9 (خطة التطوير الرسمية: 14 مرحلة)
+## SMART GATE — MASTER ROADMAP v1.10 (خطة التطوير الرسمية: 14 مرحلة)
 
 **اعتماد المالك:** خارطة 14 مرحلة + التصميم التشغيلي الموحد v2.1 أعلاه معتمدان كهدف تطوير. حالة التنفيذ أدناه أحدث من أوصاف v1.2 التاريخية؛ نص الـTechnical Blueprint التاريخي محفوظ. الحدود/المعادلات/طرق التنفيذ غير المختبرة لا تُفهم كقواعد تشغيل جاهزة.
 
@@ -2289,6 +2290,11 @@ GitHub هو مصدر الحقيقة لكود هذا المشروع.
 ## بداية الملف: 10_CHANGELOG.md
 
 # سجل تغييرات حزمة الحوكمة
+
+## 1.10 — 2026-10-28 (WINDOWS RUNNER CODE MERGED / LOCAL SCHEDULER NOT VERIFIED)
+
+- [PR #9](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/9) accepted by independent [PM review](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/9#issuecomment-6475518562) as OFFLINE/DISABLED code only; head `f6e57b164150c13e4d198baf09f67ab15cefe028`, merge `005f08dacf26ee5f8ae13391ada4f479e870aef4`, [215/215 tests ×4](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40730659031) and [main CI #40732887106](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40732887106) SUCCESS. Local Windows code test/one-shot dry-run is NOT a real TaskScheduler test. `WINDOWS_LOCAL_NOT_VERIFIED` until Issue #8 closure, with clock sync stopped and task history disabled.
+- Updated the single evidence register v1.10 (GATE-07) and corrected the outdated 'manual-only 03B3' instruction: PR #7 auto cron remains sole intended source collector for original frozen study. No new Windows LIVE, Phase03 promotion, trading, or durable local backend.
 
 ## 1.9 — 2026-10-28 (03B3 CODE MERGED / UNVERIFIED LIVE; CENTRAL GATE REGISTER)
 
