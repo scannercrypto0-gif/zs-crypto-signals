@@ -179,6 +179,16 @@ class MtfContractsTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "UNSUPPORTED_CONTEXT"):
             available_closed_context([], timeframe="8h", decision_at=d)
 
+    def test_weekly_monday_close_and_availability(self):
+        monday = datetime(2026, 10, 26, 0, 0, tzinfo=UTC)
+        weekly = window("1w", monday, minutes=7*24*60)
+        self.assertEqual(weekly.errors_at(weekly.close_at+timedelta(seconds=2)), ())
+        self.assertIsNone(available_closed_context(
+            [weekly], timeframe="1w", decision_at=monday+timedelta(days=3)))
+        self.assertEqual(available_closed_context(
+            [weekly], timeframe="1w",
+            decision_at=weekly.close_at+timedelta(seconds=2)), weekly)
+
     def test_weekly_context_rejects_incomplete_future(self):
         d = T0 + timedelta(days=1)
         future = window("1w", T0, minutes=7*24*60)
@@ -245,6 +255,16 @@ class SchemaAndIdentityTests(unittest.TestCase):
         self.assertEqual(blob["candidate"]["status"], "ELIGIBLE")
         self.assertFalse(blob["delivery_authorized"])
         self.assertIsNone(blob["identity"]["signal_id"])
+
+    def test_e2e_identity_must_match_decision_window_not_future_close(self):
+        p, cs, d = aligned("30m", "5m", 6)
+        candidate = base_candidate(d)
+        rec = reconcile(p, cs, candidate.decision_at, tolerance=EXACT)
+        with self.assertRaisesRegex(ValueError, "PIT_CANDIDATE_OR_WINDOW"):
+            bind_research_candidate(
+                candidate=candidate,
+                identity=self.key(decision_candle_close_at=T0+timedelta(minutes=60)),
+                reconciliation=rec, candidate_id="wrong-window")
 
     def test_e2e_future_child_fails_without_signal(self):
         p, cs, d = aligned("30m", "5m", 6)
@@ -321,9 +341,9 @@ class SchemaAndIdentityTests(unittest.TestCase):
         self.assertEqual(s["version"], "V1_PARTIAL_RESEARCH_ONLY")
         self.assertEqual(s["status"], "SCORE_UNAVAILABLE")
         self.assertIsNone(s["total"])
-        self.assertEqual(s["components"]["price_momentum_35"], "0")
-        self.assertEqual(s["components"]["volume_expansion_25"], "0")
-        self.assertEqual(s["components"]["liquidity_quality_10"], "10")
+        self.assertEqual(Decimal(s["components"]["price_momentum_35"]), Decimal("0"))
+        self.assertEqual(Decimal(s["components"]["volume_expansion_25"]), Decimal("0"))
+        self.assertEqual(Decimal(s["components"]["liquidity_quality_10"]), Decimal("10"))
 
     def test_trade_plan_null_price_levels_and_down_spot(self):
         for direction, action in ((Direction.UP, "BUY_SPOT"),

@@ -189,7 +189,11 @@ class ResearchEvent:
             raise ValueError("RESEARCH_EVENT_REASONS_AND_CANDIDATE_ID_REQUIRED")
         if (self.candidate.symbol != self.identity.asset_id.removeprefix("BINANCE:SPOT:")
                 or self.candidate.decision_at != self.decision_at
-                or self.reconciliation.decision_at != self.decision_at):
+                or self.reconciliation.decision_at != self.decision_at
+                or self.identity.decision_candle_close_at != self.reconciliation.parent_close_at
+                or self.identity.decision_candle_close_at > self.decision_at
+                or self.reconciliation.parent_timeframe != (
+                    "30m" if self.identity.horizon == Horizon.INTRADAY else "4h")):
             raise ValueError("PIT_CANDIDATE_OR_WINDOW_IDENTITY_MISMATCH")
         if (self.identity.direction != self.score.direction or
                 self.identity.horizon != self.score.horizon):

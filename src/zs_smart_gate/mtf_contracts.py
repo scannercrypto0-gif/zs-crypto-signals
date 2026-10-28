@@ -69,7 +69,9 @@ class CandleWindow:
         if self.close_at - self.open_at != duration or self.open_at >= self.close_at:
             errors.append("INVALID_DURATION")
         seconds = int(self.open_at.timestamp())
-        if self.open_at.microsecond or seconds % int(duration.total_seconds()):
+        # Binance weekly UTC bars start Monday 00:00, unlike Unix epoch Thursday.
+        reference = 4 * 24 * 3600 if self.timeframe == "1w" else 0
+        if self.open_at.microsecond or (seconds - reference) % int(duration.total_seconds()):
             errors.append("INVALID_UTC_ALIGNMENT")
         if self.high < self.low or self.low <= 0 or not (
             self.low <= self.open <= self.high and self.low <= self.close <= self.high
@@ -111,12 +113,16 @@ class Reconciliation:
     reason_codes: tuple[str, ...]
     child_count: int
     tolerance_policy_id: str
+    parent_open_at: datetime
+    parent_close_at: datetime
 
     def as_dict(self) -> dict:
         return {"parent_timeframe": self.parent_timeframe,
                 "decision_at": self.decision_at.isoformat(),
                 "status": self.status, "reason_codes": list(self.reason_codes),
                 "child_count": self.child_count,
+                "parent_open_at": self.parent_open_at.isoformat(),
+                "parent_close_at": self.parent_close_at.isoformat(),
                 "tolerance_policy_id": self.tolerance_policy_id}
 
 
@@ -164,7 +170,8 @@ def reconcile(parent: CandleWindow, children: Sequence[CandleWindow],
                 reasons.append(name.upper() + "_AGGREGATION_MISMATCH")
     return Reconciliation(
         parent.timeframe, decision_at, "PASS" if not reasons else "INVALID",
-        tuple(dict.fromkeys(reasons)), len(children), tolerance.policy_id)
+        tuple(dict.fromkeys(reasons)), len(children), tolerance.policy_id,
+        parent.open_at, parent.close_at)
 
 
 def available_closed_context(candles: Sequence[CandleWindow], *,
