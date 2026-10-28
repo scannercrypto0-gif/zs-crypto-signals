@@ -236,7 +236,7 @@ def score_v1_partial(price_change_pct: Decimal | None, observed_rvol: Decimal | 
         spread = decimal(spread)
         if spread < 0:
             raise ValueError("INVALID_SPREAD")
-        components["liquidity_quality_10"] = str(Decimal("10") * Decimal("20") / (Decimal("20") + spread)
+        components["liquidity_quality_10"] = str(Decimal("10") * Decimal("20") / (Decimal("20") + spread))
     return {"total": None, "status": "SCORE_UNAVAILABLE", "version": "V1_PARTIAL_RESEARCH_ONLY",
             "components": components}
 
