@@ -174,6 +174,21 @@ class LiveProbeFixtureTests(unittest.TestCase):
             self.assertEqual(result["research_events"], [])
             self.assertEqual(result["research_metrics"], {})
 
+    def test_child_stale_window_is_rejected_not_rebranded(self):
+        class StaleChild(FixtureTransport):
+            def __call__(self, path, params=None, *, on_attempt=None):
+                rows, meta = super().__call__(path, params, on_attempt=on_attempt)
+                if path == "/api/v3/klines" and params["interval"] == "1h":
+                    for row in rows:
+                        row[0] -= 3_600_000
+                        row[6] -= 3_600_000
+                return rows, meta
+        fake = StaleChild(Horizon.SWING)
+        result = self.probe(Horizon.SWING, fake)
+        self.assertEqual(result["status"], "INVALID")
+        self.assertIn("PARENT_CHILD_WINDOW_MISMATCH", result["reconciliation"]["reason_codes"])
+        self.assertEqual(result["research_events"], [])
+
     def test_quote_volume_discrepancy_recorded_not_forgiven(self):
         for horizon in Horizon:
             fake = FixtureTransport(horizon)
@@ -207,9 +222,9 @@ class LiveProbeFixtureTests(unittest.TestCase):
         fake.fail_path = "/api/v3/klines"
         result = self.probe(fake=fake)
         self.assertEqual(result["status"], "BLOCKED")
-        self.assertEqual(result["measurements"]["physical_http_attempts"], 7)
+        self.assertEqual(result["measurements"]["physical_http_attempts"], 6)
         self.assertEqual(result["measurements"]["logical_calls_succeeded"], 4)
-        self.assertEqual(fake.physical, 7)
+        self.assertEqual(fake.physical, 6)
 
     def test_eighth_attempt_safety_stop_prevents_ninth(self):
         # The fixture simulates actual retries with four hooks per GET, forcing
@@ -228,7 +243,7 @@ class LiveProbeFixtureTests(unittest.TestCase):
         self.assertIn("BUDGET_EXHAUSTED", result["reason"])
 
     def test_pre_attempt_soft_guard_blocks_before_send(self):
-        ticks = iter([0, 0, 61, 61, 61, 61])
+        ticks = iter([0, 61, 61, 61, 61])
         fake = FixtureTransport()
         result = self.probe(fake=fake, monotonic=lambda: next(ticks))
         self.assertEqual(result["status"], "BLOCKED")

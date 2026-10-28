@@ -200,7 +200,9 @@ def probe_once(*, horizon: Horizon, symbol: str = "BTCUSDT",
         evidence = reconcile(parent, children, decision, tolerance=EXACT)
         core_candles = to_candles(core_rows, core_received)
         candidate = build_candidate(market, core_candles, decision)
-        if candidate.status != "ELIGIBLE":
+        # Invalid independent parent/child evidence still needs an honest
+        # discrepancy report. It never becomes a candidate event/metric.
+        if candidate.status != "ELIGIBLE" and evidence.status == "PASS":
             raise LiveFailure("CORE_CANDIDATE_" + candidate.status + "_" +
                               ",".join(candidate.eligibility_reasons + candidate.candle_errors))
         if core_candles[-1].close_at != parent.close_at:
