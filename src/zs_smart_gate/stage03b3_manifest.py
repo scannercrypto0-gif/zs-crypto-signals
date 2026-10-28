@@ -34,8 +34,10 @@ class Slot:
         if not isinstance(self.horizon,Horizon):
             raise ValueError("INVALID_SLOT_HORIZON")
         object.__setattr__(self,"close_at",utc(self.close_at))
-        if not self.label or self.close_at.second or self.close_at.microsecond:
-            raise ValueError("INVALID_SLOT_CLOSE")
+        if not self.label:
+            raise ValueError("INVALID_SLOT_LABEL")
+        if self.close_at.second or self.close_at.microsecond:
+            raise ValueError("INVALID_UTC_CLOSE_ALIGNMENT")
         step=1800 if self.horizon is Horizon.INTRADAY else 14400
         if int(self.close_at.timestamp())%step:
             raise ValueError("INVALID_UTC_CLOSE_ALIGNMENT")

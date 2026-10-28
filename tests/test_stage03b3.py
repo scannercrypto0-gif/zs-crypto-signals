@@ -194,7 +194,8 @@ class ProspectiveCaptureTests(unittest.TestCase):
 
     def test_future_not_attempted_no_network(self):
         f=Fake()
-        f.now_ms=int(f.slot.close_at.timestamp()*1000)-100
+        # The supplied local_clock() adds 200ms; remain strictly before the close.
+        f.now_ms=int(f.slot.close_at.timestamp()*1000)-500
         data=self.run_sample(fake=f)
         self.assertEqual(data["status"],"NOT_ATTEMPTED")
         self.assertEqual(data["telemetry"]["physical_http_attempts"],0)
