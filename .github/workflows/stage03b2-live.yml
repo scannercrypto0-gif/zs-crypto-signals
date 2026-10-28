@@ -1,0 +1,61 @@
+name: STAGE-03B2 frozen multiasset Binance research LIVE (opt-in)
+on:
+  workflow_dispatch:
+  push:
+    branches: [stage-03b2-multiasset-pit-research]
+permissions:
+  contents: read
+jobs:
+  historical-public-retrieval:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[03b2-live]')
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        os: [ubuntu-latest]
+        symbol: [BTCUSDT, ETHUSDT, ADAUSDT]
+        horizon: [INTRADAY, SWING]
+        partition: [DEVELOPMENT, HOLDOUT]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Exactly one frozen Spot symbol / horizon / split (max 8 HTTP attempts)
+        env:
+          PYTHONPATH: src
+        shell: bash
+        run: |
+          mkdir -p evidence
+          python -m zs_smart_gate.stage03b2_live --live --symbol ${{ matrix.symbol }} --horizon ${{ matrix.horizon }} --partition ${{ matrix.partition }} > evidence/${{ matrix.symbol }}_${{ matrix.horizon }}_${{ matrix.partition }}.json
+          python -c "import json,glob; x=json.load(open(glob.glob('evidence/*.json')[0])); print(json.dumps({'study_id':x['study_id'],'symbol':x['symbol'],'horizon':x['horizon'],'partition':x['partition'],'status':x['status'],'source_sha256':x.get('source_payload_sha256'),'parent_close':x['parent_close_at'],'coverage':x.get('coverage'),'deltas':x.get('signed_parent_minus_children_deltas'),'measurements':x.get('measurements'),'reason':x.get('reason')},sort_keys=True))"
+      - name: Retain transient GitHub Actions evidence (not canonical permanent storage)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: 03b2-${{ matrix.symbol }}-${{ matrix.horizon }}-${{ matrix.partition }}
+          path: evidence/*.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  frozen-coverage-summary:
+    if: always() && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[03b2-live]'))
+    needs: [historical-public-retrieval]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 03b2-*
+          path: collected
+          merge-multiple: true
+      - name: Fixed, unoptimized development vs later holdout coverage and distribution
+        env:
+          PYTHONPATH: src
+        run: python -m zs_smart_gate.stage03b2_summary --directory collected
