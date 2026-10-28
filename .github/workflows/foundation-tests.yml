@@ -6,6 +6,7 @@ on:
     paths:
       - 'src/**'
       - 'tests/**'
+      - 'scripts/**'
       - 'README.md'
       - 'ZS_SMART_GATE_MASTER.md'
       - 'pyproject.toml'
@@ -28,3 +29,9 @@ jobs:
         env:
           PYTHONPATH: src
         run: python -m unittest discover -s tests -v
+      - name: Validate offline Windows TaskScheduler definition and lifecycle
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          python -m venv .runner-test-venv
+          ./tests/windows-runner.Tests.ps1 -PythonPath (Resolve-Path .runner-test-venv/Scripts/python.exe).Path
