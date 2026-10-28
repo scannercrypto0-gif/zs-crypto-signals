@@ -88,6 +88,11 @@ class StudyManifest:
             raise ValueError("INVALID_FROZEN_WINDOW_LIST")
         if len(set(w.close_at for w in self.windows)) != len(self.windows):
             raise ValueError("DUPLICATE_STUDY_WINDOW")
+        # Commit order is a protocol input: a later holdout must never be
+        # presented before development, even if the set of dates is unchanged.
+        if tuple(w.close_at for w in self.windows) != tuple(
+                sorted(w.close_at for w in self.windows)):
+            raise ValueError("SPLIT_LEAKAGE_NONCHRONOLOGICAL_MANIFEST_ORDER")
         dev = [w.close_at for w in self.windows if w.partition is Partition.DEVELOPMENT]
         hold = [w.close_at for w in self.windows if w.partition is Partition.HOLDOUT]
         if not dev or not hold or max(dev) >= min(hold):
