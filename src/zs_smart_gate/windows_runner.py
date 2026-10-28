@@ -249,18 +249,19 @@ def tick(scope, directory, clock=lambda: datetime.now(UTC), monotonic=time.monot
                 continue
             receipts["claims"][event.id] = "CLAIMED"
             save_receipts(path, receipts)
-            if transport is None:
-                row["reason"] = "SIMULATED_ADMISSION_ONLY"
-                continue
             if result["attempts"] >= scope.max_attempts:
                 row.update(status=LATE, reason="ATTEMPT_BUDGET")
                 continue
             # Disk claim may be slow. Recheck immediately before dispatch.
             dispatch, elapsed = utc(clock()), monotonic() - mono_start
+            row["decision_utc"] = dispatch.isoformat()
             if (admission(event, scope, dispatch, proof) != ELIGIBLE
                     or elapsed >= scope.budget_seconds or elapsed < 0
                     or abs((dispatch - start).total_seconds() - elapsed) > 1):
                 row.update(status=LATE, reason="DISPATCH_DEADLINE")
+                continue
+            if transport is None:
+                row["reason"] = "SIMULATED_ADMISSION_ONLY"
                 continue
             result["attempts"] += 1
             try:

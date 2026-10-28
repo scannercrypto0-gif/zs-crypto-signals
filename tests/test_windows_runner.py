@@ -128,6 +128,13 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual(result['attempts'],0)
         self.assertEqual(result['events'][0]['reason'],'DISPATCH_DEADLINE')
 
+    def test_admission_only_decision_deadline(self):
+        times=iter([self.now,self.now,self.now+timedelta(seconds=6)])
+        monos=iter([0,0,6])
+        result=self.run_tick(clock=lambda:next(times),monotonic=lambda:next(monos))
+        self.assertEqual(result['events'][0]['status'],LATE)
+        self.assertEqual(result['events'][0]['decision_utc'],(self.now+timedelta(seconds=6)).isoformat())
+
     def test_process_lock_and_crash_release(self):
         code='from pathlib import Path; from zs_smart_gate.windows_runner import process_lock; import sys;\nwith process_lock(Path(sys.argv[1])) as acquired: print(acquired, flush=True)'
         with process_lock(self.directory) as acquired:
