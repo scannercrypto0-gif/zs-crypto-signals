@@ -53,9 +53,14 @@ def get_json(path: str, params: dict[str, str] | None = None) -> tuple[object, d
             req = Request(url, headers={"Accept": "application/json", "User-Agent": "ZS-SMART-GATE-research-smoke/1"})
             with urlopen(req, timeout=HTTP_TIMEOUT_S) as response:
                 status = response.status
-                body = response.read(2_000_001)
+                # Full public universe payloads are larger than single-symbol smoke
+                # responses; keep a hard finite per-endpoint response-size ceiling.
+                max_bytes = (8_000_000 if not params and path in (
+                    "/api/v3/exchangeInfo", "/api/v3/ticker/24hr",
+                    "/api/v3/ticker/bookTicker") else 2_000_000)
+                body = response.read(max_bytes + 1)
                 received_ms = time.time() * 1000
-                if len(body) > 2_000_000:
+                if len(body) > max_bytes:
                     raise LiveFailure("OVERSIZED_HTTP_RESPONSE")
                 if status != 200:
                     raise LiveFailure("HTTP_STATUS_" + str(status))
