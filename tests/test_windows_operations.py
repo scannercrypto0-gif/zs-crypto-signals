@@ -2,6 +2,8 @@ import json
 from datetime import timedelta
 from pathlib import Path
 import tempfile
+import subprocess
+import sys
 import unittest
 from unittest.mock import patch
 
@@ -15,6 +17,21 @@ from test_stage03b1 import FixtureTransport, ANCHOR, NOW, Horizon
 
 
 class StorageTests(unittest.TestCase):
+    def test_scheduled_entry_denies_socket_creation(self):
+        entry=Path(__file__).resolve().parents[1]/'scripts/windows-tick.py'
+        code="""import runpy,sys,socket
+sys.argv=[sys.argv[1],'--config','does-not-exist','--config-sha','x','--state-dir','x','--log-dir','x','--dry-run','--once']
+try: runpy.run_path(sys.argv[0],run_name='__main__')
+except SystemExit: pass
+try: socket.socket()
+except RuntimeError as exc:
+    assert str(exc)=='SIMULATION_NETWORK_FORBIDDEN'
+    print('NETWORK_DENIED')
+else: raise AssertionError('socket allowed')
+"""
+        result=subprocess.run([sys.executable,'-B','-c',code,str(entry)],capture_output=True,text=True,check=True)
+        self.assertIn('NETWORK_DENIED',result.stdout)
+
     def test_d_and_canonical_target(self):
         self.assertEqual(str(d_path('D:/safe',resolver=lambda p:p)),str(Path('D:/safe')))
         for value in ('C:/bad','relative','D:relative','//host/share','\\\\?\\D:\\raw'):

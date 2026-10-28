@@ -35,11 +35,14 @@ if ($Action -eq 'Status') {
     $info=if($existing){ Get-ScheduledTaskInfo -InputObject $existing }
     $record=Join-Path $LogDirectory 'status.json'
     $last=if((Test-Path -LiteralPath $record) -and (Get-Item -LiteralPath $record).Length -le 65536){ Get-Content -LiteralPath $record -Raw | ConvertFrom-Json }
+    $clockFile=Join-Path $StateDirectory 'clock-proof.json'
+    $clockRecord=if((Test-Path -LiteralPath $clockFile) -and (Get-Item -LiteralPath $clockFile).Length -le 65536){ Get-Content -LiteralPath $clockFile -Raw | ConvertFrom-Json }
     [ordered]@{utc=[DateTime]::UtcNow.ToString('o'); taskState=if($existing){$existing.State.ToString()}else{'NOT_INSTALLED'};
         lastTaskResult=if($info){$info.LastTaskResult}; lastTickUtc=if($info){$info.LastRunTime.ToUniversalTime().ToString('o')};
         nextTickUtc=if($info){$info.NextRunTime.ToUniversalTime().ToString('o')};
         w32TimeStatus=(Get-Service W32Time).Status.ToString(); timeSource=(& w32tm /query /source 2>&1 | Out-String).Trim();
         timeDetails=(& w32tm /query /status /verbose 2>&1 | Out-String).Trim();
+        recordedOsClockProof=$clockRecord; recordedClockProofAgeSeconds=if($clockRecord){([DateTimeOffset]::UtcNow-([DateTimeOffset]$clockRecord.measuredUtc)).TotalSeconds};
         latestDiagnostic=$last; livePermission='OFF'; evidence='DURABLE_GITHUB_EVIDENCE_PENDING';
         production='PRODUCTION_SIGNALS_NOT_AUTHORIZED'; scope=@(); stability='NO_24_7_CLAIM'} | ConvertTo-Json -Depth 12
     return

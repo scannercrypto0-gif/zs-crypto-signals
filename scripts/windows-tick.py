@@ -20,6 +20,11 @@ parser.add_argument('--log-dir', required=True)
 parser.add_argument('--dry-run', required=True, action='store_true')
 parser.add_argument('--once', required=True, action='store_true')
 args = parser.parse_args()
+def deny_network(event, arguments):
+    if event.startswith('socket.'):
+        raise RuntimeError('SIMULATION_NETWORK_FORBIDDEN')
+
+sys.addaudithook(deny_network)
 try:
     # Verify the pinned package bytes before importing any project code.
     import hashlib
