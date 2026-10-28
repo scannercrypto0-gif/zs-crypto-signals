@@ -55,13 +55,14 @@ def get_json(path: str, params: dict[str, str] | None = None) -> tuple[object, d
                 status = response.status
                 # Full public universe payloads are larger than single-symbol smoke
                 # responses; keep a hard finite per-endpoint response-size ceiling.
-                max_bytes = (8_000_000 if not params and path in (
+                max_bytes = (24_000_000 if path in (
                     "/api/v3/exchangeInfo", "/api/v3/ticker/24hr",
-                    "/api/v3/ticker/bookTicker") else 2_000_000)
+                    "/api/v3/ticker/bookTicker") and (not params or params == {"type": "MINI"})
+                    else 2_000_000)
                 body = response.read(max_bytes + 1)
                 received_ms = time.time() * 1000
                 if len(body) > max_bytes:
-                    raise LiveFailure("OVERSIZED_HTTP_RESPONSE")
+                    raise LiveFailure("OVERSIZED_HTTP_RESPONSE_" + path)
                 if status != 200:
                     raise LiveFailure("HTTP_STATUS_" + str(status))
                 try:
