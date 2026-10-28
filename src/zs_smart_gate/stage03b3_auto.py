@@ -50,7 +50,7 @@ def resolve_schedule(cron: str) -> tuple[str, Horizon]:
 
 
 def _rejected(symbol: str, horizon: Horizon, label: str, state: str,
-              reason: str) -> dict:
+              reason: str, *, attempted_paths: tuple[str, ...] = ()) -> dict:
     """A sealed honest missing/late study record; never impersonates a GET."""
     slot = MANIFEST.slot(symbol, horizon, label)
     record = {
@@ -69,11 +69,11 @@ def _rejected(symbol: str, horizon: Horizon, label: str, state: str,
         "forward_outcome": None, "historical_eligibility": None,
         "status": state, "reason": reason,
         "telemetry": {
-            "physical_http_attempts": 0,
+            "physical_http_attempts": len(attempted_paths),
             "http_attempt_budget": MANIFEST.physical_attempts_per_slot,
             "total_study_slot_attempt_ceiling": MANIFEST.total_slot_attempt_ceiling,
             "logical_calls_succeeded": 0,
-            "attempt_paths": [], "http": [],
+            "attempt_paths": list(attempted_paths), "http": [],
             "true_clock_uncertainty_ms": None,
         },
     }
@@ -112,16 +112,28 @@ def run_batch(*, cron: str, now: datetime | None = None,
         if state is not None:
             record = _rejected(symbol, horizon, label, state, reason)
         else:
-            # A per-symbol unexpected programming/runtime failure must not erase
-            # other assets' captured or explicit failure records.
+            # Count accepted outbound attempts independently of capture's own
+            # telemetry; if transport unexpectedly throws, do not falsify 0 GET.
+            physical_paths = []
+
+            def tracked_getter(path, params=None, *, on_attempt):
+                def counted(path_arg):
+                    on_attempt(path_arg)  # may reject BEFORE outbound transport
+                    physical_paths.append(path_arg)
+                return getter(path, params, on_attempt=counted)
+
             try:
                 record = capture_once(
                     symbol=symbol, horizon=horizon, slot_label=label,
-                    getter=getter, local_ms=clock_ms, monotonic=monotonic,
+                    getter=tracked_getter, local_ms=clock_ms, monotonic=monotonic,
                 )
+                if record["telemetry"]["physical_http_attempts"] != len(physical_paths):
+                    raise ValueError("PHYSICAL_ATTEMPT_ACCOUNTING_MISMATCH")
             except Exception as exc:
-                record = _rejected(symbol, horizon, label, "FAILED",
-                                   "UNEXPECTED_CAPTURE_ERROR_" + type(exc).__name__)
+                record = _rejected(
+                    symbol, horizon, label, "FAILED",
+                    "UNEXPECTED_CAPTURE_ERROR_" + type(exc).__name__,
+                    attempted_paths=tuple(physical_paths))
         rows.append(record)
 
     if tuple(r["symbol"] for r in rows) != MANIFEST.assets or len(rows) != 3:
