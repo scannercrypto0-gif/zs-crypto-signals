@@ -4,7 +4,7 @@
 
 ## اقرأ المرجع الرسمي أولًا
 
-**[ZS_SMART_GATE_MASTER.md — MASTER v1.4](./ZS_SMART_GATE_MASTER.md)** هو مصدر الحوكمة والمواصفات المُجمعة وقرارات المالك. يتضمن في بدايته **SMART GATE — UNIFIED DESIGN v2.1**، ثم خارطة **14 مرحلة (00–13)**، وإصدارات Score، وعقود Telegram/Analytical Data/Trade Plans، وسجل القرارات، والـTechnical Blueprint التاريخي محفوظًا. عند تعارض مقترح قديم مع قسم التصميم الموحد المعتمد، تُطبَّق قواعد الأسبقية داخل MASTER.
+**[ZS_SMART_GATE_MASTER.md — MASTER v1.5](./ZS_SMART_GATE_MASTER.md)** هو مصدر الحوكمة والمواصفات المُجمعة وقرارات المالك. يتضمن في بدايته **SMART GATE — UNIFIED DESIGN v2.1**، ثم خارطة **14 مرحلة (00–13)**، وإصدارات Score، وعقود Telegram/Analytical Data/Trade Plans، وسجل القرارات، والـTechnical Blueprint التاريخي محفوظًا. عند تعارض مقترح قديم مع قسم التصميم الموحد المعتمد، تُطبَّق قواعد الأسبقية داخل MASTER.
 
 **حالة الاعتماد:** المالك **وافق على تصميم SMART GATE v2.1 كهدف للمشروع** في 28 أكتوبر 2026؛ الحدود العددية غير المُختبرة ومعادلات BOS/CHoCH/Score النهائية، وسعر الخطة ونظام تخزين GitHub العملي تبقى **قيد التصميم والاختبار/الموافقة الفنية**؛ لا يصح وصف الميزات المخطط لها بأنها منفذة أو مجربة.
 
@@ -45,9 +45,9 @@
 
 ## حالة الإنجاز — 28 أكتوبر 2026
 
-**المراحل: 14**؛ **00 و01 VERIFIED / MERGED** بعد PR #1، باختبارات Offline **51/51 لكل بيئة من 4** وBinance Spot LIVE BTCUSDT بعينة واحدة، و[CI بعد الدمج](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40658793880) ناجح. **02 — FOUNDATION-002 NEXT، [Draft PR #2](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/2) غير مدمج**. بقية 03–13 PLANNED، ولا نظام Telegram LIVE أو V2 Score أو Trade Plans أو Scanner 24/7 مُثبت بعد.
+**المراحل: 14؛ 00 و01 و02 VERIFIED / MERGED.** PR #1 نواة PIT نجحت في 51/51 اختبارًا ×4 وBinance LIVE لعينة BTCUSDT. **[PR #2 — FOUNDATION-002 MERGED](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/2)** بالـCommit `babaab27fdab9172c7e2e425c54bb74f193269ac`؛ **[81/81 اختبار ×4 بيئات](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40670260147)**، و**[3/3 Binance LIVE عيّنات Ubuntu/Windows](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40670254662)**، و**[main post-merge CI 4/4 SUCCESS](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40671318148)**. *حدود الإنجاز:* جرد 770 زوج Spot USDT، منها 43 مؤهلًا في لحظة العينة، لكن جرى جلب شموع **2 أو 4 عملات فقط لكل دورة**؛ لا مسح كامل مستمر للسوق أو Telegram أو Scoring V2. **03 — NEXT / DECISION-GATED**، وباقي المراحل 03–13 غير متحققة بعد.
 
-**تحديث خارطة التنفيذ داخل MASTER:** 03 هوية الإشارة وتأهيل 30m/4h وV2/Plan contracts؛ 04 سجلات GitHub؛ **05A/05B/05C** Primary/Analytics JSON/Interactive؛ **06A/06B** Outcomes/Telegram Export→SQL؛ 07 Intraday pre-move؛ 08 Swing Structure؛ 09 Volume Profile/Trade levels؛ 10–12 سياقات ونماذج؛ 13 تشغيل واسترداد كامل. العدد الإجمالي لا يتغير إلا بقرار جديد؛ تقسيمات A/B/C شرائح ضمن المراحل.
+**المرحلة 03 تُفتتح بـ03A contracts-only،** لسلامة 30m↔6×5m و4h↔4×1h وتوقيت PIT والهوية وحالات Score/Plan، ثم 03B numeric research بعد موافقات واختبارات مستقلة؛ **لا تثبيت عتبات تداول غير مختبرة في 03A**. تحديث خارطة التنفيذ داخل MASTER: 03 هوية الإشارة وتأهيل 30m/4h وV2/Plan contracts؛ 04 سجلات GitHub؛ **05A/05B/05C** Primary/Analytics JSON/Interactive؛ **06A/06B** Outcomes/Telegram Export→SQL؛ 07 Intraday pre-move؛ 08 Swing Structure؛ 09 Volume Profile/Trade levels؛ 10–12 سياقات ونماذج؛ 13 تشغيل واسترداد كامل. العدد الإجمالي لا يتغير إلا بقرار جديد؛ تقسيمات A/B/C شرائح ضمن المراحل.
 
 ## قواعد العمل للمحادثات وSD / Coding
 
@@ -56,4 +56,4 @@
 3. **لا توسّع نطاق Draft PR #2 تلقائيًا** لمجرد تحديث التصميم؛ أعرض أثر المواصفة على التنفيذ وتبعيات المراحل وأي قرارات تقنية ناقصة، ونفّذ العمل المعتمد الحالي فقط حتى يصدر أمر جديد.
 4. **GitHub هو مصدر الحقيقة لكل البيانات الدائمة**؛ Windows جهاز Runtime 24/7 فقط. لا أسرار داخل Repo، ولا قرارات Storage Backend/تكلفة/تداول حقيقي دون موافقة المالك. الاختبارات يجب أن تثبت تكامل المسار المنفذ فقط؛ لا ادعاء اكتمال SMART GATE غير المبني.
 
-**Repository:** [scannercrypto0-gif/zs-crypto-signals](https://github.com/scannercrypto0-gif/zs-crypto-signals) · **Private** · **MASTER v1.4 / Unified Design v2.1** · **Verified phases 00–01 / 14**.
+**Repository:** [scannercrypto0-gif/zs-crypto-signals](https://github.com/scannercrypto0-gif/zs-crypto-signals) · **Private** · **MASTER v1.5 / Unified Design v2.1** · **Verified phases 00–02 / 14**.
