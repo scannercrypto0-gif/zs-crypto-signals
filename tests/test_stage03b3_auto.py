@@ -14,6 +14,7 @@ from unittest.mock import patch
 
 from zs_smart_gate.stage03b3_manifest import MANIFEST
 from zs_smart_gate.stage03b2_manifest import MANIFEST as PREVIOUS_STUDY
+from zs_smart_gate.stage03b3_terminal import collect_directory
 from zs_smart_gate.stage03b3_auto import (
     DAY, PER_BATCH_MAX, SCHEDULE, emit_artifacts, main, resolve_schedule,
     run_batch,
@@ -237,7 +238,11 @@ class AutoScheduleTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as root:
             folder=os.path.join(root,"one-shot")
             emit_artifacts(batch,folder)
-            self.assertEqual(len(list(Path(folder).glob("*.json"))),4)
+            self.assertEqual(len(list(Path(folder).glob("*.json"))),3)
+            self.assertTrue((Path(folder)/"batch-summary.txt").exists())
+            audited=collect_directory(folder,as_of=MANIFEST.slots[0].close_at+
+                                      timedelta(seconds=5))
+            self.assertEqual(audited["observed_pit"],3)
             for symbol in MANIFEST.assets:
                 content=json.loads((Path(folder)/f"{symbol}_I1.json").read_text())
                 self.assertEqual(content["symbol"],symbol)

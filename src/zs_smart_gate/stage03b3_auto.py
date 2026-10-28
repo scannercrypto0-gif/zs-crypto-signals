@@ -167,7 +167,7 @@ def emit_artifacts(batch: dict, directory: str) -> None:
         with path.open("x", encoding="utf-8") as stream:
             json.dump(row, stream, sort_keys=True, ensure_ascii=True)
             stream.write("\n")
-    with (dest / "batch-summary.json").open("x", encoding="utf-8") as stream:
+    with (dest / "batch-summary.txt").open("x", encoding="utf-8") as stream:
         json.dump({k:v for k,v in batch.items() if k!="rows"}, stream,
                   sort_keys=True, ensure_ascii=True)
         stream.write("\n")
