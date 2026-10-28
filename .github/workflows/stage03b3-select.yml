@@ -1,0 +1,33 @@
+name: STAGE-03B3 one-time prospective eligible universe PRESELECTION
+on:
+  workflow_dispatch:
+  push:
+    branches: [stage-03b3-prospective-pit-evidence]
+permissions:
+  contents: read
+jobs:
+  select-once:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[03b3-select]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: One-time public Binance sorted eligible universe preselection (<=8 GET attempts)
+        env:
+          PYTHONPATH: src
+        shell: bash
+        run: |
+          mkdir -p evidence
+          python -m zs_smart_gate.stage03b3_selection --live > evidence/selection.json
+          python -c "import json; v=json.load(open('evidence/selection.json')); print(json.dumps(v,sort_keys=True))"
+      - name: Transient selection proof, not permanent repository storage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: 03b3-preselection
+          path: evidence/selection.json
+          if-no-files-found: warn
+          retention-days: 7
