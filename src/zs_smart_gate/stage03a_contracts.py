@@ -169,6 +169,58 @@ class EventIdentity:
 
 
 @dataclass(frozen=True)
+class PITDecisionSnapshot:
+    """Source receipt and availability are independent from candle close time."""
+    source_id: str
+    candle_open_at: datetime
+    candle_close_at: datetime
+    received_at: datetime
+    available_at: datetime
+    decision_at: datetime
+
+    def __post_init__(self) -> None:
+        for name in ("candle_open_at", "candle_close_at", "received_at",
+                     "available_at", "decision_at"):
+            object.__setattr__(self, name, utc(getattr(self, name)))
+        if not self.source_id:
+            raise ValueError("PIT_SOURCE_REQUIRED")
+        if not (self.candle_open_at < self.candle_close_at <= self.received_at
+                <= self.available_at <= self.decision_at):
+            raise ValueError("PIT_SNAPSHOT_FUTURE_OR_INVALID_ORDER")
+
+    def as_dict(self) -> dict:
+        return {"source_id": self.source_id,
+                "candle_open_at": self.candle_open_at.isoformat(),
+                "candle_close_at": self.candle_close_at.isoformat(),
+                "received_at": self.received_at.isoformat(),
+                "available_at": self.available_at.isoformat(),
+                "decision_at": self.decision_at.isoformat(),
+                "source_publication_time": None,
+                "clock_uncertainty_ms": None}
+
+
+@dataclass(frozen=True)
+class LifecycleObservation:
+    """Nonpublishing raw/watch record; no decision to qualify in Stage 03A."""
+    status: Lifecycle
+    asset_id: str
+    observed_at: datetime
+    available_at: datetime
+    reason_codes: tuple[str, ...]
+    schema_version: str = STAGE_03A_SCHEMA
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "observed_at", utc(self.observed_at))
+        object.__setattr__(self, "available_at", utc(self.available_at))
+        if self.status not in (Lifecycle.RAW_OBSERVATION, Lifecycle.EARLY_WATCH):
+            raise ValueError("OBSERVATION_CANNOT_PUBLISH_SIGNAL")
+        if not self.asset_id.startswith("BINANCE:SPOT:") or not self.reason_codes:
+            raise ValueError("OBSERVATION_IDENTITY_OR_REASON_MISSING")
+        if self.available_at < self.observed_at:
+            raise ValueError("INVALID_OBSERVATION_AVAILABILITY")
+
+
+@dataclass(frozen=True)
 class ResearchEvent:
     """Immutable PIT candidate observation, never a qualified live Signal."""
     identity: EventIdentity
@@ -178,6 +230,7 @@ class ResearchEvent:
     candidate: ResearchCandidate
     reconciliation: Reconciliation
     score: ScoreV2
+    snapshot: PITDecisionSnapshot
     reason_codes: tuple[str, ...]
     schema_version: str = STAGE_03A_SCHEMA
 
@@ -193,7 +246,11 @@ class ResearchEvent:
                 or self.identity.decision_candle_close_at != self.reconciliation.parent_close_at
                 or self.identity.decision_candle_close_at > self.decision_at
                 or self.reconciliation.parent_timeframe != (
-                    "30m" if self.identity.horizon == Horizon.INTRADAY else "4h")):
+                    "30m" if self.identity.horizon == Horizon.INTRADAY else "4h")
+                or self.snapshot.decision_at != self.decision_at
+                or self.snapshot.candle_close_at != self.reconciliation.parent_close_at
+                or self.snapshot.available_at != self.reconciliation.parent_available_at
+                or self.snapshot.source_id != self.reconciliation.parent_source_id):
             raise ValueError("PIT_CANDIDATE_OR_WINDOW_IDENTITY_MISMATCH")
         if (self.identity.direction != self.score.direction or
                 self.identity.horizon != self.score.horizon):
@@ -208,7 +265,8 @@ class ResearchEvent:
             "identity": self.identity.as_dict(), "status": self.status.value,
             "decision_at": self.decision_at.isoformat(),
             "candidate": self.candidate.as_dict(),
-            "window": self.reconciliation.as_dict(), "score": self.score.as_dict(),
+            "window": self.reconciliation.as_dict(),
+            "snapshot": self.snapshot.as_dict(), "score": self.score.as_dict(),
             "reason_codes": list(self.reason_codes),
             "publishable": False, "delivery_authorized": False,
         }
@@ -224,9 +282,13 @@ def bind_research_candidate(*, candidate: ResearchCandidate,
     else:
         state = Lifecycle.INVALID if reconciliation.status != "PASS" else Lifecycle.REJECTED
         reasons = ("NOT_PUBLISHABLE",) + candidate.eligibility_reasons + candidate.candle_errors + reconciliation.reason_codes
+    snapshot = PITDecisionSnapshot(
+        reconciliation.parent_source_id, reconciliation.parent_open_at,
+        reconciliation.parent_close_at, reconciliation.parent_received_at,
+        reconciliation.parent_available_at, candidate.decision_at)
     return ResearchEvent(identity, candidate_id, state, candidate.decision_at, candidate,
                          reconciliation, unavailable_score(identity.horizon, identity.direction),
-                         reasons)
+                         snapshot, reasons)
 
 
 class ResearchKeyRegistry:

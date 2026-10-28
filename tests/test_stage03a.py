@@ -13,7 +13,8 @@ from zs_smart_gate.mtf_contracts import (
     CandleWindow, ReconciliationTolerance, available_closed_context, reconcile,
 )
 from zs_smart_gate.stage03a_contracts import (
-    Direction, EventIdentity, Horizon, Lifecycle, ResearchKeyRegistry, ResearchEvent,
+    Direction, EventIdentity, Horizon, Lifecycle, LifecycleObservation,
+    PITDecisionSnapshot, ResearchKeyRegistry, ResearchEvent,
     ScoreGroup, ScoreV2, StructureEvidence, SwingPivot, TradePlan,
     V2_GROUPS, V2_VERSION, bind_research_candidate, unavailable_score,
 )
@@ -239,6 +240,25 @@ class SchemaAndIdentityTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "NO_LIVE_SIGNAL"):
             dataclasses.replace(good, status=Lifecycle.QUALIFIED_SIGNAL)
 
+    def test_raw_watch_contracts_not_qualified(self):
+        for state in (Lifecycle.RAW_OBSERVATION, Lifecycle.EARLY_WATCH):
+            record = LifecycleObservation(state, "BINANCE:SPOT:BTCUSDT",
+                                          T0, T0+timedelta(seconds=1),
+                                          ("OBSERVATION_ONLY",))
+            self.assertEqual(record.status, state)
+        with self.assertRaisesRegex(ValueError, "OBSERVATION_CANNOT_PUBLISH"):
+            LifecycleObservation(Lifecycle.QUALIFIED_SIGNAL, "BINANCE:SPOT:BTCUSDT",
+                                 T0, T0, ("INVALID",))
+        with self.assertRaisesRegex(ValueError, "INVALID_OBSERVATION_AVAILABILITY"):
+            LifecycleObservation(Lifecycle.EARLY_WATCH, "BINANCE:SPOT:BTCUSDT",
+                                 T0, T0-timedelta(seconds=1), ("LATE",))
+
+    def test_snapshot_future_receipt_rejected_without_any_signal(self):
+        with self.assertRaisesRegex(ValueError, "PIT_SNAPSHOT_FUTURE"):
+            PITDecisionSnapshot("SRC", T0, T0+timedelta(minutes=30),
+                T0+timedelta(minutes=31), T0+timedelta(minutes=31),
+                T0+timedelta(minutes=30, seconds=10))
+
     def test_full_candidate_through_v1_core_and_03a_contract_json(self):
         parent, children, decision = aligned("30m", "5m", 6)
         core = base_candidate(decision)
@@ -250,6 +270,9 @@ class SchemaAndIdentityTests(unittest.TestCase):
         blob = json.loads(json.dumps(event.as_dict(), sort_keys=True))
         self.assertEqual(blob["window"]["status"], "PASS")
         self.assertEqual(blob["status"], "RESEARCH_CANDIDATE")
+        self.assertEqual(blob["snapshot"]["source_id"], "BINANCE:SPOT:REST")
+        self.assertEqual(blob["snapshot"]["candle_close_at"], parent.close_at.isoformat())
+        self.assertIsNone(blob["snapshot"]["source_publication_time"])
         self.assertEqual(blob["score"]["status"], "SCORE_UNAVAILABLE")
         self.assertEqual(blob["score"]["maximum"], 100)
         self.assertEqual(blob["candidate"]["status"], "ELIGIBLE")

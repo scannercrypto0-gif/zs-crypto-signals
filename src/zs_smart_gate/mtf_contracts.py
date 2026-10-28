@@ -115,6 +115,9 @@ class Reconciliation:
     tolerance_policy_id: str
     parent_open_at: datetime
     parent_close_at: datetime
+    parent_received_at: datetime
+    parent_available_at: datetime
+    parent_source_id: str
 
     def as_dict(self) -> dict:
         return {"parent_timeframe": self.parent_timeframe,
@@ -123,6 +126,9 @@ class Reconciliation:
                 "child_count": self.child_count,
                 "parent_open_at": self.parent_open_at.isoformat(),
                 "parent_close_at": self.parent_close_at.isoformat(),
+                "parent_received_at": self.parent_received_at.isoformat(),
+                "parent_available_at": self.parent_available_at.isoformat(),
+                "parent_source_id": self.parent_source_id,
                 "tolerance_policy_id": self.tolerance_policy_id}
 
 
@@ -171,7 +177,8 @@ def reconcile(parent: CandleWindow, children: Sequence[CandleWindow],
     return Reconciliation(
         parent.timeframe, decision_at, "PASS" if not reasons else "INVALID",
         tuple(dict.fromkeys(reasons)), len(children), tolerance.policy_id,
-        parent.open_at, parent.close_at)
+        parent.open_at, parent.close_at, parent.received_at,
+        parent.available_at, parent.source_id)
 
 
 def available_closed_context(candles: Sequence[CandleWindow], *,
