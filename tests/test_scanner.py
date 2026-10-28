@@ -8,11 +8,13 @@ import json
 import time
 import unittest
 from collections import Counter
+from urllib.error import HTTPError
+from urllib.parse import urlsplit
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from unittest.mock import patch
 
-from zs_smart_gate.binance_live import LiveBlocked, LiveFailure
+from zs_smart_gate.binance_live import LiveBlocked, LiveFailure, get_json
 from zs_smart_gate.core import MarketSnapshot
 from zs_smart_gate.scanner import (
     FIVE_MINUTE_MS, MAX_HTTP_REQUESTS, MAX_SYMBOLS_PER_CYCLE,
@@ -70,7 +72,9 @@ class FakeGetter:
         self.now_ms = int(time.time() * 1000)
         self.removed_ticker = removed_ticker
 
-    def __call__(self, path, params=None):
+    def __call__(self, path, params=None, *, on_attempt=None):
+        if on_attempt is not None:
+            on_attempt(path)  # one outbound attempt in the fixture
         self.calls.append((path, params))
         if self.mode == "blocked" and path == "/api/v3/klines":
             raise LiveBlocked("SIMULATED_429")
@@ -96,6 +100,94 @@ class FakeGetter:
                 "t0_local_ms": self.now_ms, "received_local_ms": self.now_ms,
                 "used_weight_1m": self.weight if self.weight is not None else "12"}
         return data, meta
+
+
+
+class SmallUniverseGetter(FakeGetter):
+    """Fixtures for zero, partial and all-eligible candle coverage."""
+
+    def __init__(self, eligible_count):
+        super().__init__()
+        self.symbols = ["AAAUSDT", "BBBUSDT"][:eligible_count]
+        if eligible_count == 0:
+            self.symbols = ["LOWUSDT"]
+
+    def __call__(self, path, params=None, *, on_attempt=None):
+        payload, meta = super().__call__(path, params, on_attempt=on_attempt)
+        if path == "/api/v3/exchangeInfo":
+            payload = {"symbols": [r for r in payload["symbols"]
+                                   if r["symbol"] in self.symbols]}
+        if path in ("/api/v3/ticker/24hr", "/api/v3/ticker/bookTicker"):
+            payload = [r for r in payload if r["symbol"] in self.symbols]
+        return payload, meta
+
+
+class FakeHTTPResponse:
+    status = 200
+    headers = {"X-MBX-USED-WEIGHT-1M": "12"}
+
+    def __init__(self, payload):
+        self.body = json.dumps(payload).encode("utf-8")
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        return False
+
+    def read(self, limit):
+        return self.body[:limit]
+
+
+class FakeHTTPTransport:
+    """A fake urlopen boundary: count only real transport invocations."""
+
+    def __init__(self, mode="no_retry"):
+        self.mode = mode
+        self.calls = []
+        self.now_ms = int(time.time() * 1000)
+        self.klines_attempts = 0
+
+    def __call__(self, request, timeout=None):
+        path = urlsplit(request.full_url).path
+        self.calls.append(path)
+        if path == "/api/v3/klines":
+            self.klines_attempts += 1
+        if self.mode == "first_500" and path == "/api/v3/klines" and self.klines_attempts == 1:
+            raise HTTPError(request.full_url, 500, "retry", {}, io.BytesIO(b""))
+        if self.mode == "blocked_429" and path == "/api/v3/klines":
+            raise HTTPError(request.full_url, 429, "rate limit",
+                            {"Retry-After": "0"}, io.BytesIO(b""))
+        if self.mode == "eighth_500" and len(self.calls) == 8:
+            raise HTTPError(request.full_url, 500, "retry", {}, io.BytesIO(b""))
+        if self.mode == "initial_418" and len(self.calls) == 1:
+            raise HTTPError(request.full_url, 418, "blocked", {},
+                            io.BytesIO(b""))
+        if path == "/api/v3/time":
+            payload = {"serverTime": self.now_ms}
+        elif path == "/api/v3/exchangeInfo":
+            payload = sample_exchange()
+        elif path == "/api/v3/ticker/24hr":
+            payload, _ = market_rows()
+        elif path == "/api/v3/ticker/bookTicker":
+            _, payload = market_rows()
+        elif path == "/api/v3/klines":
+            payload = klines(self.now_ms)
+        else:
+            raise AssertionError("UNEXPECTED_PATH_" + path)
+        return FakeHTTPResponse(payload)
+
+
+def transport_cycle(mode, limit=2):
+    transport = FakeHTTPTransport(mode)
+    with patch("zs_smart_gate.binance_live.urlopen", side_effect=transport) as http, patch(
+        "zs_smart_gate.binance_live.time.sleep", return_value=None
+    ):
+        try:
+            result = scan_once(limit=limit, getter=get_json)
+            return result, None, transport, http.call_count
+        except (LiveBlocked, LiveFailure) as exc:
+            return None, exc, transport, http.call_count
 
 
 class BoundedScannerTests(unittest.TestCase):
@@ -299,6 +391,152 @@ class BoundedScannerTests(unittest.TestCase):
             rows = build_universe(sample_exchange(), tickers, books,
                                   datetime.now(timezone.utc))
             self.assertEqual(len(rows), 8)
+
+
+    def test_actual_transport_no_retry_counts_six_sends(self):
+        report, error, transport, calls = transport_cycle("no_retry", limit=2)
+        self.assertIsNone(error)
+        self.assertEqual(report.status, "PASS")
+        self.assertEqual(calls, 6)
+        self.assertEqual(len(transport.calls), 6)
+        measured = report.as_dict()["measurements"]
+        self.assertEqual(measured["http_attempts_made"], 6)
+        self.assertEqual(measured["logical_calls_succeeded"], 6)
+        self.assertFalse(measured["deadline_exceeded"])
+
+    def test_retry_then_success_counts_both_physical_attempts(self):
+        report, error, transport, calls = transport_cycle("first_500", limit=2)
+        self.assertIsNone(error)
+        self.assertEqual(report.status, "PASS")
+        self.assertEqual(calls, 7)
+        self.assertEqual(len(transport.calls), 7)
+        self.assertEqual(report.as_dict()["measurements"]["http_attempts_made"], 7)
+        self.assertEqual(report.as_dict()["measurements"]["logical_calls_succeeded"], 6)
+
+    def test_429_retries_then_blocks_no_later_symbols(self):
+        report, error, transport, calls = transport_cycle("blocked_429", limit=3)
+        self.assertIsNone(error)
+        self.assertEqual(report.status, "BLOCKED")
+        self.assertEqual(len(report.results), 1)
+        self.assertEqual(report.results[0].status, "BLOCKED")
+        self.assertEqual(calls, 6)  # 4 inventory + 2 failed kline GETs
+        self.assertEqual(len(transport.calls), 6)
+        self.assertEqual(report.as_dict()["measurements"]["http_attempts_made"], 6)
+        self.assertEqual(report.as_dict()["measurements"]["logical_calls_succeeded"], 4)
+        self.assertIn("SAMPLED_CANDLE_FETCH_INCOMPLETE", report.as_dict()["coverage"]["reason_codes"])
+
+    def test_retry_near_attempt_eight_cannot_send_ninth_get(self):
+        report, error, transport, calls = transport_cycle("eighth_500", limit=4)
+        self.assertIsNone(error)
+        self.assertEqual(report.status, "BLOCKED")
+        self.assertEqual(calls, MAX_HTTP_REQUESTS)
+        self.assertEqual(len(transport.calls), MAX_HTTP_REQUESTS)
+        self.assertEqual(report.as_dict()["measurements"]["http_attempts_made"], 8)
+        self.assertEqual(report.as_dict()["measurements"]["logical_calls_succeeded"], 7)
+        self.assertIn("HTTP_ATTEMPT_BUDGET_EXHAUSTED", report.results[-1].reasons)
+
+    def test_failed_bootstrap_attempt_exposes_truthful_telemetry(self):
+        report, error, transport, calls = transport_cycle("initial_418", limit=2)
+        self.assertIsNone(report)
+        self.assertIsInstance(error, LiveBlocked)
+        self.assertEqual(calls, 1)
+        self.assertEqual(error.cycle_telemetry["http_attempts_made"], 1)
+        self.assertEqual(error.cycle_telemetry["logical_calls_succeeded"], 0)
+        self.assertEqual(error.cycle_telemetry["request_budget"], 8)
+        self.assertFalse(error.cycle_telemetry["deadline_exceeded"])
+
+    def test_slow_inflight_response_cannot_report_deadline_compliant(self):
+        fake = FakeGetter()
+        clock = [0.0]
+        def monotonic():
+            return clock[0]
+        def slow(path, params=None, *, on_attempt=None):
+            result = fake(path, params, on_attempt=on_attempt)
+            if path == "/api/v3/klines":
+                clock[0] = 61.0  # response completed after the soft 60-second guard
+            return result
+        with patch("zs_smart_gate.scanner.time.perf_counter", side_effect=monotonic):
+            report = scan_once(limit=1, getter=slow)
+        measured = report.as_dict()["measurements"]
+        self.assertEqual(report.status, "FAIL")
+        self.assertTrue(measured["deadline_exceeded"])
+        self.assertEqual(measured["elapsed_ms"], 61000.0)
+        self.assertEqual(measured["soft_pre_request_guard_seconds"], 60)
+        self.assertIn("SOFT_CYCLE_GUARD_OVERRUN_IN_FLIGHT", report.reason_codes)
+        self.assertEqual(measured["http_attempts_made"], 5)
+        self.assertEqual(measured["logical_calls_succeeded"], 5)
+
+    def test_soft_guard_halts_next_attempt_after_slow_inventory(self):
+        fake = FakeGetter()
+        clock = [0.0]
+        def slow(path, params=None, *, on_attempt=None):
+            result = fake(path, params, on_attempt=on_attempt)
+            if path == "/api/v3/ticker/bookTicker":
+                clock[0] = 61.0
+            return result
+        with patch("zs_smart_gate.scanner.time.perf_counter", side_effect=lambda: clock[0]):
+            report = scan_once(limit=2, getter=slow)
+        self.assertEqual(report.status, "BLOCKED")
+        self.assertEqual(report.as_dict()["measurements"]["http_attempts_made"], 4)
+        self.assertEqual(report.as_dict()["measurements"]["logical_calls_succeeded"], 4)
+        self.assertTrue(report.deadline_exceeded)
+        self.assertEqual(len(fake.calls), 4)
+        self.assertEqual(report.results[0].reasons, ("SOFT_PRE_REQUEST_CYCLE_GUARD_EXCEEDED",))
+
+    def test_zero_eligible_is_not_full_market_scan_success(self):
+        report = scan_once(limit=2, getter=SmallUniverseGetter(0))
+        self.assertEqual(report.status, "FAIL")
+        d = report.as_dict()
+        self.assertEqual(d["coverage"]["inventory_count"], 1)
+        self.assertEqual(d["coverage"]["eligible_count"], 0)
+        self.assertEqual(d["coverage"]["selected_count"], 0)
+        self.assertEqual(d["coverage"]["processed_count"], 0)
+        self.assertEqual(d["coverage"]["candles_fetched_count"], 0)
+        self.assertEqual(d["coverage"]["not_scanned_eligible_count"], 0)
+        self.assertIsNone(d["coverage"]["eligible_candle_fetch_pct"])
+        self.assertFalse(d["coverage"]["all_eligible_candles_fetched_in_this_cycle"])
+        self.assertIn("NO_ELIGIBLE_SYMBOLS", d["coverage"]["reason_codes"])
+
+    def test_partial_eligible_candle_coverage_not_confused_with_inventory(self):
+        report = scan_once(limit=1, getter=SmallUniverseGetter(2))
+        d = report.as_dict()
+        self.assertEqual(report.status, "PASS")
+        self.assertTrue(d["universe"]["inventory_complete"])
+        self.assertEqual(d["coverage"]["eligible_count"], 2)
+        self.assertEqual(d["coverage"]["selected_count"], 1)
+        self.assertEqual(d["coverage"]["processed_count"], 1)
+        self.assertEqual(d["coverage"]["candles_fetched_count"], 1)
+        self.assertEqual(d["coverage"]["not_scanned_eligible_count"], 1)
+        self.assertEqual(d["coverage"]["eligible_candle_fetch_pct"], 50.0)
+        self.assertFalse(d["coverage"]["all_eligible_candles_fetched_in_this_cycle"])
+        self.assertIn("ELIGIBLE_CANDLES_NOT_SCANNED", d["coverage"]["reason_codes"])
+
+    def test_all_eligible_fixture_is_scanned_but_no_production_claim(self):
+        report = scan_once(limit=2, getter=SmallUniverseGetter(2))
+        d = report.as_dict()
+        self.assertEqual(report.status, "PASS")
+        self.assertTrue(d["coverage"]["inventory_complete"])
+        self.assertEqual(d["coverage"]["eligible_count"], 2)
+        self.assertEqual(d["coverage"]["selected_count"], 2)
+        self.assertEqual(d["coverage"]["processed_count"], 2)
+        self.assertEqual(d["coverage"]["candles_fetched_count"], 2)
+        self.assertEqual(d["coverage"]["not_scanned_eligible_count"], 0)
+        self.assertEqual(d["coverage"]["eligible_candle_fetch_pct"], 100.0)
+        self.assertTrue(d["coverage"]["all_eligible_candles_fetched_in_this_cycle"])
+        self.assertEqual(d["coverage"]["scope"], "BOUNDED_SELECTED_SAMPLE_NOT_FULL_MARKET")
+        self.assertEqual(d["coverage"]["reason_codes"], [])
+
+    def test_unfetched_blocked_symbol_does_not_count_as_scanned(self):
+        report = scan_once(limit=3, getter=FakeGetter(mode="blocked"))
+        d = report.as_dict()
+        self.assertEqual(d["coverage"]["eligible_count"], 5)
+        self.assertEqual(d["coverage"]["selected_count"], 3)
+        self.assertEqual(d["coverage"]["processed_count"], 1)
+        self.assertEqual(d["coverage"]["candles_fetched_count"], 0)
+        self.assertEqual(d["coverage"]["not_scanned_eligible_count"], 5)
+        self.assertEqual(d["measurements"]["logical_calls_succeeded"], 4)
+        self.assertEqual(d["measurements"]["http_attempts_made"], 5)
+
 
 if __name__ == "__main__":
     unittest.main()
