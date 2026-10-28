@@ -14,7 +14,7 @@ from zs_smart_gate.mtf_contracts import (
 )
 from zs_smart_gate.stage03a_contracts import (
     Direction, EventIdentity, Horizon, Lifecycle, LifecycleObservation,
-    PITDecisionSnapshot, ResearchKeyRegistry, ResearchEvent,
+    PITDecisionSnapshot, ResearchKeyRegistry, ResearchEvent, ResearchRevision,
     ScoreGroup, ScoreV2, StructureEvidence, SwingPivot, TradePlan,
     V2_GROUPS, V2_VERSION, bind_research_candidate, unavailable_score,
 )
@@ -288,6 +288,40 @@ class SchemaAndIdentityTests(unittest.TestCase):
                 candidate=candidate,
                 identity=self.key(decision_candle_close_at=T0+timedelta(minutes=60)),
                 reconciliation=rec, candidate_id="wrong-window")
+
+    def test_full_swing_four_hour_end_to_end_contract_only(self):
+        p, cs, d = aligned("4h", "1h", 4)
+        core = base_candidate(d)
+        self.assertEqual(core.status, "ELIGIBLE")
+        rec = reconcile(p, cs, core.decision_at, tolerance=EXACT)
+        self.assertEqual(rec.status, "PASS")
+        identity = self.key(horizon=Horizon.SWING, direction=Direction.DOWN,
+                            decision_candle_close_at=p.close_at,
+                            setup_type="RESEARCH_REVERSAL")
+        event = bind_research_candidate(candidate=core, identity=identity,
+                                        reconciliation=rec, candidate_id="swing-candidate")
+        serialized = json.loads(json.dumps(event.as_dict()))
+        self.assertEqual(serialized["window"]["parent_timeframe"], "4h")
+        self.assertEqual(serialized["identity"]["direction"], "DOWN")
+        self.assertEqual(serialized["score"]["groups"][0]["maximum"], 35)
+        self.assertEqual(serialized["status"], "RESEARCH_CANDIDATE")
+        self.assertFalse(serialized["publishable"])
+        self.assertIsNone(serialized["score"]["total"])
+
+    def test_research_update_is_immutable_and_not_signal_publication(self):
+        key = self.key()
+        revision = ResearchRevision(key.detection_event_key, "core-1", 2,
+                                    T0, T0+timedelta(minutes=5),
+                                    ("NEW_RESEARCH_OBSERVATION",))
+        self.assertEqual(revision.status, Lifecycle.RESEARCH_CANDIDATE)
+        with self.assertRaises(dataclasses.FrozenInstanceError):
+            revision.revision = 3
+        with self.assertRaisesRegex(ValueError, "INVALID_RESEARCH_REVISION"):
+            dataclasses.replace(revision, revision=1)
+        with self.assertRaisesRegex(ValueError, "NONMONOTONIC"):
+            dataclasses.replace(revision, updated_at=T0)
+        with self.assertRaisesRegex(ValueError, "CANNOT_PUBLISH_UPDATE"):
+            dataclasses.replace(revision, status=Lifecycle.QUALIFIED_SIGNAL)
 
     def test_e2e_future_child_fails_without_signal(self):
         p, cs, d = aligned("30m", "5m", 6)

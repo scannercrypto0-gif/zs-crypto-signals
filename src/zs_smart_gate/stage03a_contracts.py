@@ -308,6 +308,31 @@ class ResearchKeyRegistry:
 
 
 @dataclass(frozen=True)
+class ResearchRevision:
+    """Append-intent update schema only. No persistence, publisher or mutation."""
+    detection_event_key: str
+    candidate_id: str
+    revision: int
+    previous_observed_at: datetime
+    updated_at: datetime
+    reason_codes: tuple[str, ...]
+    status: Lifecycle = Lifecycle.RESEARCH_CANDIDATE
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "previous_observed_at", utc(self.previous_observed_at))
+        object.__setattr__(self, "updated_at", utc(self.updated_at))
+        if (not self.detection_event_key or not self.candidate_id or
+                not isinstance(self.revision, int) or isinstance(self.revision, bool) or
+                self.revision < 2):
+            raise ValueError("INVALID_RESEARCH_REVISION")
+        if self.updated_at <= self.previous_observed_at or not self.reason_codes:
+            raise ValueError("NONMONOTONIC_OR_UNREASONED_RESEARCH_UPDATE")
+        if self.status not in (Lifecycle.RESEARCH_CANDIDATE, Lifecycle.REJECTED,
+                               Lifecycle.INVALID):
+            raise ValueError("STAGE_03A_CANNOT_PUBLISH_UPDATE")
+
+
+@dataclass(frozen=True)
 class TradePlan:
     """Stage 03A default: typed Spot research-only plan with null levels."""
     signal_id: str | None
