@@ -51,6 +51,32 @@ class GitHubContentsHTTPTests(unittest.TestCase):
                              (raw, "blob-sha"))
             mocked.assert_called_once()
 
+    def test_get_github_newline_wrapped_base64_with_exact_bytes_and_sha(self):
+        # GitHub Contents API includes line-wrapped Base64, often with a trailing LF.
+        raw = b"synthetic-binary-contents-" + bytes(range(72))
+        encoded = base64.b64encode(raw).decode("ascii")
+        self.assertGreater(len(encoded), 60)
+        for separator in ("\\n", "\\r\\n"):
+            with self.subTest(line_break=repr(separator)):
+                wrapped = separator.join(encoded[i:i + 60] for i in range(0, len(encoded), 60)) + separator
+                response = {"type": "file", "encoding": "base64",
+                            "content": wrapped, "sha": "fixture-git-blob-sha",
+                            "path": "studies/one/claims/event.json"}
+                with patch("zs_smart_gate.github_evidence_backend.urlopen",
+                           return_value=FakeResponse(200, response)) as mocked:
+                    actual = self.transport.get_file("studies/one/claims/event.json", "evidence-study")
+                self.assertEqual(actual, (raw, "fixture-git-blob-sha"))
+                mocked.assert_called_once()
+
+    def test_get_rejects_non_wrapping_whitespace_in_base64(self):
+        for invalid in ("Y Q==", "Y\\tQ==", "Y\\u00a0Q=="):
+            with self.subTest(invalid=repr(invalid)):
+                payload = {"encoding": "base64", "sha": "blob-sha", "content": invalid}
+                with patch("zs_smart_gate.github_evidence_backend.urlopen",
+                           return_value=FakeResponse(200, payload)):
+                    with self.assertRaisesRegex(GitHubStorageError, "^GITHUB_READ_RESPONSE_INVALID$"):
+                        self.transport.get_file("x", "evidence-study")
+
     def test_put_create_update_payload_branch_and_sha(self):
         calls = []
         def stub(req, *, timeout):

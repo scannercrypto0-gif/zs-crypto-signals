@@ -58,7 +58,7 @@ class GitHubContentsTransport:
             record = json.loads(raw)
             if record.get("encoding") != "base64" or not isinstance(record.get("content"), str):
                 raise ValueError
-            content = base64.b64decode(record["content"], validate=True)
+            content = base64.b64decode(record["content"].replace("\r", "").replace("\n", ""), validate=True)
             sha = record["sha"]
             if not isinstance(sha, str) or not sha:
                 raise ValueError
