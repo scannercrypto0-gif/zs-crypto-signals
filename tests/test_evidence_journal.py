@@ -103,7 +103,7 @@ class JournalTests(unittest.TestCase):
         self.assertFalse(spool.put("a", b"1", now=NOW))
         self.assertFalse(spool.put("b", b"456", now=NOW))
         self.assertEqual(spool.get_for_replay("a", now=NOW + timedelta(hours=23)), b"123")
-        self.assertIsNone(spool.get_for_replay("a", now=NOW + timedelta(hours=24, seconds=1)))
+        self.assertIsNone(spool.get_for_replay("a", now=NOW + timedelta(hours=24)))
         self.assertEqual(spool.size_bytes, 0)
 
     def test_spool_rejects_naive_timestamps(self):
