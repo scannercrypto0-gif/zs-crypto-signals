@@ -104,13 +104,16 @@ class SingleStudyJournal:
                 return False
         except Exception:
             return False
-        body = canonical_bytes({
-            "schema": "zs-evidence-claim-v1",
-            "study_id": self.study_id,
-            "event_id": _safe_id(event_id),
-            "claimed_at": _utc(self.now()).isoformat(),
-            "external_attempts_authorized_by_this_record": False,
-        })
+        try:
+            body = canonical_bytes({
+                "schema": "zs-evidence-claim-v1",
+                "study_id": self.study_id,
+                "event_id": _safe_id(event_id),
+                "claimed_at": _utc(self.now()).isoformat(),
+                "external_attempts_authorized_by_this_record": False,
+            })
+        except Exception:
+            return False
         return self._create_and_verify(key, body, "claim-" + event_id).ok
 
     def append_and_readback(self, event_id: str, payload: dict, checksum: str) -> bool:
@@ -127,17 +130,32 @@ class SingleStudyJournal:
             return False
         if claim is None or existing is not None:
             return False
-        payload_bytes = canonical_bytes(payload)
-        if sha256_hex(payload_bytes) != checksum:
+        try:
+            claim_record = json.loads(claim)
+            if not isinstance(claim_record, dict):
+                return False
+            if (
+                claim_record.get("schema") != "zs-evidence-claim-v1"
+                or claim_record.get("study_id") != self.study_id
+                or claim_record.get("event_id") != event_id
+                or claim_record.get("external_attempts_authorized_by_this_record") is not False
+                or not isinstance(claim_record.get("claimed_at"), str)
+            ):
+                return False
+            _utc(datetime.fromisoformat(claim_record["claimed_at"]))
+            payload_bytes = canonical_bytes(payload)
+            if sha256_hex(payload_bytes) != checksum:
+                return False
+            body = canonical_bytes({
+                "schema": "zs-evidence-receipt-v1",
+                "study_id": self.study_id,
+                "event_id": event_id,
+                "recorded_at": _utc(self.now()).isoformat(),
+                "payload_sha256": checksum,
+                "payload": payload,
+            })
+        except Exception:
             return False
-        body = canonical_bytes({
-            "schema": "zs-evidence-receipt-v1",
-            "study_id": self.study_id,
-            "event_id": event_id,
-            "recorded_at": _utc(self.now()).isoformat(),
-            "payload_sha256": checksum,
-            "payload": payload,
-        })
         return self._create_and_verify(receipt_key, body, "receipt-" + event_id).ok
 
 
