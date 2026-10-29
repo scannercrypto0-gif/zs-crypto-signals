@@ -95,7 +95,7 @@ class GitHubBackendTests(unittest.TestCase):
         digest = hashlib.sha256(canonical_bytes(payload)).hexdigest()
         self.assertTrue(self.journal.append_and_readback("restore-event", payload, digest))
         # A fresh clone is simulated by copying committed bytes into a new mapping.
-        snapshot = {k: bytes(v) for k, v in self.transport.files.items() if "/claims/" in k or "/receipts/" in k}
+        snapshot = {k: bytes(v) for k, v in self.transport.files.items() if k.endswith("_journal_index.json") or "/claims/" in k or "/receipts/" in k}
         report = verify_snapshot("study-mock-001", snapshot)
         self.assertTrue(report.ok, report.status)
         self.assertEqual(report.records_checked, 2)
@@ -105,6 +105,8 @@ class GitHubBackendTests(unittest.TestCase):
         self.assertEqual(verify_snapshot("study-mock-001", tampered).status, "INVALID_JSON")
         missing = {k: v for k, v in snapshot.items() if "/receipts/" not in k}
         self.assertEqual(verify_snapshot("study-mock-001", missing).status, "CLAIM_WITHOUT_RECEIPT")
+        no_index = {k: v for k, v in snapshot.items() if not k.endswith("_journal_index.json")}
+        self.assertEqual(verify_snapshot("study-mock-001", no_index).status, "CAPACITY_INDEX_MISSING")
 
     def test_invalid_paths_and_payload_checksum(self):
         with self.assertRaisesRegex(ValueError, "INVALID_RECORD_PATH"):

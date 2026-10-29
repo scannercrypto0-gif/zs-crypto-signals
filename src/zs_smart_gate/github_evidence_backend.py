@@ -94,7 +94,24 @@ def verify_snapshot(study_id: str, files: Mapping[str, bytes]) -> RestoreReport:
     if not isinstance(study_id, str) or not _ID.fullmatch(study_id):
         return RestoreReport(False, "INVALID_STUDY_ID", 0)
     claims, receipts, checked = {}, {}, 0
+    index_path = "studies/" + study_id + "/_journal_index.json"
+    index = None
     for path, body in files.items():
+        if path == index_path:
+            try:
+                index = json.loads(body)
+                if not isinstance(index, dict) or canonical_bytes(index) != body:
+                    return RestoreReport(False, "INVALID_CAPACITY_INDEX", checked)
+                reservations = index.get("reservations")
+                if index.get("schema") != "zs-evidence-capacity-v1" or index.get("study_id") != study_id or not isinstance(reservations, dict):
+                    return RestoreReport(False, "INVALID_CAPACITY_INDEX", checked)
+                if any(not isinstance(n, int) or isinstance(n, bool) or n < 0 for n in reservations.values()):
+                    return RestoreReport(False, "INVALID_CAPACITY_INDEX", checked)
+                if sum(reservations.values()) > MAX_STUDY_BYTES:
+                    return RestoreReport(False, "CAPACITY_INDEX_OVER_LIMIT", checked)
+                continue
+            except Exception:
+                return RestoreReport(False, "INVALID_CAPACITY_INDEX", checked)
         match = _RECORD.fullmatch(path) if isinstance(path, str) else None
         if not match or match.group(1) != study_id:
             return RestoreReport(False, "UNEXPECTED_PATH", checked)
@@ -119,10 +136,22 @@ def verify_snapshot(study_id: str, files: Mapping[str, bytes]) -> RestoreReport:
                 return RestoreReport(False, "PAYLOAD_CHECKSUM_MISMATCH", checked)
             receipts[event_id] = record
         checked += 1
+    if index is None:
+        return RestoreReport(False, "CAPACITY_INDEX_MISSING", checked)
     if set(receipts) - set(claims):
         return RestoreReport(False, "RECEIPT_WITHOUT_CLAIM", checked)
     if set(claims) - set(receipts):
         return RestoreReport(False, "CLAIM_WITHOUT_RECEIPT", checked)
+    expected_reservations = {}
+    for event_id, body in ((event, files["studies/" + study_id + "/claims/" + event + ".json"]) for event in claims):
+        expected_reservations["claim-" + event_id] = len(body)
+    for event_id, body in ((event, files["studies/" + study_id + "/receipts/" + event + ".json"]) for event in receipts):
+        expected_reservations["receipt-" + event_id] = len(body)
+    for reservation_id, size in expected_reservations.items():
+        if index["reservations"].get(reservation_id) != size:
+            return RestoreReport(False, "CAPACITY_RESERVATION_MISMATCH", checked)
+    if set(index["reservations"]) != set(expected_reservations):
+        return RestoreReport(False, "ORPHAN_CAPACITY_RESERVATION", checked)
     return RestoreReport(True, "RESTORE_VERIFIED", checked)
 
 class GitHubEvidenceBackend:
