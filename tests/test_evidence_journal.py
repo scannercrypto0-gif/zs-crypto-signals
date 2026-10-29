@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta, timezone
 import hashlib
+import json
 import threading
 import unittest
 from concurrent.futures import ThreadPoolExecutor
@@ -105,6 +106,54 @@ class JournalTests(unittest.TestCase):
         self.assertEqual(spool.get_for_replay("a", now=NOW + timedelta(hours=23)), b"123")
         self.assertIsNone(spool.get_for_replay("a", now=NOW + timedelta(hours=24)))
         self.assertEqual(spool.size_bytes, 0)
+
+    def test_claim_clock_errors_fail_closed(self):
+        bad_clocks = (
+            lambda: datetime(2026, 10, 29, 12),
+            lambda: (_ for _ in ()).throw(RuntimeError("clock unavailable")),
+        )
+        for clock in bad_clocks:
+            with self.subTest(clock=clock):
+                backend = MemoryBackend()
+                journal = SingleStudyJournal("study-test-001", backend, clock)
+                self.assertFalse(journal.claim_before_attempts("study-test-001", "clock-failure"))
+                self.assertNotIn("studies/study-test-001/claims/clock-failure.json", backend.data)
+
+    def test_receipt_clock_errors_fail_closed(self):
+        bad_clocks = (
+            lambda: datetime(2026, 10, 29, 12),
+            lambda: (_ for _ in ()).throw(RuntimeError("clock unavailable")),
+        )
+        for clock in bad_clocks:
+            with self.subTest(clock=clock):
+                backend = MemoryBackend()
+                current = {"value": lambda: NOW}
+                journal = SingleStudyJournal("study-test-001", backend, lambda: current["value"]())
+                self.assertTrue(journal.claim_before_attempts("study-test-001", "receipt-clock"))
+                current["value"] = clock
+                digest = hashlib.sha256(canonical_bytes({"offline": True})).hexdigest()
+                self.assertFalse(journal.append_and_readback("receipt-clock", {"offline": True}, digest))
+                self.assertNotIn("studies/study-test-001/receipts/receipt-clock.json", backend.data)
+
+    def test_receipt_rejects_tampered_claim_identity_and_schema(self):
+        mutations = (
+            ("schema", "wrong-schema"),
+            ("study_id", "other-study"),
+            ("event_id", "other-event"),
+        )
+        for field, value in mutations:
+            with self.subTest(field=field):
+                backend = MemoryBackend()
+                journal = SingleStudyJournal("study-test-001", backend, lambda: NOW)
+                self.assertTrue(journal.claim_before_attempts("study-test-001", "tamper-event"))
+                key = "studies/study-test-001/claims/tamper-event.json"
+                record = json.loads(backend.data[key])
+                record[field] = value
+                backend.data[key] = canonical_bytes(record)
+                payload = {"offline": True}
+                digest = hashlib.sha256(canonical_bytes(payload)).hexdigest()
+                self.assertFalse(journal.append_and_readback("tamper-event", payload, digest))
+                self.assertNotIn("studies/study-test-001/receipts/tamper-event.json", backend.data)
 
     def test_spool_rejects_naive_timestamps(self):
         with self.assertRaises(ValueError):
