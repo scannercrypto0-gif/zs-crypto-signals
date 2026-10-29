@@ -191,10 +191,10 @@ class BridgeTests(unittest.TestCase):
 
     def test_simulation_and_prospective_entrypoints_remain_closed(self):
         project=Path(__file__).resolve().parents[1]
-        simulation=(project/"scripts/windows-tick.py").read_text()
-        gui=(project/"scripts/runner-control.pyw").read_text()
-        entry=(project/"scripts/windows-diagnostic.pyw").read_text()
-        control=(project/"src/zs_smart_gate/windows_control.py").read_text()
+        simulation=(project/"scripts/windows-tick.py").read_text(encoding="utf-8")
+        gui=(project/"scripts/runner-control.pyw").read_text(encoding="utf-8")
+        entry=(project/"scripts/windows-diagnostic.pyw").read_text(encoding="utf-8")
+        control=(project/"src/zs_smart_gate/windows_control.py").read_text(encoding="utf-8")
         self.assertIn("SIMULATION_NETWORK_FORBIDDEN",simulation)
         self.assertIn("sys.addaudithook(deny_network)",simulation)
         self.assertIn("SIMULATION_ONLY",control)
