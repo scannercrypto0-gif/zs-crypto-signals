@@ -52,7 +52,7 @@ class BridgeTests(unittest.TestCase):
     def arm(self,**kwargs):
         return authorize(**self.args(),pythonw=self.pythonw,executor=self.executor,
                          clock=lambda:NOW,token_factory=lambda:TOKEN,**kwargs)
-    def run(self,*,probe,clock=lambda:NOW,token=TOKEN):
+    def run_case(self,*,probe,clock=lambda:NOW,token=TOKEN):
         return execute(**self.args(),token=token,probe=probe,clock=clock)
 
     def test_arm_once_creates_distinct_no_console_scheduler_task_and_consumes(self):
@@ -78,10 +78,10 @@ class BridgeTests(unittest.TestCase):
     def test_unapproved_or_bad_token_never_invokes_probe(self):
         get=Mock(side_effect=AssertionError("UNAUTHORIZED_HTTP"))
         with self.assertRaisesRegex(ValueError,"EXPLICIT_GUI_INTENT"):
-            self.run(probe=get)
+            self.run_case(probe=get)
         self.arm()
         with self.assertRaisesRegex(ValueError,"EXPIRED_OR_MISMATCHED_GUI_INTENT"):
-            self.run(probe=get,token="f"*32)
+            self.run_case(probe=get,token="f"*32)
         get.assert_not_called()
         self.assertFalse((self.runtime/CLAIM).exists())
 
@@ -89,7 +89,7 @@ class BridgeTests(unittest.TestCase):
         self.arm()
         for moment in (NOW-timedelta(seconds=1),NOW+timedelta(minutes=5,seconds=1)):
             with self.assertRaisesRegex(ValueError,"EXPIRED_OR_MISMATCHED"):
-                self.run(probe=lambda **kw:self.fail("NETWORK"),clock=lambda:moment)
+                self.run_case(probe=lambda **kw:self.fail("NETWORK"),clock=lambda:moment)
         self.assertFalse((self.runtime/CLAIM).exists())
 
     def test_real_stage03b1_core_fixture_from_scheduled_bridge_zero_real_sockets(self):
@@ -98,7 +98,7 @@ class BridgeTests(unittest.TestCase):
         def approved(**kwargs):
             return probe_once(**kwargs,getter=fake,local_ms=lambda:NOW_MS+1000)
         with patch.object(socket,"socket",side_effect=AssertionError("REAL_NETWORK_FORBIDDEN")):
-            output=self.run(probe=approved)
+            output=self.run_case(probe=approved)
         self.assertEqual(output["status"],"PASS",output)
         self.assertEqual(output["reconciliation_status"],"PASS")
         self.assertEqual(output["http_attempts"],6)
@@ -121,11 +121,11 @@ class BridgeTests(unittest.TestCase):
         self.arm()
         probe=Mock(return_value={"status":"BLOCKED","signal_id":None,"score":None,
                                  "measurements":{"physical_http_attempts":0}})
-        first=self.run(probe=probe)
+        first=self.run_case(probe=probe)
         self.assertEqual(first["status"],"BLOCKED")
         saved=(self.logs/STATUS).read_bytes()
         with self.assertRaises(FileExistsError):
-            self.run(probe=probe)
+            self.run_case(probe=probe)
         self.assertEqual((self.logs/STATUS).read_bytes(),saved)
         self.assertEqual(probe.call_count,1)
         self.assertEqual(self.arm()["status"],"ALREADY_AUTHORIZED_OR_CONSUMED")
@@ -142,7 +142,7 @@ class BridgeTests(unittest.TestCase):
         def approved(**kwargs):
             return probe_once(**kwargs,getter=Retrying(),
                               local_ms=lambda:NOW_MS+1000)
-        output=self.run(probe=approved)
+        output=self.run_case(probe=approved)
         self.assertEqual(output["status"],"BLOCKED")
         self.assertEqual(output["http_attempts"],8)
         self.assertEqual(fake.physical,8)
@@ -154,17 +154,17 @@ class BridgeTests(unittest.TestCase):
         self.arm()
         fake=FixtureTransport()
         fake.fail_path="/api/v3/klines"
-        output=self.run(probe=lambda **kw:probe_once(**kw,getter=fake,
+        output=self.run_case(probe=lambda **kw:probe_once(**kw,getter=fake,
                                                      local_ms=lambda:NOW_MS+1000))
         self.assertEqual(output["status"],"BLOCKED")
         self.assertEqual(output["http_attempts"],6)
         self.assertEqual(output["study"],"OFF")
         with self.assertRaises(FileExistsError):
-            self.run(probe=lambda **kw:self.fail("RETRY_FORBIDDEN"))
+            self.run_case(probe=lambda **kw:self.fail("RETRY_FORBIDDEN"))
 
     def test_unexpected_failure_sanitized_and_once_only(self):
         self.arm()
-        output=self.run(probe=lambda **kw:(_ for _ in ()).throw(
+        output=self.run_case(probe=lambda **kw:(_ for _ in ()).throw(
             RuntimeError("SECRET_DO_NOT_LOG")))
         self.assertEqual(output["status"],"FAIL")
         self.assertEqual(output["error_category"],"RuntimeError")
