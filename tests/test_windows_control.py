@@ -4,7 +4,7 @@ from pathlib import Path
 import tempfile
 import unittest
 from unittest.mock import patch,Mock
-from zs_smart_gate.windows_control import assess_task,clock_status,Control,MARKER,run_ps
+from zs_smart_gate.windows_control import assess_task,clock_status,Control,MARKER,run_ps,boundary_utc
 from zs_smart_gate.windows_operations import record_health
 
 NOW=datetime(2026,10,28,12,tzinfo=timezone.utc)
@@ -20,6 +20,34 @@ def snapshot():
         <Repetition><Duration>P1D</Duration></Repetition></TimeTrigger></Triggers></Task>'''}
 
 class ControlTests(unittest.TestCase):
+    def test_owner_export_boundaries_and_expiry(self):
+        import xml.etree.ElementTree as ET
+        xml=(Path(__file__).parent/'fixtures/windows/owner-task.xml').read_text(encoding='utf-8')
+        ns={'t':'http://schemas.microsoft.com/windows/2004/02/mit/task'}
+        root=ET.fromstring(xml)
+        find=lambda p:root.findtext(p,namespaces=ns)
+        args=dict(expected_executable=find('t:Actions/t:Exec/t:Command'),
+                  expected_arguments=find('t:Actions/t:Exec/t:Arguments'),
+                  repo=find('t:Actions/t:Exec/t:WorkingDirectory'))
+        boundary=find('t:Triggers/t:TimeTrigger/t:StartBoundary')
+        expected=boundary_utc(boundary)
+        local=lambda d:d.replace(tzinfo=timezone(timedelta(hours=3)))
+        for text in (xml,xml.replace(boundary,boundary[:-6])):
+            s=snapshot();s['xml']=text
+            self.assertEqual(assess_task(s,now=expected,local_resolver=local,**args)[0],'RUNNING')
+            self.assertEqual(assess_task(s,now=expected+timedelta(days=1),local_resolver=local,**args)[0],'EXPIRED')
+        self.assertEqual(boundary_utc(boundary[:-6],local),expected)
+        with self.assertRaises(ValueError):boundary_utc('2026-02-30T12:00:00Z')
+        with self.assertRaises(ValueError):boundary_utc('2026-10-29')
+        def gap_or_fold(d):raise ValueError('DST_BOUNDARY_UNCERTAIN')
+        with self.assertRaises(ValueError):boundary_utc('2026-11-01T01:30:00',gap_or_fold)
+
+    @unittest.skipUnless(__import__('os').name=='nt','Windows local timezone conversion')
+    def test_native_timezone_conversion(self):
+        # OS TimeZoneInfo supplies date-specific rules, not current fixed offset.
+        expected=run_ps("[TimeZoneInfo]::ConvertTimeToUtc([datetime]::SpecifyKind([datetime]'2026-10-28T22:09:05',[DateTimeKind]::Unspecified),[TimeZoneInfo]::Local).ToString('o')")
+        self.assertEqual(boundary_utc('2026-10-28T22:09:05'),datetime.fromisoformat(expected.replace('Z','+00:00')))
+
     def assess(self,s,now=NOW):
         return assess_task(s,expected_executable='D:/pythonw.exe',expected_arguments='safe',repo='D:/repo',now=now)
     def test_running_paused_expired(self):

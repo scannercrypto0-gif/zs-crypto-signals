@@ -64,7 +64,31 @@ def clock_status(raw, service):
             'exchange_uncertainty':'UNKNOWN'}
 
 
-def assess_task(snapshot, *, expected_executable, expected_arguments, repo, now):
+def boundary_utc(value, local_resolver=None):
+    """Windows offset-less boundaries use OS timezone rules at that date.
+
+    Reject DST gaps/folds rather than guess which instant the scheduler chose.
+    Never attach today's fixed UTC offset to a different local date.
+    """
+    if not isinstance(value,str) or not re.fullmatch(
+            r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-]\d{2}:\d{2})?',value):
+        raise ValueError('INVALID_BOUNDARY')
+    parsed=datetime.fromisoformat(value.replace('Z','+00:00'))
+    if parsed.tzinfo is None:
+        if local_resolver is not None:
+            parsed=local_resolver(parsed)
+        else:
+            if os.name!='nt': raise ValueError('WINDOWS_LOCAL_ZONE_REQUIRED')
+            answer=run_ps("$d=[DateTime]::SpecifyKind([DateTime]::ParseExact('"+value+
+                "','yyyy-MM-ddTHH:mm:ss.FFFFFF',[Globalization.CultureInfo]::InvariantCulture),[DateTimeKind]::Unspecified);"
+                "$z=[TimeZoneInfo]::Local; if($z.IsInvalidTime($d) -or $z.IsAmbiguousTime($d)){throw 'DST_BOUNDARY_UNCERTAIN'};"
+                "[TimeZoneInfo]::ConvertTimeToUtc($d,$z).ToString('o')")
+            parsed=datetime.fromisoformat(answer.replace('Z','+00:00'))
+    if parsed.tzinfo is None: raise ValueError('LOCAL_ZONE_UNRESOLVED')
+    return parsed.astimezone(timezone.utc)
+
+
+def assess_task(snapshot, *, expected_executable, expected_arguments, repo, now, local_resolver=None):
     if not snapshot.get('exists'): return 'BLOCKED','TASK_MISSING',None
     if snapshot.get('description')!=MARKER: return 'BLOCKED','UNKNOWN_TASK',None
     try:
@@ -80,11 +104,11 @@ def assess_task(snapshot, *, expected_executable, expected_arguments, repo, now)
             return 'BLOCKED','TASK_ACTION_MISMATCH',None
         triggers=xml.findall('t:Triggers/t:TimeTrigger',ns)
         if len(triggers)!=1: raise ValueError('INVALID_LEASE')
-        start=datetime.fromisoformat(find('t:Triggers/t:TimeTrigger/t:StartBoundary'))
+        start=boundary_utc(find('t:Triggers/t:TimeTrigger/t:StartBoundary'),local_resolver)
         expiry=start+parse_duration(find('t:Triggers/t:TimeTrigger/t:Repetition/t:Duration'))
         if start.tzinfo is None: raise ValueError('AWARE_TIME_REQUIRED')
         if now>=expiry: return 'EXPIRED','LEASE_EXPIRED',expiry.isoformat()
-    except (ValueError,TypeError,AttributeError,ET.ParseError):
+    except (ValueError,TypeError,AttributeError,RuntimeError,ET.ParseError):
         return 'BLOCKED','INVALID_TASK_XML',None
     if not clock_status(snapshot.get('clock',''),snapshot.get('time_service'))['operational_simulation_ok']:
         return 'BLOCKED','CLOCK_UNTRUSTED',expiry.isoformat()
