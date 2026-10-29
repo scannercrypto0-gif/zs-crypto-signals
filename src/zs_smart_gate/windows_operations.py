@@ -89,6 +89,29 @@ def write_bounded_result(logs, result):
         os.replace(temporary, target)
 
 
+def record_health(logs, *, exit_code, revision, config_sha, category=None):
+    """One bounded atomic health snapshot plus an incident ring, no exception text."""
+    now = datetime.now(timezone.utc).isoformat()
+    health_file = logs/'health.json'
+    old = {}
+    try:
+        if health_file.exists() and health_file.stat().st_size <= 16384:
+            old = json.loads(health_file.read_text(encoding='utf-8'))
+    except (ValueError, OSError):
+        pass
+    health = {'updated_utc': now, 'exit_code': exit_code, 'run_sha': revision,
+              'deployment_config_sha': config_sha, 'startup_verified': category is None,
+              'last_success_utc': now if exit_code == 0 else old.get('last_success_utc'),
+              'last_failure_utc': now if exit_code else old.get('last_failure_utc'),
+              'last_error_category': category if exit_code else old.get('last_error_category'),
+              'current_error_category': category, 'live_permission': 'OFF',
+              'codex_required': False, 'model_api_calls': 0}
+    temp = health_file.with_suffix('.tmp')
+    temp.write_text(json.dumps(health, indent=2), encoding='utf-8')
+    os.replace(temp, health_file)
+    return health
+
+
 def scheduled_tick(config, config_sha, repo, state, logs):
     audit = storage_audit(repo=repo, state=state, logs=logs)
     verified = verify_deployment(config, repo)
@@ -97,7 +120,12 @@ def scheduled_tick(config, config_sha, repo, state, logs):
     # Import after bytecode/temp/path validation, with no transport construction.
     from .windows_runner import Scope, tick
     result = tick(Scope(), state)
+    console_attached=None
+    if os.name=='nt':
+        import ctypes
+        console_attached=bool(ctypes.windll.kernel32.GetConsoleWindow())
     result.update(run_sha=config['revision'], deployment_config_sha=verified,
+                  console_attached=console_attached,
                   python_sha256=hashlib.sha256(Path(sys.executable).read_bytes()).hexdigest(),
                   storage=audit, live_permission='OFF', approved_scope=[],
                   actual_successful_closed_event='NONE: SIMULATION_ONLY_EMPTY_SCOPE',
@@ -105,4 +133,6 @@ def scheduled_tick(config, config_sha, repo, state, logs):
                   production_status='PRODUCTION_SIGNALS_NOT_AUTHORIZED',
                   execution_kind='LOCAL_OFFLINE_TICK_NOT_24_7_PROOF')
     write_bounded_result(logs, result)
+    record_health(logs, exit_code=result['exit_code'], revision=config['revision'],
+                  config_sha=verified, category=None if result['exit_code']==0 else result['status'])
     return result
