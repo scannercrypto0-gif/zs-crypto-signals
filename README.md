@@ -4,7 +4,7 @@
 
 ## اقرأ المرجع الرسمي أولًا
 
-**[ZS_SMART_GATE_MASTER.md — MASTER v1.13](./ZS_SMART_GATE_MASTER.md)** هو مصدر الحوكمة والمواصفات المُجمعة وقرارات المالك. يتضمن في بدايته **SMART GATE — UNIFIED DESIGN v2.1**، ثم خارطة **14 مرحلة (00–13)**، وإصدارات Score، وعقود Telegram/Analytical Data/Trade Plans، وسجل القرارات، والـTechnical Blueprint التاريخي محفوظًا. عند تعارض مقترح قديم مع قسم التصميم الموحد المعتمد، تُطبَّق قواعد الأسبقية داخل MASTER.
+**[ZS_SMART_GATE_MASTER.md — MASTER v1.14](./ZS_SMART_GATE_MASTER.md)** هو مصدر الحوكمة والمواصفات المُجمعة وقرارات المالك. يتضمن في بدايته **SMART GATE — UNIFIED DESIGN v2.1**، ثم خارطة **14 مرحلة (00–13)**، وإصدارات Score، وعقود Telegram/Analytical Data/Trade Plans، وسجل القرارات، والـTechnical Blueprint التاريخي محفوظًا. عند تعارض مقترح قديم مع قسم التصميم الموحد المعتمد، تُطبَّق قواعد الأسبقية داخل MASTER.
 
 **حالة الاعتماد:** المالك **وافق على تصميم SMART GATE v2.1 كهدف للمشروع** في 28 أكتوبر 2026؛ الحدود العددية غير المُختبرة ومعادلات BOS/CHoCH/Score النهائية، وسعر الخطة ونظام تخزين GitHub العملي تبقى **قيد التصميم والاختبار/الموافقة الفنية**؛ لا يصح وصف الميزات المخطط لها بأنها منفذة أو مجربة.
 
@@ -58,6 +58,9 @@
 
 ### Windows local runner — no-console GUI and true scheduled simulations accepted; actual LIVE still BLOCKED
 
+**2026-10-29 owner authorization (design/diagnostic only):** [Issue #11 consolidated implementation order](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/11#issuecomment-6489732482) approves exactly ONE bounded read-only BTCUSDT Spot public market GET smoke directly on owner Windows D:, separately from prospective study, and approves the DESIGN/TEST of a GitHub-only small single-study evidence journal. PRIVATE repo branch rulesets API returned 403 requiring Pro/public; branch protection is not proven, so no runtime GitHub write credential or asserted immutable journal is authorized yet. No study LIVE, Score/Telegram/trading or claim of full 14-stage implementation. Stage00–03 current E2E administrative proof is pending actual on-device integrated evidence and clock/journal gates.
+
+
 [PR #13 ACCEPTED AND MERGED](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/13), reviewed exact head `5be9c86642ec38f9266be5b7c90e944fdfadf160`, merge `27a381c7a8962a709c48545cb3993ab2d7a268bb`; [CI 242 tests ×4](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/40823313293) PASS. Added date-accurate Windows TaskScheduler XML `StartBoundary` conversion, on-demand native GUI and pinned D: `pythonw.exe` no-console action. Owner-PC Codex report confirms **>=3 genuine scheduled Event107/201/result0 runs** on 2026-10-29 05:26–05:30 UTC, `HTTP=0`, GUI Start/Pause/Status/Recovery, and owner physically confirmed the black flash did not appear. PM verified source and GitHub CI, **not raw D: artifacts**. One task deliberately **PAUSED** after tests, lease ends 2026-10-30 05:26:55 UTC (08:26:55 Riyadh); no auto-renewal and requires owner sign-in/awake Windows.
 
 **Owner local launcher:** `D:\ZS-SMART-GATE\SMART GATE Runner.lnk`. All project files/logs/env/cache on D; ordinary Windows-managed time/scheduler settings on system C allowed. No persistent Codex/LLM or GitHub Actions hosted market execution.
@@ -67,9 +70,9 @@
 **Old 03B3 remains CANCELED** with audited GitHub history retained; old samples excluded from evaluation, and no old cron/manual workflow remains active.
 ## قواعد العمل للمحادثات وSD / Coding
 
-1. اقرأ أحدث MASTER v1.13 وREADME وحالة **main/PRs/CI** مباشرة قبل أي عمل؛ لا تعتمد على عبارات حالة تاريخية داخل Blueprint قديم أو على Project Resources متأخرة. **مزامنة Project Resources مع GitHub ليست تلقائية.**
+1. اقرأ أحدث MASTER v1.14 وREADME وحالة **main/PRs/CI** مباشرة قبل أي عمل؛ لا تعتمد على عبارات حالة تاريخية داخل Blueprint قديم أو على Project Resources متأخرة. **مزامنة Project Resources مع GitHub ليست تلقائية.**
 2. **PR Conversation** للأوامر وتقارير الاختبارات وقبول PM. لا ملفات Markdown جديدة للحَوْكمة؛ **README وMASTER فقط**. الكود والاختبارات وCI/config والبيانات التشغيلية المعتمدة مسموحة حسب مراحلها.
 3. **02 و03A و03B1 متحقق منها ضمن نطاق كل جزء، و03B2 التاريخية مغلقة بنتيجة غير كافية، و03B3 الأصلية CANCELLED_BY_OWNER ومستبعدة من تقييم البحث.** يُسمح فقط بالدراسة المستقبلية الجديدة الموافق عليها Windows Issue #11، بمواعيد وهوية جديدة؛ لا Scoring رقمي أو Signal أو تداول بدون اعتماد منفصل.
 4. **GitHub هو مصدر الحقيقة لكل البيانات الدائمة**؛ Windows جهاز Runtime 24/7 فقط. لا أسرار داخل Repo، ولا قرارات Storage Backend/تكلفة/تداول حقيقي دون موافقة المالك. الاختبارات يجب أن تثبت تكامل المسار المنفذ فقط؛ لا ادعاء اكتمال SMART GATE غير المبني.
 
-**Repository:** [scannercrypto0-gif/zs-crypto-signals](https://github.com/scannercrypto0-gif/zs-crypto-signals) · **Private** · **MASTER v1.13 / Unified Design v2.1** · **Verified full phases 00–02 / 14; 03A/03B1 VERIFIED; 03B2 code accepted, original study closed insufficient 8/12; original 03B3 GH study owner-cancelled, 0/12 observed, new Windows future study Issue #11 preparing; Phase 03 IN PROGRESS; no trading authorization**.
+**Repository:** [scannercrypto0-gif/zs-crypto-signals](https://github.com/scannercrypto0-gif/zs-crypto-signals) · **Private** · **MASTER v1.14 / Unified Design v2.1** · **Verified full phases 00–02 / 14; 03A/03B1 VERIFIED; 03B2 code accepted, original study closed insufficient 8/12; original 03B3 GH study owner-cancelled, 0/12 observed, new Windows future study Issue #11 preparing; Phase 03 IN PROGRESS; no trading authorization**.
