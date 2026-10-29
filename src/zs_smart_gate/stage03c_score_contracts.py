@@ -1,36 +1,49 @@
 """Stage 03C research-only V2 score contract.
 
-This module deliberately consumes normalized feature values; it does not
-invent feature formulas, qualify signals, create Signal IDs, or enable delivery.
+This module consumes normalized feature values; it does not invent feature
+formulas, qualify signals, create production Signal IDs, or enable delivery.
 A numeric score is emitted only when every preregistered group is present.
 """
 from __future__ import annotations
 
 from dataclasses import dataclass
-from decimal import Decimal, InvalidOperation
+from datetime import datetime, timezone
+from decimal import Decimal, InvalidOperation, ROUND_HALF_EVEN
 import hashlib
 import json
+import re
+from types import MappingProxyType
 from typing import Mapping
 
-VERSION = "SMART_GATE_V2_SCORE_CONTRACT_0.1"
-WEIGHTS: dict[str, dict[str, int]] = {
-    "INTRADAY": {
+VERSION = "SMART_GATE_V2_SCORE_CONTRACT_0.2"
+# Contributions remain exact Decimal products. Only the final displayed score
+# is rounded, once, to 0.01 using ROUND_HALF_EVEN. This is part of VERSION.
+SCORE_QUANTUM = Decimal("0.01")
+SCORE_ROUNDING = ROUND_HALF_EVEN
+_CANONICAL_TIMESTAMP_PATTERN = re.compile(
+    r"^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}"
+    r"(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+)
+
+# Both levels are read-only so a caller cannot mutate the contract at runtime.
+WEIGHTS: Mapping[str, Mapping[str, int]] = MappingProxyType({
+    "INTRADAY": MappingProxyType({
         "strong_close": 20,
         "internal_path": 20,
         "momentum_timing": 20,
         "volume": 20,
         "mtf_structure": 15,
         "liquidity": 5,
-    },
-    "SWING": {
+    }),
+    "SWING": MappingProxyType({
         "market_structure": 35,
         "strong_close": 15,
         "internal_path": 15,
         "higher_context": 15,
         "momentum_volume": 15,
         "liquidity": 5,
-    },
-}
+    }),
+})
 
 
 def _number(value: object) -> Decimal:
@@ -45,12 +58,27 @@ def _number(value: object) -> Decimal:
     return number
 
 
+def _canonical_utc_timestamp(value: str) -> str:
+    """Parse an ISO-8601 timestamp with timezone and normalize it to UTC Z."""
+    if not isinstance(value, str) or not _CANONICAL_TIMESTAMP_PATTERN.fullmatch(value):
+        raise ValueError("INVALID_DECISION_TIMESTAMP")
+    try:
+        parsed = datetime.fromisoformat(value[:-1] + "+00:00" if value.endswith("Z") else value)
+    except ValueError as exc:
+        raise ValueError("INVALID_DECISION_TIMESTAMP") from exc
+    if parsed.tzinfo is None or parsed.utcoffset() is None:
+        raise ValueError("DECISION_TIMESTAMP_TIMEZONE_REQUIRED")
+    utc_value = parsed.astimezone(timezone.utc)
+    timespec = "microseconds" if utc_value.microsecond else "seconds"
+    return utc_value.isoformat(timespec=timespec).replace("+00:00", "Z")
+
+
 @dataclass(frozen=True)
 class ScoreResult:
     status: str
     horizon: str
     score: str | None
-    contributions: dict[str, str]
+    contributions: Mapping[str, str]
     missing_reasons: tuple[str, ...]
     contract_version: str = VERSION
     score_kind: str = "RESEARCH_DISCOVERY_STRENGTH_NOT_PROBABILITY"
@@ -72,9 +100,9 @@ class ScoreResult:
 def score_v2(horizon: str, normalized_groups: Mapping[str, object]) -> ScoreResult:
     """Score complete normalized groups; never redistribute missing weight.
 
-    Every supplied normalized group must be within [0, 1]. A missing group
-    yields SCORE_UNAVAILABLE with no numeric score or partial contribution.
-    Extra groups are rejected to prevent silent contract drift.
+    Contributions are exact Decimal products (weight × normalized value).
+    Only the final score is rounded to two decimal places with ROUND_HALF_EVEN.
+    A missing group yields SCORE_UNAVAILABLE; extra groups are rejected.
     """
     if not isinstance(horizon, str) or horizon not in WEIGHTS:
         raise ValueError("UNSUPPORTED_HORIZON")
@@ -99,26 +127,31 @@ def score_v2(horizon: str, normalized_groups: Mapping[str, object]) -> ScoreResu
             raise ValueError("FEATURE_OUT_OF_RANGE:" + key)
         values[key] = value
 
-    contributions = {
-        key: (Decimal(weight) * values[key]).quantize(Decimal("0.01"))
+    exact_contributions = {
+        key: Decimal(weight) * values[key]
         for key, weight in weights.items()
     }
-    total = sum(contributions.values(), Decimal("0"))
-    # All components are exact decimal arithmetic and all weights sum to 100.
+    exact_total = sum(exact_contributions.values(), Decimal("0"))
+    displayed_total = exact_total.quantize(SCORE_QUANTUM, rounding=SCORE_ROUNDING)
     return ScoreResult(
-        "SCORED_RESEARCH_ONLY", horizon, str(total.quantize(Decimal("0.01"))),
-        {key: str(value) for key, value in contributions.items()}, (),
+        "SCORED_RESEARCH_ONLY",
+        horizon,
+        str(displayed_total),
+        MappingProxyType({key: str(value) for key, value in exact_contributions.items()}),
+        (),
     )
 
 
 def detection_event_key(*, rule_version: str, market: str, symbol: str,
                         direction: str, horizon: str, setup_type: str,
                         decision_close_utc: str, discriminator: str = "") -> str:
-    """Stable research event key; callers must supply a canonical UTC timestamp."""
+    """Stable research event key; timezone offsets are normalized to UTC."""
     parts = (rule_version, market, symbol, direction, horizon, setup_type,
-             decision_close_utc, discriminator)
-    if any(not isinstance(part, str) or not part.strip() for part in parts[:7]):
+             _canonical_utc_timestamp(decision_close_utc), discriminator)
+    if any(not isinstance(part, str) or not part.strip() for part in parts[:6]):
         raise ValueError("EVENT_IDENTITY_FIELD_REQUIRED")
+    if not isinstance(discriminator, str):
+        raise ValueError("INVALID_EVENT_DISCRIMINATOR")
     if direction not in {"UP", "DOWN"}:
         raise ValueError("INVALID_DIRECTION")
     if horizon not in WEIGHTS:
