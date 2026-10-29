@@ -56,7 +56,7 @@ class GitHubContentsHTTPTests(unittest.TestCase):
         raw = b"synthetic-binary-contents-" + bytes(range(72))
         encoded = base64.b64encode(raw).decode("ascii")
         self.assertGreater(len(encoded), 60)
-        for separator in ("\\n", "\\r\\n"):
+        for separator in ("\n", "\r\n"):
             with self.subTest(line_break=repr(separator)):
                 wrapped = separator.join(encoded[i:i + 60] for i in range(0, len(encoded), 60)) + separator
                 response = {"type": "file", "encoding": "base64",
@@ -69,7 +69,7 @@ class GitHubContentsHTTPTests(unittest.TestCase):
                 mocked.assert_called_once()
 
     def test_get_rejects_non_wrapping_whitespace_in_base64(self):
-        for invalid in ("Y Q==", "Y\\tQ==", "Y\\u00a0Q=="):
+        for invalid in ("Y Q==", "Y\tQ==", "Y\u00a0Q=="):
             with self.subTest(invalid=repr(invalid)):
                 payload = {"encoding": "base64", "sha": "blob-sha", "content": invalid}
                 with patch("zs_smart_gate.github_evidence_backend.urlopen",
