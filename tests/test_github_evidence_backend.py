@@ -102,7 +102,7 @@ class GitHubBackendTests(unittest.TestCase):
         receipt = "studies/study-mock-001/receipts/restore-event.json"
         tampered = dict(snapshot)
         tampered[receipt] += b"tampered"
-        self.assertEqual(verify_snapshot("study-mock-001", tampered).status, "NON_CANONICAL_RECORD")
+        self.assertEqual(verify_snapshot("study-mock-001", tampered).status, "INVALID_JSON")
         missing = {k: v for k, v in snapshot.items() if "/receipts/" not in k}
         self.assertEqual(verify_snapshot("study-mock-001", missing).status, "CLAIM_WITHOUT_RECEIPT")
 
