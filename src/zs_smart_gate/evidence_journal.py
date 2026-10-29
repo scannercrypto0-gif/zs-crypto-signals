@@ -93,9 +93,12 @@ class SingleStudyJournal:
         return JournalResult(True, "VERIFIED", key, digest)
 
     def claim_before_attempts(self, study_id: str, event_id: str) -> bool:
-        if _safe_id(study_id) != self.study_id:
+        try:
+            if _safe_id(study_id) != self.study_id:
+                return False
+            key = self._key("claims", event_id)
+        except ValueError:
             return False
-        key = self._key("claims", event_id)
         try:
             if self.backend.read(key) is not None:
                 return False
@@ -111,9 +114,12 @@ class SingleStudyJournal:
         return self._create_and_verify(key, body, "claim-" + event_id).ok
 
     def append_and_readback(self, event_id: str, payload: dict, checksum: str) -> bool:
-        event_id = _safe_id(event_id)
-        claim_key = self._key("claims", event_id)
-        receipt_key = self._key("receipts", event_id)
+        try:
+            event_id = _safe_id(event_id)
+            claim_key = self._key("claims", event_id)
+            receipt_key = self._key("receipts", event_id)
+        except ValueError:
+            return False
         try:
             claim = self.backend.read(claim_key)
             existing = self.backend.read(receipt_key)
