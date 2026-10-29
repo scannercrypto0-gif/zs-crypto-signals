@@ -21,8 +21,8 @@ VERSION = "SMART_GATE_V2_SCORE_CONTRACT_0.2"
 SCORE_QUANTUM = Decimal("0.01")
 SCORE_ROUNDING = ROUND_HALF_EVEN
 _CANONICAL_TIMESTAMP_PATTERN = re.compile(
-    r"^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}"
-    r"(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+    r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}"
+    r"(?:\.\d{1,6})?(?:Z|[+-]\d{2}:\d{2})$"
 )
 
 # Both levels are read-only so a caller cannot mutate the contract at runtime.
