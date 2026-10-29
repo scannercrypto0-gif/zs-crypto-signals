@@ -174,14 +174,14 @@ class BoundedSpool:
         now = _utc(now)
         self.expire(now=now)
         item = self._items.get(_safe_id(key))
-        if item is None or now - item.created_at > self.ttl:
+        if item is None or now - item.created_at >= self.ttl:
             return None
         return item.body
 
     def expire(self, *, now: datetime) -> int:
         now = _utc(now)
         stale = [key for key, item in self._items.items()
-                 if now - item.created_at > self.ttl]
+                 if now - item.created_at >= self.ttl]
         for key in stale:
             del self._items[key]
         return len(stale)
