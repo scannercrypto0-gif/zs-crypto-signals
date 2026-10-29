@@ -137,7 +137,7 @@ def score_v2(horizon: str, normalized_groups: Mapping[str, object]) -> ScoreResu
         "SCORED_RESEARCH_ONLY",
         horizon,
         str(displayed_total),
-        MappingProxyType({key: str(value) for key, value in exact_contributions.items()}),
+        MappingProxyType({key: format(value.normalize(), "f") for key, value in exact_contributions.items()}),
         (),
     )
 
