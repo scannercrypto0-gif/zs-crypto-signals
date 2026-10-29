@@ -27,7 +27,7 @@ class MockContentsTransport:
             return None
         if self.corrupt_readback:
             body = body + b"tampered"
-        return body, "mock-sha-" + str(len(body))
+        return body, "mock-sha-" + hashlib.sha256(body).hexdigest()
 
     def put_file(self, path, body, branch, sha, message):
         self.calls.append(("PUT", path, branch, sha, message))
