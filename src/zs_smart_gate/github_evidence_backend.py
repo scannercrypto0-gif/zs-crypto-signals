@@ -56,7 +56,9 @@ class GitHubContentsTransport:
             raise GitHubStorageError("GITHUB_READ_HTTP_" + str(status))
         try:
             record = json.loads(raw)
-            content = base64.b64decode(record["content"], validate=False)
+            if record.get("encoding") != "base64" or not isinstance(record.get("content"), str):
+                raise ValueError
+            content = base64.b64decode(record["content"], validate=True)
             sha = record["sha"]
             if not isinstance(sha, str) or not sha:
                 raise ValueError
@@ -75,7 +77,21 @@ class GitHubContentsTransport:
         request = Request(url, data=json.dumps(payload, separators=(",", ":")).encode("utf-8"), headers=headers, method="PUT")
         try:
             with urlopen(request, timeout=self.timeout) as response:
-                return response.status in (200, 201)
+                if response.status not in (200, 201):
+                    raise GitHubStorageError("GITHUB_WRITE_HTTP_" + str(response.status))
+                try:
+                    result = json.loads(response.read())
+                    if (not isinstance(result, dict)
+                        or not isinstance(result.get("content"), dict)
+                        or not isinstance(result["content"].get("sha"), str)
+                        or not result["content"]["sha"]
+                        or not isinstance(result.get("commit"), dict)
+                        or not isinstance(result["commit"].get("sha"), str)
+                        or not result["commit"]["sha"]):
+                        raise ValueError
+                except (ValueError, TypeError, KeyError):
+                    raise GitHubStorageError("GITHUB_WRITE_RESPONSE_INVALID") from None
+                return True
         except HTTPError as exc:
             if exc.code in (409, 422):
                 return False
