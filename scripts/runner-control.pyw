@@ -7,7 +7,7 @@ from pathlib import Path
 import sys
 import threading
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk,messagebox
 from datetime import datetime,timedelta,timezone
 
 ROOT=Path('D:/ZS-SMART-GATE')
@@ -46,13 +46,20 @@ def render(data):
     next_utc=data.get('next_utc')
     try: local=datetime.fromisoformat(next_utc.replace('Z','+00:00')).astimezone(timezone(timedelta(hours=3))).isoformat()
     except (ValueError,AttributeError):local='—'
+    diag=data.get('diagnostic',{})
     lines=[advice,'',f"الدورة التالية UTC: {next_utc or '—'}",f'الدورة التالية بالرياض: {local}',
            f"آخر تشغيل UTC: {data.get('last_utc') or '—'} | رمز الخروج: {data.get('exit_code','—')}",
            f"آخر نجاح: {health.get('last_success_utc') or '—'}",f"آخر فشل: {health.get('last_failure_utc') or '—'}",
            f"فئة الخطأ: {health.get('current_error_category') or 'لا يوجد'}",
            f"مصدر الساعة: {clock.get('source','UNKNOWN')} | عمر المزامنة: {clock.get('sync_age_seconds','—')} ثانية",
            f"اتصال Windows: {data.get('internet','UNKNOWN')} (المحاكاة لا تحتاج الإنترنت)",
-           'ساعة Binance: UNKNOWN | LIVE: OFF | أدلة GitHub: بانتظار الاعتماد',
+           'الدراسة المستقبلية: OFF | المحاكاة: مستقلة',
+           f"تشخيص Binance لمرة واحدة: {diag.get('status','NOT_AUTHORIZED')}",
+           f"محاولات HTTP: {diag.get('http_attempts','—')}/8 | الوقت ms: {diag.get('elapsed_ms','—')}",
+           f"نتيجة الشموع: {diag.get('reconciliation_status','—')} | إغلاق UTC: {diag.get('parent_close_at','—')}",
+           f"خطأ التشخيص: {diag.get('error_category') or diag.get('reason') or '—'}",
+           f"بداية/نهاية التشخيص UTC: {diag.get('started_at','—')} / {diag.get('finished_at','—')}",
+           'ساعة Binance: غير معتمدة للبحث PIT | أدلة GitHub الدائمة: بانتظار الاعتماد',
            f"انتهاء المهلة: {data.get('expires','—')}",f"النسخة: {data.get('revision','—')}",
            'بعد إعادة التشغيل: سجّل الدخول ثم افتح هذا الاختصار. لا تعويض للفترات الفائتة.']
     details.configure(state='normal');details.delete('1.0','end');details.insert('1.0','\n'.join(lines));details.configure(state='disabled')
@@ -81,7 +88,13 @@ def invoke(action):
     status_label.configure(text='جارٍ التحقق...')
     def worker():
         try:
-            result=getattr(control,action)() if control else {'state':'BLOCKED','reason':'PIN_OR_D_PATH_INVALID'}
+            if not control:
+                result={'state':'BLOCKED','reason':'PIN_OR_D_PATH_INVALID'}
+            elif action=='diagnostic_start':
+                control.diagnostic_start()
+                result=control.status()
+            else:
+                result=getattr(control,action)()
         except Exception:result={'state':'BLOCKED','reason':'WINDOWS_QUERY_FAILED'}
         try:window.after(0,lambda:render(result))
         except RuntimeError:pass
@@ -89,5 +102,17 @@ def invoke(action):
 
 for label,action in [('تشغيل / Resume','resume'),('إيقاف / Pause','pause'),('الحالة / Status','status'),('فحص الاستعادة / Recovery','status')]:
     b=ttk.Button(buttons,text=label,command=lambda a=action:invoke(a));b.pack(side='left',padx=5);controls.append(b)
+def confirm_diagnostic():
+    # Only this button authorizes the independent one-shot scheduled task.
+    if not messagebox.askyesno(
+        'تشخيص Binance — موافقة صريحة لمرة واحدة',
+        'تشغيل قراءة عامة واحدة لـ BTCUSDT / 30m عبر جدولة Windows؟\n'
+        'الحد الأقصى 8 محاولات HTTP. ليست دراسة مستقبلية ولا تداول.\n'
+        'لا يمكن إعادة التشغيل بعد استهلاك الموافقة.'):
+        return
+    invoke('diagnostic_start')
+
+b=ttk.Button(buttons,text='تشخيص Binance مرة واحدة',command=confirm_diagnostic)
+b.pack(side='left',padx=5);controls.append(b)
 window.after(100,lambda:invoke('status'))
 window.mainloop()

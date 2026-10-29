@@ -141,13 +141,15 @@ class Control:
             hp=self.logs/'health.json'
             if hp.exists() and hp.stat().st_size<=16384: health=json.loads(hp.read_text(encoding='utf-8'))
         except (ValueError,OSError): pass
+        from .windows_diagnostic import status as diagnostic_status
+        diagnostic = diagnostic_status(self.logs, expected_config_sha=self.config_sha)
         return {'state':status,'reason':reason,'expires':expiry,'last_utc':data.get('last_utc'),
                 'next_utc':data.get('next_utc'),'exit_code':data.get('last_result'),
                 'clock':clock_status(data.get('clock',''),data.get('time_service')),
                 'internet':'WINDOWS_REPORTS_INTERNET' if data.get('internet_hint') else 'OFFLINE_OR_UNKNOWN',
                 'health':health,'revision':config['revision'],'live':'OFF',
                 'github_evidence':'PENDING_OWNER_APPROVAL','capture':'NONE / SIMULATION_ONLY',
-                'codex_required':False}
+                'codex_required':False,'diagnostic':diagnostic}
 
     def resume(self):
         before=self.status()
@@ -165,3 +167,17 @@ class Control:
         self.executor("$t=Get-ScheduledTask -TaskPath '\\ZS-Offline-Pilot\\' -TaskName 'ZS-WindowsRunner-Independent-Simulation' -ErrorAction SilentlyContinue;"
                       "if($t){if($t.Description -ne '"+MARKER+"'){throw 'UNKNOWN_TASK'};Disable-ScheduledTask -InputObject $t | Out-Null}")
         return self.status()  # current bounded tick is allowed to finish
+
+
+    def diagnostic_start(self):
+        """Explicit GUI-only one-time diagnostic; NEVER modifies Resume/Pause."""
+        from .windows_diagnostic import authorize, status as diagnostic_status
+        try:
+            return {'diagnostic':authorize(
+                config_path=self.config_path,config_sha=self.config_sha,
+                repo=self.repo,state=self.state,logs=self.logs,
+                pythonw=self.pythonw,executor=self.executor)}
+        except (OSError,ValueError,RuntimeError):
+            # Do not fall back to simulation or direct HTTP if scheduler fails.
+            return {'diagnostic':diagnostic_status(self.logs,self.config_sha),
+                    'state':'BLOCKED','reason':'DIAGNOSTIC_ARMING_FAILED'}
