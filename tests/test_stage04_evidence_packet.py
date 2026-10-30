@@ -234,6 +234,10 @@ class Stage04EvidencePacketTests(unittest.TestCase):
             make_record(**base, candidate_status="QUALIFIED_SIGNAL", payload={})
         with self.assertRaisesRegex(ValueError, "SENSITIVE_FIELD_REJECTED"):
             make_record(**base, payload={"nested": {"api_key": "TEST_SECRET_TOKEN"}})
+        with self.assertRaisesRegex(ValueError, "UNVERIFIED_PRODUCTION_OR_PIT_VALUE"):
+            make_record(**base, payload={"analysis": {"score": 92}})
+        with self.assertRaisesRegex(ValueError, "UNVERIFIED_PRODUCTION_OR_PIT_VALUE"):
+            make_record(**base, payload={"analysis": {"signal_id": "fake-live"}})
         with self.assertRaisesRegex(ValueError, "NON_JSON_OR_NONFINITE_PAYLOAD"):
             make_record(**base, payload={"nan": float("nan")})
         with self.assertRaisesRegex(ValueError, "CONTENTS_RECORD_SIZE_LIMIT"):
