@@ -1,4 +1,4 @@
-# GitHub evidence backend — permission proposal (not activated)
+> **OWNER SUPERSEDING DECISION — 2026-10-30:** This file is a historical, unactivated GitHub App permissions proposal, not a current setup instruction. The owner has deferred all Windows runner deployment and the on-device synthetic GitHub App canary until after GitHub-only project development is complete. Do not create/install an App, key, token, or Windows worktree under the previous authorization. GitHub Actions may be used for development CI/tests subject to their own authorization boundaries; it is not the intended production scanner runtime. See [MASTER v1.16](../ZS_SMART_GATE_MASTER.md) and [Issue #11](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/11). Existing code and design details below remain for historical reference only.\n\n# GitHub evidence backend — permission proposal (not activated)
 
 Status: proposal only. No GitHub App, installation, token, secret, repository setting, or storage activation is created by this change.
 
