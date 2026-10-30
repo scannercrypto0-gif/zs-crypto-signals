@@ -1,5 +1,14 @@
 # ZS Crypto Signals — SMART GATE
 
+## مراجعة «PM1.2» الأخيرة — «PR #24» و«CI» النهائي — 30 أكتوبر 2026
+
+**الحالة الصحيحة الآن:** `STAGE04_OWNER_DESIGN_APPROVED / PR24_DRAFT_CODE_REVIEW_HOLD / OFFLINE_CI_SUCCESS_4_4 / CANARY_NOT_RUN / STAGE04_NOT_ADMIN_CLOSED`. **المراجعة ليست رفضًا للتصميم أو الكود المقبول سابقًا؛ إنها طلب اختبار محدد قبل اعتماد دمج هذه المسودة.**
+
+- [«PR #24»](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/24) سُلّم من «SD Coding 2.1» برأس `7a238ae1d05987a83749fbc6ac8344bd1a26545f`، أربعة ملفات لتجهيز سجلات «Stage04» و«Manifest/SHA-256»، الاسترجاع المستقل ومسار «Canary» صناعي يدوي. ما زال `OPEN/DRAFT/NOT_MERGED` على هذه البصمة.
+- [«CI #41121677655»](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/41121677655) **`COMPLETED/SUCCESS 4/4`** على رأس «PR» المذكور؛ 335 اختبارًا في «Ubuntu 3.11» مع اختبار متجاوز واحد، و«Windows 3.11» بلا فشل. وصف `QUEUED` في تسليم المطور أصبح قديمًا.
+- **قرار «PM» والتكليف التالي:** [تعليق المراجعة #6532712896 داخل «PR #24»](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/24#issuecomment-6532712896) و[ملخص «Issue #23» #6532721158](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/23#issuecomment-6532721158). يحتاج «SD Coding 2.1» **على نفس المسودة** إضافة اختبارات «Offline» تحاكي مسار «Canary» المصرح به حتى نجاح إنشاء الفرع عبر «GitHub REST POST» وعمليات الكتابة/«Readback/Restore» المستقلة، واستجابات الفشل وحماية الرموز وسقف الـ64 عملية؛ دون شبكة حقيقية أو إعادة تصميم. ثم رأس «SHA» جديد و«CI» جديد للمراجعة.
+- **التفويضات ثابتة:** لا موافقة دمج «PR #24» بعد، ولا اختبار تخزين حي أو استرجاع من «GitHub» مثبت، ولا إغلاق «04». لا «Windows Runner» أو «Telegram» أو إشارات أو تداول، ولا استئناف المعادلات العلمية و«PIT» في «03» حتى قرار قبول «04» فعليًا. التصحيحات/التسليمات المؤثرة تُثبت في «PR/Issue #23/MASTER/README»، وأي محادثة جديدة تستلم أحدث الحالة من «main».
+
 ## اعتماد المالك لتصميم المرحلة 04 — 30 أكتوبر 2026 — التكليف البرمجي التالي
 
 **`OWNER_APPROVED_STAGE04_DESIGN / STAGE04_P0_IMPLEMENTATION_AUTHORIZED_WITH_GATES / NOT_ADMIN_CLOSED`.** وافق المالك صراحة على تصميم التخزين الخاص بـ«GitHub» في [«Issue #23»](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/23#issuecomment-6532397151). **بوابة التصميم مقبولة، لكن التخزين الدائم غير مُفعّل والمرحلة «04» غير مغلقة بعد**. هذا القرار أحدث من وصف «بانتظار اعتماد التصميم» في قسم الأولوية التاريخي أدناه.
