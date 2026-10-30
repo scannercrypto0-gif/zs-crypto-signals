@@ -1,10 +1,19 @@
 # ZS Crypto Signals "GITHUB Version" — SMART GATE
 
-## ملف الحوكمة والمواصفات الرئيسي — MASTER v1.21
+## ملف الحوكمة والمواصفات الرئيسي — MASTER v1.22
 
-**التحديث:** 30 أكتوبر 2026 | **الإصدار:** v1.21 | **الاسم الرسمي:** `ZS_SMART_GATE_MASTER.md`.
+**التحديث:** 30 أكتوبر 2026 | **الإصدار:** v1.22 | **الاسم الرسمي:** `ZS_SMART_GATE_MASTER.md`.
 
-**المصدر:** MASTER v1.21 يحفظ SMART GATE Unified Design v2.1 والـBlueprint التاريخي، ويضيف **سجل أدلة وقرارات إغلاق واحد داخل الملف** لحماية المشروع من تراكم اختبارات غير محسومة. 14 مرحلة 00–13 ثابتة؛ 00–02 VERIFIED في نطاقاتها، 03A/03B1 VERIFIED، 03B2 CODE ACCEPTED ومُدمج مع إغلاق دراسته القديمة رسميًا بنتيجة PARTIAL 8/12 وINSUFFICIENT_EVIDENCE، و**دراسة 03B3 القديمة أُلغي تشغيلها بقرار المالك (9 LATE + 3 CANCELLED، 0/12 بيانات رصد حية)**. بدأ تاريخيًا تكليف دراسة «Windows» مستقبلية في «Issue #11» ثم **أوقف مسار تنفيذها المحلي** بقرار المالك الحاكم في 30 أكتوبر 2026؛ لا استرجاع بيانات قديمة. Phase 03 **PARTIALLY CLOSED — ENGINEERING ACCEPTED / SCIENTIFIC HOLD**، والمرحلة 04 **NEXT / DESIGN-GATED** وفق قرار المالك الأحدث أدناه؛ ولا فتح لإشارات/Scoring تداول إنتاجي دون اعتماد جديد. لا Scoring V2 إنتاجي أو Signal أو تداول.
+**المصدر:** MASTER v1.22 يحفظ SMART GATE Unified Design v2.1 والـBlueprint التاريخي، ويضيف **سجل أدلة وقرارات إغلاق واحد داخل الملف** لحماية المشروع من تراكم اختبارات غير محسومة. 14 مرحلة 00–13 ثابتة؛ 00–02 VERIFIED في نطاقاتها، 03A/03B1 VERIFIED، 03B2 CODE ACCEPTED ومُدمج مع إغلاق دراسته القديمة رسميًا بنتيجة PARTIAL 8/12 وINSUFFICIENT_EVIDENCE، و**دراسة 03B3 القديمة أُلغي تشغيلها بقرار المالك (9 LATE + 3 CANCELLED، 0/12 بيانات رصد حية)**. بدأ تاريخيًا تكليف دراسة «Windows» مستقبلية في «Issue #11» ثم **أوقف مسار تنفيذها المحلي** بقرار المالك الحاكم في 30 أكتوبر 2026؛ لا استرجاع بيانات قديمة. Phase 03 **PARTIALLY CLOSED — ENGINEERING ACCEPTED / SCIENTIFIC HOLD**، والمرحلة 04 **NEXT / DESIGN-GATED** وفق قرار المالك الأحدث أدناه؛ ولا فتح لإشارات/Scoring تداول إنتاجي دون اعتماد جديد. لا Scoring V2 إنتاجي أو Signal أو تداول.
+
+## «PM1.2» checkpoint — 30 أكتوبر 2026 — مراجعة «PR #24» وتصحيح حالة «CI» (لا إغلاق للمرحلة 04)
+
+**مرجع تنفيذي آني:** [«PR #24» — التعليق الحاكم للمراجعة المستقلة](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/24#issuecomment-6532712896)، و[«Issue #23» — ملخص القرار والتكليف التصحيحي](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/23#issuecomment-6532721158). يعلو هذا الـ«checkpoint» على وصف «SD Coding 2.1 NEXT» الأقدم في قرار التصميم أدناه **من حيث حالة تسليم الكود فقط**؛ ولا يغير تفويض المالك أو تصميمه.
+
+- **تسليم «SD Coding 2.1»:** [«Draft PR #24»](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/24) برأس `7a238ae1d05987a83749fbc6ac8344bd1a26545f`، `OPEN/DRAFT/MERGED=false` وقت التدقيق. أربعة ملفات: `stage04_evidence_packet.py` و`stage04_canary.py` و`stage04-synthetic-evidence-canary.yml` و`test_stage04_evidence_packet.py`. لا «MASTER/README» محرَّرين من «SD».
+- **الاختبار النهائي:** [«CI #41121677655»](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/41121677655) `COMPLETED/SUCCESS 4/4` على الرأس الدقيق، «Ubuntu/Windows» × «Python 3.11/3.12»؛ 335 اختبارًا مسجلًا في «Ubuntu 3.11» (تجاوز واحد) و«Windows 3.11» دون إخفاق. التقرير الأقدم الذي ذكر `QUEUED` أصبح تاريخيًا، وليس الحالة الحالية.
+- **مراجعة «PM» المستقلة:** العقد/البصمات/الاسترجاع مدعومة بمحاكاة «Offline»، لكن `PR24_CODE_ACCEPTANCE_HOLD_FOR_BOUNDED_CANARY_TEST_GAP`. اختبار «Canary» الحالي يغطي المنع عند غياب تفويض فقط؛ لا يثبت المسار المفوض إيجابيًا الذي يُنشئ فرعًا عبر «GitHub REST POST» ثم يكتب ويسترجع بوسيلتي نقل مستقلتين. **التكليف الواحد التالي إلى «SD Coding 2.1» على نفس «PR #24»:** اختبار حتمي دون شبكة لمسار `_branch_once` (`201/ref` وحالات `403/409/422/timeout`) و`canary_main` بعد تحقق البوابات حتى استرجاع ناجح/فشل مغلق وسقف `64` وعدم تسرب أسرار؛ إصلاح فقط أي عيب مثبت، ثم رأس «SHA» جديد و«CI 4/4» ومراجعة «PM» جديدة.
+- **لا موافقة دمج أو تفعيل:** `NO_OWNER_PR24_MERGE_APPROVAL`، `CANARY_NOT_RUN`، `REAL_GITHUB_WRITE_READBACK_RESTORE_NOT_VERIFIED`، `STAGE04_NOT_ADMIN_CLOSED`. لا تشغيل «GitHub Actions» بكتابة حقيقية أو دفع رسوم/مفاتيح/خدمات، ولا تغيير قرار «PIT FAIL/HOLD» أو حالة «03» المغلقة جزئيًا. تبدأ أي محادثة جديدة من أحدث «main → MASTER → README → Issue #23 → PR #24 → CI» وتستكمل من أحدث «SHA»، دون تكرار الاختبارات المقبولة.
 
 ## قرار مالك حاكم أحدث — 30 أكتوبر 2026 — اعتماد تصميم المرحلة 04 وإطلاق تكليف «SD Coding 2.1»
 
