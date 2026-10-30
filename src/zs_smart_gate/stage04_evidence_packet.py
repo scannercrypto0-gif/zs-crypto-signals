@@ -66,8 +66,20 @@ def _safe_json(value: object) -> None:
             for key, child in node.items():
                 if not isinstance(key, str):
                     raise ValueError("NON_STRING_JSON_KEY")
-                if key.lower() in _SENSITIVE:
+                lowered = key.lower()
+                if lowered in _SENSITIVE:
                     raise ValueError("SENSITIVE_FIELD_REJECTED")
+                if (lowered in ("score", "signal_id", "source_publication_at",
+                                "clock_uncertainty_ms")
+                        and child is not None):
+                    raise ValueError("UNVERIFIED_PRODUCTION_OR_PIT_VALUE")
+                if (lowered in ("publishable", "delivery_authorized", "qualified_signal")
+                        and child is not False and child is not None):
+                    raise ValueError("UNVERIFIED_PRODUCTION_OR_PIT_VALUE")
+                if lowered == "pit_status" and child != "PIT_UNVERIFIED":
+                    raise ValueError("UNVERIFIED_PRODUCTION_OR_PIT_VALUE")
+                if lowered == "score_status" and child != "SCORE_UNAVAILABLE":
+                    raise ValueError("UNVERIFIED_PRODUCTION_OR_PIT_VALUE")
                 check(child)
         elif isinstance(node, (tuple, list)):
             for child in node:
@@ -114,7 +126,7 @@ def make_record(*, study_id: str, event_id: str, record_type: str,
         "delivery_authorized": False,
         "payload": payload,
     }
-    if len(canonical_bytes(result)) > MAX_CONTENTS_BYTES - 500:
+    if len(canonical_bytes(result)) > MAX_CONTENTS_BYTES - 4096:
         raise ValueError("CONTENTS_RECORD_SIZE_LIMIT")
     return result
 
@@ -144,8 +156,8 @@ def _check_record(record: object, study_id: str, event_id: str) -> None:
         "INVALID", "REJECTED",
     ) or not isinstance(record.get("payload"), dict):
         raise ValueError("INVALID_RESEARCH_PAYLOAD")
-    _safe_json(record["payload"])
-    if len(canonical_bytes(record)) > MAX_CONTENTS_BYTES - 500:
+    _safe_json(record)
+    if len(canonical_bytes(record)) > MAX_CONTENTS_BYTES - 4096:
         raise ValueError("CONTENTS_RECORD_SIZE_LIMIT")
 
 
@@ -180,7 +192,7 @@ def prepare_manifest(study_id: str, records: Mapping[str, dict],
         "score_status": "SCORE_UNAVAILABLE",
         "entries": entries,
     }
-    if len(canonical_bytes(manifest)) > MAX_CONTENTS_BYTES - 500:
+    if len(canonical_bytes(manifest)) > MAX_CONTENTS_BYTES - 4096:
         raise ValueError("MANIFEST_CONTENTS_SIZE_LIMIT")
     return manifest
 
@@ -222,7 +234,7 @@ def _validate_manifest(study_id: str, manifest: object) -> list[dict]:
                 or entry["size_bytes"] < 1
                 or entry["size_bytes"] > MAX_CONTENTS_BYTES):
             raise ValueError("MANIFEST_ENTRY_INVALID")
-    if len(canonical_bytes(manifest)) > MAX_CONTENTS_BYTES - 500:
+    if len(canonical_bytes(manifest)) > MAX_CONTENTS_BYTES - 4096:
         raise ValueError("MANIFEST_CONTENTS_SIZE_LIMIT")
     return entries
 
