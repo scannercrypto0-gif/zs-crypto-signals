@@ -243,6 +243,25 @@ class Stage04EvidencePacketTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "CONTENTS_RECORD_SIZE_LIMIT"):
             make_record(**base, payload={"sample": "x" * MAX_CONTENTS_BYTES})
 
+    def test_rejects_unapproved_extra_fields_and_claim_after_receipt(self):
+        manifest, records = packet()
+        modified = {**records,
+                    "raw-001": {**records["raw-001"], "extra": "not in schema"}}
+        result = persist_packet(make_writer(FakeGitHub()), manifest, modified)
+        self.assertEqual(result.status, "REJECTED_INVALID_PACKET")
+        remote = FakeGitHub()
+        saved = persist_packet(make_writer(remote), manifest, records)
+        self.assertTrue(saved.ok)
+        corrupt = dict(remote.files)
+        claim = f"studies/{STUDY}/claims/raw-001.json"
+        obj = json.loads(corrupt[claim])
+        obj["claimed_at"] = "2099-01-01T00:00:00+00:00"
+        corrupt[claim] = canonical_bytes(obj)
+        restore = restore_from_remote(study_id=STUDY, branch=BRANCH,
+            transport=FakeGitHub(corrupt),
+            expected_manifest_sha256=saved.manifest_sha256)
+        self.assertEqual(restore.status, "FAIL_CLAIM_AFTER_RECEIPT")
+
     def test_manifest_validation_checks_integrity_and_cap_not_all_time(self):
         manifest, records = packet()
         bad = {**manifest, "entries": []}
