@@ -255,7 +255,13 @@ def probe_once(*, horizon: Horizon, symbol: str = SYMBOL,
         return result
     except LiveBlocked as exc:
         return report("ONLINE_BLOCKED", str(exc))
-    except (LiveFailure, ValueError, TypeError, IndexError, KeyError) as exc:
+    except LiveFailure as exc:
+        # Access-denial is a provider/geography gate, not code or candle failure.
+        detail = str(exc)
+        if detail.startswith(("HTTP_403", "HTTP_451", "HTTP_418", "HTTP_429")):
+            return report("ONLINE_BLOCKED", detail)
+        return report("ONLINE_INPUT_UNAVAILABLE", detail)
+    except (ValueError, TypeError, IndexError, KeyError) as exc:
         return report("ONLINE_INPUT_UNAVAILABLE", str(exc))
 
 

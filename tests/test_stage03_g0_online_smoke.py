@@ -9,7 +9,7 @@ import unittest
 from datetime import datetime, timezone
 from unittest.mock import patch
 
-from zs_smart_gate.binance_live import LiveBlocked
+from zs_smart_gate.binance_live import LiveBlocked, LiveFailure
 from zs_smart_gate.stage03a_contracts import Horizon
 from zs_smart_gate.stage03_g0_online_smoke import (
     CONTEXT, DURATIONS, closed_boundary, probe_once, main,
@@ -39,6 +39,8 @@ class Fixture:
         n = len(self.calls)
         if self.invalid == "network" and n == 1:
             raise LiveBlocked("MOCK_NETWORK_UNAVAILABLE")
+        if self.invalid == "geo" and n == 1:
+            raise LiveFailure("HTTP_451")
         if self.invalid == "retry" and n == 1:
             on_attempt(path)
             raise AssertionError("RETRY_WAS_NOT_BLOCKED")
@@ -173,6 +175,15 @@ class BoundedOnlineG0FixtureTests(unittest.TestCase):
         row, _ = fixture_run(Horizon.INTRADAY, fake)
         self.assertEqual(row["status"], "ONLINE_BLOCKED")
         self.assertEqual(row["reason"], "RATE_WEIGHT_STOP")
+        self.assertEqual(row["attempt_count"], 1)
+        self.assert_no_scientific_pit(row)
+
+    def test_geographical_or_waf_http_denial_is_online_blocked_not_code_failure(self):
+        fake = Fixture()
+        fake.invalid = "geo"
+        row, _ = fixture_run(Horizon.INTRADAY, fake)
+        self.assertEqual(row["status"], "ONLINE_BLOCKED")
+        self.assertEqual(row["reason"], "HTTP_451")
         self.assertEqual(row["attempt_count"], 1)
         self.assert_no_scientific_pit(row)
 
