@@ -76,9 +76,9 @@
 **Old 03B3 remains CANCELED** with audited GitHub history retained; old samples excluded from evaluation, and no old cron/manual workflow remains active.
 ## قواعد العمل للمحادثات وSD / Coding
 
-1. اقرأ أحدث MASTER v1.14 وREADME وحالة **main/PRs/CI** مباشرة قبل أي عمل؛ لا تعتمد على عبارات حالة تاريخية داخل Blueprint قديم أو على Project Resources متأخرة. **مزامنة Project Resources مع GitHub ليست تلقائية.**
+1. اقرأ أحدث MASTER v1.17 وREADME وحالة **main/PRs/CI** مباشرة قبل أي عمل؛ لا تعتمد على عبارات حالة تاريخية داخل Blueprint قديم أو على Project Resources متأخرة. **مزامنة Project Resources مع GitHub ليست تلقائية.**
 2. **PR Conversation** للأوامر وتقارير الاختبارات وقبول PM. لا ملفات Markdown جديدة للحَوْكمة؛ **README وMASTER فقط**. الكود والاختبارات وCI/config والبيانات التشغيلية المعتمدة مسموحة حسب مراحلها.
 3. **02 و03A و03B1 متحقق منها ضمن نطاق كل جزء، و03B2 التاريخية مغلقة بنتيجة غير كافية، و03B3 الأصلية CANCELLED_BY_OWNER ومستبعدة من تقييم البحث.** دراسة «Windows» المستقبلية المنصوص عليها تاريخيًا في «Issue #11» مؤجلة بقرار المالك في 30 أكتوبر 2026؛ لا «Scoring» رقمي أو إشارة إنتاجية أو تداول بدون اعتماد منفصل.
 4. **GitHub هو مصدر الحقيقة لكل البيانات الدائمة**؛ بعد اكتمال المشروع وقبول النشر يصبح كمبيوتر «Windows» خادم التنفيذ الفعلي؛ لا نشر محلي كامل الآن. لا أسرار داخل Repo، ولا قرارات Storage Backend/تكلفة/تداول حقيقي دون موافقة المالك. الاختبارات يجب أن تثبت تكامل المسار المنفذ فقط؛ لا ادعاء اكتمال SMART GATE غير المبني.
 
-**Repository:** [scannercrypto0-gif/zs-crypto-signals](https://github.com/scannercrypto0-gif/zs-crypto-signals) · **Private** · **MASTER v1.17 / Unified Design v2.1** · **Verified full phases 00–02 / 14; 03A/03B1 VERIFIED; 03B2 code accepted, original study closed insufficient 8/12; original 03B3 GH study owner-cancelled, 0/12 observed, new Windows future study Issue #11 preparing; Phase 03 IN PROGRESS; no trading authorization**.
+**Repository:** [scannercrypto0-gif/zs-crypto-signals](https://github.com/scannercrypto0-gif/zs-crypto-signals) · **Private** · **MASTER v1.17 / Unified Design v2.1** · **Verified full phases 00–02 / 14; 03A/03B1 VERIFIED; 03B2 code accepted, original study closed insufficient 8/12; original 03B3 GH study owner-cancelled, 0/12 observed, former Windows future study Issue #11 deferred by owner; Phase 03 IN PROGRESS; no trading authorization**.
