@@ -406,7 +406,9 @@ ZS SMART GATE — SD CODING CONTINUITY BOOTSTRAP
 
 - **Decision requests:** cadence/weight budget، تعريف freshness/stale، سياسة الفشل عند انقطاع Binance، وعدم اعتماد تخزين دائم بديل.
 
-#### 03 — Early Impulse, MTF and Signal/Score Definitions | IN PROGRESS — 03B3 ENGINEERING MERGED / LIVE PENDING
+#### 03 — Early Impulse, MTF and Signal/Score Definitions | IN PROGRESS — REFER TO LATEST PM CHECKPOINT
+
+> **حالة هذا التفصيل تاريخية:** سطور 03B3 المجدولة أدناه من مخطط سابق؛ الأصلية ألغيت بقرار المالك. الأحدث هو «PM checkpoint — 30 أكتوبر 2026» أعلى الملف: PR #15/#19 مدمجان وPR #20 قُبل كودًا ولم يُدمج، والدراسة المستقبلية على Windows مؤجلة. لا إعادة تشغيل لعينة أو جدولة قديمة.
 **v2.1 scope/gates:** 03A/03B1 VERIFIED within bounded scopes; 03B2 CODE ACCEPTED and research CLOSED-AS-LIMITED 8/12 with full workflow FAILURE, no original PIT. **03B3 CODE MERGED after owner exception** with frozen 3-symbol/4-time-close/12-slot prospective research protocol and manual-only workflow on `main`. 182 tests×4 and preclose safety passed but **NO new-path postclose Binance LIVE proof at handoff**, 0/12. Closure deadline 2026-10-29 13:00 UTC; no replacement/backfill, no unbounded continuation. No V2 total, QUALIFIED_SIGNAL, issued signal_id, BOS/CHoCH or trade plan levels until independent OOS evidence/owner approval. See register v1.9. V1 preserved.
 - **Data:** 5m/15m/30m/1h/4h/Daily/Weekly closed aligned OHLCV، timestamp availability، outcomes المنفصلة.
 - **Indicators:** Price impulse مرجعي ±0.7%، RVOL>=2، EXTENDED ±8% فقط بعد تثبيت نافذته، Signed Net/Path MTF Alignment على 3×5m و3×15m بعد اعتماد المعادلة، Momentum Consistency، Scoring V1 weights 35/25/20/10/10.
