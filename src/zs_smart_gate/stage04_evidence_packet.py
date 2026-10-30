@@ -136,6 +136,14 @@ def _check_record(record: object, study_id: str, event_id: str) -> None:
         raise ValueError("RECORD_SCHEMA_MISMATCH")
     if record.get("study_id") != study_id or record.get("event_id") != event_id:
         raise ValueError("RECORD_ID_MISMATCH")
+    if set(record) != {
+        "schema", "study_id", "event_id", "record_type", "source_id",
+        "received_at", "available_at", "source_publication_at",
+        "clock_uncertainty_ms", "pit_status", "qualification_status",
+        "candidate_status", "score_status", "score", "signal_id",
+        "publishable", "delivery_authorized", "payload",
+    }:
+        raise ValueError("UNEXPECTED_RECORD_FIELDS")
     if record.get("record_type") not in RECORD_KINDS:
         raise ValueError("RECORD_TYPE_MISMATCH")
     if not isinstance(record.get("source_id"), str) or not record["source_id"].strip():
@@ -202,6 +210,14 @@ def _validate_manifest(study_id: str, manifest: object) -> list[dict]:
         raise ValueError("INVALID_STAGE04_MANIFEST")
     if manifest.get("study_id") != study_id:
         raise ValueError("MANIFEST_STUDY_MISMATCH")
+    if set(manifest) != {
+        "schema", "study_id", "created_at", "retention_review_at",
+        "retention_action", "max_study_bytes", "evidence_branch_policy",
+        "server_enforced_worm", "source_publication_status",
+        "independent_utc_status", "pit_status", "score_status", "entries",
+    }:
+        raise ValueError("UNEXPECTED_MANIFEST_FIELDS")
+    _safe_json(manifest)
     at = _date(manifest.get("created_at"))
     if manifest.get("retention_review_at") != (at + timedelta(days=30)).isoformat():
         raise ValueError("MANIFEST_REVIEW_POLICY_INVALID")
@@ -221,7 +237,9 @@ def _validate_manifest(study_id: str, manifest: object) -> list[dict]:
         raise ValueError("MANIFEST_ENTRIES_INVALID")
     seen = set()
     for entry in entries:
-        if not isinstance(entry, dict):
+        if not isinstance(entry, dict) or set(entry) != {
+            "event_id", "record_type", "sha256", "size_bytes"
+        }:
             raise ValueError("MANIFEST_ENTRY_INVALID")
         event_id = _id(entry.get("event_id"))
         if event_id == "manifest" or event_id in seen:
@@ -324,6 +342,13 @@ def restore_from_remote(*, study_id: str, branch: str, transport: ContentsTransp
         if not journal_report.ok:
             return EvidenceResult(False, "FAIL_" + journal_report.status,
                                   journal_report.records_checked, digest)
+        # Claims must precede receipts in the journal's own UTC chronology.
+        for event_id in event_ids:
+            claim = json.loads(files[prefix + "claims/" + event_id + ".json"])
+            receipt = json.loads(files[prefix + "receipts/" + event_id + ".json"])
+            if _date(claim.get("claimed_at")) > _date(receipt.get("recorded_at")):
+                return EvidenceResult(False, "FAIL_CLAIM_AFTER_RECEIPT",
+                                      journal_report.records_checked, digest)
         for entry in entries:
             path = prefix + "receipts/" + entry["event_id"] + ".json"
             receipt = json.loads(files[path])
