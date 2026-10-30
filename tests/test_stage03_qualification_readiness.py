@@ -60,7 +60,7 @@ class QualificationReadinessTests(unittest.TestCase):
         self.assertFalse(row["delivery_authorized"])
         self.assertFalse(row["durable_dedup_authority"])
         self.assertEqual(row["trade_plan_status"], "RESEARCH_ONLY")
-        self.assertEqual(row["stage03c_dependency"], "UNMERGED_NO_SCORE_INPUT_INTEGRATION")
+        self.assertEqual(row["stage03c_dependency"], "MERGED_BUT_NOT_QUALIFIED")
 
     def test_both_horizons_and_directions_valid_closed_synthetic(self):
         for horizon in Horizon:

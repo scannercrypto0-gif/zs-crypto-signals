@@ -1,8 +1,9 @@
 """Offline Stage-03 qualification readiness using accepted 01/03A/03B1 contracts.
 
-No source fetch, normalization formula, score-03C import, persistence, publication,
-production signal ID, Telegram, clock attestation, scheduler or trading.
-PR #15's 03C scorer remains a separate unmerged dependency.
+No source fetch, approved normalization, scoring from raw inputs, persistence,
+publication, production signal ID, Telegram, clock attestation or trading.
+Stage 03C is merged but its numeric research scorer remains unlicensed for
+this raw/descriptive integration; both contracts are audited without scoring.
 """
 from __future__ import annotations
 
@@ -12,6 +13,7 @@ from typing import Mapping, Sequence
 from .core import Candle, MarketSnapshot, build_candidate, utc, validate_candles
 from .mtf_contracts import (CandleWindow, ReconciliationTolerance, reconcile)
 from .research_metrics import describe
+from .stage03_contract_alignment import unavailable_contract_packet
 from .stage03a_contracts import (Direction, EventIdentity, Horizon, Lifecycle,
                                  ResearchKeyRegistry, V2_GROUPS, bind_research_candidate)
 
@@ -53,6 +55,7 @@ def assess_readiness(*, symbol: str, horizon: Horizon, direction: Direction,
     if normalized_groups is not None and not isinstance(normalized_groups, Mapping):
         raise ValueError("NORMALIZED_GROUP_MAPPING_REQUIRED")
     decision_at = utc(decision_at)
+    score_packet = unavailable_contract_packet(horizon, direction)
     identity = EventIdentity.research_key(
         symbol=symbol, horizon=horizon, direction=direction,
         setup_type="OFFLINE_QUALIFICATION_READINESS_UNAPPROVED",
@@ -118,6 +121,8 @@ def assess_readiness(*, symbol: str, horizon: Horizon, direction: Direction,
             reasons.extend(event.reason_codes)
 
     if status == Lifecycle.RESEARCH_CANDIDATE.value:
+        if any(row["mapped_03c_group"] is None for row in score_packet["alignment"]):
+            reasons.append("GROUP_SEMANTIC_ALIGNMENT_INCOMPLETE")
         reasons.extend(("QUALIFICATION_FORMULAS_NOT_APPROVED",
                         "NORMALIZATION_FORMULAS_NOT_APPROVED",
                         "FRESHNESS_POLICY_NOT_APPROVED",
@@ -134,8 +139,10 @@ def assess_readiness(*, symbol: str, horizon: Horizon, direction: Direction,
         "candidate": candidate.as_dict() if candidate is not None else None,
         "research_event": event.as_dict() if event is not None else None,
         "research_metrics": {direction.value: metrics} if metrics else {},
-        "score_status": "SCORE_UNAVAILABLE", "score": None,
-        "stage03c_dependency": "UNMERGED_NO_SCORE_INPUT_INTEGRATION",
+        "score_status": score_packet["status"], "score": score_packet["score"],
+        "score_contracts": score_packet,
+        "score_missing_reasons": score_packet["missing_reasons"],
+        "stage03c_dependency": "MERGED_BUT_NOT_QUALIFIED",
         "source_publication_time": None, "clock_uncertainty_ms": None,
         "signal_id": None, "publishable": False, "delivery_authorized": False,
         "trade_plan_status": "RESEARCH_ONLY",
