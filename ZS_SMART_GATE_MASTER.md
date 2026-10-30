@@ -4,7 +4,7 @@
 
 **التحديث:** 30 أكتوبر 2026 | **الإصدار:** v1.19 | **الاسم الرسمي:** `ZS_SMART_GATE_MASTER.md`.
 
-**المصدر:** MASTER v1.19 يحفظ SMART GATE Unified Design v2.1 والـBlueprint التاريخي، ويضيف **سجل أدلة وقرارات إغلاق واحد داخل الملف** لحماية المشروع من تراكم اختبارات غير محسومة. 14 مرحلة 00–13 ثابتة؛ 00–02 VERIFIED في نطاقاتها، 03A/03B1 VERIFIED، 03B2 CODE ACCEPTED ومُدمج مع إغلاق دراسته القديمة رسميًا بنتيجة PARTIAL 8/12 وINSUFFICIENT_EVIDENCE، و**دراسة 03B3 القديمة أُلغي تشغيلها بقرار المالك (9 LATE + 3 CANCELLED، 0/12 بيانات رصد حية)**. بدأ تاريخيًا تكليف دراسة «Windows» مستقبلية في «Issue #11» ثم **أوقف مسار تنفيذها المحلي** بقرار المالك الحاكم في 30 أكتوبر 2026؛ لا استرجاع بيانات قديمة. Phase 03 IN PROGRESS، ولا فتح لإشارات/Scoring تداول إنتاجي دون اعتماد جديد. لا Scoring V2 إنتاجي أو Signal أو تداول.
+**المصدر:** MASTER v1.19 يحفظ SMART GATE Unified Design v2.1 والـBlueprint التاريخي، ويضيف **سجل أدلة وقرارات إغلاق واحد داخل الملف** لحماية المشروع من تراكم اختبارات غير محسومة. 14 مرحلة 00–13 ثابتة؛ 00–02 VERIFIED في نطاقاتها، 03A/03B1 VERIFIED، 03B2 CODE ACCEPTED ومُدمج مع إغلاق دراسته القديمة رسميًا بنتيجة PARTIAL 8/12 وINSUFFICIENT_EVIDENCE، و**دراسة 03B3 القديمة أُلغي تشغيلها بقرار المالك (9 LATE + 3 CANCELLED، 0/12 بيانات رصد حية)**. بدأ تاريخيًا تكليف دراسة «Windows» مستقبلية في «Issue #11» ثم **أوقف مسار تنفيذها المحلي** بقرار المالك الحاكم في 30 أكتوبر 2026؛ لا استرجاع بيانات قديمة. Phase 03 **PARTIALLY CLOSED — ENGINEERING ACCEPTED / SCIENTIFIC HOLD**، والمرحلة 04 **NEXT / DESIGN-GATED** وفق قرار المالك الأحدث أدناه؛ ولا فتح لإشارات/Scoring تداول إنتاجي دون اعتماد جديد. لا Scoring V2 إنتاجي أو Signal أو تداول.
 
 ## قرار المالك الحاكم الأحدث — 30 أكتوبر 2026 — إغلاق جزئي للمرحلة 03 وتقديم المرحلة 04 (ملزم لكل المحادثات الحالية والقادمة)
 
@@ -452,7 +452,7 @@ ZS SMART GATE — SD CODING CONTINUITY BOOTSTRAP
 
 
 
-#### 04 — GitHub Permanent Data / Provenance / Recovery | PLANNED, OWNER GATE
+#### 04 — GitHub Permanent Data / Provenance / Recovery | NEXT — PLANNED, OWNER DESIGN GATE
 **v2.1 mandatory future scope:** GitHub-authoritative versioned Signal/Candidate/TradePlan/Delivery/Analytical JSON/Outcome/ScanCycle records; immutable manifest/readback/sha256/recovery; identify and handle outage, retries and secrets. Design/quotas need separate approval.
 - **Data:** raw market/source snapshots، eligibility/candidates/signals، immutable decision snapshots وlater outcomes، experiment manifests، hashes وversions وtimestamps.
 - **Filters:** Integrity/Schema/Completeness/PIT/Idempotency checks (ليست شروط سعرية) ورفض الاعتراف بنجاح كتابة قبل readback.
