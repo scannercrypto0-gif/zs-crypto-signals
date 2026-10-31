@@ -1,10 +1,22 @@
 # ZS Crypto Signals "GITHUB Version" — SMART GATE
 
-## ملف الحوكمة والمواصفات الرئيسي — MASTER v1.22
+## ملف الحوكمة والمواصفات الرئيسي — MASTER v1.23
 
-**التحديث:** 30 أكتوبر 2026 | **الإصدار:** v1.22 | **الاسم الرسمي:** `ZS_SMART_GATE_MASTER.md`.
+**التحديث:** 31 أكتوبر 2026 | **الإصدار:** v1.23 | **الاسم الرسمي:** `ZS_SMART_GATE_MASTER.md`.
 
-**المصدر:** MASTER v1.22 يحفظ SMART GATE Unified Design v2.1 والـBlueprint التاريخي، ويضيف **سجل أدلة وقرارات إغلاق واحد داخل الملف** لحماية المشروع من تراكم اختبارات غير محسومة. 14 مرحلة 00–13 ثابتة؛ 00–02 VERIFIED في نطاقاتها، 03A/03B1 VERIFIED، 03B2 CODE ACCEPTED ومُدمج مع إغلاق دراسته القديمة رسميًا بنتيجة PARTIAL 8/12 وINSUFFICIENT_EVIDENCE، و**دراسة 03B3 القديمة أُلغي تشغيلها بقرار المالك (9 LATE + 3 CANCELLED، 0/12 بيانات رصد حية)**. بدأ تاريخيًا تكليف دراسة «Windows» مستقبلية في «Issue #11» ثم **أوقف مسار تنفيذها المحلي** بقرار المالك الحاكم في 30 أكتوبر 2026؛ لا استرجاع بيانات قديمة. Phase 03 **PARTIALLY CLOSED — ENGINEERING ACCEPTED / SCIENTIFIC HOLD**، والمرحلة 04 **NEXT / DESIGN-GATED** وفق قرار المالك الأحدث أدناه؛ ولا فتح لإشارات/Scoring تداول إنتاجي دون اعتماد جديد. لا Scoring V2 إنتاجي أو Signal أو تداول.
+**المصدر:** MASTER v1.23 يحفظ SMART GATE Unified Design v2.1 والـBlueprint التاريخي، ويضيف **سجل أدلة وقرارات إغلاق واحد داخل الملف** لحماية المشروع من تراكم اختبارات غير محسومة. 14 مرحلة 00–13 ثابتة؛ 00–02 VERIFIED في نطاقاتها، 03A/03B1 VERIFIED، 03B2 CODE ACCEPTED ومُدمج مع إغلاق دراسته القديمة رسميًا بنتيجة PARTIAL 8/12 وINSUFFICIENT_EVIDENCE، و**دراسة 03B3 القديمة أُلغي تشغيلها بقرار المالك (9 LATE + 3 CANCELLED، 0/12 بيانات رصد حية)**. بدأ تاريخيًا تكليف دراسة «Windows» مستقبلية في «Issue #11» ثم **أوقف مسار تنفيذها المحلي** بقرار المالك الحاكم في 30 أكتوبر 2026؛ لا استرجاع بيانات قديمة. Phase 03 **PARTIALLY CLOSED — ENGINEERING ACCEPTED / SCIENTIFIC HOLD**، والمرحلة 04 **NEXT / DESIGN-GATED** وفق قرار المالك الأحدث أدناه؛ ولا فتح لإشارات/Scoring تداول إنتاجي دون اعتماد جديد. لا Scoring V2 إنتاجي أو Signal أو تداول.
+
+## «PM1.2» قرار قبول الكود — 31 أكتوبر 2026 — PR #24 على SHA نهائي، والدمج للمالك فقط
+
+**آخر قرار حاكم للمراجعة الفنية، يتقدم على حالة `HOLD` الأقدم أدناه:** [المراجعة النهائية لـ«PR #24»](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/24#issuecomment-6542134146) و[محضر «Issue #23»](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/23#issuecomment-6542136594).
+
+**حالة المرحلة:** `OWNER_DESIGN_APPROVED / PM_ACCEPT_CODE_AT_df169ad998a9dbc1a58ff6e73cc61daa9579201d / PR24_DRAFT_OPEN_UNMERGED / OWNER_MERGE_APPROVAL_PENDING / CANARY_NOT_RUN / STAGE04_NOT_ADMIN_CLOSED`.
+
+1. **قرار «PM1.2»: `ACCEPT_CODE_AT_EXACT_SHA`** للنسخة الحالية من [«PR #24»](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/24) برأس `df169ad998a9dbc1a58ff6e73cc61daa9579201d`. قورنت مع الرأس الموقوف `7a238ae1d05987a83749fbc6ac8344bd1a26545f` عبر **2 commits، ملفين فقط** (`stage04_canary.py` و`test_stage04_evidence_packet.py`) دون تعديل «workflow» أو عقود التخزين المقبولة. تحقق رأس الفرع من «GitHub» ولم يُدمج.
+2. **دليل الاختبارات النهائية:** [«CI #41191634019»](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/41191634019) `completed/success` لجميع وظائف **4/4** («Ubuntu/Windows» × «Python 3.11/3.12»)، **343 اختبارًا لكل وظيفة** بلا فشل (+8 عن التسليم السابق). شملت اختبارات المسار المسموح لـ«Canary» وإنشاء الفرع بـ`201/ref/object.sha`، حالات `403/409/422/timeout` والرد الخاطئ، والكتابة/«readback/restore» عبر عميلين منفصلين في محاكاة، وسقف 64 عملية ومنع المحاولة 65، وعدم تسريب الأسرار أو إعادة المحاولة عند الفشل. **المحاكاة ليست «GitHub» فعليًا**.
+3. **البوابة التالية الوحيدة:** قرار صريح من المالك **`APPROVE_MERGE_PR24_AT_df169ad998a9dbc1a58ff6e73cc61daa9579201d`** أو `REJECT_MERGE`. قبول كود «PM» لا يعني ترخيص دمج؛ لا يغيّر حالة «Draft» تلقائيًا. عند موافقة الدمج يُعاد التحقق من «SHA/main» وتعارضات الدمج، وتنفذ العملية وفق تفويض المالك فقط ثم تُراجع اختبارات «CI» على «main» وتوثّق البصمات.
+4. **بوابات تشغيل «Canary» والإغلاق منفصلة:** لم تحدث كتابة أو قراءة/استعادة فعلية لأدلة على «GitHub» بعد. اختبار «Canary» الاصطناعي الواحد لا يُشغّل حتى يثبت المالك بوضوح **الحصة المجانية وصفر التكلفة** وتتحقق مراجعة «PM» من إذن `contents:write` للمستودع ورأس `main` والتأثيرات الأمنية، ويصدر تصريح تشغيل محدد؛ خانات تأكيد «workflow» ليست تحققًا ماليًا آليًا. تُوثق بعدها نتائج «GET/PUT/POST/Manifest SHA/Readback/Recovery». لا إغلاق `STAGE04_ADMIN_CLOSED_SUCCESS` إلا بعد تحقق فعلي ومراجعة «PM» وقرار المالك.
+5. **لا مساس بقرار «03»:** `STAGE03_PARTIALLY_CLOSED / PIT_FAIL_HOLD / N_REQUIRED_UNDETERMINED / NO_PRODUCTION_SIGNAL`. أي محادثة جديدة تبدأ بأحدث `main` ثم هذا «MASTER» و«README» و«Issue #23» و«Issue #11» و«PR #24/CI»، دون تكرار إصلاح مقبول أو خلط موافقة الكود بموافقة الدمج.
 
 ## «PM1.2» checkpoint — 30 أكتوبر 2026 — مراجعة «PR #24» وتصحيح حالة «CI» (لا إغلاق للمرحلة 04)
 
