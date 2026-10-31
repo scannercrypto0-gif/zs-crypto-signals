@@ -60,8 +60,14 @@ def _branch_once(repository: str, token: str, branch: str, sha: str):
         with urlopen(req, timeout=5) as response:
             if response.status != 201:
                 raise RuntimeError("BRANCH_CREATION_REJECTED")
-            result = json.loads(response.read(32_768))
-            if result.get("ref") != "refs/heads/" + branch:
+            try:
+                result = json.loads(response.read(32_768))
+            except (ValueError, TypeError, UnicodeError):
+                raise RuntimeError("BRANCH_CREATION_RESPONSE_INVALID") from None
+            if (not isinstance(result, dict)
+                    or result.get("ref") != "refs/heads/" + branch
+                    or not isinstance(result.get("object"), dict)
+                    or result["object"].get("sha") != sha):
                 raise RuntimeError("BRANCH_CREATION_RESPONSE_INVALID")
     except HTTPError as exc:
         # Do not read or print HTTP response bodies or auth headers.
