@@ -1,5 +1,15 @@
 # ZS Crypto Signals — SMART GATE
 
+## «PM1.2» — قبول كود PR #24 على الرأس النهائي — 31 أكتوبر 2026
+
+**حالة العمل الحاكمة:** `STAGE04_DESIGN_APPROVED / PM_ACCEPT_CODE_AT_df169ad998a9dbc1a58ff6e73cc61daa9579201d / OWNER_MERGE_APPROVAL_PENDING / STAGE04_NOT_ADMIN_CLOSED`.
+
+- **تم قبول كود [«PR #24»](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/24) إداريًا من «PM1.2» على الرأس المحدد فقط** `df169ad998a9dbc1a58ff6e73cc61daa9579201d`، وهو **ما زال `OPEN/DRAFT/NOT_MERGED`**. [نص قرار القبول وأدلة المراجعة](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/24#issuecomment-6542134146) و[تحديث «Issue #23»](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/23#issuecomment-6542136594).
+- **«CI» النهائي على نفس البصمة:** [#41191634019](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/41191634019) ناجح **4/4** («Ubuntu/Windows × Python 3.11/3.12») مع **343 اختبارًا في كل وظيفة** بلا فشل. التصحيح في ملف «Canary» واختباراته فقط (+8 اختبارات محاكاة) سد فجوة «POST 201/ref/SHA»، ومسار الكتابة/الاسترجاع المحاكى، الفشل المغلق والحد الأقصى 64 عملية.
+- **الخطوة التالية الوحيدة: قرار مالك مستقل بشأن دمج «PR #24» على الرأس المذكور**، ثم فحص «main CI» بعد أي دمج مفوض. قبول كود «PM» لا يساوي أمر دمج أو تشغيل. لا يُطلب من «SD Coding 2.1» تكرار ما قُبل إلا عند رأس جديد أو عيب جديد مثبت.
+- **لا كتابة حقيقية على «GitHub» حتى الآن:** `CANARY_NOT_RUN / REAL_GITHUB_READBACK_RESTORE_NOT_VERIFIED`. يظل تشغيل «Canary» الاصطناعي الواحد مشروطًا بفحص الحصة المجانية وعدم الكلفة والمخاطر والصلاحيات ورأس «main» ثم تصريح محدد، ولا يعتبر ملء خانة `zero_cost_verified` إثباتًا محاسبيًا. لا «WORM» مضمون للمستودع الخاص غير المحمي؛ ولا إغلاق «04» دون حفظ واسترجاع حقيقيين ومراجعة «PM» واعتماد المالك للإغلاق.
+- **«03» و«PIT» كما هما:** `PARTIALLY_CLOSED/SCIENTIFIC_HOLD/PIT_FAIL_HOLD`، ولا إنتاج إشارات/«Telegram»/تداول/«Windows Runner». على محادثات «PM/SD» المستقبلية قراءة أحدث `main → MASTER v1.23 أو أحدث → README → Issue #23 → Issue #11 → PR #24/CI` وحفظ القرارات والدمج في «PR/MASTER/README» عند حدوثها.
+
 ## مراجعة «PM1.2» الأخيرة — «PR #24» و«CI» النهائي — 30 أكتوبر 2026
 
 **الحالة الصحيحة الآن:** `STAGE04_OWNER_DESIGN_APPROVED / PR24_DRAFT_CODE_REVIEW_HOLD / OFFLINE_CI_SUCCESS_4_4 / CANARY_NOT_RUN / STAGE04_NOT_ADMIN_CLOSED`. **المراجعة ليست رفضًا للتصميم أو الكود المقبول سابقًا؛ إنها طلب اختبار محدد قبل اعتماد دمج هذه المسودة.**
