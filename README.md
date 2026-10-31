@@ -1,6 +1,19 @@
 # ZS Crypto Signals — SMART GATE
 
-## مراجعة «PM1.2» لحزمة الجاهزية — 31 أكتوبر 2026 — قبول الفحص وحظر تشغيل «Canary»
+## الحالة الرسمية الأحدث — إغلاق المرحلة «04» واستئناف علم «03» — 31 أكتوبر 2026
+
+**موافقة المالك:** [قرار الإغلاق الإداري الناجح للمرحلة «04»](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/23#issuecomment-6544410775)، مستندًا إلى [تقرير «PM1.2» المستقل](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/23#issuecomment-6544296446) و[تشغيل «Canary» الحقيقي #41207373190](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/41207373190). التفاصيل الحاكمة في [«MASTER v1.27»](ZS_SMART_GATE_MASTER.md).
+
+**القرار الإداري:** `STAGE04_ADMIN_CLOSED_SUCCESS_APPLICATION_ONLY` — **أُغلقت المرحلة «04» إداريًا بنجاح ضمن نطاق حفظ الأدلة البحثية على «GitHub» والقراءة والاسترجاع المستقل فقط**، ولا يشمل ذلك إنتاج الإشارات أو إثبات «PIT» أو «WORM».
+
+- **إثبات فعلي واحد دون إعادة:** محاولة يدوية `completed/success` على `main=e96bd6b8ee22be6040549f0cfeeae423a33b4ba0`، تضم `35 GET + 12 PUT + 1 branch POST`، وفرع أدلة [`evidence-stage04-canary-e96bd6b8ee22be60`](https://github.com/scannercrypto0-gif/zs-crypto-signals/tree/evidence-stage04-canary-e96bd6b8ee22be60/studies/zs04-canary-e96bd6b8ee22be60) أضاف `7` ملفات «JSON» في `12` التزامًا؛ أدلة «Manifest/Claims/Receipts/Index» متسقة مع بصمات `SHA-256` محسوبة بصورة مستقلة. بصمة «manifest» = `2a596ac07730718e10a1e8ca57b5a250daa1ac105db726093a7dc0a6fe7b6629`. «GitHub» هو مستودع الأدلة الدائم، دون أي اتصالات سوق في هذه التجربة `market_http_attempts=0`.
+- **الحدود الثابتة:** `APPLICATION_ONLY` و`server_enforced_worm=false`؛ فرع الأدلة و`main` غير محميين خادميًا، فلا ادعاء «WORM» أو عدم قابلية التعديل ذات الامتيازات. لا إثبات لوقت النشر أو الساعة المستقلة أو `PIT` الحقيقي. `PIT_FAIL_HOLD / SCORE_UNAVAILABLE / N_REQUIRED=UNDETERMINED / NO_PRODUCTION_SIGNAL / NO_TRADING` لا تتغير. لا «Binance LIVE»/«Windows Runner»/«Telegram» إنتاج، ولا إعادة تشغيل «Canary» المستهلكة.
+- **التكلفة والاحتفاظ:** صور الحساب قبل الاختبار أثبتت خطة «GitHub Free» وميزانية `Actions=$0` مع `Stop usage at limit` مفعّلًا، لكن **الرسوم المفوترة بعد التشغيل لم تُتحقق من شاشة الحساب**، فالحالة `POST_RUN_BILLING_UNVERIFIED`. لا شراء أو ترقية أو رفع ميزانية. حفظ فرع الأدلة مستمر؛ موعد `2026-11-30` لمراجعة الاحتفاظ وليس حذفًا تلقائيًا.
+- **ما يلي:** المرحلة «03» لا تزال **مغلقة جزئيًا من الناحية الهندسية**، لكن قرار المالك يسمح **باستئناف العمل العلمي البحثي والتعريفات والاختبارات «Offline»** في [التكليف المستقل «Issue #25 — المعادلات والتطبيع و«PIT»](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/25). يتطلب قبول المعادلات والخيارات الدلالية الأربع والضوابط الزمنية **قرارات لاحقة موثقة**. تظل `PIT_FAIL_HOLD` ولا إغلاق علمي للمرحلة «03» إلى أن يُثبت خلاف ذلك باستقلال ويعتمده المالك.
+
+**للاستلام في أي محادثة:** أحدث `main → MASTER v1.27 → README → Issue #23 (Owner #6544410775 / PM #6544296446) → Issue #25 → Issue #11 → PR24 merged/CI`. **الأقسام التالية أرشيف لخطوات التنفيذ السابقة وليست الحالة الأحدث**.
+
+## سجل تاريخي — مراجعة «PM1.2» لحزمة الجاهزية قبل تشغيل «Canary» (تم تجاوزه)
 
 **الحالة الأحدث الحاكمة:** `READ_ONLY_CANARY_PREFLIGHT_PM_ACCEPTED / COST_GATE_UNVERIFIED / GITHUB_TOKEN_EFFECTIVE_WRITE_UNKNOWN / NO_OWNER_CANARY_AUTHORIZATION / CANARY_NOT_RUN / REAL_GITHUB_RESTORE_NOT_VERIFIED / STAGE04_NOT_ADMIN_CLOSED / STAGE03_SCIENTIFIC_PIT_HOLD`.
 
