@@ -1,5 +1,15 @@
 # ZS Crypto Signals — SMART GATE
 
+## اعتماد المالك ودمج «PR #24» واختبارات ما بعد الدمج — 31 أكتوبر 2026
+
+**القرار الحالي الحاكم (يلغي أوصاف `Draft/Merge pending` التاريخية أدناه):** `OWNER_APPROVED_PR24_MERGED / POSTMERGE_MAIN_CI_4_4_PASS / CANARY_NOT_RUN / REAL_GITHUB_READBACK_RESTORE_NOT_VERIFIED / STAGE04_NOT_ADMIN_CLOSED / STAGE03_SCIENTIFIC_HOLD`.
+
+- **تم دمج [«PR #24»](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/24) بتفويض صريح من المالك، على الرأس المحدد وحده `df169ad998a9dbc1a58ff6e73cc61daa9579201d`.** تأكد «PM1.2» من المطابقة واستخدمت `expected_head_sha`؛ أكد «GitHub» نجاح الدمج `MERGED=true` عند [التزام `fadff0d57c9fe5d0b9408a0701904896eb6c2ede`](https://github.com/scannercrypto0-gif/zs-crypto-signals/commit/fadff0d57c9fe5d0b9408a0701904896eb6c2ede). [محضر الدمج في «PR #24»](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/24#issuecomment-6542245546) و[«Issue #23»](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/23#issuecomment-6542249936).
+- **«CI» على «main» بعد الدمج:** [#41192940553](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/41192940553) **`COMPLETED/SUCCESS 4/4`** («Ubuntu/Windows × Python 3.11/3.12») على بصمة الدمج. نجاح اختبارات الكود والمحاكاة السابقة [#41191634019](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/41191634019) قائم أيضًا؛ لا يعني نجاح التخزين الحقيقي.
+- **اختبار «Canary» لم يُشغّل تلقائيًا ولا يدويًا:** أُدرج ملف `.github/workflows/stage04-synthetic-evidence-canary.yml` على «main» بالدمج، وهو يدوي فقط `workflow_dispatch`. قبل تجربة واحدة اصطناعية يلزم إثبات سعة «Actions» المجانية وعدم التكاليف وإعدادات الصرف، ومراجعة «PM» لأذونات `GITHUB_TOKEN contents:write` (قدرة على مستوى المستودع لا فرع الأدلة فقط) و«main SHA»، ثم ترخيص تشغيل منفصل. **لا مفتاح حساب أو «PAT/App» أو تكاليف مدفوعة أو اتصال سوق**.
+- **بوابة الإغلاق المتبقية:** حفظ/«Readback/Restore» حقيقي مُفوَّض من «GitHub» مع «Manifest/SHA-256» وعدّ «GET/PUT/POST» وحالات الفشل؛ مراجعة «PM» ثم قرار المالك بالإغلاق الإداري. حتى ذلك الحين `STAGE04_NOT_ADMIN_CLOSED`. **«03» تبقى `PARTIALLY_CLOSED`، والمعادلات العلمية والتطبيع والتأهيل و«PIT FAIL/HOLD» مؤجلة**.
+- **استمرارية المحادثات:** [«MASTER v1.24»](./ZS_SMART_GATE_MASTER.md) أحدث سجل حاكم، ثم هذا «README» و[«Issue #23»](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/23) و[«Issue #11»](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/11) و«PR #24/CI»؛ لا تُقرأ أي فقرة تاريخية أقدم على أنها حالة الدمج الحالية. كل قرار أو تشغيل/نتيجة «CI» يوثق أولًا بأول.
+
 ## «PM1.2» — قبول كود PR #24 على الرأس النهائي — 31 أكتوبر 2026
 
 **حالة العمل الحاكمة:** `STAGE04_DESIGN_APPROVED / PM_ACCEPT_CODE_AT_df169ad998a9dbc1a58ff6e73cc61daa9579201d / OWNER_MERGE_APPROVAL_PENDING / STAGE04_NOT_ADMIN_CLOSED`.
