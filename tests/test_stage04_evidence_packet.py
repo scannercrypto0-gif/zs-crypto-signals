@@ -9,6 +9,8 @@ import json
 import threading
 import unittest
 from unittest.mock import patch
+from urllib.error import HTTPError, URLError
+from urllib.parse import urlsplit
 
 from zs_smart_gate.evidence_journal import SingleStudyJournal, canonical_bytes
 from zs_smart_gate.github_evidence_backend import (
@@ -18,7 +20,9 @@ from zs_smart_gate.stage04_evidence_packet import (
     MAX_CONTENTS_BYTES, make_record, prepare_manifest, persist_packet,
     restore_from_remote, sha256_hex,
 )
-from zs_smart_gate.stage04_canary import main as canary_main
+from zs_smart_gate.stage04_canary import (main as canary_main, _branch_once,
+                                          LimitedTransport, MAX_CONTENTS_OPERATIONS,
+                                          CONFIRM)
 
 UTC = timezone.utc
 NOW = datetime(2026, 10, 30, 20, tzinfo=UTC).isoformat()
@@ -28,8 +32,9 @@ BRANCH = "evidence-zs04-test-001"
 
 class FakeGitHub:
     """Shared mocked remote storage, two independent reader objects possible."""
-    def __init__(self, backing=None):
+    def __init__(self, backing=None, allowed_branch=BRANCH):
         self.files = {} if backing is None else backing
+        self.allowed_branch = allowed_branch
         self.lock = threading.Lock()
         self.calls = []
         self.fail_get = None
@@ -41,6 +46,8 @@ class FakeGitHub:
     def get_file(self, path, branch):
         with self.lock:
             self.calls.append(("GET", path, branch))
+            if branch != self.allowed_branch:
+                raise AssertionError("UNEXPECTED_EVIDENCE_BRANCH")
             if self.fail_get:
                 raise GitHubStorageError("GITHUB_READ_HTTP_" + str(self.fail_get))
             value = self.files.get(path)
@@ -55,7 +62,7 @@ class FakeGitHub:
             self.calls.append(("PUT", path, branch))
             if self.fail_put:
                 raise GitHubStorageError("GITHUB_WRITE_HTTP_" + str(self.fail_put))
-            if branch != BRANCH:
+            if branch != self.allowed_branch:
                 raise AssertionError("NO_MAIN_WRITE")
             if self.conflict_once:
                 self.conflict_once = False
@@ -285,6 +292,285 @@ class Stage04EvidencePacketTests(unittest.TestCase):
         self.assertEqual(code, 2)
         self.assertEqual(json.loads(output.getvalue())["status"], "BLOCKED")
         self.assertNotIn("FAKE_SECRET_FOR_TEST", output.getvalue())
+
+
+
+class MockRefResponse:
+    """Fake REST response; never opens a network socket."""
+    def __init__(self, status, payload):
+        self.status = status
+        self.payload = (payload if isinstance(payload, bytes)
+                        else json.dumps(payload).encode("utf-8"))
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_):
+        return False
+
+    def read(self, size=None):
+        if size is not None and len(self.payload) > size:
+            return self.payload[:size]
+        return self.payload
+
+
+class Stage04CanaryAuthorizedMockTests(unittest.TestCase):
+    """Exercise the ACTUAL authorized code path with mocked GitHub REST only."""
+
+    SHA = "a" * 40
+    REPO = "scannercrypto0-gif/zs-crypto-signals"
+    TOKEN = "FAKE_TEST_TOKEN_NEVER_A_CREDENTIAL"
+
+    def env(self):
+        return {
+            "GITHUB_EVENT_NAME": "workflow_dispatch",
+            "GITHUB_REF": "refs/heads/main",
+            "ZS_CANARY_CONFIRM": CONFIRM,
+            "ZS_CANARY_FREE_QUOTA_CONFIRMED": "YES",
+            "ZS_CANARY_PM_REVIEW_CONFIRMED": "YES",
+            "GITHUB_SHA": self.SHA,
+            "ZS_CANARY_APPROVED_SHA": self.SHA,
+            "GITHUB_REPOSITORY": self.REPO,
+            "GITHUB_TOKEN": self.TOKEN,
+        }
+
+    def test_branch_once_sends_one_post_and_requires_ref_and_base_sha(self):
+        branch = "evidence-stage04-canary-" + self.SHA[:16]
+        calls = []
+        def fake_post(req, *, timeout):
+            calls.append(req)
+            self.assertEqual(req.get_method(), "POST")
+            self.assertEqual(urlsplit(req.full_url).scheme, "https")
+            self.assertEqual(urlsplit(req.full_url).netloc, "api.github.com")
+            self.assertEqual(urlsplit(req.full_url).path,
+                             "/repos/" + self.REPO + "/git/refs")
+            self.assertEqual(timeout, 5)
+            self.assertEqual(json.loads(req.data),
+                             {"ref": "refs/heads/" + branch, "sha": self.SHA})
+            self.assertEqual(req.get_header("Authorization"), "Bearer " + self.TOKEN)
+            return MockRefResponse(201, {
+                "ref": "refs/heads/" + branch,
+                "object": {"type": "commit", "sha": self.SHA}})
+        with patch("urllib.request.urlopen",
+                   side_effect=AssertionError("REAL_NETWORK_FORBIDDEN")), \
+             patch("zs_smart_gate.stage04_canary.urlopen", side_effect=fake_post):
+            self.assertIsNone(_branch_once(self.REPO, self.TOKEN, branch, self.SHA))
+        self.assertEqual(len(calls), 1)
+
+    def test_branch_once_rejects_success_shape_status_and_sha_mismatch(self):
+        branch = "evidence-stage04-canary-" + self.SHA[:16]
+        cases = (
+            (200, {"ref": "refs/heads/" + branch, "object": {"sha": self.SHA}},
+             "BRANCH_CREATION_REJECTED"),
+            (202, {"ref": "refs/heads/" + branch, "object": {"sha": self.SHA}},
+             "BRANCH_CREATION_REJECTED"),
+            (201, {"ref": "refs/heads/other", "object": {"sha": self.SHA}},
+             "BRANCH_CREATION_RESPONSE_INVALID"),
+            (201, {"ref": "refs/heads/" + branch, "object": {"sha": "b" * 40}},
+             "BRANCH_CREATION_RESPONSE_INVALID"),
+            (201, {"ref": "refs/heads/" + branch},
+             "BRANCH_CREATION_RESPONSE_INVALID"),
+            (201, [], "BRANCH_CREATION_RESPONSE_INVALID"),
+            (201, b"broken-json-with-FAKE_SECRET", "BRANCH_CREATION_RESPONSE_INVALID"),
+        )
+        for status, payload, expected in cases:
+            with self.subTest(status=status, payload=type(payload).__name__):
+                called = []
+                def fake_post(req, *, timeout):
+                    called.append(req.get_method())
+                    return MockRefResponse(status, payload)
+                with patch("zs_smart_gate.stage04_canary.urlopen",
+                           side_effect=fake_post):
+                    with self.assertRaisesRegex(RuntimeError, "^" + expected + "$") as exc:
+                        _branch_once(self.REPO, self.TOKEN, branch, self.SHA)
+                self.assertEqual(called, ["POST"])
+                self.assertNotIn(self.TOKEN, str(exc.exception))
+                self.assertNotIn("FAKE_SECRET", str(exc.exception))
+
+    def test_branch_once_http_denial_conflict_and_network_timeout_no_retry(self):
+        branch = "evidence-stage04-canary-" + self.SHA[:16]
+        for status, expected in (
+            (403, "BRANCH_HTTP_403"),
+            (409, "BRANCH_ALREADY_EXISTS_OR_CONFLICT"),
+            (422, "BRANCH_ALREADY_EXISTS_OR_CONFLICT"),
+        ):
+            with self.subTest(status=status):
+                calls = []
+                def fake_post(req, *, timeout):
+                    calls.append(req.get_method())
+                    raise HTTPError(req.full_url, status, "FAKE_SECRET",
+                                    {}, io.BytesIO(b"FAKE_SECRET_RESPONSE"))
+                with patch("zs_smart_gate.stage04_canary.urlopen",
+                           side_effect=fake_post):
+                    with self.assertRaisesRegex(RuntimeError, "^" + expected + "$") as exc:
+                        _branch_once(self.REPO, self.TOKEN, branch, self.SHA)
+                self.assertEqual(calls, ["POST"])
+                self.assertNotIn("FAKE_SECRET", str(exc.exception))
+        for exception in (
+            TimeoutError("FAKE_SECRET_TIMEOUT"),
+            URLError("FAKE_SECRET_NETWORK"),
+            OSError("FAKE_SECRET_OS"),
+        ):
+            with self.subTest(type=type(exception).__name__):
+                calls = []
+                def failed_post(req, *, timeout):
+                    calls.append(req.get_method())
+                    raise exception
+                with patch("zs_smart_gate.stage04_canary.urlopen",
+                           side_effect=failed_post):
+                    with self.assertRaisesRegex(RuntimeError,
+                                                "^BRANCH_NETWORK_BLOCKED$") as exc:
+                        _branch_once(self.REPO, self.TOKEN, branch, self.SHA)
+                self.assertEqual(calls, ["POST"])
+                self.assertNotIn("FAKE_SECRET", str(exc.exception))
+
+    def run_authorized_fixture(self, *, max_operations=None, branch_status=201):
+        """Call canary_main itself; fake 1 POST and 2 independent Contents clients."""
+        branch = "evidence-stage04-canary-" + self.SHA[:16]
+        shared_files = {}
+        instances = []
+        post_attempts = []
+
+        def fake_factory(repository, token, *, timeout):
+            self.assertEqual(repository, self.REPO)
+            self.assertEqual(token, self.TOKEN)
+            self.assertEqual(timeout, 5)
+            fake = FakeGitHub(backing=shared_files, allowed_branch=branch)
+            instances.append(fake)
+            return fake
+
+        def fake_post(req, *, timeout):
+            self.assertEqual(req.get_method(), "POST")
+            self.assertEqual(timeout, 5)
+            self.assertEqual(json.loads(req.data),
+                             {"ref": "refs/heads/" + branch, "sha": self.SHA})
+            post_attempts.append(req.get_method())
+            if branch_status != 201:
+                raise HTTPError(req.full_url, branch_status, "FAKE_SECRET",
+                                {}, io.BytesIO(b"FAKE_SECRET_RESPONSE"))
+            return MockRefResponse(201, {
+                "ref": "refs/heads/" + branch, "object": {"sha": self.SHA}})
+
+        limited = (contextlib.nullcontext() if max_operations is None else
+                   patch("zs_smart_gate.stage04_canary.MAX_CONTENTS_OPERATIONS",
+                         max_operations))
+        output = io.StringIO()
+        with patch.dict("os.environ", self.env(), clear=True), limited, \
+             patch("urllib.request.urlopen",
+                   side_effect=AssertionError("UNPATCHED_NETWORK_FORBIDDEN")), \
+             patch("zs_smart_gate.stage04_canary.urlopen", side_effect=fake_post), \
+             patch("zs_smart_gate.stage04_canary.GitHubContentsTransport",
+                   side_effect=fake_factory), \
+             contextlib.redirect_stdout(output):
+            exit_code = canary_main()
+        text = output.getvalue()
+        self.assertNotIn(self.TOKEN, text)
+        self.assertNotIn("FAKE_SECRET", text)
+        return exit_code, json.loads(text), post_attempts, instances, shared_files
+
+    def test_authorized_main_one_branch_full_write_readback_fresh_restore(self):
+        code, row, posts, clients, files = self.run_authorized_fixture()
+        self.assertEqual(code, 0, row)
+        self.assertEqual(row["status"],
+                         "APPLICATION_WRITE_READBACK_RESTORE_VERIFIED")
+        self.assertEqual(posts, ["POST"])
+        self.assertEqual(len(clients), 2)  # independently constructed transport
+        self.assertIsNot(clients[0], clients[1])
+        self.assertEqual(row["head_sha"], self.SHA)
+        self.assertEqual(row["write_status"],
+                         "WRITE_READBACK_VERIFIED_APPLICATION_ONLY")
+        self.assertEqual(row["restore_status"],
+                         "RESTORE_VERIFIED_APPLICATION_ONLY")
+        self.assertEqual(row["records_written"], 3)
+        self.assertEqual(row["restore_records_checked"], 6)
+        self.assertEqual(row["github_contents_get"], 35)
+        self.assertEqual(row["github_contents_put"], 12)
+        self.assertEqual(row["github_branch_posts"], 1)
+        self.assertEqual(len(files), 7)
+        self.assertEqual(len([c for c in clients[0].calls if c[0] == "PUT"]), 12)
+        self.assertEqual(len([c for c in clients[1].calls if c[0] == "GET"]), 8)
+        self.assertLessEqual(row["github_contents_get"] + row["github_contents_put"],
+                             MAX_CONTENTS_OPERATIONS)
+        self.assertTrue(all(c[2] == row["branch"] for client in clients
+                            for c in client.calls))
+        self.assertTrue(all(path.startswith("studies/" + row["study_id"] + "/")
+                            for path in files))
+        self.assertEqual(row["scientific_pit"], "PIT_UNVERIFIED")
+        self.assertEqual(row["market_http_attempts"], 0)
+        self.assertIsNone(row["score"])
+        self.assertIsNone(row["signal_id"])
+        manifest = json.loads(files[
+            "studies/" + row["study_id"] + "/receipts/manifest.json"])["payload"]
+        self.assertEqual(manifest["pit_status"], "PIT_UNVERIFIED")
+        self.assertFalse(manifest["server_enforced_worm"])
+        self.assertEqual(row["manifest_sha256"], sha256_hex(canonical_bytes(manifest)))
+        raw = json.loads(files[
+            "studies/" + row["study_id"] + "/receipts/source-001.json"])["payload"]
+        self.assertTrue(raw["payload"]["synthetic"])
+        self.assertEqual(raw["payload"]["market_source"], "NONE")
+
+    def test_authorized_main_branch_403_or_422_blocks_before_any_write(self):
+        for status, reason in (
+            (403, "BRANCH_HTTP_403"),
+            (422, "BRANCH_ALREADY_EXISTS_OR_CONFLICT"),
+        ):
+            with self.subTest(status=status):
+                code, row, posts, clients, files = self.run_authorized_fixture(
+                    branch_status=status)
+                self.assertEqual(code, 2)
+                self.assertEqual(row["status"], "BLOCKED")
+                self.assertEqual(row["reason_code"], reason)
+                self.assertEqual(posts, ["POST"])
+                self.assertEqual(len(clients), 1)  # ctor only; no GET/PUT
+                self.assertEqual(clients[0].calls, [])
+                self.assertEqual(files, {})
+                self.assertEqual(row["market_http_attempts"], 0)
+
+    def test_authorized_main_stops_at_operation_ceiling_without_retry(self):
+        code, row, posts, clients, files = self.run_authorized_fixture(
+            max_operations=8)
+        self.assertEqual(code, 2)
+        self.assertEqual(row["status"], "BLOCKED")
+        self.assertEqual(row["reason_code"], "WRITE_READBACK_UNKNOWN_STOP_NO_RETRY")
+        self.assertEqual(row["write_status"], "UNKNOWN_PARTIAL_OR_CONFLICT")
+        self.assertEqual(posts, ["POST"])
+        self.assertEqual(len(clients), 1)
+        self.assertEqual(len(clients[0].calls), 8)
+        self.assertEqual(row["market_http_attempts"], 0)
+        self.assertTrue(files)  # ambiguous partial data, NEVER claim restoration
+        self.assertNotIn("restore_status", row)
+
+    def test_operation_budget_rejects_65th_request_before_transport(self):
+        branch = "evidence-stage04-canary-" + self.SHA[:16]
+        fake = FakeGitHub(allowed_branch=branch)
+        counts = {"GET": 0, "PUT": 0}
+        limited = LimitedTransport(fake, counts)
+        for _ in range(MAX_CONTENTS_OPERATIONS):
+            self.assertIsNone(limited.get_file("studies/x/claims/a.json", branch))
+        self.assertEqual(counts, {"GET": MAX_CONTENTS_OPERATIONS, "PUT": 0})
+        with self.assertRaisesRegex(RuntimeError, "^API_OPERATION_BUDGET_EXCEEDED$"):
+            limited.put_file("studies/x/claims/a.json", b"not-written",
+                             branch, None, "never")
+        self.assertEqual(len(fake.calls), MAX_CONTENTS_OPERATIONS)
+        self.assertEqual(counts["PUT"], 0)
+
+    def test_sha_gate_prevents_post_even_with_other_approvals(self):
+        env = self.env()
+        env["ZS_CANARY_APPROVED_SHA"] = "b" * 40
+        output = io.StringIO()
+        with patch.dict("os.environ", env, clear=True), \
+             patch("zs_smart_gate.stage04_canary.urlopen",
+                   side_effect=AssertionError("NO_BRANCH_POST_ALLOWED")), \
+             patch("zs_smart_gate.stage04_canary.GitHubContentsTransport",
+                   side_effect=AssertionError("NO_CONTENTS_CLIENT_ALLOWED")), \
+             contextlib.redirect_stdout(output):
+            code = canary_main()
+        row = json.loads(output.getvalue())
+        self.assertEqual(code, 2)
+        self.assertEqual(row["status"], "BLOCKED")
+        self.assertEqual(row["reason_code"], "PINNED_APPROVED_MAIN_SHA_REQUIRED")
+        self.assertNotIn(self.TOKEN, output.getvalue())
+
 
 
 if __name__ == "__main__":
