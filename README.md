@@ -1,5 +1,15 @@
 # ZS Crypto Signals — SMART GATE
 
+## مراجعة «PM1.2» لحزمة الجاهزية — 31 أكتوبر 2026 — قبول الفحص وحظر تشغيل «Canary»
+
+**الحالة الأحدث الحاكمة:** `READ_ONLY_CANARY_PREFLIGHT_PM_ACCEPTED / COST_GATE_UNVERIFIED / GITHUB_TOKEN_EFFECTIVE_WRITE_UNKNOWN / NO_OWNER_CANARY_AUTHORIZATION / CANARY_NOT_RUN / REAL_GITHUB_RESTORE_NOT_VERIFIED / STAGE04_NOT_ADMIN_CLOSED / STAGE03_SCIENTIFIC_PIT_HOLD`.
+
+- تلقّت «PM1.2» [حزمة `CANARY_PREFLIGHT_PACKET` من «SD Coding 2.1»](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/23#issuecomment-6542536560) وراجعت [الكود و«workflow» و«CI» وأصدرت قرارًا فنيًا `PM_ACCEPT_READ_ONLY_PREFLIGHT_PACKET / CANARY_NO_GO`](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/23#issuecomment-6542570545). الفحص التقني **مكتمل في نطاق القراءة فقط**، دون دليل كتابة حقيقية أو استرجاع شبكة.
+- **مانع التشغيل الحالي:** لا توجد بيانات مُتحقق منها عن رصيد «Actions» المجاني وتكاليف الحساب وحد الصرف/وقف الاستخدام؛ ولا عن الإتاحة الفعلية لصلاحية `GITHUB_TOKEN contents:write` أو تشغيل «Run workflow» لحساب المالك. تحتاج «PM» إثباتات من [«Billing & licensing»](https://github.com/settings/billing) (`Usage` و`Budgets and alerts`) ومن `Repository Settings → Actions → General`، دون كشف أسرار/بطاقات. الميزانية الجديدة قد لا تغطي استخدامًا سابقًا في الدورة؛ التنبيهات ليست ضمانًا للمنع.
+- **نطاق المخاطر المعروف:** `main protected=false`، صلاحية `contents:write` واسعة على المستودع لا فرع الأدلة وحده، ولا ادعاء حماية `WORM`. الاعتماد الفني على حدود الكود (`5min` و`64 GET/PUT` + `1 branch POST`) لا يثبت حق الكتابة أو سلامة التكلفة الفعلية.
+- بعد تقييم المالك لبيانات الحساب وتأكيد «PM» للبوابة، يلزم **قرار مالك منفصل عند `main SHA` حديث** لتشغيل **«Canary» اصطناعي يدوي واحد**؛ بعده فقط تقرير `REAL_GITHUB_CANARY_E2E_EVIDENCE` والمراجعة والإغلاق الإداري المستقل. **لا تشغيل تلقائي، ولا حاجة لإعادة البرمجة/فتح «PR #24» المقبول.** «03/PIT» على «HOLD».
+- مرجع الاستمرارية: أحدث `main → MASTER v1.26 → README → Issue #23 (PM review #6542570545) → Issue #11 → merged PR24/CI`؛ التقارير التاريخية أدناه محفوظة لكن لا تعلو على هذه الحالة.
+
 ## التكليف التنفيذي الجاري — استكمال المرحلة «04» بعد الدمج — 31 أكتوبر 2026
 
 **قرار المالك:** إصدار الأمر المجمع [`ZS-04-POSTMERGE-CANARY-READBACK-CLOSURE-002`](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/23#issuecomment-6542376003) إلى «SD Coding 2.1» لإكمال جميع بوابات المرحلة «04» المتبقية، مع بقاء تشغيل «Canary» الحقيقي والإغلاق الإداري خاضعين لتفويضات منفصلة.
