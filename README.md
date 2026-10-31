@@ -1,5 +1,17 @@
 # ZS Crypto Signals — SMART GATE
 
+## التكليف التنفيذي الجاري — استكمال المرحلة «04» بعد الدمج — 31 أكتوبر 2026
+
+**قرار المالك:** إصدار الأمر المجمع [`ZS-04-POSTMERGE-CANARY-READBACK-CLOSURE-002`](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/23#issuecomment-6542376003) إلى «SD Coding 2.1» لإكمال جميع بوابات المرحلة «04» المتبقية، مع بقاء تشغيل «Canary» الحقيقي والإغلاق الإداري خاضعين لتفويضات منفصلة.
+
+**الحالة:** `STAGE04_POSTMERGE_PREFLIGHT_ORDER_ISSUED / PR24_MERGED_CI_4_4_PASS / CANARY_NOT_RUN / REAL_GITHUB_RESTORE_NOT_VERIFIED / NOT_ADMIN_CLOSED / STAGE03_SCIENTIFIC_PIT_HOLD`.
+
+- **خط الأساس المثبت:** [«PR #24» المدمج](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/24)، التزام الدمج `fadff0d57c9fe5d0b9408a0701904896eb6c2ede`، [«main CI #41192940553»](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/41192940553) `SUCCESS 4/4`. نجاح فحوص وثائق «MASTER/README» [#41193083405](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/41193083405) و[#41193106258](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/41193106258) مثبت. يُعاد التحقق من «SHA» الحي قبل أي تجربة.
+- **العمل المأذون الآن لـ«SD Coding 2.1»:** تجميع حزمة `CANARY_PREFLIGHT_PACKET` بقراءة فقط: إعدادات السعة المجانية والصفر تكلفة أو تسجيل `UNVERIFIED`، فحص «workflow»/الأذونات وفرع الأدلة ونطاق `GITHUB_TOKEN contents:write`، وثبوت عدم وجود تشغيل سابق؛ تسليم الأدلة إلى «PM1.2» في «Issue #23». **لا تشغيل يدوي أو تلقائي ل«Canary» الآن**.
+- **العمل المشروط لاحقًا:** عند تحقق حزمة الجاهزية ومراجعة «PM» وقرار مالك **منفصل** بحد تشغيل واحد ورأس `main SHA` محدد، تنفيذ «Canary» اصطناعي يدوي واحد لا سوق فيه ولا أسرار جديدة ولا تكاليف، ثم «GitHub Write/Readback/Restore» فعلي مع `Manifest SHA-256` والعدادات و«UTC» وحالات الفشل، دون ادعاء «WORM» غير موجود أو إنتاج إشارات.
+- **الإغلاق:** حزمة `REAL_GITHUB_CANARY_E2E_EVIDENCE` و`ACCEPTANCE_MATRIX` وتقويم «PM1.2» المستقل، ثم موافقة المالك على `STAGE04_ADMIN_CLOSED_SUCCESS` فقط إذا اجتازت جميع البوابات. «03» مغلقة جزئيًا، والمعادلات والتطبيع والتأهيل و«PIT FAIL/HOLD» باقية معلقة.
+- **مرجع الاستمرارية:** أحدث `main → MASTER v1.25 → README → Issue #23/#11 → PR #24/CI → آخر PREFLIGHT/CANARY`. «PM» فقط تعدل «MASTER/README»، و«SD» توثق الأدلة ولا تدمج أو تفعّل بإذن مستنتج.
+
 ## اعتماد المالك ودمج «PR #24» واختبارات ما بعد الدمج — 31 أكتوبر 2026
 
 **القرار الحالي الحاكم (يلغي أوصاف `Draft/Merge pending` التاريخية أدناه):** `OWNER_APPROVED_PR24_MERGED / POSTMERGE_MAIN_CI_4_4_PASS / CANARY_NOT_RUN / REAL_GITHUB_READBACK_RESTORE_NOT_VERIFIED / STAGE04_NOT_ADMIN_CLOSED / STAGE03_SCIENTIFIC_HOLD`.
