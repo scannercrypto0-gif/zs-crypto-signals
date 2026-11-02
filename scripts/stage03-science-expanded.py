@@ -8,7 +8,8 @@ from collections import Counter,defaultdict
 from datetime import datetime,timezone
 from zs_smart_gate.stage03_science_pilot import correlation,planned_independent_clusters
 from zs_smart_gate.stage03_science_expanded import (VERSION,DOMAIN,load_archives,build_records,
-    fit_models,normalized,semantic_arms,compare,holm,forward_admission)
+    fit_models,normalized,semantic_arms,compare,holm,forward_admission,verify_frozen_build)
+import zs_smart_gate.stage03_science_expanded as expanded_module
 
 parser=argparse.ArgumentParser();parser.add_argument('--phase',choices=('DEV','OOS'),required=True)
 parser.add_argument('--root',required=True);args=parser.parse_args()
@@ -18,6 +19,7 @@ manifest_bytes=(root/'manifest.json').read_bytes();manifest=json.loads(manifest_
 protocol_bytes=(root/'protocol-2A.json').read_bytes()
 if hashlib.sha256(protocol_bytes).hexdigest()!=manifest['protocol_sha256']:raise SystemExit('PROTOCOL_CHANGED')
 if hashlib.sha256(Path(__file__).read_bytes()).hexdigest()!=manifest['runner_sha256']:raise SystemExit('RUNNER_CHANGED')
+verify_frozen_build(manifest,Path(__file__).read_bytes(),Path(expanded_module.__file__).read_bytes())
 phase=args.phase;output=root/(phase.lower()+'-results.json')
 if output.exists():raise SystemExit('IMMUTABLE_RESULT_EXISTS')
 data=load_archives(root/'batch-B',manifest)

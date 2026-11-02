@@ -23,6 +23,13 @@ VERSION='010-PILOT-2A'
 DURATIONS={'5m':300,'30m':1800,'1h':3600,'4h':14400}
 DOMAIN={'I1','I4','I5','S1','S2','S4'}
 
+def verify_frozen_build(manifest,runner_bytes,module_bytes):
+    """A runner digest alone must not hide a changed imported research module."""
+    for key,raw in [('runner_sha256',runner_bytes),('expanded_module_sha256',module_bytes)]:
+        expected=manifest.get(key)
+        if not isinstance(expected,str) or len(expected)!=64:raise ValueError('MISSING_FROZEN_BUILD_DIGEST')
+        if hashlib.sha256(raw).hexdigest()!=expected:raise ValueError('FROZEN_CODE_CHANGED')
+
 @dataclass(frozen=True)
 class Bar:
     start: int
@@ -251,6 +258,20 @@ def compare(records,xvalues,zvalues,*,permutations=4096,bootstraps=512):
     P-values are Monte Carlo null-association diagnostics, not causal/PIT proof.
     Bootstrap intervals are exploratory; they do not certify independent N.
     """
+    if len(records)!=len(xvalues) or len(records)!=len(zvalues):raise ValueError('PAIRED_LENGTH_MISMATCH')
+    paired=defaultdict(dict)
+    for i,r in enumerate(records):
+        if xvalues[i] is not None and zvalues[i] is not None:
+            event=(r['asset'],r.get('close',r['week']+r['slot']))
+            paired[event][r['direction']]=(xvalues[i],r['outcome'],zvalues[i])
+    complete=[p for p in paired.values() if set(p)=={-1,1}]
+    if len(complete)>=3 and len(complete)==len(paired) and all(
+            math.isclose(p[-1][0],p[1][0],rel_tol=0,abs_tol=1e-12)
+            and math.isclose(p[-1][2],p[1][2],rel_tol=0,abs_tol=1e-12)
+            and math.isclose(p[-1][1],-p[1][1],rel_tol=0,abs_tol=1e-12) for p in complete):
+        return {'status':'UNIDENTIFIABLE_NON_DIRECTIONAL_FEATURE_SIGNED_POOL',
+                'p':None,'N_common':2*len(complete),'N_event_clusters_common':len(complete),
+                'N_effective':None,'reason':'Opposite labels cancel for identical UP/DOWN features; use separately preregistered direction-conditional inference, not pooled p=1.'}
     groups=defaultdict(list)
     for i,r in enumerate(records):groups[(r['asset'],r['week'])].append(i)
     horizon=records[0]['horizon'] if records else 'INTRADAY'

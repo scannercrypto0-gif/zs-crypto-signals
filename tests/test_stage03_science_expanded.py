@@ -1,7 +1,7 @@
 from decimal import Decimal as D
 import unittest
 from zs_smart_gate.stage03_science_expanded import (Bar,Series,aggregate,aligned_context,
-    confirmed_pivots,setup_label,fit_models,normalized,holm,compare,forward_admission)
+    confirmed_pivots,setup_label,fit_models,normalized,holm,compare,forward_admission,verify_frozen_build)
 
 def bar(start=0,size=300,o=100,h=102,l=99,c=101):
     return Bar(start,start+size,D(o),D(h),D(l),D(c),D(1),D(100))
@@ -58,3 +58,19 @@ class ExpandedScienceTests(unittest.TestCase):
         self.assertTrue(forward_admission(**args).startswith('ELIGIBLE_CONTRACT_ONLY'))
         for changes in ({'publication_attested':False},{'now':1500},{'uncertainty':None},{'now':float('nan')},{'clock_age':31},{'uncertainty':1},{'frozen':False}):
             self.assertFalse(forward_admission(**{**args,**changes}).startswith('ELIGIBLE'))
+    def test_nondirectional_volume_cannot_be_tested_on_signed_pooled_labels(self):
+        records=[];a=[];b=[]
+        for slot in range(42):
+            for direction in (-1,1):
+                records.append({'asset':'fixture','week':0,'slot':slot,'direction':direction,'horizon':'SWING','outcome':direction*(slot%7)})
+                a.append(slot%5);b.append(slot%3)
+        result=compare(records,a,b,permutations=16,bootstraps=16)
+        self.assertEqual(result['status'],'UNIDENTIFIABLE_NON_DIRECTIONAL_FEATURE_SIGNED_POOL')
+        self.assertIsNone(result['p'])
+        with self.assertRaises(ValueError):compare(records,a,b[:-1])
+    def test_imported_source_digest_cannot_be_changed_under_frozen_runner(self):
+        import hashlib
+        m={'runner_sha256':hashlib.sha256(b'runner').hexdigest(),'expanded_module_sha256':hashlib.sha256(b'module').hexdigest()}
+        verify_frozen_build(m,b'runner',b'module')
+        with self.assertRaisesRegex(ValueError,'FROZEN_CODE_CHANGED'):verify_frozen_build(m,b'runner',b'changed')
+        with self.assertRaisesRegex(ValueError,'MISSING_FROZEN_BUILD_DIGEST'):verify_frozen_build({'runner_sha256':m['runner_sha256']},b'runner',b'module')
