@@ -1,0 +1,35 @@
+{
+  "version": "012-DIRECTIONAL-DEV-1",
+  "status": "PREREGISTER_BEFORE_NEW_DIRECTIONAL_DIAGNOSTICS_NOT_SCIENTIFIC_ACCEPTANCE",
+  "data_scope": "Existing verified 010-B BTC/ETH Jan-Jun2025; Jan warmup; Feb-Mar DEV only. All other prior data are SEEN, never new OOS.",
+  "raw_index_sha256": "ce0a3716f24612ea04427b12454e420f9f7e10a0a9bedd622c0ac866a372da79",
+  "frozen_feature_code": "9ac89f4bc7dbd66e244cc4198e182d465ef291fb",
+  "feature_module_sha256": "610208ff76184204b1dc1bd6bc752fca032cf8efd3b389ffa8e612759915b1bf",
+  "feature_helper_sha256": "8d59f5a5ddc873a2d14fd6fe767d237ef68dd7f61561c5a0bf7f4fc532593de4",
+  "new_code_pin": "Must publish exact new commit before first new DEV diagnostic run; no OOS execution permitted by this protocol.",
+  "partition": {
+    "DEV": "2025-02-01 <= decision < 2025-04-01; reject outcomes ending at/after boundary",
+    "old_OOS": "2025-04-01/2025-07-01 frozen replay audit only, never refit or revise inference",
+    "new_OOS": "PENDING: no documented untouched licensed PIT-qualified holdout is currently available",
+    "future_OOS": "Requires distinct frozen artifact manifest and code and actual fresh evidence; old re-splits forbidden"
+  },
+  "estimand": "Equal-asset mean of paired Pearson correlation(B,directional gross outcome)-correlation(A,same outcome), separately by horizon and direction",
+  "outcome": "First full5m open strictly after close+60s to exact1h Intraday or24h Swing close; gross label, no short trade or executable P&L",
+  "practical_delta_floor": 0.05,
+  "primary_family_cap": 20,
+  "comparisons": {
+    "I4": "QvsR,QvsD,RvsD,A-half-share vs equal mean(A,Q_DEV baseRVOL),A vs equal mean(A,Q_DEV quoteRVOL), each separately UP and DOWN =10",
+    "I2_S3_S4": "Frozen A vs frozen B each separately UP/DOWN =6",
+    "I6_S6_reserved": "QvsR each separately UP/DOWN =4; absent qualified liquidity => unavailable, retain family cap"
+  },
+  "calibration": "Q midrank DEV; R median/MAD atan DEV; D intrinsic[0,1] only. Direction and horizon separate. Flat MAD/missing input => null. No normalizer chosen using OOS.",
+  "setups": "Keep 010 candidate Early/Continuation/Reversal/Negative/Unknown definitions and frozen causal pivots; descriptive strata only by asset/direction/setup/daily regime. No p-values or winner selection within strata.",
+  "dependence": "Event identity asset+horizon+close; UP/DOWN are two views, not independent events. Match intraweek slots and retain only groups with >=3 comparable weeks for DEV diagnostics. Asset-specific week rotations preserve within-week order; exchangeability is UNVERIFIED.",
+  "DEV_resampling": {"repeats": 1024, "seed": 12012, "qualification_p": null},
+  "sample_plan": "Two-sided Bonferroni20 paired-block normal known-SD reference; standardized paired effect0.25, alpha0.05,power0.8. Compute N_reference=ceil(((z(1-alpha/(2*20))+z(.8))/.25)^2). This is theoretical independent blocks, not observed Neff or a guarantee for correlation-delta estimates.",
+  "calibration_probes": "4096 IID-normal and stationary AR(.5) replicates under null/effect. Known-unit-SD reference only; stress failures do not imply a qualifying market test. Actual N_effective and N_REQUIRED_actual remain null until estimand variance/dependence are justified.",
+  "costs": "0/5/10bps each way hypothetical sensitivity only, not measured spread/slippage/fill costs",
+  "qualification": "No automatic PASS. New OOS must exceed practical floor with correctly calibrated familywise interval, survive both direction/horizon and preregistered setup/regime checks, satisfy actual paired power, PIT and liquidity gates, independent review and owner approval. No full V2 while I6/S6 or timing absent.",
+  "forbidden": ["mixed-direction signed pool", "reuse prior OOS as unseen", "retune on OOS", "infer publication from close+delay", "claim quote updates as independent samples", "winner from DEV only"],
+  "market_requests": 0
+}
