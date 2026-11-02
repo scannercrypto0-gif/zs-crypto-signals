@@ -58,4 +58,3 @@ class ExpandedScienceTests(unittest.TestCase):
         self.assertTrue(forward_admission(**args).startswith('ELIGIBLE_CONTRACT_ONLY'))
         for changes in ({'publication_attested':False},{'now':1500},{'uncertainty':None},{'now':float('nan')},{'clock_age':31},{'uncertainty':1},{'frozen':False}):
             self.assertFalse(forward_admission(**{**args,**changes}).startswith('ELIGIBLE'))
-

@@ -92,4 +92,3 @@ if phase=='DEV':
     with (root/'dev-freeze.json').open('x') as f:json.dump({'dev_result_sha256':hashlib.sha256(output.read_bytes()).hexdigest(),
       'selection':'A_BASELINE_FROZEN_FOR_DIAGNOSTIC_ONLY_NO_WINNER','frozen_at':datetime.now(timezone.utc).isoformat()},f,indent=2)
 print(json.dumps({k:v for k,v in result.items() if k not in ('fits','summary')},indent=2))
-

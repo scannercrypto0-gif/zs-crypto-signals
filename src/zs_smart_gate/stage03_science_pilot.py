@@ -105,4 +105,3 @@ def planned_independent_clusters(effect=.1,alpha=.05,power=.8,comparisons=16):
     if not 0<effect<1 or not 0<alpha<1 or not .5<power<1 or comparisons<1:raise ValueError('POWER_INPUT')
     z=NormalDist()
     return ceil(((z.inv_cdf(1-alpha/(2*comparisons))+z.inv_cdf(power))/atanh(effect))**2+3)
-

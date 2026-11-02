@@ -90,4 +90,3 @@ if phase=='DEV':
       'selection':'NO_QUALIFIED_WINNER_A_BASELINE_FROZEN','utc':datetime.now(timezone.utc).isoformat()}
     with (root/'dev-freeze.json').open('x') as f:json.dump(frozen,f,indent=2)
 print(json.dumps({'phase':phase,'counts':counts,'coverage':coverage,'comparisons':len(comparisons),'full_V2':result['full_V2'],'PIT':result['PIT']}),flush=True)
-

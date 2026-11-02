@@ -311,4 +311,3 @@ def forward_admission(*,now,close,publication_attested,clock_age,uncertainty,pin
     if now<close+60:return 'NOT_YET_ADMITTED'
     if now>=close+600:return 'LATE_ZERO_HTTP'
     return 'ELIGIBLE_CONTRACT_ONLY_NO_TRANSPORT'
-

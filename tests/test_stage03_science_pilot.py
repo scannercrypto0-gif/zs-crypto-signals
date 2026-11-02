@@ -41,4 +41,3 @@ class SciencePilotTests(unittest.TestCase):
         self.assertGreater(planned_independent_clusters(),1000)
         self.assertIsNone(correlation([1,1,1],[2,3,4]))
         self.assertAlmostEqual(correlation([1,2,3],[2,4,6]),1)
-
