@@ -3,7 +3,7 @@
 Approvals are external review inputs, not attestations created by this module.
 Hash chains detect alteration; they are neither signatures nor WORM storage.
 """
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from pathlib import Path
 import hashlib
 import json
@@ -293,6 +293,8 @@ def offline_forward(config, evidence, approvals, packets, claims, journal):
         return dict(result, status='DUPLICATE_OR_UNCERTAIN_ZERO_HTTP')
     # Never reinterpret fixture success as a live market observation.
     journal.append('CLAIM', {'manifest': config.manifest_sha256, 'event': event})
+    journal.append('TIMING_EVIDENCE', asdict(evidence))
+    journal.append('EXTERNAL_REVIEW_REFERENCES', [asdict(a) for a in approvals])
     iterator = iter(packets)
     for _ in range(config.max_packets):
         try:
@@ -303,3 +305,27 @@ def offline_forward(config, evidence, approvals, packets, claims, journal):
         result['packets'] += 1
     journal.append('OFFLINE_RECEIPT', {'event': event, 'packets': result['packets'], 'HTTP': 0})
     return dict(result, status='OFFLINE_SMOKE_ONLY_NOT_FORWARD_EVIDENCE')
+
+
+def replay_synthetic_depth(path, symbol, decision):
+    """Integrate verified raw journal and depth state without transport or new data."""
+    records = journal_records(path)
+    depth = DepthSequence(symbol)
+    for record in records:
+        if record['kind'] != 'SYNTHETIC_OFFLINE_PACKET':
+            continue
+        packet = record['payload']['data']
+        if digest(packet) != record['payload']['raw_sha256']:
+            raise ValueError('RAW_PACKET_HASH_MISMATCH')
+        if packet['kind'] == 'SNAPSHOT':
+            if packet['symbol'] != symbol or packet['received'] > decision:
+                raise ValueError('SNAPSHOT_IDENTITY_OR_TIME')
+            depth.seed(packet['update'], packet['bids'], packet['asks'], packet['received'])
+        elif packet['kind'] == 'DIFF':
+            depth.apply(packet['symbol'], packet['first'], packet['last'],
+                        packet['bids'], packet['asks'], packet['source_at'],
+                        packet['received'], decision)
+        else:
+            raise ValueError('UNSUPPORTED_FIXTURE_PACKET')
+    return dict(status='SYNTHETIC_DEPTH_REPLAY_NOT_PIT_VERIFIED', state=depth.state,
+                epoch=depth.epoch, update=depth.last, HTTP_requests=0)

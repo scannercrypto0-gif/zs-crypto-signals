@@ -6,7 +6,8 @@ import json
 import unittest
 from zs_smart_gate.stage03_research_evidence import (
     Approval, TimingEvidence, assess_pit, EvidenceJournal, journal_records,
-    AttemptClaims, DepthSequence, ForwardConfig, offline_forward, forward_scope_digest)
+    AttemptClaims, DepthSequence, ForwardConfig, offline_forward, forward_scope_digest,
+    replay_synthetic_depth)
 from zs_smart_gate.stage03_directional_study import (
     fit_reference, normalize, correlation, conditional_compare,
     independent_sample_plan, reject_lineage_overlap)
@@ -195,6 +196,20 @@ class ForwardTests(unittest.TestCase):
         self.run_fixture(self.config(), timing(), [])
         self.assertEqual(self.run_fixture(self.config(), replace(timing(), asset='ETHUSDT'), [])['status'], 'OFFLINE_SMOKE_ONLY_NOT_FORWARD_EVIDENCE')
         self.assertEqual(self.run_fixture(self.config(), replace(timing(), asset='XRPUSDT'), [])['status'], 'OUTSIDE_FROZEN_EVENT_SCOPE')
+
+    def test_timing_raw_journal_depth_replay_integration(self):
+        packets = [dict(kind='SNAPSHOT', symbol='BTCUSDT', update=10,
+                        bids=[[99, 2]], asks=[[101, 3]], received=1058),
+                   dict(kind='DIFF', symbol='BTCUSDT', first=11, last=11,
+                        bids=[[99, 4]], asks=[], source_at=1059, received=1059)]
+        self.run_fixture(self.config(), timing(), packets)
+        path = self.root/'j0'
+        records = journal_records(path)
+        t = next(r['payload'] for r in records if r['kind'] == 'TIMING_EVIDENCE')
+        self.assertEqual((t['asset'], t['publication_at'], t['clock_drift_ppm']), ('BTCUSDT', 1001, 20))
+        self.assertEqual(replay_synthetic_depth(path, 'BTCUSDT', 1060)['state'], 'SYNCED')
+        with self.assertRaises(ValueError):
+            replay_synthetic_depth(path, 'BTCUSDT', 1070)  # raw exists but is stale
 
 
 class ScienceTests(unittest.TestCase):
