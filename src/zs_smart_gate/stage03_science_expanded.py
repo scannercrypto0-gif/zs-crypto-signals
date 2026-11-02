@@ -228,6 +228,22 @@ def semantic_arms(r,models,key):
     if key=='S4':return a,r['S4_B']
     raise ValueError('SEMANTIC_SCOPE')
 
+def overlap_audit(records,models):
+    """Label-free, direction-conditional double-count/collinearity diagnostics."""
+    from .stage03_science_pilot import correlation
+    result={}
+    for horizon,a,b in [('INTRADAY','I2','I4'),('SWING','S3','S5')]:
+        bins=defaultdict(list)
+        for r in records:
+            if r['horizon']!=horizon:continue
+            x=normalized(r,a,models,'Q')
+            y=normalized(r,b,models,'D' if b in DOMAIN else 'Q')
+            if x is not None and y is not None:bins[(r['asset'],r['direction'])].append((x,y))
+        result[a+'x'+b]={'lineage':'PRICE_PATH_vs_QUOTE_VOLUME' if a=='I2' else 'SHARED_PRICE_MOMENTUM_RISK',
+          'weight_change_authorized':False,'uses_outcome_labels':False,
+          'strata':{str(k):{'N':len(v),'descriptive_correlation':correlation([x for x,y in v],[y for x,y in v]),'inferential_p':None} for k,v in bins.items()}}
+    return result
+
 def _moments(rows):
     # n,x,y,xx,yy,xy,z,zz,zy: paired x/y vs z/y correlations.
     return [len(rows),sum(x for x,y,z in rows),sum(y for x,y,z in rows),sum(x*x for x,y,z in rows),

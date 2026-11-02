@@ -1,7 +1,7 @@
 from decimal import Decimal as D
 import unittest
 from zs_smart_gate.stage03_science_expanded import (Bar,Series,aggregate,aligned_context,
-    confirmed_pivots,setup_label,fit_models,normalized,holm,compare,forward_admission,verify_frozen_build)
+    confirmed_pivots,setup_label,fit_models,normalized,holm,compare,forward_admission,verify_frozen_build,overlap_audit)
 
 def bar(start=0,size=300,o=100,h=102,l=99,c=101):
     return Bar(start,start+size,D(o),D(h),D(l),D(c),D(1),D(100))
@@ -74,3 +74,8 @@ class ExpandedScienceTests(unittest.TestCase):
         verify_frozen_build(m,b'runner',b'module')
         with self.assertRaisesRegex(ValueError,'FROZEN_CODE_CHANGED'):verify_frozen_build(m,b'runner',b'changed')
         with self.assertRaisesRegex(ValueError,'MISSING_FROZEN_BUILD_DIGEST'):verify_frozen_build({'runner_sha256':m['runner_sha256']},b'runner',b'module')
+    def test_overlap_audit_is_direction_conditional_and_label_free(self):
+        records=[{'asset':'fixture','horizon':'INTRADAY','direction':1,'raw':{'I2':v,'I4':v/10}} for v in (1.,2.,3.)]
+        result=overlap_audit(records,fit_models(records,'DEV'))['I2xI4']
+        self.assertFalse(result['uses_outcome_labels'])
+        self.assertAlmostEqual(next(iter(result['strata'].values()))['descriptive_correlation'],1)
