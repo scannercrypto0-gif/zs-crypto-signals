@@ -2,7 +2,9 @@ import copy
 import hashlib
 import unittest
 from zs_smart_gate.prospective_causality import receipt,assess,utc_gate,forward_gate,digest
+from zs_smart_gate.evidence_journal import canonical_bytes
 from zs_smart_gate.science016 import interval,cost_scenario,winner_gate
+from zs_smart_gate.science016 import prediction_gain,fit_ecdf,ecdf_value,partition,dependence_diagnostic
 
 class Receipt016Tests(unittest.TestCase):
     def setUp(self):
@@ -12,6 +14,10 @@ class Receipt016Tests(unittest.TestCase):
         self.proof=dict(origin='EXTERNAL_INDEPENDENT_ATTESTATION',proof_sha256='a'*64,synthetic=False,
             epoch='e1',reference_wall=100.,reference_mono_ns=1000000000,valid_until_mono_ns=61000000000,
             absolute_error_seconds=.1,max_drift_ppm=20)
+    def trust_double(self):
+        body={k:v for k,v in self.proof.items()if k!='proof_sha256'}
+        self.proof['proof_sha256']=hashlib.sha256(canonical_bytes(body)).hexdigest()
+        return {self.proof['proof_sha256']}
     def check(self,events=None,**kwargs):
         args=dict(anchor='0'*64,decision_wall=100.5,decision_mono=1500000000,epoch='e1',
             source_mode='NEW_FUTURE_OBSERVATION',used_digests=[self.event['digest']])
@@ -22,18 +28,18 @@ class Receipt016Tests(unittest.TestCase):
         self.assertEqual(r['status'],'HOLD');self.assertEqual(r['publisher_original_publication'],'MISSING')
         self.assertEqual(r['historical_publisher_pit'],'HOLD')
     def test_injected_independent_trust_double_exercises_candidate_only(self):
-        r=self.check(witness=self.proof,reviewed_proof_hashes=frozenset(['a'*64]))
+        r=self.check(witness=self.proof,reviewed_proof_hashes=self.trust_double())
         self.assertEqual(r['status'],'PROSPECTIVE_CAUSALITY_PASS_CANDIDATE')
         self.assertEqual(r['historical_publisher_pit'],'HOLD')
     def test_nts_authentication_or_unreviewed_pin_is_not_absolute_time(self):
         self.assertEqual(self.check(witness=self.proof)['status'],'HOLD')
         self.proof['origin']='AUTHENTICATED_NTS_ONLY'
-        self.assertEqual(self.check(witness=self.proof,reviewed_proof_hashes={'a'*64})['status'],'HOLD')
+        self.assertEqual(self.check(witness=self.proof,reviewed_proof_hashes=self.trust_double())['status'],'HOLD')
     def test_synthetic_proof_cannot_certify_utc(self):
         self.proof['synthetic']=True
-        self.assertEqual(self.check(witness=self.proof,reviewed_proof_hashes={'a'*64})['status'],'HOLD')
+        self.assertEqual(self.check(witness=self.proof,reviewed_proof_hashes=self.trust_double())['status'],'HOLD')
     def test_old_archive_never_new_oos_even_with_trust_double(self):
-        r=self.check(source_mode='HISTORICAL_ARCHIVE',witness=self.proof,reviewed_proof_hashes={'a'*64})
+        r=self.check(source_mode='HISTORICAL_ARCHIVE',witness=self.proof,reviewed_proof_hashes=self.trust_double())
         self.assertEqual(r['status'],'HOLD')
     def test_tampered_hash_chain(self):
         e=copy.deepcopy(self.event);e['collector_received_at']=99
@@ -68,15 +74,29 @@ class Receipt016Tests(unittest.TestCase):
         self.assertEqual(self.check([self.event,e],used_digests=[e['digest']])['receipt_evidence'],'RECEIVED_BEFORE_DECISION')
     def test_unknown_future_variable(self):
         self.assertEqual(self.check(used_digests=['f'*64])['status'],'FAIL')
+    def test_duplicate_decision_inputs_are_not_extra_evidence(self):
+        self.assertEqual(self.check(used_digests=[self.event['digest']]*2)['status'],'FAIL')
     def test_expired_clock(self):
         self.proof['valid_until_mono_ns']=1200000000
-        self.assertEqual(self.check(witness=self.proof,reviewed_proof_hashes={'a'*64})['utc_evidence']['status'],'HOLD')
+        self.assertEqual(self.check(witness=self.proof,reviewed_proof_hashes=self.trust_double())['utc_evidence']['status'],'HOLD')
+    def test_decision_calibration_cannot_certify_earlier_uncovered_receipts(self):
+        self.proof['reference_mono_ns']=1200000000;self.proof['reference_wall']=100.2
+        r=self.check(witness=self.proof,reviewed_proof_hashes=self.trust_double())
+        self.assertEqual(r['utc_evidence']['reason'],'RECEIPT_OUTSIDE_ATTESTED_CALIBRATION')
+    def test_finality_requires_margin_for_utc_uncertainty(self):
+        e=copy.deepcopy(self.event);e['closed_at']=99.95;e['digest']=digest(e)
+        r=self.check([e],used_digests=[e['digest']],witness=self.proof,reviewed_proof_hashes=self.trust_double())
+        self.assertEqual(r['status'],'FAIL')
     def test_drift_bound(self):
         self.proof['max_drift_ppm']=2000000
-        self.assertEqual(self.check(witness=self.proof,reviewed_proof_hashes={'a'*64})['status'],'HOLD')
+        self.assertEqual(self.check(witness=self.proof,reviewed_proof_hashes=self.trust_double())['status'],'HOLD')
     def test_nonfinite_clock(self):
         self.proof['absolute_error_seconds']=float('nan')
-        self.assertEqual(self.check(witness=self.proof,reviewed_proof_hashes={'a'*64})['utc_evidence']['status'],'FAIL')
+        self.assertEqual(self.check(witness=self.proof,reviewed_proof_hashes=self.trust_double())['utc_evidence']['status'],'FAIL')
+    def test_admitted_document_cannot_be_reused_with_smaller_error_bound(self):
+        pins=self.trust_double();self.proof['absolute_error_seconds']=0
+        r=self.check(witness=self.proof,reviewed_proof_hashes=pins)
+        self.assertEqual(r['utc_evidence']['reason'],'ADMITTED_UTC_DOCUMENT_CHANGED')
     def test_forward_zero_capture_default(self):
         r=forward_gate();self.assertEqual(r['status'],'NOT_ARMED');self.assertEqual(r['live_capture_events'],0)
     def test_forward_network_clock_storage_and_recovery_fail_closed(self):
@@ -89,6 +109,24 @@ class Receipt016Tests(unittest.TestCase):
         self.assertEqual(r['status'],'READY_FOR_SEPARATE_OWNER_ACTIVATION');self.assertFalse(r['collector_started'])
 
 class Inference016Tests(unittest.TestCase):
+    def test_prefrozen_paired_loss_and_missing_domain(self):
+        self.assertEqual(prediction_gain(1,100,direction=1,scale_bps=100),.25)
+        self.assertEqual(prediction_gain(1,-100,direction=1,scale_bps=100),-.75)
+        with self.assertRaises(ValueError):prediction_gain(None,100,direction=1,scale_bps=100)
+    def test_exploratory_cdf_is_dev_only_and_ties_are_explicit(self):
+        model=fit_ecdf([1,1,1],phase='DEV');self.assertEqual(ecdf_value(1,model),.5)
+        with self.assertRaisesRegex(ValueError,'OOS_REFIT_FORBIDDEN'):fit_ecdf([1,2],phase='OOS')
+    def test_old_or_unadmitted_data_never_new_oos(self):
+        event=dict(raw_sha256='x',source_mode='NEW_AFTER_FREEZE_LIVE_RECEIPT',causality='PROSPECTIVE_CAUSALITY_PASS_CANDIDATE',decision_at=1000000)
+        kwargs=dict(freeze_at=0,dev_end=10,oos_start=700000,admitted_hashes={'x'},previously_viewed_hashes={'x'})
+        self.assertEqual(partition(event,**kwargs),'INELIGIBLE_OLD_VIEWED_OR_UNADMITTED_DATA')
+        kwargs['previously_viewed_hashes']=set();self.assertEqual(partition(event,**kwargs),'OOS')
+        event['source_mode']='HISTORICAL_ARCHIVE';self.assertTrue(partition(event,**kwargs).startswith('INELIGIBLE'))
+    def test_insufficient_purge_is_rejected(self):
+        with self.assertRaises(ValueError):partition({},freeze_at=0,dev_end=10,oos_start=20,admitted_hashes=set(),previously_viewed_hashes=set())
+    def test_estimated_effectiveN_never_qualified(self):
+        d=dependence_diagnostic(list(range(20)));self.assertLess(d['N_effective_diagnostic_not_qualified'],20)
+        self.assertIsNone(d['N_required_qualified']);self.assertFalse(d['independence_proved'])
     def test_actual_N_never_certified_by_event_count(self):
         r=interval([.1]*256);self.assertIsNone(r['N_effective']);self.assertEqual(r['status'],'HOLD_UNPROVED_BLOCK_INDEPENDENCE')
     def test_multiplicity_widens_bound(self):

@@ -34,6 +34,13 @@ def utc_gate(witness,*,wall,mono,epoch,reviewed_proof_hashes=frozenset()):
     if (w.get('origin')!='EXTERNAL_INDEPENDENT_ATTESTATION' or
         w.get('proof_sha256')not in reviewed_proof_hashes or w.get('synthetic')is not False):
         return dict(status='HOLD',reason='AUTHENTICATION_IS_NOT_ABSOLUTE_UTC_PROOF',bound_seconds=None)
+    proof_body={k:v for k,v in w.items()if k!='proof_sha256'}
+    try:
+        proof_hash=hashlib.sha256(canonical_bytes(proof_body)).hexdigest()
+    except (ValueError,TypeError):
+        return dict(status='FAIL',reason='INVALID_ATTESTATION_DOCUMENT',bound_seconds=None)
+    if proof_hash!=w['proof_sha256']:
+        return dict(status='FAIL',reason='ADMITTED_UTC_DOCUMENT_CHANGED',bound_seconds=None)
     names=['reference_wall','reference_mono_ns','valid_until_mono_ns','absolute_error_seconds','max_drift_ppm']
     if any(not finite(w.get(k))for k in names)or not finite(wall)or not finite(mono):
         return dict(status='FAIL',reason='CLOCK_FIELDS_NONFINITE',bound_seconds=None)
@@ -54,6 +61,8 @@ def assess(events,raw_by_hash,*,anchor,decision_wall,decision_mono,epoch,
     for seq,e in enumerate(events,1):
         try:
             mono,wall=e['collector_received_mono_ns'],e['collector_received_at']
+            if type(e['seq'])is not int or not isinstance(e['source_event_id'],str)or not e['source_event_id'].strip():
+                raise ValueError('INVALID_SOURCE_ID_OR_SEQUENCE_TYPE')
             if not all(finite(x)for x in (mono,wall,decision_mono,decision_wall,e['closed_at'])):
                 raise ValueError('NONFINITE_EVENT_CLOCK')
             if e['seq']!=seq or e['previous']!=previous or e['digest']!=digest(e):
@@ -82,15 +91,24 @@ def assess(events,raw_by_hash,*,anchor,decision_wall,decision_mono,epoch,
         except (KeyError,TypeError,ValueError)as exc:
             reasons.append(str(exc));break
     if not set(used_digests).issubset(available):reasons.append('UNKNOWN_FUTURE_OR_SUPERSEDED_INPUT_USED')
+    if len(used_digests)!=len(set(used_digests)):reasons.append('DUPLICATED_DECISION_INPUT')
     if not used_digests:reasons.append('NO_CAUSAL_DECISION_INPUT')
     if not finite(decision_mono)or not finite(decision_wall):reasons.append('INVALID_DECISION_CLOCK')
     elif last_mono>=0 and (decision_mono<last_mono or decision_wall<last_wall or
           abs((decision_wall-last_wall)-(decision_mono-last_mono)/1e9)>=1):
         reasons.append('DECISION_CLOCK_JUMP')
-    received='RECEIVED_BEFORE_DECISION'if not reasons else 'FAIL'
+    future=source_mode=='NEW_FUTURE_OBSERVATION'
+    received=('RECEIVED_BEFORE_DECISION'if future else 'REPLAY_ORDER_ONLY_NOT_FIELD_RECEIPT')if not reasons else 'FAIL'
     clock=utc_gate(witness,wall=decision_wall,mono=decision_mono,epoch=epoch,
                    reviewed_proof_hashes=reviewed_proof_hashes)
-    future=source_mode=='NEW_FUTURE_OBSERVATION'
+    if clock['status']=='UTC_BOUND_VERIFIED'and not reasons:
+        for e in events:
+            at_receipt=utc_gate(witness,wall=e['collector_received_at'],mono=e['collector_received_mono_ns'],
+                epoch=epoch,reviewed_proof_hashes=reviewed_proof_hashes)
+            if at_receipt['status']!='UTC_BOUND_VERIFIED':
+                clock=dict(status='HOLD',reason='RECEIPT_OUTSIDE_ATTESTED_CALIBRATION',bound_seconds=None);break
+            if e['closed_at']+at_receipt['bound_seconds']>e['collector_received_at']:
+                reasons.append('CANDLE_FINALITY_INSIDE_CLOCK_UNCERTAINTY');break
     status=('PROSPECTIVE_CAUSALITY_PASS_CANDIDATE'if not reasons and future and clock['status']=='UTC_BOUND_VERIFIED'
             else 'FAIL'if reasons else 'HOLD')
     if not future:reasons.append('ARCHIVE_OR_SYNTHETIC_NOT_NEW_FUTURE_DATA')

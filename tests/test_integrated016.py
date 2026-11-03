@@ -44,6 +44,15 @@ class Integrated016Tests(unittest.TestCase):
         raw=canonical_bytes(self.data)
         with self.assertRaisesRegex(ValueError,'SOURCE_RECEIVED_AFTER_DECISION'):
             evaluate(raw,expected_sha256=hashlib.sha256(raw).hexdigest(),decision_ms=self.data['received_ms']-1)
+    def test_explicit_daily_weekly_contexts_are_accepted_only_when_already_received(self):
+        def row(start,duration):return[start,'100','102','99','101','10',start+duration-1,'1000',10,'5','500','0']
+        self.data['contexts']={
+            '1d':dict(received_ms=self.data['received_ms'],rows=[row(1735603200000,86400000)]),
+            '1w':dict(received_ms=self.data['received_ms'],rows=[row(1734912000000,604800000)])}
+        d=decide(self.data);self.assertEqual(d['frames']['1d'],1);self.assertEqual(d['frames']['1w'],1)
+        self.assertIsNotNone(d['features']['SWING:1']['S4']['value'])
+        self.data['contexts']['1w']['received_ms']+=1000
+        with self.assertRaisesRegex(ValueError,'CONTEXT_RECEIVED_AFTER_DECISION'):decide(self.data)
     def test_late_parent_context_cannot_be_used(self):
         original=aggregate
         def late(*args):
@@ -55,9 +64,23 @@ class Integrated016Tests(unittest.TestCase):
     def test_gap_and_duplicate_kline_rejected(self):
         self.data['rows'][4]=self.data['rows'][3]
         with self.assertRaisesRegex(ValueError,'KLINE_GAP_OR_DUPLICATE'):decide(self.data)
+    def test_price_gaps_do_not_create_an_out_of_unit_normalized_feature(self):
+        for i,r in enumerate(self.data['rows']):
+            r[1:5]=[str(100+i),str(100+i+.2),str(100+i-.2),str(100+i+.1)]
+        d=decide(self.data)
+        self.assertIsNone(d['features']['INTRADAY:1']['I3']['value'])
+        self.assertEqual(d['features']['INTRADAY:1']['I3']['reason'],'NON_UNIT_BODY_PATH_RATIO_GAPS_NOT_FILLED')
     def test_current_liquidity_cannot_be_backfilled_into_old_data(self):
         with self.assertRaisesRegex(ValueError,'CURRENT_LIQUIDITY_CANNOT_BACKFILL_HISTORY'):
             decide(market={})
+    def test_future_path_requires_actual_monotonic_collector_provenance(self):
+        with self.assertRaisesRegex(ValueError,'FUTURE_REQUIRES_REAL_RECEIPT'):
+            decide(source_mode='NEW_FUTURE_OBSERVATION')
+    def test_future_cannot_restart_hash_chain_at_each_decision(self):
+        self.data.update(received_mono_ns=1000000000,collector_epoch='real-epoch')
+        self.data['provenance']['mode']='NEW_AFTER_FREEZE_LIVE_RECEIPT'
+        with self.assertRaisesRegex(ValueError,'FUTURE_REQUIRES_ADMITTED_CONTINUOUS_CHAIN'):
+            decide(self.data,source_mode='NEW_FUTURE_OBSERVATION',decision_mono_ns=1500000000)
     def test_liquidity_missing_gapped_future_stale_crossed(self):
         self.assertEqual(liquidity(None,100)['status'],'MISSING')
         base=dict(received_at=99,bid='100',ask='100.1',quote_volume_24h='20000000')

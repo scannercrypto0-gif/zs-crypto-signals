@@ -1,6 +1,48 @@
 """Frozen016 inference-instrument calibration; never OOS market evidence."""
 import math
 import random
+from bisect import bisect_left,bisect_right
+
+def prediction_gain(feature,return_bps,*,direction,scale_bps):
+    if (type(direction)is not int or direction not in(1,-1)or
+        any(type(x)not in(int,float)or not math.isfinite(x)for x in(feature,return_bps,scale_bps))or
+        not 0<=feature<=1 or scale_bps<=0):raise ValueError('PREDICTION_LOSS_DOMAIN')
+    target=(1+max(-1,min(1,direction*return_bps/scale_bps)))/2
+    return (.5-target)**2-(feature-target)**2
+
+def fit_ecdf(samples,*,phase):
+    if phase!='DEV':raise ValueError('OOS_REFIT_FORBIDDEN')
+    if not samples or any(type(x)not in(int,float)or not math.isfinite(x)for x in samples):raise ValueError('FINITE_DEV_REQUIRED')
+    return tuple(sorted(samples))
+
+def ecdf_value(value,frozen_dev):
+    if type(value)not in(int,float)or not math.isfinite(value)or not frozen_dev:raise ValueError('FINITE_FEATURE_AND_FROZEN_DEV_REQUIRED')
+    return (bisect_left(frozen_dev,value)+bisect_right(frozen_dev,value))/(2*len(frozen_dev))
+
+def partition(event,*,freeze_at,dev_end,oos_start,admitted_hashes,previously_viewed_hashes):
+    # Admission pins are supplied by independent source/clock review, not raw labels.
+    if (any(type(x)not in(int,float)or not math.isfinite(x)for x in(freeze_at,dev_end,oos_start))or
+        not freeze_at<dev_end<oos_start or oos_start-dev_end<7*86400+4*3600):
+        raise ValueError('PURGE_AND_EMBARGO_REQUIRED')
+    if (event.get('raw_sha256')not in admitted_hashes or event.get('raw_sha256')in previously_viewed_hashes or
+        event.get('source_mode')!='NEW_AFTER_FREEZE_LIVE_RECEIPT' or
+        event.get('causality')!='PROSPECTIVE_CAUSALITY_PASS_CANDIDATE'):
+        return 'INELIGIBLE_OLD_VIEWED_OR_UNADMITTED_DATA'
+    decision=event.get('decision_at')
+    if type(decision)not in(int,float)or not math.isfinite(decision)or decision<=freeze_at:return 'INELIGIBLE_BEFORE_FREEZE'
+    return 'DEV'if decision<=dev_end else 'OOS'if decision>=oos_start else'PURGED_EMBARGO'
+
+def dependence_diagnostic(block_means):
+    n=len(block_means)
+    if any(type(x)not in(int,float)or not math.isfinite(x)for x in block_means):raise ValueError('FINITE_BLOCKS_REQUIRED')
+    rho=None;ess=None
+    if n>=8:
+        mean=sum(block_means)/n;den=sum((x-mean)**2 for x in block_means)
+        if den>0:
+            rho=max(-.99,min(.99,sum((a-mean)*(b-mean)for a,b in zip(block_means[:-1],block_means[1:]))/den))
+            ess=max(1,min(n,n*(1-rho)/(1+rho)))
+    return dict(blocks=n,lag1_rho_descriptive=rho,N_effective_diagnostic_not_qualified=ess,
+                N_effective_qualified=None,N_required_qualified=None,independence_proved=False)
 
 def interval(gains,family=24,alpha=.05,independence_attested=False):
     if not gains or any(type(x)not in(int,float)or not math.isfinite(x)or not -1<=x<=1 for x in gains):
@@ -13,7 +55,7 @@ def interval(gains,family=24,alpha=.05,independence_attested=False):
 
 def cost_scenario(return_bps,*,direction,fees_bps,slippage_bps,spread_bps):
     values=[return_bps,fees_bps,slippage_bps,spread_bps]
-    if direction not in(1,-1)or any(type(x)not in(int,float)or not math.isfinite(x)for x in values)or min(values[1:])<0:
+    if type(direction)is not int or direction not in(1,-1)or any(type(x)not in(int,float)or not math.isfinite(x)for x in values)or min(values[1:])<0:
         raise ValueError('INVALID_COST_SCENARIO')
     return dict(net_scenario_bps=direction*return_bps-fees_bps-slippage_bps-spread_bps,
                 actual_execution_or_profitability_proved=False)
@@ -21,7 +63,7 @@ def cost_scenario(return_bps,*,direction,fees_bps,slippage_bps,spread_bps):
 def winner_gate(*,lower_bound,independent_oos,clock_pass,liquidity_pass,cost_review_pass):
     if any(x is not True for x in (independent_oos,clock_pass,liquidity_pass,cost_review_pass)):
         return 'HOLD_NO_QUALIFIED_WINNER'
-    if not math.isfinite(lower_bound):raise ValueError('FINITE_LOWER_BOUND_REQUIRED')
+    if type(lower_bound)not in(int,float)or not math.isfinite(lower_bound):raise ValueError('FINITE_LOWER_BOUND_REQUIRED')
     return 'WINNER_CANDIDATE_REVIEW_REQUIRED'if lower_bound>0 else 'NO_WINNER_WITH_VALID_EVIDENCE'
 
 def wilson(k,n):

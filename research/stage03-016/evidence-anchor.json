@@ -1,0 +1,23 @@
+{
+  "schema": "ZS016_EVIDENCE_REPRODUCTION_ANCHOR_V1",
+  "evidence_commit": "4efcdea24c4229179ee63ce0c45ec42e4f7ee298",
+  "combined_bytes": 959413,
+  "max_study_bytes": 10485760,
+  "packets": [
+    {
+      "study_id": "zs03-016-integrated",
+      "manifest_sha256": "ffeb18fe22b915c7ddb5cab5e95fa5718aa31034c8677a91737f08cfe77147fd"
+    },
+    {
+      "study_id": "zs03-016-public-compat",
+      "manifest_sha256": "4a0c0323cddff5d151d1301d93b9a00504e4f61e64883a4bd821866e1f2c28f6"
+    },
+    {
+      "study_id": "zs03-016-engineering-revision",
+      "manifest_sha256": "22a9a29ae33e6c5cebf4d3ab07ed1a938a7f032629e3e41b3250ec08526beb3b"
+    }
+  ],
+  "protocol_freeze": "77ea1940765d2f6874330f075b3f34dcb1d74caf",
+  "science_implementation_freeze": "be884b093cbef17387127ecba9c3c2182e084a37",
+  "old_source_lineage": "007925325914338536f76cd42962a776c82a4ee3"
+}

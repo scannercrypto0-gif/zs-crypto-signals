@@ -14,6 +14,8 @@ from .stage03a_contracts import Direction,V2_GROUPS,Horizon
 from .prospective_causality import receipt,assess
 from .evidence_journal import canonical_bytes
 
+DECISION_VERSION='ZS016_RESEARCH_V2_UNIT_DOMAIN_GUARDED'
+
 def at(ms):return datetime.fromtimestamp(ms/1000,tz=timezone.utc)
 
 def parse_rows(rows,received_ms):
@@ -78,14 +80,18 @@ def group_features(frames,horizon,direction,liq,decision):
     early=m['SIGNED_CHILD_NET_TO_PATH'];continuity=m['SECOND_HALF_QUOTE_VOLUME_SHARE']
     daily,weekly=frames['1d'],frames['1w']
     context=(Decimal(int(direction*(daily[-1].close-daily[-1].open)>0))+Decimal(int(direction*(weekly[-1].close-weekly[-1].open)>0)))/2 if daily and weekly else None
-    if prefix=='I':values=[close,quality,(early+1)/2 if early is not None else None,continuity,context,
+    if prefix=='I':values=[close,quality,(early+1)/2 if early is not None and -1<=early<=1 else None,continuity,context,
                             decimal(liq['normalized'])if liq['normalized']is not None else None]
     else:values=[context,close,quality,context,continuity,decimal(liq['normalized'])if liq['normalized']is not None else None]
-    return {prefix+str(i):dict(value=str(v)if v is not None else None,
-            reason='RESEARCH_FIXED_R_UNAPPROVED'if v is not None else 'CONTEXT_OR_LIQUIDITY_UNAVAILABLE')for i,v in enumerate(values,1)},join.status
+    features={prefix+str(i):dict(value=str(v)if v is not None else None,
+            reason='RESEARCH_FIXED_R_UNAPPROVED'if v is not None else 'CONTEXT_OR_LIQUIDITY_UNAVAILABLE')for i,v in enumerate(values,1)}
+    if prefix=='I'and early is not None and not -1<=early<=1:
+        features['I3']['reason']='NON_UNIT_BODY_PATH_RATIO_GAPS_NOT_FILLED'
+    return features,join.status
 
 def evaluate(raw,*,expected_sha256,decision_ms,source_mode='HISTORICAL_ARCHIVE',market=None,
-             witness=None,reviewed_proof_hashes=frozenset(),decision_mono_ns=None):
+             witness=None,reviewed_proof_hashes=frozenset(),decision_mono_ns=None,
+             causal_bundle=None,reviewed_chain_anchors=frozenset()):
     if hashlib.sha256(raw).hexdigest()!=expected_sha256:raise ValueError('RAW_SHA_CONFLICT')
     import json
     data=json.loads(raw);received=data['received_ms'];symbol=data['symbol']
@@ -93,12 +99,38 @@ def evaluate(raw,*,expected_sha256,decision_ms,source_mode='HISTORICAL_ARCHIVE',
         if (data.get('provenance',{}).get('mode')!='NEW_AFTER_FREEZE_LIVE_RECEIPT' or
             decision_mono_ns is None or type(data.get('received_mono_ns'))is not int or not data.get('collector_epoch')):
             raise ValueError('FUTURE_REQUIRES_REAL_RECEIPT_MONOTONIC_PROVENANCE')
+        if not causal_bundle or causal_bundle.get('anchor')not in reviewed_chain_anchors:
+            raise ValueError('FUTURE_REQUIRES_ADMITTED_CONTINUOUS_CHAIN_NOT_NEW_GENESIS')
     if source_mode=='HISTORICAL_ARCHIVE'and market is not None:
         raise ValueError('CURRENT_LIQUIDITY_CANNOT_BACKFILL_HISTORY')
     if received>decision_ms:raise ValueError('SOURCE_RECEIVED_AFTER_DECISION')
     candles=parse_rows(data['rows'],received)
     decision=at(decision_ms)
     frames={f:aggregate(candles,f,decision)for f in ['30m','1h','4h','1d','1w']}
+    for frame,context in data.get('contexts',{}).items():
+        if frame not in('1d','1w'):raise ValueError('UNAPPROVED_EXTERNAL_CONTEXT_FRAME')
+        receipt_ms=context['received_ms'];raw_context=None
+        if receipt_ms>decision_ms:raise ValueError('CONTEXT_RECEIVED_AFTER_DECISION')
+        if source_mode=='NEW_FUTURE_OBSERVATION':
+            raw_context=causal_bundle['raw_by_hash'].get(context['sha256'])
+            if (raw_context is None or hashlib.sha256(raw_context).hexdigest()!=context['sha256']or
+                json.loads(raw_context)!=context['rows']or not any(e['raw_sha256']==context['sha256']and
+                   e['digest']in causal_bundle['used_digests']for e in causal_bundle['events'])):
+                raise ValueError('CONTEXT_NOT_IN_ADMITTED_RECEIPT_CHAIN')
+        duration=86400000 if frame=='1d' else 604800000
+        parsed=[];previous=None
+        for row in context['rows']:
+            if len(row)!=12:raise ValueError('CONTEXT_SCHEMA')
+            start,end=int(row[0]),int(row[6])+1
+            if end-start!=duration:raise ValueError('CONTEXT_DURATION')
+            if previous is not None and start!=previous:raise ValueError('CONTEXT_GAP_OR_REVISION')
+            previous=end
+            if end>receipt_ms:continue  # forming HTF bars never become context
+            window=CandleWindow(frame,at(start),at(end),at(receipt_ms),at(receipt_ms),'BINANCE_SPOT_OBSERVATIONS',
+                decimal(row[1]),decimal(row[2]),decimal(row[3]),decimal(row[4]),decimal(row[5]),decimal(row[7]))
+            if window.errors_at(decision):raise ValueError('CONTEXT_INVALID_OR_LATE')
+            parsed.append(window)
+        frames[frame]=parsed
     frames['5m']=[CandleWindow.from_five_minute(c,source_id='BINANCE_SPOT_OBSERVATIONS')for c in candles]
     liq=liquidity(market,decision_ms/1000)
     rows={};joins={}
@@ -115,6 +147,13 @@ def evaluate(raw,*,expected_sha256,decision_ms,source_mode='HISTORICAL_ARCHIVE',
     causal=assess([event],{expected_sha256:raw},anchor='0'*64,decision_wall=decision_ms/1000,
         decision_mono=dmono,epoch=epoch,source_mode=source_mode,
         used_digests=[event['digest']],witness=witness,reviewed_proof_hashes=reviewed_proof_hashes)
+    if source_mode=='NEW_FUTURE_OBSERVATION':
+        bundle=causal_bundle
+        if not any(e['raw_sha256']==expected_sha256 and e['digest']in bundle['used_digests']for e in bundle['events']):
+            raise ValueError('ACTUAL_RAW_NOT_IN_ADMITTED_CAUSAL_INPUTS')
+        causal=assess(bundle['events'],bundle['raw_by_hash'],anchor=bundle['anchor'],decision_wall=decision_ms/1000,
+            decision_mono=dmono,epoch=epoch,source_mode=source_mode,used_digests=bundle['used_digests'],
+            witness=witness,reviewed_proof_hashes=reviewed_proof_hashes)
     candidate=None
     if market is not None and liq['status']=='OBSERVED_UNQUALIFIED':
         snap=MarketSnapshot(symbol,market.get('quote_asset','UNKNOWN'),market.get('spot_enabled')is True,market.get('trading_status','UNKNOWN'),
@@ -127,8 +166,9 @@ def evaluate(raw,*,expected_sha256,decision_ms,source_mode='HISTORICAL_ARCHIVE',
     if source_mode!='NEW_FUTURE_OBSERVATION':reasons.append('HISTORICAL_PUBLISHER_PIT_HOLD')
     if liq['status']!='OBSERVED_UNQUALIFIED':reasons.append('LIQUIDITY_UNAVAILABLE')
     if any(x is None for x in joins.values()):reasons.append('MULTIFRAME_CONTEXT_MISSING')
-    identity=hashlib.sha256(canonical_bytes(dict(symbol=symbol,raw_sha256=expected_sha256,decision_ms=decision_ms,source_mode=source_mode))).hexdigest()
-    return dict(event_id='decision-'+identity[:24],symbol=symbol,status='BLOCKED_RESEARCH_ONLY',
+    if not frames['1d']or not frames['1w']:reasons.append('DAILY_OR_WEEKLY_CONTEXT_MISSING')
+    identity=hashlib.sha256(canonical_bytes(dict(symbol=symbol,raw_sha256=expected_sha256,decision_ms=decision_ms,source_mode=source_mode,decision_version=DECISION_VERSION))).hexdigest()
+    return dict(event_id='decision-'+identity[:24],decision_version=DECISION_VERSION,symbol=symbol,status='BLOCKED_RESEARCH_ONLY',
         raw_sha256=expected_sha256,decision_ms=decision_ms,source_mode=source_mode,frames={k:len(v)for k,v in frames.items()},
         reconciliation=joins,features=rows,liquidity=liq,causality=causal,scanner_candidate=candidate,
         score=None,score_status='SCORE_UNAVAILABLE',publishable=False,reasons=reasons,
