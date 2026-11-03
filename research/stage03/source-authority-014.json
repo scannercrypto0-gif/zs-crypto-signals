@@ -1,0 +1,28 @@
+{
+  "version": "014-SOURCE-ADMISSION-1",
+  "checked_date": "2026-11-03",
+  "assets": ["BTCUSDT", "ETHUSDT"],
+  "period": ["2025-01-01", "2025-07-01"],
+  "depth_required_for_current_I6_S6": false,
+  "required_channels": ["bid_ask_spread", "rolling24h_quotevolume_eligibility", "gap_revision_availability_lineage"],
+  "publisher_statement": null,
+  "availability_statement": null,
+  "sample_binding": null,
+  "clock_authority": null,
+  "coverage_manifest": null,
+  "research_rights": null,
+  "publication_semantics": "NOT_ATTESTED",
+  "independent_reviewer_verified_hashes": [],
+  "candidates": [
+    {"source":"Binance Spot/Vision", "event_and_close":"DOCUMENTED", "publication":"NOT_ATTESTED", "source_availability":"NOT_ATTESTED", "full_historical_bid_ask":"NOT_OBTAINED", "rights":"PUBLIC_ACCESS_NOT_SEPARATE_DATA_LICENSE", "contact":"https://dev.binance.vision/", "verdict":"PUBLIC_EVIDENCE_INSUFFICIENT_ISSUER_RESPONSE_REQUIRED"},
+    {"source":"Tardis", "event":"EXCHANGE_OR_FALLBACK", "collector":"LOCAL_ARRIVAL", "publication":"NOT_ATTESTED", "full_history":"LICENSED_SCOPE_QUOTE_REQUIRED_NOT_PURCHASED", "rights":"INTERNAL_RESEARCH_SUBJECT_TO_TERMS; REVIEWER_ACCESS_NEEDS_CONFIRMATION", "contact":"https://tardis.dev/#contact", "verdict":"SAMPLES_ONLY_NOT_FULL_QUALIFICATION"},
+    {"source":"CoinAPI", "event":"time_exchange", "collector":"time_coinapi", "publication":"NOT_ATTESTED", "full_history":"NOT_ACCESSED", "rights":"ACCOUNT/PAYMENT_METHOD/TRIAL_TERMS_NOT_ACCEPTED", "contact":"https://www.coinapi.io/contact-us", "verdict":"NO_FREE_UNAUTHENTICATED_QUALIFIED_SCOPE_PROVEN"},
+    {"source":"Kaiko", "event":"PRODUCT_SPECIFIC", "collector":"REQUIRES_ISSUER_CONFIRMATION", "publication":"NOT_ATTESTED", "full_history":"NOT_ACCESSED", "rights":"TRIAL/QUOTE/RESEARCH_ACCESS_NOT_EQUIVALENT_TO_DATA_LICENSE", "contact":"https://www.kaiko.com/contact-kaiko", "verdict":"CONTRACTUAL_EVIDENCE_REQUIRED"}
+  ],
+  "clock_progress":"NTS_IMPLEMENTED_AND_SINGLE_REAL_PROBE_AUTHENTICATED; ABSOLUTE_AUTHORITY_ERROR/DRIFT_REVIEW_PENDING",
+  "statistics":"STATISTICS_WAITING_ON_QUALIFIED_SOURCE",
+  "Forward":"NOT_ARMED",
+  "source_qualification":"BLOCKED_EXTERNAL_EVIDENCE",
+  "requests_sent_to_providers":0,
+  "paid_commitments":0
+}
