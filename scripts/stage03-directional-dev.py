@@ -18,8 +18,6 @@ if __name__ == '__main__':
     p.add_argument('--protocol', required=True)
     args = p.parse_args()
     frozen, output = Path(args.frozen).resolve(), Path(args.output).resolve()
-    if frozen.drive.upper() != 'D:' or output.drive.upper() != 'D:':
-        raise SystemExit('PRIVATE_D_REQUIRED')
     protocol_bytes = Path(args.protocol).read_bytes()
     protocol = json.loads(protocol_bytes)
     code = frozen/'frozen-code'/'src'

@@ -1,0 +1,44 @@
+name: Order015 GitHub-only custody restore
+on:
+  pull_request:
+    # Keep this guard in sync with the full aggregate restore's imports,
+    # original market audit, pinned anchors, and custody regression tests.
+    # Otherwise a changed restore dependency could bypass GitHub-only replay.
+    paths:
+      - '.github/workflows/custody-015-restore.yml'
+      - 'research/custody-015/**'
+      - 'scripts/restore-custody-015.py'
+      - 'scripts/restore-custody-015-complete.py'
+      - 'scripts/stage03-raw-audit.py'
+      - 'src/zs_smart_gate/custody_restore.py'
+      - 'src/zs_smart_gate/custody_aggregate.py'
+      - 'src/zs_smart_gate/evidence_journal.py'
+      - 'src/zs_smart_gate/stage04_evidence_packet.py'
+      - 'src/zs_smart_gate/github_evidence_backend.py'
+      - 'tests/test_custody_capacity015.py'
+      - 'tests/test_custody_restore.py'
+      - 'tests/test_stage04_evidence_packet.py'
+permissions:
+  contents: read
+jobs:
+  github-only-restore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: 007925325914338536f76cd42962a776c82a4ee3
+          path: github-evidence
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Restore pinned evidence and reproduce representative results offline
+        env:
+          PYTHONPATH: src
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python scripts/restore-custody-015-complete.py --snapshot github-evidence --destination restored-complete-from-github

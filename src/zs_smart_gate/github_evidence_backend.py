@@ -12,7 +12,7 @@ from typing import Mapping, Protocol
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote
 from urllib.request import Request, urlopen
-from .evidence_journal import MAX_STUDY_BYTES, canonical_bytes, sha256_hex
+from .evidence_journal import MAX_STUDY_BYTES, canonical_bytes, sha256_hex, study_capacity
 
 _ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$")
 _RECORD = re.compile(r"^studies/([A-Za-z0-9][A-Za-z0-9._-]{0,127})/(claims|receipts)/([A-Za-z0-9][A-Za-z0-9._-]{0,127})\.json$")
@@ -123,7 +123,7 @@ def verify_snapshot(study_id: str, files: Mapping[str, bytes]) -> RestoreReport:
                     return RestoreReport(False, "INVALID_CAPACITY_INDEX", checked)
                 if any(not isinstance(n, int) or isinstance(n, bool) or n < 0 for n in reservations.values()):
                     return RestoreReport(False, "INVALID_CAPACITY_INDEX", checked)
-                if sum(reservations.values()) > MAX_STUDY_BYTES:
+                if sum(reservations.values()) > study_capacity(study_id):
                     return RestoreReport(False, "CAPACITY_INDEX_OVER_LIMIT", checked)
                 continue
             except Exception:
@@ -178,7 +178,7 @@ class GitHubEvidenceBackend:
             raise ValueError("INVALID_STUDY_ID")
         if not branch or branch == "main" or branch.startswith("refs/"):
             raise ValueError("DEDICATED_NON_MAIN_BRANCH_REQUIRED")
-        if not 1 <= max_study_bytes <= MAX_STUDY_BYTES:
+        if not 1 <= max_study_bytes <= study_capacity(study_id):
             raise ValueError("INVALID_STUDY_CAP")
         if enabled and transport is None:
             raise ValueError("TRANSPORT_REQUIRED")

@@ -16,6 +16,18 @@ from typing import Protocol
 
 UTC = timezone.utc
 MAX_STUDY_BYTES = 10 * 1024 * 1024
+MIGRATION_015_RAW_STUDY = 'custody-010-014-015-raw'
+MIGRATION_015_CAP_BYTES = 48 * 1024 * 1024
+
+
+def study_capacity(study_id: str) -> int:
+    """Owner-approved 015 supplement only; every other study retains 10MiB.
+
+    The composite restore additionally enforces the aggregate ceiling over the
+    original migration, its raw supplement and all verification packets.
+    Owner decision is recorded in Issue25 comment6600760450.
+    """
+    return MIGRATION_015_CAP_BYTES if study_id == MIGRATION_015_RAW_STUDY else MAX_STUDY_BYTES
 MAX_SPOOL_BYTES = 10 * 1024 * 1024
 SPOOL_TTL = timedelta(hours=24)
 _ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$")
@@ -79,7 +91,7 @@ class SingleStudyJournal:
         digest = sha256_hex(body)
         try:
             if not self.backend.reserve_capacity(self.study_id, reservation_id,
-                                                 len(body), MAX_STUDY_BYTES):
+                                                 len(body), study_capacity(self.study_id)):
                 return JournalResult(False, "STUDY_SIZE_LIMIT", key, digest)
             if not self.backend.create_if_absent(key, body):
                 return JournalResult(False, "DUPLICATE_OR_CONFLICT", key, digest)

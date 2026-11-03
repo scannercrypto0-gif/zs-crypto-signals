@@ -115,8 +115,6 @@ if __name__ == '__main__':
     p.add_argument('--frozen')
     args = p.parse_args()
     output = Path(args.output).resolve()
-    if output.drive.upper() != 'D:':
-        raise SystemExit('PRIVATE_D_REQUIRED')
     protocol_bytes = Path(args.protocol).read_bytes()
     protocol = json.loads(protocol_bytes)
     result = dev(Path(args.frozen).resolve()) if args.mode == 'DEV' else calibrate(protocol)
