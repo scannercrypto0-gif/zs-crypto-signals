@@ -1,0 +1,32 @@
+{
+  "version": "013-BOUNDED-PAIRED-DEV-1",
+  "status": "NEW_QUESTION_PREREGISTER_BEFORE_RESULTS; OLD_012_UNCHANGED",
+  "known_scope": "010-B known DEV Feb-Mar2025 only; Jan warmup; all 2018-2025 histories SEEN; protected2026 not accessed",
+  "question": "Does B improve fixed candidate normalized directional-return prediction loss versus A, conditional on paired feature availability? NOT the old correlation-delta question.",
+  "label": "y=clip(directional gross1h/0.01,-1,1) Intraday; y=clip(directional gross24h/0.05,-1,1) Swing. Scale fixed before new outcomes; hypotheses not economically validated.",
+  "prediction": "2*normalized feature-1, no outcome fit. Frozen010 DEV references and feature code unchanged.",
+  "paired_gain": "((predictionA-y)^2-(predictionB-y)^2)/4 in[-1,1], higher means B lower loss",
+  "unit": "Complete UTC Monday calendar week; average paired gains perasset then equalasset mean. Both assets sameweek form ONE unit, not independent trials.",
+  "missing": "Keep only complete original scheduled weeks, >=90% finite paired inputs perasset; no matching identical missing-slot signatures, no fill. Target explicitly conditional on observed pairs; report missingness/strata.",
+  "family": 20,
+  "comparisons": "16 old candidate-pair definitions each separately horizon/direction,4 liquidity hypotheses reserved and unavailable; no choice using old OOS",
+  "interval": "Hoeffding bounded independent-unit interval, radius sqrt(2log(2*family/.05)/K); clip to[-1,1]. Arbitrary withinweek/asset dependence allowed. Betweenweek independence NOT ATTESTED for real history => no scientific PASS.",
+  "practical_gain_floor": 0.01,
+  "sufficiency": "N_events not Neff. Actual Neff/Nrequired unknown. Radius<=0.1 would need ceil(2log(800)/.1^2)=1337 genuinely independent units; precision reference only, not guaranteed paired power.",
+  "simulation": {
+    "seed": 13013,
+    "replicates_per_cell": 2048,
+    "K": [8,32,128],
+    "within_episode_AR": [0,0.5,0.9],
+    "within_episode_points": 12,
+    "scenarios": ["independent episodes normal innovations", "independent episodes heavy-tail3 innovations", "dependent weeks shared latent factor stress"],
+    "effects": [0,0.25],
+    "metrics": ["typeI percomparison", "coverage of true bounded mean", "power under declared alternative", "MonteCarlo Wilson uncertainty"],
+    "warning": "Shared-factor scenario violates required independence; simulation is a counterexample probe, not marketDGP or exactFWER estimate. No data-driven method selection."
+  },
+  "stability": "Descriptive paired gains by direction/horizon/week and causal setup/regime; no subgroup p-values, no posthoc winner.",
+  "costs": "Gross label;0/5/10bps eachway hypothetical only; measured execution costs unavailable",
+  "OOS": "PENDING; future immutable manifest must prove unseen licensed source and timing/liquidity eligibility before any new holdout opens",
+  "stop": "No fullV2, no qualified winner, no scienceGO until source/timing/liquidity, actualdependence/power and independentreview gates pass",
+  "network": "ZERO_THIS_STUDY"
+}

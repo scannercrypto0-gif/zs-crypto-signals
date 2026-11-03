@@ -1,0 +1,30 @@
+{
+  "version": "013-FORWARD-READINESS-NOT-AUTHORIZATION",
+  "state": "NOT_ARMED_ZERO_LIVE_CAPTURE",
+  "future_UTC_date": null,
+  "accepted_code_SHA": null,
+  "owner_scope_approval": null,
+  "independent_publisher_proof": null,
+  "independent_source_availability_proof": null,
+  "reviewed_clock_authority_and_error_bound": null,
+  "real_approval_registry_entries": 0,
+  "assets": ["BTCUSDT", "ETHUSDT"],
+  "event_close_UTC": ["30m 00:30", "30m 01:00", "4h 04:00", "4h 08:00"],
+  "finite_owner_request_candidate": {
+    "purpose": "8 asset-events one-day source/timing integration smoke only; NOT strategy qualification",
+    "HTTP_cap": 28,
+    "weight_cap": 52,
+    "details": "8 assetevents x (bookTicker2+24hr2+closedparentklines2)=24GET/48weight; plus4group server-timeGET/4weight",
+    "rate": "max1HTTP/sec; no retry/redirect/catchup",
+    "bytes_cap": 2097152,
+    "response_cap": 65536,
+    "admission_seconds_after_close": [60,600],
+    "clock": "Independent reviewed NTS-capable witness; bounded error projected to decision<1s, age<=30s. Unauthenticated NTP probes alone NOT_ACCEPTED. Exact NTS handshake/datagram budget must be frozen after authority implementation review, before arming.",
+    "storage": "D:/ZS-SMART-GATE/evidence; private raw;review retention30days",
+    "transport_implementation": "NOT_IMPLEMENTED_FOR_FORWARD; finite013sourceprobeCLI is a different purpose and must not be repurposed automatically",
+    "stop": ["missingpublication", "missingavailability", "clockstale/unknown", "rightsunknown", "budget", "priorclaimuncertain", "sourcegap", "late", "HTTPerror"],
+    "scheduler": "NONE_INSTALLED_OR_ENABLED"
+  },
+  "scientific_sample": "Actual independent Nrequired and longitudinal regime/pairedpower still UNDETERMINED;8events smoke cannot close science",
+  "actual_qualified_forward_events": 0
+}
