@@ -13,6 +13,7 @@ from zs_smart_gate.stage03_source_clock import stamp
 
 
 def run(root):
+    raise RuntimeError('HISTORICAL_PROBE_RETIRED_BY_ORDER016_ZERO_NETWORK')
     from OpenSSL import SSL,crypto
     from cryptography import x509
     import certifi
@@ -104,6 +105,7 @@ def run(root):
 
 
 if __name__ == '__main__':
+    raise SystemExit('HISTORICAL_PROBE_RETIRED_BY_ORDER016_ZERO_NETWORK')
     parser = argparse.ArgumentParser()
     parser.add_argument('--run-published-probe',action='store_true')
     parser.add_argument('--output',required=True)
@@ -111,6 +113,4 @@ if __name__ == '__main__':
     if not args.run_published_probe:
         raise SystemExit('NOT_ARMED_ZERO_NETWORK')
     root = Path(args.output).resolve()
-    if root.drive.upper() != 'D:':
-        raise SystemExit('PRIVATE_D_REQUIRED')
     print(json.dumps(run(root)))

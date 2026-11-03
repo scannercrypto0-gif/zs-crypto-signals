@@ -1,4 +1,7 @@
-# طلب إفادة سلطة المصدر «014» — جاهز للإرسال، لم يُرسل
+
+> قرار «016»: هذه مسودة تاريخية للمراجعة فقط. لا تُرسل مراسلة باسم المالك، ولا يُشترط التواصل مع دعم «Binance» لمواصلة المسار المستقبلي. «GitHub» الخاص هو المرجع الدائم الوحيد للمواد التي تسمح بها الحقوق؛ لا أسرار أو مواد جلسات.
+
+# أرشيف طلب إفادة سلطة المصدر «014» — لم يُرسل؛ غير مفعل ضمن «016»
 
 هذه مراسلة طلب دليل وعرض نطاق فقط؛ لا شراء أو اشتراك أو قبول شروط أو رفع خام. الجهة الأولى «Binance Spot API Engineering / Market Data»، عبر [الدعم الرسمي المرتبط بالوثائق](https://developers.binance.com/docs/binance-spot-api-docs/faqs/market_data_only) أو [منتدى المطورين الرسمي](https://dev.binance.vision/). لا يُعد رد مجتمع غير موثق أو رابط لواجهة شهادة ناشر موقعة.
 
@@ -17,7 +20,7 @@
 3. نرجو فصل حد خطأ **ساعة المصدر** عن ساعة الجامع: المرجع إلى التوقيت العالمي، طريقة التوثيق، أكبر عدم يقين مدعوم، الانجراف، عمر المعايرة، تغطية الدليل زمنيًا، وحالات الانقطاع/القفز/التصحيح. معيارنا أقل من ثانية عند القرار؛ لا تكفي دقة حقل الميكروثانية أو سلامة تشفير النقل وحدها.
 4. للنطاق التاريخي «2025-01-01 00:00 UTC» حتى «2025-07-01 00:00 UTC» حصريًا: هل تتوفر عروض/طلبات أصلية أو سبريد قابل للاشتقاق، وحجم تداول متحرك 24 ساعة/حالة أهلية عند القرار، وبيان فجوات وتصحيحات؟ العمق مطلوب فقط إن كان تعريف المنتج يشترطه؛ يرجى تحديد المتاح فعليًا لكل أصل وفترة، لا افتراضه من وجود الأرشيف.
 5. كيف يثبت الدليل عدم استعمال معلومات وصلت أو صُححت لاحقًا؟ هل تحفظ هوية إصدارات الخام، وقت الإتاحة الأصلي، الفجوات وأحداث إعادة الاتصال والتصحيح؟ هل يمكن تأهيل الماضي، أم الدليل متاح مستقبلًا فقط؟ نرجو إجابة سلبية صريحة إذا كان الشرط غير مدعوم.
-6. نحتاج حق الاستخدام البحثي الشخصي غير التجاري، وحفظ الخام والبصمات محليًا على قرص خاص، وإتاحة محدودة لمراجع مستقل مخول تحت شروطكم، وعدم نشر الخام. حددوا المسموح وحدود الاحتفاظ/المشاركة/الاشتقاق وأي تكلفة أو التزام منفصل. لا نقبل التزامًا ماليًا ضمن هذا الطلب.
+6. نحتاج حق الاستخدام البحثي الشخصي غير التجاري، وحفظ الخام والبصمات المسموح بها في فرع أدلة داخل مستودع «GitHub» الخاص، باستثناء المواد السرية أو المحظورة، وإتاحة محدودة لمراجع مستقل مخول تحت شروطكم، وعدم نشر الخام. حددوا المسموح وحدود الاحتفاظ/المشاركة/الاشتقاق وأي تكلفة أو التزام منفصل. لا نقبل التزامًا ماليًا ضمن هذا الطلب.
 
 إن كان الدليل ممكنًا فقط بتجربة مستقبلية، نرجو تحديد سلسلة السلطة وطريقة الشاهد المستقل والحقوق وحدود الخطأ قبل اقتراح التقاط ثمانية أحداث أصل/وقت في يوم واحد. هذا اختبار أهلية مصدر محدود، لا إثبات استراتيجية. لا يبدأ حتى تجميد نطاقه ومراجعة الدليل.
 
@@ -38,7 +41,7 @@ We are evaluating Binance Spot BTCUSDT and ETHUSDT for personal, non-commercial 
 3. Separately describe source-clock and collector-clock UTC traceability, authenticated authority, supported maximum error, drift, calibration age, temporal coverage and behavior during outages/steps/corrections. Our current contract requires uncertainty below one second at the decision. Microsecond representation or authenticated transport alone is insufficient.
 4. For 2025-01-01 00:00 UTC inclusive through 2025-07-01 00:00 UTC exclusive, identify actual bid/ask or derivable spread coverage, rolling 24-hour quote-volume/eligibility at decision, and gap/revision manifests, separately by symbol. Depth is required only if the product definition requires it. Do not infer complete coverage from isolated samples.
 5. Explain how original availability and revisions are retained so later-arriving or corrected information is not backdated. Can these claims be evidenced historically, or only prospectively? Explicitly mark unsupported guarantees.
-6. State permitted personal non-commercial research, private local raw/hash retention, limited access by an authorized independent reviewer, derived-output and redistribution restrictions, and any proposed costs or contractual obligations. No paid commitment is accepted by this request.
+6. State permitted personal non-commercial research, permission-controlled retention of permitted non-secret raw bytes and hashes in our private GitHub evidence branch, limited access by an authorized independent reviewer, derived-output and redistribution restrictions, and any proposed costs or contractual obligations. No paid commitment is accepted by this request.
 
 If only prospective evidence is feasible, identify the publisher-to-witness authority chain, clock bound and rights before proposing a finite one-day/eight-asset-event source-qualification smoke. It is not strategy validation and will not run before scope freeze and review.
 
