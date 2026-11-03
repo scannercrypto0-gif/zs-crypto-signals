@@ -1,0 +1,121 @@
+{
+  "schema": "ZS03-016-PROSPECTIVE-LOSS-01",
+  "version": 1,
+  "owner_order": "Issue25#6602880341",
+  "scope": "NEW_PROSPECTIVE_RESEARCH_ONLY_NOT_TRADING",
+  "source": "Binance Spot public BTCUSDT ETHUSDT, closed5m plus closed30m/4h and completed daily/ISO-week contexts",
+  "historical_exclusion": "2025-01 through2025-06 and all010-015 DEV/OOS/quote samples are already viewed; archive replay is engineering only",
+  "causality": "PROSPECTIVE_RECEIPT_CAUSALITY_V1",
+  "historical_publisher_pit": "HOLD",
+  "primary_family": {
+    "groups": [
+      "I1",
+      "I2",
+      "I3",
+      "I4",
+      "I5",
+      "I6",
+      "S1",
+      "S2",
+      "S3",
+      "S4",
+      "S5",
+      "S6"
+    ],
+    "directions": [
+      1,
+      -1
+    ],
+    "comparisons": 24,
+    "alpha": 0.05,
+    "method": "Bonferroni simultaneous Hoeffding for bounded INDEPENDENT block means; independence not inferred from event count"
+  },
+  "horizons": {
+    "INTRADAY": {
+      "parent_minutes": 30,
+      "outcome_minutes": 30,
+      "return_scale_bps": 100
+    },
+    "SWING": {
+      "parent_minutes": 240,
+      "outcome_minutes": 240,
+      "return_scale_bps": 400
+    }
+  },
+  "prediction": {
+    "baseline": 0.5,
+    "candidate": "fixed unit-domain R transform; explicit feature group formulas in code, no fitted weights",
+    "exploratory": "DEV-only empirical CDF Q; not a primary comparison or OOS refit",
+    "target": "(1+clip(direction*future_close_return_bps/return_scale_bps,-1,1))/2",
+    "loss": "squared prediction loss on bounded target; paired baseline_loss-candidate_loss in[-1,1]"
+  },
+  "partition": {
+    "DEV": "future eligible receipts after freeze; first separate time block",
+    "OOS": "strictly later unviewed future data, no refit; purge>=4h and one7day embargo",
+    "cross_asset": "BTC/ETH pooled in SAME calendar-week block; no asset-week pseudo replication",
+    "unit": "complete UTC calendar week",
+    "qualification": "between-week independence must be externally justified or inference HOLD; no estimated event-N treated as certified effectiveN"
+  },
+  "costs": {
+    "assumed_roundtrip_bps": [
+      2,
+      10,
+      25,
+      50
+    ],
+    "net_scenario": "direction*return_bps-fees_bps-slippage_bps-observed_spread_bps",
+    "limits": "scenarios are not actual fills/fee tiers/executable profitability",
+    "winner_requires": [
+      "positive simultaneous lower bound",
+      "independent eligible OOS",
+      "causality and UTC evidence",
+      "liquidity coverage",
+      "cost robustness independently accepted"
+    ]
+  },
+  "calibration": {
+    "seed": 160031,
+    "replicates": 200,
+    "blocks": [
+      16,
+      64,
+      256
+    ],
+    "between_block_rho": [
+      0,
+      0.4,
+      0.8
+    ],
+    "effects": [
+      0,
+      0.3
+    ],
+    "family": 24,
+    "within_block_events_per_asset": 16,
+    "assets": 2,
+    "DGP": "bounded sign common latent AR plus per-arm sign noise; same market block shared by assets and arms",
+    "endpoints": [
+      "familywise_typeI",
+      "familywise_power",
+      "Wilson95",
+      "assumption_violation_flag"
+    ],
+    "acceptance": "tool integrity and DGP-conditional diagnostics only; no winner or empirical requiredN from synthetic success"
+  },
+  "sample_size": {
+    "N_events": "observed eligible nonduplicate events only",
+    "N_effective": "null until justified dependence model",
+    "N_required": "null until independent-data calibration/power justified; analytic independent planning numbers never qualifiedN"
+  },
+  "oos_state": "OOS_WAITING_FOR_FUTURE_ELIGIBLE_DATA",
+  "forward_state": "NOT_ARMED",
+  "live_capture_events": 0,
+  "stopping": "no optional peeking/retuning thresholds; amend version and freeze before any changed experiment; no actual collector activation under016",
+  "storage": {
+    "repository": "scannercrypto0-gif/zs-crypto-signals",
+    "private": true,
+    "max_study_bytes": 10485760,
+    "contract": "Stage04 APPLICATION_ONLY claims/receipts/manifest",
+    "automatic_delete": false
+  }
+}
