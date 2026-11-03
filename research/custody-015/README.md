@@ -81,7 +81,10 @@ retained. Reviewer eligibility must be verified before any raw Tardis release:
 https://docs.tardis.dev/legal/terms-of-service .
 Original PyPI wheels retain their dist-info license/notice files. CI uses a
 separate pinned SHA-256 wheel lock for Windows/Ubuntu Python3.11/3.12, with no
-dependency cache and no skipped deterministic tests. No dependency credentials
+dependency cache and no skipped crypto tests. The existing native Windows API
+timezone test is explicitly NOT_APPLICABLE on Linux; its one skip is allowlisted
+by exact test ID and reason. It executes on both Windows matrix jobs. All other
+skips fail CI, including any skipped NTS test. No dependency credentials
 or package-registry secrets are required.
 
 ## Acceptance limits
