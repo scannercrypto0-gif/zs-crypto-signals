@@ -7,6 +7,8 @@ on:
       - 'tests/**'
       - 'research/stage03-016/**'
       - '.github/workflows/016-integrated-reproduction.yml'
+      - '.gitattributes'
+      - 'pyproject.toml'
 permissions:
   contents: read
 jobs:
