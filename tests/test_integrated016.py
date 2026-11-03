@@ -81,6 +81,12 @@ class Integrated016Tests(unittest.TestCase):
         self.data['provenance']['mode']='NEW_AFTER_FREEZE_LIVE_RECEIPT'
         with self.assertRaisesRegex(ValueError,'FUTURE_REQUIRES_ADMITTED_CONTINUOUS_CHAIN'):
             decide(self.data,source_mode='NEW_FUTURE_OBSERVATION',decision_mono_ns=1500000000)
+    def test_old_candles_relabelled_with_new_receipt_never_become_future_data(self):
+        self.data.update(received_mono_ns=1000000000,collector_epoch='epoch',received_ms=self.data['received_ms']+365*86400000)
+        self.data['provenance']['mode']='NEW_AFTER_FREEZE_LIVE_RECEIPT'
+        with self.assertRaisesRegex(ValueError,'STALE_5M_SOURCE_CANNOT_BECOME_NEW_DATA'):
+            decide(self.data,source_mode='NEW_FUTURE_OBSERVATION',decision_mono_ns=1500000000,
+                   causal_bundle={'anchor':'a'*64},reviewed_chain_anchors={'a'*64})
     def test_liquidity_missing_gapped_future_stale_crossed(self):
         self.assertEqual(liquidity(None,100)['status'],'MISSING')
         base=dict(received_at=99,bid='100',ask='100.1',quote_volume_24h='20000000')

@@ -105,6 +105,11 @@ def evaluate(raw,*,expected_sha256,decision_ms,source_mode='HISTORICAL_ARCHIVE',
         raise ValueError('CURRENT_LIQUIDITY_CANNOT_BACKFILL_HISTORY')
     if received>decision_ms:raise ValueError('SOURCE_RECEIVED_AFTER_DECISION')
     candles=parse_rows(data['rows'],received)
+    if source_mode in('NEW_FUTURE_OBSERVATION','BOUNDED_COMPATIBILITY_REPLAY'):
+        if received-int(candles[-1].close_at.timestamp()*1000)>600000:
+            raise ValueError('STALE_5M_SOURCE_CANNOT_BECOME_NEW_DATA')
+        if source_mode=='NEW_FUTURE_OBSERVATION'and decision_ms-received>10000:
+            raise ValueError('LATE_DECISION_NOT_NEW_PROSPECTIVE_EVENT')
     decision=at(decision_ms)
     frames={f:aggregate(candles,f,decision)for f in ['30m','1h','4h','1d','1w']}
     for frame,context in data.get('contexts',{}).items():
