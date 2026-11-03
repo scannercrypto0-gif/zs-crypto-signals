@@ -126,8 +126,6 @@ if __name__ == '__main__':
     parser.add_argument('--output', required=True)
     args = parser.parse_args()
     root, output = Path(args.evidence).resolve(), Path(args.output).resolve()
-    if root.drive.upper() != 'D:' or output.drive.upper() != 'D:':
-        raise SystemExit('PRIVATE_D_REQUIRED')
     result = audit(root)
     with output.open('x', encoding='utf8') as stream:
         json.dump(result, stream, indent=2)

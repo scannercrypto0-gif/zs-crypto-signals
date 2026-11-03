@@ -1,0 +1,18 @@
+{
+  "archive_bytes": 7716688,
+  "branch": "evidence-migration-015",
+  "disposition_counts": {
+    "BLOCKED_CAPACITY": 187,
+    "INCLUDED": 493,
+    "SANITIZED_REPORT_ONLY": 2,
+    "WITHHELD_SECURITY": 2
+  },
+  "files": 684,
+  "included_paths": 493,
+  "inventory_sha256": "c14a7cf3f994a2cd09542673c1492aac00fb1266d65761076f169e599c1c5cf2",
+  "manifest_sha256": "5ef3228c72997644c0b0b7180dcfc20cec2566a98b012ac9552a7fa5031a38fa",
+  "packet_bytes": 10308600,
+  "study_id": "custody-010-014-015",
+  "unique_objects": 387,
+  "evidence_commit": "b871fdcc36824e8a3871c5c589290b0a367b8889"
+}

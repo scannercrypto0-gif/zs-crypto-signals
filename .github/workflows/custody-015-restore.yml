@@ -1,0 +1,32 @@
+name: Order015 GitHub-only custody restore
+on:
+  pull_request:
+    paths:
+      - 'src/zs_smart_gate/custody_restore.py'
+      - 'scripts/restore-custody-015.py'
+      - 'research/custody-015/**'
+      - '.github/workflows/custody-015-restore.yml'
+permissions:
+  contents: read
+jobs:
+  github-only-restore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: b871fdcc36824e8a3871c5c589290b0a367b8889
+          path: github-evidence
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Restore pinned evidence and reproduce representative results offline
+        env:
+          PYTHONPATH: src
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python scripts/restore-custody-015.py --snapshot github-evidence --destination restored-from-github

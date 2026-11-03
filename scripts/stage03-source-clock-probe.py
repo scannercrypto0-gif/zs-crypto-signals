@@ -89,6 +89,4 @@ if __name__ == '__main__':
     if not args.run_published_probe:
         raise SystemExit('NOT_ARMED_ZERO_LIVE_CAPTURE')
     root = Path(args.output).resolve()
-    if root.drive.upper() != 'D:':
-        raise SystemExit('PRIVATE_D_REQUIRED')
     run(root)
