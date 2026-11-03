@@ -11,7 +11,7 @@ permissions:
 jobs:
   github-only-restore:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
         with:
@@ -19,7 +19,7 @@ jobs:
           persist-credentials: false
       - uses: actions/checkout@v4
         with:
-          ref: b871fdcc36824e8a3871c5c589290b0a367b8889
+          ref: 007925325914338536f76cd42962a776c82a4ee3
           path: github-evidence
           persist-credentials: false
       - uses: actions/setup-python@v5
@@ -29,4 +29,4 @@ jobs:
         env:
           PYTHONPATH: src
           PYTHONDONTWRITEBYTECODE: '1'
-        run: python scripts/restore-custody-015.py --snapshot github-evidence --destination restored-from-github
+        run: python scripts/restore-custody-015-complete.py --snapshot github-evidence --destination restored-complete-from-github

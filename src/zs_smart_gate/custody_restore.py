@@ -13,6 +13,7 @@ import json
 from pathlib import Path, PurePosixPath
 import tarfile
 from .stage04_evidence_packet import restore_from_remote
+from .evidence_journal import study_capacity
 
 MAX_EXPANDED_BYTES = 80_000_000
 MAX_ARCHIVE_BYTES = 10 * 1024 * 1024
@@ -71,7 +72,7 @@ def restore(snapshot, destination, *, study_id, branch, manifest_sha256):
         if hashlib.sha256(part).hexdigest() != chunk['sha256']:
             raise ValueError('CHUNK_HASH_MISMATCH')
         archive.extend(part)
-        if len(archive) > MAX_ARCHIVE_BYTES:
+        if len(archive) > study_capacity(study_id):
             raise ValueError('ARCHIVE_SIZE_LIMIT')
     if (len(archive) != control['archive_bytes'] or
             hashlib.sha256(archive).hexdigest() != control['archive_sha256']):

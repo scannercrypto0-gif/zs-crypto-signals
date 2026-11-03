@@ -1,0 +1,22 @@
+{
+  "schema": "zs-custody-015-approved-aggregate-v1",
+  "owner_capacity_decision": "https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/25#issuecomment-6600760450",
+  "evidence_commit": "007925325914338536f76cd42962a776c82a4ee3",
+  "combined_bytes": 45649513,
+  "cap_bytes": 50331648,
+  "packets": [
+    {
+      "study_id": "custody-010-014-015",
+      "manifest_sha256": "5ef3228c72997644c0b0b7180dcfc20cec2566a98b012ac9552a7fa5031a38fa"
+    },
+    {
+      "study_id": "custody-015-verification",
+      "manifest_sha256": "ad115433de4cc9da378647843d9a62525b818d8ed66f83a9d8b0733feedb21f6"
+    },
+    {
+      "study_id": "custody-010-014-015-raw",
+      "manifest_sha256": "aee2f65b39179906e77fa8512fe1df0da508414c434331a1fb2ff603e79df769"
+    }
+  ],
+  "original_raw_audit_canonical_sha256": "a253b039c9dd72c4fd8bad259eca58640c2b6b3ad4e6b52bf0adcee222d782c1"
+}

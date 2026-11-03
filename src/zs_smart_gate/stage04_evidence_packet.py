@@ -13,7 +13,7 @@ import re
 from typing import Mapping
 
 from .evidence_journal import (MAX_STUDY_BYTES, SingleStudyJournal,
-                               canonical_bytes, sha256_hex)
+                               canonical_bytes, sha256_hex, study_capacity)
 from .github_evidence_backend import ContentsTransport, verify_snapshot
 
 RECORD_SCHEMA = "zs-stage04-evidence-record-v1"
@@ -191,7 +191,7 @@ def prepare_manifest(study_id: str, records: Mapping[str, dict],
         "created_at": created.isoformat(),
         "retention_review_at": (created + timedelta(days=30)).isoformat(),
         "retention_action": "REVIEW_ONLY_NO_AUTOMATIC_DELETE",
-        "max_study_bytes": MAX_STUDY_BYTES,
+        "max_study_bytes": study_capacity(study_id),
         "evidence_branch_policy": "DEDICATED_NON_MAIN",
         "server_enforced_worm": False,
         "source_publication_status": "UNKNOWN",
@@ -223,7 +223,7 @@ def _validate_manifest(study_id: str, manifest: object) -> list[dict]:
         raise ValueError("MANIFEST_REVIEW_POLICY_INVALID")
     for key, value in {
         "retention_action": "REVIEW_ONLY_NO_AUTOMATIC_DELETE",
-        "max_study_bytes": MAX_STUDY_BYTES,
+        "max_study_bytes": study_capacity(study_id),
         "evidence_branch_policy": "DEDICATED_NON_MAIN",
         "server_enforced_worm": False,
         "source_publication_status": "UNKNOWN",
@@ -274,7 +274,7 @@ def persist_packet(journal: SingleStudyJournal, manifest: dict,
         all_payloads = [manifest, *(records[e["event_id"]] for e in entries)]
         # Include claim+receipt overhead conservatively; reserve_capacity enforces
         # true bytes. This is only an early refusal, not an accounting guarantee.
-        if sum(len(canonical_bytes(x)) + 800 for x in all_payloads) > MAX_STUDY_BYTES:
+        if sum(len(canonical_bytes(x)) + 800 for x in all_payloads) > study_capacity(study_id):
             raise ValueError("STUDY_CAPACITY_PREFLIGHT")
         digest = sha256_hex(canonical_bytes(manifest))
     except (ValueError, TypeError, KeyError):

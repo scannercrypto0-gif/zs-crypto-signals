@@ -1,5 +1,10 @@
 # Order015 GitHub-only custody migration
 
+**Update after initial partial delivery:** the owner approved consolidated
+48MiB capacity. See [completion and retrieval instructions](capacity-approval-015.md)
+and `aggregate-anchor.json`. The initial 10MiB snapshot described below is
+preserved historical evidence; the new supplement fills its raw capacity gaps.
+
 Owner order: Issue25 comment6599386155. Governance baseline: main
 `83c6f22b0d5392867426971c38e2b802b26ab32d`, MASTER v1.30.
 
