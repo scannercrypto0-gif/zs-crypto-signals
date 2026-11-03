@@ -1,11 +1,23 @@
 name: Order015 GitHub-only custody restore
 on:
   pull_request:
+    # Keep this guard in sync with the full aggregate restore's imports,
+    # original market audit, pinned anchors, and custody regression tests.
+    # Otherwise a changed restore dependency could bypass GitHub-only replay.
     paths:
-      - 'src/zs_smart_gate/custody_restore.py'
-      - 'scripts/restore-custody-015.py'
-      - 'research/custody-015/**'
       - '.github/workflows/custody-015-restore.yml'
+      - 'research/custody-015/**'
+      - 'scripts/restore-custody-015.py'
+      - 'scripts/restore-custody-015-complete.py'
+      - 'scripts/stage03-raw-audit.py'
+      - 'src/zs_smart_gate/custody_restore.py'
+      - 'src/zs_smart_gate/custody_aggregate.py'
+      - 'src/zs_smart_gate/evidence_journal.py'
+      - 'src/zs_smart_gate/stage04_evidence_packet.py'
+      - 'src/zs_smart_gate/github_evidence_backend.py'
+      - 'tests/test_custody_capacity015.py'
+      - 'tests/test_custody_restore.py'
+      - 'tests/test_stage04_evidence_packet.py'
 permissions:
   contents: read
 jobs:
