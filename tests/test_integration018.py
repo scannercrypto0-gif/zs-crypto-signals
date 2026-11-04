@@ -1,6 +1,7 @@
 import copy
 import hashlib
 import unittest
+from unittest.mock import patch
 from zs_smart_gate.evidence_journal import canonical_bytes
 from zs_smart_gate.prospective_causality_v2 import VERSION, receipt
 from zs_smart_gate.integrated_research018 import evaluate
@@ -90,7 +91,12 @@ class Integration018Tests(unittest.TestCase):
         f,options=self.options()
         f.witness['valid_until_mono_ns']=1500000000
         options['reviewed_clock_pins']=pin(f.witness)
-        result=capture_slot(f.scope,f.plan,**options)
+        # Explicitly advance one tick; some Windows runners legitimately
+        # return the same monotonic reading for consecutive fast calls.
+        with patch('zs_smart_gate.forward_slot018.time.monotonic_ns',side_effect=[1000000000,1000000001]), \
+             patch('zs_smart_gate.forward_slot018.time.time_ns',side_effect=[100000000000,100000000001]):
+            result=capture_slot(f.scope,f.plan,**options)
         self.assertEqual(result['status'],'STOPPED_NO_AUTOMATIC_RETRY')
         self.assertEqual(result['attempts'],0)
         self.assertEqual(capture_slot(f.scope,f.plan,**options)['attempts'],0)
+
