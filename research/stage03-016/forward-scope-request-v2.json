@@ -1,0 +1,80 @@
+{
+  "schema": "ZS016_FORWARD_SCOPE_REQUEST_V2",
+  "study_id": "zs03-016-forward-pilot01",
+  "status": "NOT_ARMED",
+  "collector_started": false,
+  "live_capture_events": 0,
+  "proposed_start_utc": "2026-11-05T00:00:00Z",
+  "proposed_end_utc": "2026-11-06T04:00:00Z",
+  "capture_window_hours": 24,
+  "outcome_completion_hours": 4,
+  "slots_every_hours": 2,
+  "slots": 14,
+  "assets": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ],
+  "planned_event_observations": 24,
+  "outcome_followup_slots": 2,
+  "total_max_GETs": 140,
+  "per_slot_weight": 39,
+  "total_planned_weight": 546,
+  "per_slot_max_response_bytes": 262144,
+  "overall_raw_response_cap_bytes": 3670016,
+  "max_study_serialized_bytes": 10485760,
+  "clock_requirement": "Independently admitted proof of absolute UTC error+drift<1s at EACH decision, same calibrated monotonic epoch; NTS authentication alone insufficient",
+  "required_before_activation": [
+    "independent PM review",
+    "owner approval exact final code/protocol/scope/start/end",
+    "fresh independently admitted clock evidence",
+    "permitted private GitHub source rights",
+    "durable journal claim/readback",
+    "free quota/cost guard verified"
+  ],
+  "stop_on": [
+    "any request rejection/failure/timeout/cap",
+    "missing/expired clock bound",
+    "sequence or raw hash mismatch",
+    "gap or unlinked correction",
+    "GitHub write/readback/capacity failure"
+  ],
+  "retention": "30day review only; no automatic delete",
+  "after_missed_start": "NOT_ARMED; no backfill; new explicitly approved start required",
+  "scientific_scope": "pilot only, not requiredN or winner",
+  "supersedes": "unapproved V1 request; explicit HTF context receipts required",
+  "max_GETs_per_slot": 10,
+  "max_weight_per_slot": 40,
+  "context_requests": [
+    {
+      "path": "/api/v3/klines",
+      "symbol": "BTCUSDT",
+      "interval": "1d",
+      "limit": 200,
+      "weight": 2
+    },
+    {
+      "path": "/api/v3/klines",
+      "symbol": "ETHUSDT",
+      "interval": "1d",
+      "limit": 200,
+      "weight": 2
+    },
+    {
+      "path": "/api/v3/klines",
+      "symbol": "BTCUSDT",
+      "interval": "1w",
+      "limit": 60,
+      "weight": 2
+    },
+    {
+      "path": "/api/v3/klines",
+      "symbol": "ETHUSDT",
+      "interval": "1w",
+      "limit": 60,
+      "weight": 2
+    }
+  ],
+  "current016_authorization": "NOT_GRANTED_FOR_THIS_FUTURE_PLAN; actual016 compatibility remains6GET/31weight only",
+  "per_slot_anchoring": "fresh admitted monotonic epoch and clock coverage for all receipts; pinned prior checkpoint; no unanchored reconnect",
+  "capture_interface": "forward_slot016 injected bounded transport/journal; default empty admission registries, no scheduler/service"
+}

@@ -1,0 +1,44 @@
+name: Order016 frozen GitHub-only source decision science reproduction
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - 'research/stage03-016/**'
+      - '.github/workflows/016-integrated-reproduction.yml'
+      - '.gitattributes'
+      - 'pyproject.toml'
+permissions:
+  contents: read
+jobs:
+  reproduce:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: 4efcdea24c4229179ee63ce0c45ec42e4f7ee298
+          path: github-016
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: 007925325914338536f76cd42962a776c82a4ee3
+          path: github-015-source
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Reproduce pinned decisions calibration and original source lineage with sockets disabled
+        env:
+          PYTHONPATH: src
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python scripts/restore-016-e2e.py --snapshot github-016 --custody github-015-source --output reproduced016

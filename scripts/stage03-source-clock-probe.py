@@ -15,6 +15,7 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
 
 
 def run(root):
+    raise RuntimeError('HISTORICAL_PROBE_RETIRED_BY_ORDER016_ZERO_NETWORK')
     root.mkdir(exist_ok=False)
     result = dict(batch='013-SOURCE-CLOCK-1', ntp=[], market=[], bytes=0,
                   qualified_forward_observations=0, forward_armed=False)
@@ -82,6 +83,7 @@ def run(root):
 
 
 if __name__ == '__main__':
+    raise SystemExit('HISTORICAL_PROBE_RETIRED_BY_ORDER016_ZERO_NETWORK')
     parser = argparse.ArgumentParser()
     parser.add_argument('--run-published-probe', action='store_true')
     parser.add_argument('--output', required=True)

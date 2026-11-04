@@ -1,0 +1,18 @@
+Leap Indicator: 0(no warning)
+Stratum: 4 (secondary reference - syncd by (S)NTP)
+Precision: -23 (119.209ns per tick)
+Root Delay: 0.0892021s
+Root Dispersion: 4.1334482s
+ReferenceId: 0xA29FC801 (source IP:  162.159.200.1)
+Last Successful Sync Time: 04/11/2026 12:30:01 AM
+Source: time.cloudflare.com,0x8 
+Poll Interval: 15 (32768s)
+
+Phase Offset: 0.0016528s
+ClockRate: 0.0156249s
+State Machine: 2 (Sync)
+Time Source Flags: 0 (None)
+Server Role: 0 (None)
+Last Sync Error: 0 (The command completed successfully.)
+Time since Last Good Sync Time: 28054.6482357s
+

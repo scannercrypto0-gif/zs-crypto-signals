@@ -1,0 +1,69 @@
+{
+  "schema": "ZS016_PUBLIC_COMPATIBILITY_ONESHOT_V1",
+  "base": "https://data-api.binance.vision",
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ],
+  "method": "GET",
+  "requests": [
+    {
+      "path": "/api/v3/time",
+      "params": {},
+      "weight": 1
+    },
+    {
+      "path": "/api/v3/exchangeInfo",
+      "params": {
+        "symbols": "[\"BTCUSDT\",\"ETHUSDT\"]"
+      },
+      "weight": 20
+    },
+    {
+      "path": "/api/v3/ticker/24hr",
+      "params": {
+        "symbols": "[\"BTCUSDT\",\"ETHUSDT\"]"
+      },
+      "weight": 2
+    },
+    {
+      "path": "/api/v3/ticker/bookTicker",
+      "params": {
+        "symbols": "[\"BTCUSDT\",\"ETHUSDT\"]"
+      },
+      "weight": 4
+    },
+    {
+      "path": "/api/v3/klines",
+      "params": {
+        "symbol": "BTCUSDT",
+        "interval": "5m",
+        "limit": "100"
+      },
+      "weight": 2
+    },
+    {
+      "path": "/api/v3/klines",
+      "params": {
+        "symbol": "ETHUSDT",
+        "interval": "5m",
+        "limit": "100"
+      },
+      "weight": 2
+    }
+  ],
+  "planned_GETs": 6,
+  "max_GETs": 8,
+  "planned_weight": 31,
+  "max_weight": 32,
+  "max_response_bytes": 65536,
+  "max_total_response_bytes": 262144,
+  "per_request_parent_timeout_seconds": 5,
+  "retries": 0,
+  "redirects": false,
+  "websocket": false,
+  "private_or_account_API": false,
+  "market_data_docs": "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md",
+  "purpose": "compatibility and blocked research decision only; not Forward/OOS/UTC qualification",
+  "execution_condition": "offline source-to-journal tests pass and Issue25 preflight publication before any request"
+}
