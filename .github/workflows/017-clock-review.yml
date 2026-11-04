@@ -21,10 +21,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python -m pip install --disable-pip-version-check --no-cache-dir --only-binary=:all: --require-hashes -r requirements-ci-crypto.lock
+      - run: >-
+          python -m pip install --disable-pip-version-check --no-cache-dir --only-binary=:all: --require-hashes -r requirements-ci-crypto.lock
       - name: New clock tests and offline actual signed reply verification
         env:
           PYTHONPATH: src
         run: |
           python -m unittest discover -s tests -p test_clock017.py -v
           python scripts/verify-017-clock.py research/stage03-017/samples.json
+
