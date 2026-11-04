@@ -1,0 +1,78 @@
+{
+  "plan_version": "020_CAPTURE_PLAN_V1",
+  "order": "https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/25#issuecomment-6629342692",
+  "target_close": 1793858400,
+  "target_close_utc": "2026-11-05T06:00:00Z",
+  "start_utc": "2026-11-05T05:56:00Z",
+  "end_utc": "2026-11-05T06:02:00Z",
+  "planned_REST_weight": 10,
+  "native_per_response_stricter_guard_bytes": 32768,
+  "native_WS_message_stricter_guard_bytes": 8192,
+  "github_checkpoint_seconds": 15,
+  "github_request_cap": 300,
+  "manifest_limits": {
+    "version": "BOUNDED_MANUAL_FIELD_020_V1",
+    "symbols": [
+      "BTCUSDT",
+      "ETHUSDT"
+    ],
+    "ws_url": "wss://data-stream.binance.vision:443/stream?streams=btcusdt@kline_5m/ethusdt@kline_5m",
+    "rest_host": "data-api.binance.vision",
+    "ws_connections": 1,
+    "ws_seconds": 720,
+    "ws_messages": 1200,
+    "ws_raw_bytes": 2097152,
+    "rest_GETs": 6,
+    "rest_weight_cap": 24,
+    "rest_seconds_per_response": 5,
+    "rest_bytes_per_response": 65536,
+    "rest_total_bytes": 262144,
+    "study_bytes": 3145728,
+    "research_total_cap_bytes": 10485760,
+    "reconnect": false,
+    "trading": false,
+    "publishable": false,
+    "owner_windows_only": true,
+    "rest_plan": [
+      {
+        "path": "/api/v3/time",
+        "params": {},
+        "weight": 1
+      },
+      {
+        "path": "/api/v3/time",
+        "params": {},
+        "weight": 1
+      },
+      {
+        "path": "/api/v3/ticker/bookTicker",
+        "params": {
+          "symbol": "BTCUSDT"
+        },
+        "weight": 2
+      },
+      {
+        "path": "/api/v3/ticker/bookTicker",
+        "params": {
+          "symbol": "ETHUSDT"
+        },
+        "weight": 2
+      },
+      {
+        "path": "/api/v3/ticker/24hr",
+        "params": {
+          "symbol": "BTCUSDT"
+        },
+        "weight": 2
+      },
+      {
+        "path": "/api/v3/ticker/24hr",
+        "params": {
+          "symbol": "ETHUSDT"
+        },
+        "weight": 2
+      }
+    ]
+  },
+  "stage_B_activation": "BLOCKED_UNTIL_INDEPENDENT_PM_REVIEW_AND_NATIVE_STORAGE_PASS"
+}
