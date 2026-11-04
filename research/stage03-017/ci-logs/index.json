@@ -1,0 +1,65 @@
+{
+  "code_sha": "445d7b04fd834c2dc84ad3d296e406ea357c055e",
+  "runs": [
+    41778719799,
+    41778719826,
+    41778719812
+  ],
+  "all_eight_jobs_success": true,
+  "logs": [
+    {
+      "path": "research/stage03-017/ci-logs/job-126405039283.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "75af6e0af23da6a5c6c415bc3187a06a91d2b471"
+    },
+    {
+      "path": "research/stage03-017/ci-logs/job-126405039679.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "746db792ab9fc5f0b39a05126bec11ff55d014bb"
+    },
+    {
+      "path": "research/stage03-017/ci-logs/job-126405039641.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9e8ff79ba385ad3e7bd4f81f2216a4ad8264714c"
+    },
+    {
+      "path": "research/stage03-017/ci-logs/job-126405039864.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "86d33d223d085bebd1c82e5333937ea8cf1c4de9"
+    },
+    {
+      "path": "research/stage03-017/ci-logs/job-126405039880.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8fd06c60a1d07fd1b4065497e42e826a9a8ccc30"
+    },
+    {
+      "path": "research/stage03-017/ci-logs/job-126405039934.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a38caeba0fb977497405a6da87374c04fe6772cc"
+    },
+    {
+      "path": "research/stage03-017/ci-logs/job-126405039301.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4f2fb952eacd8a9e04979107153d1fb004f8922a"
+    },
+    {
+      "path": "research/stage03-017/ci-logs/job-126405039639.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d1d13c6b609b0b06113d9801c214c0b9f2c140c8"
+    }
+  ],
+  "scope": "APPLICATION_CUSTODY_ONLY_CLOCK_GATE_HOLD",
+  "original_workflow_failure": {
+    "run": 41778577205,
+    "head": "93edad6d4d8d85af8e58c7b0c27bca295901a8d2",
+    "cause": "Unquoted pip option colon in YAML; fixed multiline run; zero jobs executed"
+  }
+}

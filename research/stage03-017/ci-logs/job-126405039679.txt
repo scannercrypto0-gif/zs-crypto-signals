@@ -1,0 +1,267 @@
+﻿2026-11-04T05:21:14.2261172Z Current runner version: '2.338.2'
+2026-11-04T05:21:14.2340798Z ##[group]Runner Image Provisioner
+2026-11-04T05:21:14.2342176Z Hosted Compute Agent
+2026-11-04T05:21:14.2343184Z Version: 20261021.618
+2026-11-04T05:21:14.2344459Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+2026-11-04T05:21:14.2346085Z Build Date: 2026-10-21T00:45:21Z
+2026-11-04T05:21:14.2347371Z Worker ID: {911e56d9-728d-4cf5-b5c1-4bb70e3406c2}
+2026-11-04T05:21:14.2348763Z Region: eastus
+2026-11-04T05:21:14.2349748Z Cloud: Azure
+2026-11-04T05:21:14.2350871Z ##[endgroup]
+2026-11-04T05:21:14.2353306Z ##[group]Operating System
+2026-11-04T05:21:14.2354436Z Ubuntu
+2026-11-04T05:21:14.2375845Z 26.04.1
+2026-11-04T05:21:14.2376764Z LTS
+2026-11-04T05:21:14.2377616Z ##[endgroup]
+2026-11-04T05:21:14.2378652Z ##[group]Runner Image
+2026-11-04T05:21:14.2379904Z Image: ubuntu-26.04
+2026-11-04T05:21:14.2380923Z Version: 20261025.179.1
+2026-11-04T05:21:14.2383311Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261025.179/images/ubuntu/Ubuntu2604-Readme.md
+2026-11-04T05:21:14.2386580Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261025.179
+2026-11-04T05:21:14.2388357Z ##[endgroup]
+2026-11-04T05:21:14.2390451Z ##[group]GITHUB_TOKEN Permissions
+2026-11-04T05:21:14.2393319Z Contents: read
+2026-11-04T05:21:14.2394475Z Metadata: read
+2026-11-04T05:21:14.2415891Z ##[endgroup]
+2026-11-04T05:21:14.2419759Z Secret source: Actions
+2026-11-04T05:21:14.2421342Z Cache mode: write
+2026-11-04T05:21:14.2422808Z Prepare workflow directory
+2026-11-04T05:21:14.3434096Z Prepare all required actions
+2026-11-04T05:21:14.3572774Z Getting action download info
+2026-11-04T05:21:14.5553525Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-11-04T05:21:14.6897289Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+2026-11-04T05:21:14.8701900Z Complete job name: clock-review (ubuntu-latest)
+2026-11-04T05:21:14.9678701Z ##[group]Run actions/checkout@v4
+2026-11-04T05:21:14.9679758Z with:
+2026-11-04T05:21:14.9680305Z   repository: scannercrypto0-gif/zs-crypto-signals
+2026-11-04T05:21:14.9684359Z   token: ***
+2026-11-04T05:21:14.9684794Z   ssh-strict: true
+2026-11-04T05:21:14.9685606Z   ssh-user: git
+2026-11-04T05:21:14.9686076Z   persist-credentials: true
+2026-11-04T05:21:14.9686574Z   clean: true
+2026-11-04T05:21:14.9687028Z   sparse-checkout-cone-mode: true
+2026-11-04T05:21:14.9687561Z   fetch-depth: 1
+2026-11-04T05:21:14.9687998Z   fetch-tags: false
+2026-11-04T05:21:14.9688452Z   show-progress: true
+2026-11-04T05:21:14.9688906Z   lfs: false
+2026-11-04T05:21:14.9689355Z   submodules: false
+2026-11-04T05:21:14.9689830Z   set-safe-directory: true
+2026-11-04T05:21:14.9690353Z   allow-unsafe-pr-checkout: false
+2026-11-04T05:21:14.9691296Z ##[endgroup]
+2026-11-04T05:21:15.7294086Z Syncing repository: scannercrypto0-gif/zs-crypto-signals
+2026-11-04T05:21:15.7322801Z ##[group]Getting Git version info
+2026-11-04T05:21:15.7324750Z Working directory is '/home/runner/work/zs-crypto-signals/zs-crypto-signals'
+2026-11-04T05:21:15.7327772Z [command]/usr/bin/git version
+2026-11-04T05:21:15.7329156Z git version 2.56.0
+2026-11-04T05:21:15.7333019Z ##[endgroup]
+2026-11-04T05:21:15.7340852Z Temporarily overriding HOME='/home/runner/work/_temp/ac962a0a-447c-45e6-a1be-806420c54076' before making global git config changes
+2026-11-04T05:21:15.7343725Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-04T05:21:15.7346645Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/zs-crypto-signals/zs-crypto-signals
+2026-11-04T05:21:15.7350884Z Deleting the contents of '/home/runner/work/zs-crypto-signals/zs-crypto-signals'
+2026-11-04T05:21:15.7353395Z ##[group]Initializing the repository
+2026-11-04T05:21:15.7355596Z [command]/usr/bin/git init /home/runner/work/zs-crypto-signals/zs-crypto-signals
+2026-11-04T05:21:15.7357952Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-04T05:21:15.7360717Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-04T05:21:15.7363003Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-04T05:21:15.7365075Z hint: call:
+2026-11-04T05:21:15.7366288Z hint:
+2026-11-04T05:21:15.7367461Z hint: 	git config --global init.defaultBranch <name>
+2026-11-04T05:21:15.7368832Z hint:
+2026-11-04T05:21:15.7370142Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-04T05:21:15.7372115Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-04T05:21:15.7373739Z hint:
+2026-11-04T05:21:15.7374767Z hint: 	git branch -m <name>
+2026-11-04T05:21:15.7376143Z hint:
+2026-11-04T05:21:15.7377561Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-04T05:21:15.7379888Z Initialized empty Git repository in /home/runner/work/zs-crypto-signals/zs-crypto-signals/.git/
+2026-11-04T05:21:15.7384273Z [command]/usr/bin/git remote add origin https://github.com/scannercrypto0-gif/zs-crypto-signals
+2026-11-04T05:21:15.7588047Z ##[endgroup]
+2026-11-04T05:21:15.7604376Z ##[group]Disabling automatic garbage collection
+2026-11-04T05:21:15.7606565Z [command]/usr/bin/git config --local gc.auto 0
+2026-11-04T05:21:15.7625958Z ##[endgroup]
+2026-11-04T05:21:15.7628041Z ##[group]Setting up auth
+2026-11-04T05:21:15.7629738Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-04T05:21:15.7649425Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-04T05:21:15.7668915Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-04T05:21:15.8183678Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-04T05:21:15.8191485Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-04T05:21:15.8199365Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-04T05:21:15.8203631Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-04T05:21:15.8206425Z ##[endgroup]
+2026-11-04T05:21:15.8207262Z ##[group]Fetching the repository
+2026-11-04T05:21:15.8208696Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +47b184c0010dc9e3f0f42e54c7187c67ff76e743:refs/remotes/pull/30/merge
+2026-11-04T05:21:16.1870350Z From https://github.com/scannercrypto0-gif/zs-crypto-signals
+2026-11-04T05:21:16.1889934Z  * [new ref]         47b184c0010dc9e3f0f42e54c7187c67ff76e743 -> pull/30/merge
+2026-11-04T05:21:16.1927810Z ##[endgroup]
+2026-11-04T05:21:16.1930006Z ##[group]Determining the checkout info
+2026-11-04T05:21:16.1932638Z ##[endgroup]
+2026-11-04T05:21:16.1934188Z [command]/usr/bin/git sparse-checkout disable
+2026-11-04T05:21:16.1993897Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-04T05:21:16.2049519Z ##[group]Checking out the ref
+2026-11-04T05:21:16.2058370Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/30/merge
+2026-11-04T05:21:16.2290008Z Note: switching to 'refs/remotes/pull/30/merge'.
+2026-11-04T05:21:16.2305561Z 
+2026-11-04T05:21:16.2307008Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-11-04T05:21:16.2310259Z changes and commit them, and you can discard any commits you make in this
+2026-11-04T05:21:16.2313170Z state without impacting any branches by switching back to a branch.
+2026-11-04T05:21:16.2315159Z 
+2026-11-04T05:21:16.2316288Z If you want to create a new branch to retain commits you create, you may
+2026-11-04T05:21:16.2318853Z do so (now or later) by using -c with the switch command. Example:
+2026-11-04T05:21:16.2321218Z 
+2026-11-04T05:21:16.2321956Z   git switch -c <new-branch-name>
+2026-11-04T05:21:16.2335935Z 
+2026-11-04T05:21:16.2336995Z Or undo this operation with:
+2026-11-04T05:21:16.2338220Z 
+2026-11-04T05:21:16.2338965Z   git switch -
+2026-11-04T05:21:16.2340108Z 
+2026-11-04T05:21:16.2341597Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-11-04T05:21:16.2343742Z 
+2026-11-04T05:21:16.2346422Z HEAD is now at 47b184c Merge 445d7b04fd834c2dc84ad3d296e406ea357c055e into 18cc6238112a75321d2b194419cd1a38ec4eb5f0
+2026-11-04T05:21:16.2376483Z ##[endgroup]
+2026-11-04T05:21:16.2431367Z [command]/usr/bin/git log -1 --format=%H
+2026-11-04T05:21:16.2441578Z 47b184c0010dc9e3f0f42e54c7187c67ff76e743
+2026-11-04T05:21:16.3006874Z ##[group]Run actions/setup-python@v5
+2026-11-04T05:21:16.3008774Z with:
+2026-11-04T05:21:16.3010034Z   python-version: 3.12
+2026-11-04T05:21:16.3011518Z   check-latest: false
+2026-11-04T05:21:16.3029329Z   token: ***
+2026-11-04T05:21:16.3030458Z   update-environment: true
+2026-11-04T05:21:16.3032088Z   allow-prereleases: false
+2026-11-04T05:21:16.3033663Z   freethreaded: false
+2026-11-04T05:21:16.3035270Z ##[endgroup]
+2026-11-04T05:21:16.4964542Z ##[group]Installed versions
+2026-11-04T05:21:16.5111338Z (node:2144) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-04T05:21:16.5126846Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-04T05:21:16.5129566Z Successfully set up CPython (3.12.15)
+2026-11-04T05:21:16.5147340Z ##[endgroup]
+2026-11-04T05:21:16.5456572Z ##[group]Run python -m pip install --disable-pip-version-check --no-cache-dir --only-binary=:all: --require-hashes -r requirements-ci-crypto.lock
+2026-11-04T05:21:16.5463374Z [36;1mpython -m pip install --disable-pip-version-check --no-cache-dir --only-binary=:all: --require-hashes -r requirements-ci-crypto.lock[0m
+2026-11-04T05:21:16.5558410Z shell: /usr/bin/bash -e {0}
+2026-11-04T05:21:16.5560023Z env:
+2026-11-04T05:21:16.5561629Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-11-04T05:21:16.5564524Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+2026-11-04T05:21:16.5567573Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-11-04T05:21:16.5570787Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-11-04T05:21:16.5574349Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-11-04T05:21:16.5577380Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+2026-11-04T05:21:16.5579765Z ##[endgroup]
+2026-11-04T05:21:17.7584238Z Collecting cryptography==50.0.2 (from -r requirements-ci-crypto.lock (line 1))
+2026-11-04T05:21:17.9861663Z   Downloading cryptography-50.0.2-cp311-abi3-manylinux_2_34_x86_64.whl (4.8 MB)
+2026-11-04T05:21:18.4352323Z      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.8/4.8 MB 16.6 MB/s  0:00:00
+2026-11-04T05:21:18.5524398Z Collecting cffi==2.1.1 (from -r requirements-ci-crypto.lock (line 60))
+2026-11-04T05:21:18.6238177Z   Downloading cffi-2.1.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (221 kB)
+2026-11-04T05:21:18.6381306Z Collecting pycparser==3.12 (from -r requirements-ci-crypto.lock (line 160))
+2026-11-04T05:21:18.7090925Z   Downloading pycparser-3.12-py3-none-any.whl (62 kB)
+2026-11-04T05:21:18.7563365Z Installing collected packages: pycparser, cffi, cryptography
+2026-11-04T05:21:19.0644725Z 
+2026-11-04T05:21:19.0656948Z Successfully installed cffi-2.1.1 cryptography-50.0.2 pycparser-3.12
+2026-11-04T05:21:19.1380200Z ##[group]Run python -m unittest discover -s tests -p test_clock017.py -v
+2026-11-04T05:21:19.1380851Z [36;1mpython -m unittest discover -s tests -p test_clock017.py -v[0m
+2026-11-04T05:21:19.1381431Z [36;1mpython scripts/verify-017-clock.py research/stage03-017/samples.json[0m
+2026-11-04T05:21:19.1415362Z shell: /usr/bin/bash -e {0}
+2026-11-04T05:21:19.1415740Z env:
+2026-11-04T05:21:19.1416131Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-11-04T05:21:19.1417039Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+2026-11-04T05:21:19.1417561Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-11-04T05:21:19.1418016Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-11-04T05:21:19.1418475Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-11-04T05:21:19.1418957Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+2026-11-04T05:21:19.1419359Z   PYTHONPATH: src
+2026-11-04T05:21:19.1419676Z ##[endgroup]
+2026-11-04T05:21:19.2767445Z test_delegation_expiry (test_clock017.Clock017Tests.test_delegation_expiry) ... ok
+2026-11-04T05:21:19.2779670Z test_deployed_profile_without_nonce_echo_still_rejects_replay (test_clock017.Clock017Tests.test_deployed_profile_without_nonce_echo_still_rejects_replay) ... ok
+2026-11-04T05:21:19.2782242Z test_duplicate_tags_bad_offsets_and_truncation (test_clock017.Clock017Tests.test_duplicate_tags_bad_offsets_and_truncation) ... ok
+2026-11-04T05:21:19.2789983Z test_interval_includes_full_rtt_and_never_grants_drift (test_clock017.Clock017Tests.test_interval_includes_full_rtt_and_never_grants_drift) ... ok
+2026-11-04T05:21:19.2797410Z test_merkle_index (test_clock017.Clock017Tests.test_merkle_index) ... ok
+2026-11-04T05:21:19.2801547Z test_nonce_replay (test_clock017.Clock017Tests.test_nonce_replay) ... ok
+2026-11-04T05:21:19.2804149Z test_nonfinite_or_reverse_clock (test_clock017.Clock017Tests.test_nonfinite_or_reverse_clock) ... ok
+2026-11-04T05:21:19.2810101Z test_request_profile_and_frame_length (test_clock017.Clock017Tests.test_request_profile_and_frame_length) ... ok
+2026-11-04T05:21:19.2826638Z test_response_signature_tampering (test_clock017.Clock017Tests.test_response_signature_tampering) ... ok
+2026-11-04T05:21:19.2836634Z test_signed_delegation_response_nonce_and_radius (test_clock017.Clock017Tests.test_signed_delegation_response_nonce_and_radius) ... ok
+2026-11-04T05:21:19.2838324Z test_wrong_root_key (test_clock017.Clock017Tests.test_wrong_root_key) ... ok
+2026-11-04T05:21:19.2839758Z test_zero_radius_does_not_self_admit (test_clock017.Clock017Tests.test_zero_radius_does_not_self_admit) ... ok
+2026-11-04T05:21:19.2840844Z 
+2026-11-04T05:21:19.2841383Z ----------------------------------------------------------------------
+2026-11-04T05:21:19.2842246Z Ran 12 tests in 0.009s
+2026-11-04T05:21:19.2842713Z 
+2026-11-04T05:21:19.2843078Z OK
+2026-11-04T05:21:19.3562519Z {
+2026-11-04T05:21:19.3563728Z   "forward_armed": false,
+2026-11-04T05:21:19.3565232Z   "historical_publisher_pit": "HOLD",
+2026-11-04T05:21:19.3566165Z   "maximum_future_drift_proved": false,
+2026-11-04T05:21:19.3567007Z   "observed_wall_vs_mono_ppm": 1.592772069569648,
+2026-11-04T05:21:19.3567797Z   "results": [
+2026-11-04T05:21:19.3568396Z     {
+2026-11-04T05:21:19.3569051Z       "index": 0,
+2026-11-04T05:21:19.3569695Z       "interval": {
+2026-11-04T05:21:19.3570383Z         "below_one_second": false,
+2026-11-04T05:21:19.3571148Z         "forward_armed": false,
+2026-11-04T05:21:19.3572013Z         "local_error_bound_seconds": 1.1648551088989259,
+2026-11-04T05:21:19.3572823Z         "max_drift_ppm": null,
+2026-11-04T05:21:19.3573656Z         "reason": "INDEPENDENT_SOURCE_AND_DRIFT_ADMISSION_REQUIRED",
+2026-11-04T05:21:19.3574538Z         "status": "HOLD",
+2026-11-04T05:21:19.3575503Z         "utc_received_interval": [
+2026-11-04T05:21:19.3576253Z           1793769343,
+2026-11-04T05:21:19.3576895Z           1793769345.0177288
+2026-11-04T05:21:19.3577558Z         ],
+2026-11-04T05:21:19.3578906Z         "wall_monotonic_residual_seconds": 2.4897277832031106e-06
+2026-11-04T05:21:19.3579811Z       },
+2026-11-04T05:21:19.3580404Z       "rtt_seconds": 0.0177287,
+2026-11-04T05:21:19.3581078Z       "verification": {
+2026-11-04T05:21:19.3581869Z         "absolute_utc_admitted": false,
+2026-11-04T05:21:19.3582777Z         "midpoint": 1793769344,
+2026-11-04T05:21:19.3583672Z         "nonce_binding": "SIGNED_MERKLE_INCLUSION",
+2026-11-04T05:21:19.3584490Z         "nonce_echo_present": false,
+2026-11-04T05:21:19.3585848Z         "radius_seconds": 1,
+2026-11-04T05:21:19.3586615Z         "signature_verified": true,
+2026-11-04T05:21:19.3587433Z         "version": 2147483659
+2026-11-04T05:21:19.3588329Z       }
+2026-11-04T05:21:19.3589194Z     },
+2026-11-04T05:21:19.3589791Z     {
+2026-11-04T05:21:19.3590380Z       "index": 1,
+2026-11-04T05:21:19.3591021Z       "interval": {
+2026-11-04T05:21:19.3591660Z         "below_one_second": false,
+2026-11-04T05:21:19.3592336Z         "forward_armed": false,
+2026-11-04T05:21:19.3593090Z         "local_error_bound_seconds": 1.216447938092041,
+2026-11-04T05:21:19.3593918Z         "max_drift_ppm": null,
+2026-11-04T05:21:19.3595021Z         "reason": "INDEPENDENT_SOURCE_AND_DRIFT_ADMISSION_REQUIRED",
+2026-11-04T05:21:19.3596051Z         "status": "HOLD",
+2026-11-04T05:21:19.3596891Z         "utc_received_interval": [
+2026-11-04T05:21:19.3597585Z           1793769373,
+2026-11-04T05:21:19.3598211Z           1793769375.0175023
+2026-11-04T05:21:19.3598884Z         ],
+2026-11-04T05:21:19.3599595Z         "wall_monotonic_residual_seconds": 2.253659057618179e-06
+2026-11-04T05:21:19.3600403Z       },
+2026-11-04T05:21:19.3601303Z       "rtt_seconds": 0.0175022,
+2026-11-04T05:21:19.3602041Z       "verification": {
+2026-11-04T05:21:19.3602754Z         "absolute_utc_admitted": false,
+2026-11-04T05:21:19.3603561Z         "midpoint": 1793769374,
+2026-11-04T05:21:19.3604496Z         "nonce_binding": "SIGNED_MERKLE_INCLUSION",
+2026-11-04T05:21:19.3605578Z         "nonce_echo_present": false,
+2026-11-04T05:21:19.3606361Z         "radius_seconds": 1,
+2026-11-04T05:21:19.3607116Z         "signature_verified": true,
+2026-11-04T05:21:19.3607869Z         "version": 2147483659
+2026-11-04T05:21:19.3608567Z       }
+2026-11-04T05:21:19.3609145Z     }
+2026-11-04T05:21:19.3609725Z   ],
+2026-11-04T05:21:19.3610309Z   "status": "HOLD"
+2026-11-04T05:21:19.3610948Z }
+2026-11-04T05:21:19.3808723Z Post job cleanup.
+2026-11-04T05:21:19.5205303Z (node:2182) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-04T05:21:19.5207488Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-04T05:21:19.5577104Z Post job cleanup.
+2026-11-04T05:21:19.6685910Z [command]/usr/bin/git version
+2026-11-04T05:21:19.6764784Z git version 2.56.0
+2026-11-04T05:21:19.6818277Z Temporarily overriding HOME='/home/runner/work/_temp/d4d722f1-29de-42db-b55b-ed0484edeeb8' before making global git config changes
+2026-11-04T05:21:19.6838181Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-04T05:21:19.6839752Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/zs-crypto-signals/zs-crypto-signals
+2026-11-04T05:21:19.6928222Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-04T05:21:19.7016917Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-04T05:21:19.7479797Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-04T05:21:19.7526291Z http.https://github.com/.extraheader
+2026-11-04T05:21:19.7586219Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-11-04T05:21:19.7674221Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-04T05:21:19.8103944Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-04T05:21:19.8148167Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-04T05:21:19.8700310Z Cleaning up orphan processes
+2026-11-04T05:21:19.9143501Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
