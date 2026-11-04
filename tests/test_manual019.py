@@ -34,6 +34,11 @@ class Manual019Tests(unittest.TestCase):
         r=evaluate(**scenarios()['future_by_one_nanosecond'])
         self.assertIn('INPUT_RECEIVED_AFTER_DECISION',r['reasons']);self.assertIsNone(r['indicators'])
 
+    def test_missing_child_changes_input_eligibility_even_when_aggregate_flags_match(self):
+        rows={x['case']:x for x in comparison()['cases']}
+        self.assertTrue(rows['missing_child']['input_eligibility_changed'])
+        self.assertTrue(rows['missing_child']['decision_state_changed'])
+
     def test_unconfirmed_last_pivot_excluded(self):
         f=scenarios()['unconfirmed_latest_pivot'];r=evaluate(**f)
         self.assertFalse(r['indicators']['unconfirmed_latest_pivot_used'])

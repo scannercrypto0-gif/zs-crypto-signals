@@ -162,3 +162,14 @@ private GitHub quota/cap/storage/recovery review, PM independent approval, then
 owner-specific source/start/end/request/byte scope. No sender or service is
 enabled here. Historical publisher PIT, scientific score, historical I6/S6,
 new OOS/qualified winner and full-project closure all remain unavailable/HOLD.
+
+##019 reporting erratum before final handoff
+
+The preliminary57a5bc5b delivery compared only aggregate eligibility flags.
+A missing child could leave those flags unchanged while making the input set
+unusable. The final revision compares per-input identity, selection, role and
+qualification, with a dedicated regression. Per-input raw hashes, source and
+receipt identities/selection are now explicit in the decision trace. No source
+fixture, protocol, acceptance threshold or010–018 result changed. Old019
+outputs/evidence at5ca43172471227e3dbda512b96042519fbf83c56 remain preserved
+as the superseded preliminary report, never relabelled as the final revision.
