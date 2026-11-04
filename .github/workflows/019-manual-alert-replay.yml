@@ -1,0 +1,37 @@
+name: Order019 manual alert temporal integrity GitHub-only replay
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'scripts/**'
+      - 'research/stage03-019/**'
+      - '.github/workflows/019-manual-alert-replay.yml'
+      - '.gitattributes'
+permissions:
+  contents: read
+jobs:
+  replay-manual:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: f8f9507ff45a914edabfdea19c90155d2c7f01d5
+          path: github018
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Replay synthetic source decisions and preserve frozen history with sockets disabled
+        env:
+          PYTHONPATH: src
+        run: python scripts/replay-019-manual-alert.py --github018 github018 --output reproduced019.json
