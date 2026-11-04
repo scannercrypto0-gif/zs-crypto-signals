@@ -87,6 +87,28 @@ def change_raw(f,e,transform):
     f['raw_by_hash'][e['raw_hash']]=raw
 
 
+def source_references(f):
+    # Alternative finite protocol route, NOT new live requests. The same-source
+    # time scale and observed request brackets replace a guessed WS transit SLA.
+    for e in f['events']:
+        if e['frame']=='liquidity':continue
+        p=copy.deepcopy(f['profiles'][e['profile_sha256']]);p.pop('max_delivery_delay_ms',None)
+        sha=digest(p);f['profiles'][sha]=p;f['admitted_profiles'].add(sha);e['profile_sha256']=sha
+    source=f['events'][0]['source'];symbol=f['events'][0]['symbol']
+    p=dict(kind='BINANCE_SPOT_TIME_REST',source=source,origin='SYNTHETIC_SAME_SOURCE_REFERENCE_NOT_UTC')
+    sha=digest(p);f['profiles'][sha]=p;f['admitted_profiles'].add(sha)
+    for i,(sent_ms,received_ms,t) in enumerate([(700,800,750),(850,900,875)]):
+        raw=canonical_bytes(dict(serverTime=BASE+14400000+t))
+        sent=14400*10**9+sent_ms*10**6;mono=14400*10**9+received_ms*10**6
+        e=event(raw,study_id=f['study_id'],source=source,symbol=symbol,frame='time_reference',
+            event_id=f'source-clock-reference-{i}',seq=0,epoch=f['epoch'],previous='pending',
+            received_mono_ns=mono,claim_mono_ns=sent-1000000,request_sent_mono_ns=sent,
+            wall_ms=BASE+mono/1e6,profile_sha256=sha)
+        f['events'].append(e);f['raw_by_hash'][e['raw_hash']]=raw
+    rechain(f)
+    return f
+
+
 def scenarios():
     cases={'ideal_wall':fixture()}
     for offset in (-5,-3,-1.5,1.5,3,5):
@@ -153,6 +175,19 @@ def scenarios():
         if kind=='missing_readback':f['restored_digests']=set()
         if kind=='unadmitted_profile':f['admitted_profiles']=set()
         cases[kind]=f
+    for kind in ('source_reference_no_utc','source_reference_clock_step','source_reference_stale',
+                 'source_reference_future','source_reference_incomplete'):
+        f=source_references(fixture())
+        refs=[e for e in f['events'] if e['frame']=='time_reference']
+        if kind=='source_reference_clock_step':change_raw(f,refs[-1],lambda p:p.update(serverTime=p['serverTime']+3000))
+        elif kind=='source_reference_stale':
+            for e in refs:
+                for key in ('received_mono_ns','claim_mono_ns','request_sent_mono_ns'):e[key]-=11*10**9
+                e['wall_ms']-=11000;change_raw(f,e,lambda p:p.update(serverTime=p['serverTime']-11000))
+        elif kind=='source_reference_future':
+            refs[-1]['received_mono_ns']=f['decision_mono_ns']+1;refs[-1]['wall_ms']=BASE+refs[-1]['received_mono_ns']/1e6
+        elif kind=='source_reference_incomplete':f['events'].remove(refs[0])
+        rechain(f);cases[kind]=f
     return cases
 
 

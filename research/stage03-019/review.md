@@ -59,11 +59,27 @@ Source references:
 - https://github.com/binance/binance-spot-api-docs/blob/master/web-socket-streams.md
 - https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md
 
+An implemented alternative avoids requiring an unprovided websocket transit
+SLA: TWO same-source current-time REST references, both inside the candidate
+ledger/claims/readbacks and received before decision. Each has an observed
+monotonic send/receive bracket after its claim. Both must be<=10s old, coherent
+with each other and noncontradictory with later source-finality events. With
+source time T, request send s and decision D, the conservative source-age upper
+estimate is (T-close)/1000 + (D-s)/1e9 +0.002 seconds. It uses the FULL request
+bracket; two milliseconds cover two integer-millisecond quantizations. Pair
+coherence checks the difference of source times against the request brackets.
+Inconsistent/stale/incomplete/postdecision references block, not silently fall
+back. Nominal local monotonic seconds and short-horizon source consistency are
+explicit application assumptions, not independent rate calibration or UTC.
+This path is tested with new SYNTHETIC reference replies only, zero actual GETs.
+It is a practical future finite capture design subject to its own reviewed
+Manifest/request budget/approval, never permission to issue these requests now.
+
 Only semantic facts were used: explicit kline closed flag, interval/timezone
 and source timestamps/current-book snapshot semantics. The docs do not prove
 a maximum websocket delivery delay. The synthetic50ms transport bound is
 explicitly NOT a measurement, SLA or real admitted profile. Field transit
-uncertainty is currently UNKNOWN. A caller cannot obtain field acceptance
+uncertainty is currently UNKNOWN; no field reference pair exists either. A caller cannot obtain field acceptance
 merely by using the bundled synthetic profile; real profile admission and
 evidence are separate PM/owner gates. No raw provider signing or UTC guarantee
 is inferred from TLS/source identity.

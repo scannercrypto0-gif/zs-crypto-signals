@@ -117,7 +117,16 @@ def evaluate(events, raw_by_hash, *, study_id, epoch, anchor, decision_mono_ns, 
                 available.pop(prior['digest'],None)
             elif e['revision']!=0 or e['supersedes'] is not None:raise ValueError('CORRECTION_WITHOUT_ORIGINAL')
             local_age=(decision_mono_ns-mono)/1e9
-            if e['frame']=='liquidity':
+            if e['frame']=='time_reference':
+                p=json.loads(raw);sent=e['request_sent_mono_ns']
+                if (profile.get('kind')!='BINANCE_SPOT_TIME_REST' or type(p.get('serverTime')) is not int or
+                    type(sent) is not int or not claim<=sent<=mono or p['serverTime']<=0):
+                    raise ValueError('SOURCE_REFERENCE_BRACKET_OR_SCHEMA_INVALID')
+                age=(decision_mono_ns-sent)/1e9
+                row.update(source_closed_confirmed='NOT_A_CANDLE',data_fresh=age<=10,
+                           freshness_scope='SHORT_SAME_SOURCE_REFERENCE_NOT_ABSOLUTE_UTC',age_bound_seconds=age)
+                value=dict(frame='time_reference',source_time_ms=p['serverTime'],sent=sent,received=mono)
+            elif e['frame']=='liquidity':
                 p=json.loads(raw)
                 if profile.get('kind')!='BINANCE_SPOT_CURRENT_BOOK_REST' or p['symbol']!=e['symbol']:
                     raise ValueError('LIQUIDITY_SOURCE_UNKNOWN')
@@ -156,6 +165,27 @@ def evaluate(events, raw_by_hash, *, study_id, epoch, anchor, decision_mono_ns, 
     if not used_digests or len(set(used_digests))!=len(used_digests):reasons.append('EMPTY_OR_DUPLICATE_INPUT_SET')
     if any(x not in available for x in used_digests):reasons.append('FUTURE_UNKNOWN_OR_SUPERSEDED_INPUT')
     chosen=[available[x] for x in used_digests if x in available]
+    refs=sorted([(e,v,r) for e,v,r in chosen if e['frame']=='time_reference'],key=lambda t:t[1]['received'])
+    if refs:
+        valid_refs=len(refs)>=2 and all(r['data_fresh'] is True for _,_,r in refs)
+        for (_,a,_),(_,b,_) in zip(refs,refs[1:]):
+            delta=b['source_time_ms']-a['source_time_ms']
+            if not (b['sent']-a['received'])/1e6-2<=delta<=(b['received']-a['sent'])/1e6+2:
+                valid_refs=False
+        if not valid_refs:reasons.append('SOURCE_REFERENCE_STALE_INCONSISTENT_OR_INCOMPLETE')
+        else:
+            re,reference,_=refs[-1]
+            for e,v,r in chosen:
+                if e['frame'] not in FRAMES:continue
+                if e['source']!=re['source'] or (reference['sent']>=e['received_mono_ns'] and reference['source_time_ms']+2<v['source_event_ms']):
+                    reasons.append('SOURCE_CLOCK_REFERENCE_CONTRADICTS_FINALITY_EVENT');continue
+                # Full observed request bracket + two milliseconds for two
+                # integer-millisecond timestamps. Nominal monotonic seconds;
+                # same-source short-horizon evidence, NOT calibrated UTC.
+                age=(reference['source_time_ms']-v['close_ms'])/1000+(decision_mono_ns-reference['sent'])/1e9+.002
+                r.update(data_fresh=0<=age<=(600 if e['frame']=='5m' else FRAMES[e['frame']]/1000),
+                         age_bound_seconds=age,freshness_scope='TWO_COHERENT_SAME_SOURCE_SHORT_REFERENCE_BRACKETS')
+                r['eligible']=r['data_fresh'] is True
     symbols={e['symbol'] for e,_,_ in chosen}
     if len(symbols)!=1:reasons.append('SYMBOL_SET_INVALID')
     frames={f:sorted([v for e,v,row in chosen if e['frame']==f],key=lambda x:x.get('open_ms',0)) for f in (*FRAMES,'liquidity')}
@@ -163,10 +193,12 @@ def evaluate(events, raw_by_hash, *, study_id, epoch, anchor, decision_mono_ns, 
     current_rows=[]
     for frame in frames:
         candidates=[(e,v,r) for e,v,r in chosen if e['frame']==frame]
-        for _,_,r in candidates:r['freshness_role']='HISTORICAL_CLOSED_INPUT'
+        for _,_,r in candidates:
+            r['freshness_role']='HISTORICAL_CLOSED_INPUT';r['eligible']=True
         if candidates:
             _,_,r=max(candidates,key=lambda t:t[1].get('open_ms',t[0]['received_mono_ns']))
             r['freshness_role']='LATEST_DECISION_CONTEXT';current_rows.append(r)
+            r['eligible']=r['data_fresh'] is True
             if r['data_fresh'] is not True:reasons.append('INPUT_STALE_OR_FRESHNESS_UNKNOWN')
     for parent,child,count in [('30m','5m',6),('4h','30m',8)]:
         for p in frames[parent]:

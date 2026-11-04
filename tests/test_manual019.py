@@ -10,7 +10,7 @@ from zs_smart_gate.github_evidence_backend import GitHubEvidenceBackend
 from zs_smart_gate.stage04_evidence_packet import make_record,prepare_manifest,persist_packet,restore_from_remote
 from test_github_evidence_backend import MockContentsTransport
 
-PASS_CASES={'ideal_wall','linked_correction','unconfirmed_latest_pivot',
+PASS_CASES={'ideal_wall','linked_correction','unconfirmed_latest_pivot','source_reference_no_utc',
     *(f'constant_wall_offset_{n:+g}s' for n in (-5,-3,-1.5,1.5,3,5))}
 
 
@@ -48,6 +48,13 @@ class Manual019Tests(unittest.TestCase):
     def test_unknown_delivery_bound_never_gives_full_quality(self):
         r=evaluate(**scenarios()['unknown_delivery_bound']);self.assertIsNone(r['indicators']);self.assertIsNone(r['score'])
         self.assertIn('INPUT_STALE_OR_FRESHNESS_UNKNOWN',r['reasons'])
+
+    def test_same_source_short_reference_needs_no_utc_or_assumed_ws_delivery_bound(self):
+        r=evaluate(**scenarios()['source_reference_no_utc'])
+        self.assertEqual(r['status'],'RESEARCH_CAUSAL_ORDER_PASS_CANDIDATE')
+        self.assertEqual(r['ABSOLUTE_UTC_PIT'],'HOLD')
+        self.assertTrue(all(x['freshness_scope']=='TWO_COHERENT_SAME_SOURCE_SHORT_REFERENCE_BRACKETS'
+                            for x in r['inputs'] if x['frame']=='5m'))
 
     def test_close_plus_five_seconds_without_source_marker_still_unknown(self):
         f=scenarios()['missing_finality'];f['decision_mono_ns']+=5*10**9;f['decision_wall_ms']+=5000
