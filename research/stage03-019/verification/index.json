@@ -1,0 +1,270 @@
+{
+  "packet": "ZS03_MANUAL_ALERT_TEMPORAL_INTEGRITY_PACKET_019",
+  "code_sha": "57a5bc5bf3719ed8cbb4e5de81077db731063a3e",
+  "parent018": "f8f9507ff45a914edabfdea19c90155d2c7f01d5",
+  "main": "a0f8493aee1228bc625360fd55a553cc5c69954f",
+  "all_jobs": [
+    {
+      "id": 126488528950,
+      "name": "reproduce (ubuntu-latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126488529124,
+      "name": "reproduce (windows-latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126488530471,
+      "name": "replay-manual (windows-latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126488530489,
+      "name": "replay-manual (ubuntu-latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126488529841,
+      "name": "offline (ubuntu-latest, 3.11)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126488529995,
+      "name": "offline (ubuntu-latest, 3.12)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126488530007,
+      "name": "offline (windows-latest, 3.11)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126488530066,
+      "name": "offline (windows-latest, 3.12)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126488530261,
+      "name": "clock-review (windows-latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126488530415,
+      "name": "clock-review (ubuntu-latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126488530488,
+      "name": "reproduce-v2 (ubuntu-latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126488530849,
+      "name": "reproduce-v2 (windows-latest)",
+      "conclusion": "success"
+    }
+  ],
+  "runs": [
+    {
+      "id": 41804641515,
+      "name": "Order016 frozen GitHub-only source decision science reproduction",
+      "url": "https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/41804641515"
+    },
+    {
+      "id": 41804641843,
+      "name": "Order019 manual alert temporal integrity GitHub-only replay",
+      "url": "https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/41804641843"
+    },
+    {
+      "id": 41804641730,
+      "name": "FOUNDATION-001 offline unit and integration tests",
+      "url": "https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/41804641730"
+    },
+    {
+      "id": 41804641817,
+      "name": "Order017 offline signed clock review",
+      "url": "https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/41804641817"
+    },
+    {
+      "id": 41804641953,
+      "name": "Order018 V2 time-bound GitHub-only reproduction",
+      "url": "https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/41804641953"
+    }
+  ],
+  "local_Windows": {
+    "discovered": 580,
+    "executed": 580,
+    "skipped": 0
+  },
+  "new_tests": 62,
+  "scenarios": 42,
+  "synthetic_relative_candidates": 10,
+  "synthetic_holds": 32,
+  "source_files": {
+    ".gitattributes": {
+      "sha256": "286fff9ed3c5ab0eacacaea9ce2f133e2c6cc84dabc8b79d43a83dadcaf714d3",
+      "git_blob_sha": "e27ae73f80fead1c9d31251e2319a4de93c3af6a",
+      "bytes": 261
+    },
+    "src/zs_smart_gate/manual_alert019.py": {
+      "sha256": "7b174342efbfba880f26b5a04e4df250e8f04ab53a060bb2b730ccee4c12ab81",
+      "git_blob_sha": "974093f9712bc3724f2eab0f5b0fcd106d99325e",
+      "bytes": 15800
+    },
+    "src/zs_smart_gate/manual_sensitivity019.py": {
+      "sha256": "48e54e0aeab852282323f2a9e174cc48cf65bb8f21cadf50e3bc98ae39ca0cc9",
+      "git_blob_sha": "9212e05c08640a41659f1c0a148aa54b3afe7661",
+      "bytes": 13434
+    },
+    "tests/test_manual019.py": {
+      "sha256": "3fdee74a56232d859370fae638a649aab4efacc8bba033162bad0ed81ef1ddee",
+      "git_blob_sha": "117cb865dbe5369e6e20ce9d5bda19fa09a58bc8",
+      "bytes": 8684
+    },
+    "scripts/replay-019-manual-alert.py": {
+      "sha256": "4cae97d7c6584f0a816011abe3d8bcd9b1b14bac7aaa8c00890a5d1f09c5a8b7",
+      "git_blob_sha": "27c055aa915b4fb76dffb6c77e8d2f3f7f5775a7",
+      "bytes": 2896
+    },
+    ".github/workflows/019-manual-alert-replay.yml": {
+      "sha256": "7487a6f2732ca2a6def81a0d60a371701f34738cb721ae04704d653c20fafe4f",
+      "git_blob_sha": "024779f839b6aa4807e2edae54acf021493f32a8",
+      "bytes": 1117
+    },
+    "research/stage03-019/baseline-decision.json": {
+      "sha256": "baaff29f5564e13441f2b72db35557ef6375b316d578b63bf5981a8edb9b7c1c",
+      "git_blob_sha": "36ef87db6b7c18710357350c38210d83df110652",
+      "bytes": 24093
+    },
+    "research/stage03-019/manifest.json": {
+      "sha256": "d9bf8ccc1eb9b79c18741998d94bac90a999e74a02bedda3e5cf26b96502a16e",
+      "git_blob_sha": "554eb9a6b4ed1438d956ca1abb3aa07cdcfb3235",
+      "bytes": 353
+    },
+    "research/stage03-019/preserved-git-blobs.json": {
+      "sha256": "b48ff93124a3af64b6f5e706cfb1ef86f50282ab75e3bacaa1150b4349d86571",
+      "git_blob_sha": "efe9cbf766174cb38410dd6b5faf3f8e86044c1d",
+      "bytes": 14686
+    },
+    "research/stage03-019/protocol.json": {
+      "sha256": "5646546ef816213326f73a908ea5139b3b2a7b1e2ed7c3b29c0853f93b10831e",
+      "git_blob_sha": "ebe5d83cf0b47cc6835190df7ef4ab0c49806573",
+      "bytes": 1773
+    },
+    "research/stage03-019/review.md": {
+      "sha256": "856bfcf394035d11fd29066326dcb118f2fa4fe7f1da92437cee9a975818ba84",
+      "git_blob_sha": "d22b2bb17753481b9dba4c650e9dfbd702f4bdae",
+      "bytes": 12039
+    },
+    "research/stage03-019/sensitivity.json": {
+      "sha256": "377ee35de246cf1999fe2b8427f1a94c41f4ecce6e0a4502c23d61bff1e8de1b",
+      "git_blob_sha": "95e344ca9935e2ac12edbfc1db2226c8a4374e7a",
+      "bytes": 17743
+    },
+    "research/stage03-019/synthetic-source.json": {
+      "sha256": "db3e24dc329819062cc9b2b0688217dc43e879e244a8b30f5aead544bc435fcc",
+      "git_blob_sha": "19b7b910d586d178688968b8a67ae94a6a35d80a",
+      "bytes": 135748
+    }
+  },
+  "manifest": {
+    "baseline-decision.json": "baaff29f5564e13441f2b72db35557ef6375b316d578b63bf5981a8edb9b7c1c",
+    "protocol.json": "5646546ef816213326f73a908ea5139b3b2a7b1e2ed7c3b29c0853f93b10831e",
+    "sensitivity.json": "377ee35de246cf1999fe2b8427f1a94c41f4ecce6e0a4502c23d61bff1e8de1b",
+    "synthetic-source.json": "db3e24dc329819062cc9b2b0688217dc43e879e244a8b30f5aead544bc435fcc"
+  },
+  "logs": [
+    {
+      "path": "research/stage03-019/verification/job-126488528950.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a5e5d2012e13305d1353bf47dc56f0abb2161c80"
+    },
+    {
+      "path": "research/stage03-019/verification/job-126488529124.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "afc30ab60ff7bbdd3301f31efa2df61b8c8a3dae"
+    },
+    {
+      "path": "research/stage03-019/verification/job-126488530471.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5605464d00db75fe663253b6704b5ea6bd61b062"
+    },
+    {
+      "path": "research/stage03-019/verification/job-126488530489.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a618eccd7ceddb8937be544e7354a01360ae9370"
+    },
+    {
+      "path": "research/stage03-019/verification/job-126488529841.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "267d22be1a7893fb2ce0347366bee0b90534424d"
+    },
+    {
+      "path": "research/stage03-019/verification/job-126488529995.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3098a18d155425d4bbfa7476e3ff1e6247d0a178"
+    },
+    {
+      "path": "research/stage03-019/verification/job-126488530007.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c4f2c0f8d54748b876b5f4c5fde1f6ce6b0f50eb"
+    },
+    {
+      "path": "research/stage03-019/verification/job-126488530066.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f2ead9bdb418f9cd31273b3c2b0fbe03a47c80ea"
+    },
+    {
+      "path": "research/stage03-019/verification/job-126488530261.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0cd46133ba78b97de817ec7cc2fb34ffdd51ebce"
+    },
+    {
+      "path": "research/stage03-019/verification/job-126488530415.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b5f42083e3b23a58409df5d6b1eee30540e7a459"
+    },
+    {
+      "path": "research/stage03-019/verification/job-126488530488.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eee85aa672af5575e1c2085c2b2ce7f008c686af"
+    },
+    {
+      "path": "research/stage03-019/verification/job-126488530849.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fb95ea72146c88db981828f2254ff3eec22cfd58"
+    },
+    {
+      "path": "research/stage03-019/verification/local-Windows-580-tests.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d9bddcac1212428a83f47ac03c209c28ddf51ca4"
+    }
+  ],
+  "preserved_pre019_files": 172,
+  "local_setup_correction": "Initial synthetic storage test branch lacked mandatory evidence- prefix; fixed fixture, no production scope guard changed. Final source+decision restoration and no-retry tests pass.",
+  "development_history": "First019 implementation4b721e65ff7c2cb0f08c875b517dde7c5b2b4b29 was extended with the same-source short-reference alternative before final review; final code and all checks supersede it. No010-018 frozen file changed.",
+  "scope": "SYNTHETIC_ENGINEERING_ONLY_NOT_INDEPENDENT_SCIENTIFIC_ACCEPTANCE",
+  "actual_manual_field_evidence": "NONE",
+  "ABSOLUTE_UTC_PIT": "HOLD",
+  "publishable": false,
+  "forward": "NOT_ARMED",
+  "new_market_requests": 0,
+  "new_clock_requests": 0,
+  "new_OOS": 0,
+  "merge": false,
+  "clock_or_OS_changes": false
+}
