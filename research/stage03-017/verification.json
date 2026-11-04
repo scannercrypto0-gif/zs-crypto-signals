@@ -1,0 +1,61 @@
+{
+  "forward_armed": false,
+  "historical_publisher_pit": "HOLD",
+  "maximum_future_drift_proved": false,
+  "observed_wall_vs_mono_ppm": 1.592772069569648,
+  "results": [
+    {
+      "index": 0,
+      "interval": {
+        "below_one_second": false,
+        "forward_armed": false,
+        "local_error_bound_seconds": 1.1648551088989259,
+        "max_drift_ppm": null,
+        "reason": "INDEPENDENT_SOURCE_AND_DRIFT_ADMISSION_REQUIRED",
+        "status": "HOLD",
+        "utc_received_interval": [
+          1793769343,
+          1793769345.0177288
+        ],
+        "wall_monotonic_residual_seconds": 2.4897277832031106e-06
+      },
+      "rtt_seconds": 0.0177287,
+      "verification": {
+        "absolute_utc_admitted": false,
+        "midpoint": 1793769344,
+        "nonce_binding": "SIGNED_MERKLE_INCLUSION",
+        "nonce_echo_present": false,
+        "radius_seconds": 1,
+        "signature_verified": true,
+        "version": 2147483659
+      }
+    },
+    {
+      "index": 1,
+      "interval": {
+        "below_one_second": false,
+        "forward_armed": false,
+        "local_error_bound_seconds": 1.216447938092041,
+        "max_drift_ppm": null,
+        "reason": "INDEPENDENT_SOURCE_AND_DRIFT_ADMISSION_REQUIRED",
+        "status": "HOLD",
+        "utc_received_interval": [
+          1793769373,
+          1793769375.0175023
+        ],
+        "wall_monotonic_residual_seconds": 2.253659057618179e-06
+      },
+      "rtt_seconds": 0.0175022,
+      "verification": {
+        "absolute_utc_admitted": false,
+        "midpoint": 1793769374,
+        "nonce_binding": "SIGNED_MERKLE_INCLUSION",
+        "nonce_echo_present": false,
+        "radius_seconds": 1,
+        "signature_verified": true,
+        "version": 2147483659
+      }
+    }
+  ],
+  "status": "HOLD"
+}

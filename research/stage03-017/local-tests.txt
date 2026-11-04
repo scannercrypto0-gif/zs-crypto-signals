@@ -1,0 +1,17 @@
+test_delegation_expiry (test_clock017.Clock017Tests.test_delegation_expiry) ... ok
+test_deployed_profile_without_nonce_echo_still_rejects_replay (test_clock017.Clock017Tests.test_deployed_profile_without_nonce_echo_still_rejects_replay) ... ok
+test_duplicate_tags_bad_offsets_and_truncation (test_clock017.Clock017Tests.test_duplicate_tags_bad_offsets_and_truncation) ... ok
+test_interval_includes_full_rtt_and_never_grants_drift (test_clock017.Clock017Tests.test_interval_includes_full_rtt_and_never_grants_drift) ... ok
+test_merkle_index (test_clock017.Clock017Tests.test_merkle_index) ... ok
+test_nonce_replay (test_clock017.Clock017Tests.test_nonce_replay) ... ok
+test_nonfinite_or_reverse_clock (test_clock017.Clock017Tests.test_nonfinite_or_reverse_clock) ... ok
+test_request_profile_and_frame_length (test_clock017.Clock017Tests.test_request_profile_and_frame_length) ... ok
+test_response_signature_tampering (test_clock017.Clock017Tests.test_response_signature_tampering) ... ok
+test_signed_delegation_response_nonce_and_radius (test_clock017.Clock017Tests.test_signed_delegation_response_nonce_and_radius) ... ok
+test_wrong_root_key (test_clock017.Clock017Tests.test_wrong_root_key) ... ok
+test_zero_radius_does_not_self_admit (test_clock017.Clock017Tests.test_zero_radius_does_not_self_admit) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.015s
+
+OK
