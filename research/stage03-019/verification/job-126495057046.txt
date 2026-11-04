@@ -1,0 +1,252 @@
+﻿2026-11-04T09:20:04.6381433Z Current runner version: '2.338.2'
+2026-11-04T09:20:04.6417309Z ##[group]Runner Image Provisioner
+2026-11-04T09:20:04.6418808Z Hosted Compute Agent
+2026-11-04T09:20:04.6419661Z Version: 20261021.618
+2026-11-04T09:20:04.6420508Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+2026-11-04T09:20:04.6421600Z Build Date: 2026-10-21T00:45:21Z
+2026-11-04T09:20:04.6422587Z Worker ID: {6003f1be-0b72-4c2a-84c2-6138ac086393}
+2026-11-04T09:20:04.6423604Z Region: westcentralus
+2026-11-04T09:20:04.6424403Z Cloud: Azure
+2026-11-04T09:20:04.6425110Z ##[endgroup]
+2026-11-04T09:20:04.6426967Z ##[group]Operating System
+2026-11-04T09:20:04.6427893Z Microsoft Windows Server 2025
+2026-11-04T09:20:04.6428698Z 10.0.26100
+2026-11-04T09:20:04.6429408Z Datacenter
+2026-11-04T09:20:04.6430140Z ##[endgroup]
+2026-11-04T09:20:04.6430834Z ##[group]Runner Image
+2026-11-04T09:20:04.6431706Z Image: windows-2025-vs2026
+2026-11-04T09:20:04.6432525Z Version: 20261030.294.1
+2026-11-04T09:20:04.6434686Z Included Software: https://github.com/actions/runner-images/blob/win25-vs2026/20261030.294/images/windows/Windows2025-VS2026-Readme.md
+2026-11-04T09:20:04.6437246Z Image Release: https://github.com/actions/runner-images/releases/tag/win25-vs2026%2F20261030.294
+2026-11-04T09:20:04.6439146Z ##[endgroup]
+2026-11-04T09:20:04.6440681Z ##[group]GITHUB_TOKEN Permissions
+2026-11-04T09:20:04.6443071Z Contents: read
+2026-11-04T09:20:04.6443836Z Metadata: read
+2026-11-04T09:20:04.6444587Z ##[endgroup]
+2026-11-04T09:20:04.6447489Z Secret source: Actions
+2026-11-04T09:20:04.6448772Z Cache mode: write
+2026-11-04T09:20:04.6449783Z Prepare workflow directory
+2026-11-04T09:20:04.6962122Z Prepare all required actions
+2026-11-04T09:20:04.7028482Z Getting action download info
+2026-11-04T09:20:05.0266261Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-11-04T09:20:05.1949935Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+2026-11-04T09:20:05.5465724Z Complete job name: clock-review (windows-latest)
+2026-11-04T09:20:05.7439865Z ##[group]Run actions/checkout@v4
+2026-11-04T09:20:05.7441049Z with:
+2026-11-04T09:20:05.7441571Z   repository: scannercrypto0-gif/zs-crypto-signals
+2026-11-04T09:20:05.7446206Z   token: ***
+2026-11-04T09:20:05.7446647Z   ssh-strict: true
+2026-11-04T09:20:05.7447078Z   ssh-user: git
+2026-11-04T09:20:05.7447523Z   persist-credentials: true
+2026-11-04T09:20:05.7448017Z   clean: true
+2026-11-04T09:20:05.7448470Z   sparse-checkout-cone-mode: true
+2026-11-04T09:20:05.7448994Z   fetch-depth: 1
+2026-11-04T09:20:05.7449432Z   fetch-tags: false
+2026-11-04T09:20:05.7449871Z   show-progress: true
+2026-11-04T09:20:05.7450308Z   lfs: false
+2026-11-04T09:20:05.7450732Z   submodules: false
+2026-11-04T09:20:05.7451185Z   set-safe-directory: true
+2026-11-04T09:20:05.7451692Z   allow-unsafe-pr-checkout: false
+2026-11-04T09:20:05.7452457Z ##[endgroup]
+2026-11-04T09:20:06.4215625Z Syncing repository: scannercrypto0-gif/zs-crypto-signals
+2026-11-04T09:20:06.4219070Z ##[group]Getting Git version info
+2026-11-04T09:20:06.4220364Z Working directory is 'D:\a\zs-crypto-signals\zs-crypto-signals'
+2026-11-04T09:20:06.4223097Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-11-04T09:20:06.4378920Z git version 2.56.0.windows.4
+2026-11-04T09:20:07.3688919Z ##[endgroup]
+2026-11-04T09:20:07.3694041Z Temporarily overriding HOME='D:\a\_temp\f0e11652-45f8-4835-8332-bd4ea7f240ea' before making global git config changes
+2026-11-04T09:20:07.3695046Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-04T09:20:07.3696076Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\zs-crypto-signals\zs-crypto-signals
+2026-11-04T09:20:07.3697776Z Deleting the contents of 'D:\a\zs-crypto-signals\zs-crypto-signals'
+2026-11-04T09:20:07.3698588Z ##[group]Initializing the repository
+2026-11-04T09:20:07.3699278Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\zs-crypto-signals\zs-crypto-signals
+2026-11-04T09:20:07.3702766Z Initialized empty Git repository in D:/a/zs-crypto-signals/zs-crypto-signals/.git/
+2026-11-04T09:20:07.3704516Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/scannercrypto0-gif/zs-crypto-signals
+2026-11-04T09:20:07.3706576Z ##[endgroup]
+2026-11-04T09:20:07.3707229Z ##[group]Disabling automatic garbage collection
+2026-11-04T09:20:07.3707877Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+2026-11-04T09:20:07.3709379Z ##[endgroup]
+2026-11-04T09:20:07.3709956Z ##[group]Setting up auth
+2026-11-04T09:20:07.3710787Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-11-04T09:20:07.3712850Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-11-04T09:20:08.6145665Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-04T09:20:08.6587103Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-11-04T09:20:09.3309930Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-04T09:20:09.3704510Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-11-04T09:20:09.9417954Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+2026-11-04T09:20:09.9825209Z ##[endgroup]
+2026-11-04T09:20:09.9836536Z ##[group]Fetching the repository
+2026-11-04T09:20:09.9856210Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +cbc6705c1bac7dfb629d997f6a079bee0cc9e830:refs/remotes/pull/30/merge
+2026-11-04T09:20:11.4252316Z From https://github.com/scannercrypto0-gif/zs-crypto-signals
+2026-11-04T09:20:11.4257059Z  * [new ref]         cbc6705c1bac7dfb629d997f6a079bee0cc9e830 -> pull/30/merge
+2026-11-04T09:20:11.4306392Z ##[endgroup]
+2026-11-04T09:20:11.4334773Z ##[group]Determining the checkout info
+2026-11-04T09:20:11.4337658Z ##[endgroup]
+2026-11-04T09:20:11.4363162Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+2026-11-04T09:20:11.4957530Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+2026-11-04T09:20:11.5501083Z ##[group]Checking out the ref
+2026-11-04T09:20:11.5514034Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force refs/remotes/pull/30/merge
+2026-11-04T09:20:11.6665972Z Note: switching to 'refs/remotes/pull/30/merge'.
+2026-11-04T09:20:11.6667024Z 
+2026-11-04T09:20:11.6667315Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-11-04T09:20:11.6668122Z changes and commit them, and you can discard any commits you make in this
+2026-11-04T09:20:11.6668908Z state without impacting any branches by switching back to a branch.
+2026-11-04T09:20:11.6669340Z 
+2026-11-04T09:20:11.6669648Z If you want to create a new branch to retain commits you create, you may
+2026-11-04T09:20:11.6670326Z do so (now or later) by using -c with the switch command. Example:
+2026-11-04T09:20:11.6670756Z 
+2026-11-04T09:20:11.6670949Z   git switch -c <new-branch-name>
+2026-11-04T09:20:11.6671221Z 
+2026-11-04T09:20:11.6671363Z Or undo this operation with:
+2026-11-04T09:20:11.6671640Z 
+2026-11-04T09:20:11.6671765Z   git switch -
+2026-11-04T09:20:11.6671941Z 
+2026-11-04T09:20:11.6672255Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-11-04T09:20:11.6672753Z 
+2026-11-04T09:20:11.6675103Z HEAD is now at cbc6705 Merge 2f4c6266fb88893dbb1f2e1805f28afdacca1bbb into 18cc6238112a75321d2b194419cd1a38ec4eb5f0
+2026-11-04T09:20:11.6742109Z ##[endgroup]
+2026-11-04T09:20:11.8081127Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+2026-11-04T09:20:11.8450946Z cbc6705c1bac7dfb629d997f6a079bee0cc9e830
+2026-11-04T09:20:11.8964572Z ##[group]Run actions/setup-python@v5
+2026-11-04T09:20:11.8964962Z with:
+2026-11-04T09:20:11.8965179Z   python-version: 3.12
+2026-11-04T09:20:11.8965397Z   check-latest: false
+2026-11-04T09:20:11.8968086Z   token: ***
+2026-11-04T09:20:11.8968287Z   update-environment: true
+2026-11-04T09:20:11.8968522Z   allow-prereleases: false
+2026-11-04T09:20:11.8968734Z   freethreaded: false
+2026-11-04T09:20:11.8968928Z ##[endgroup]
+2026-11-04T09:20:12.0725370Z ##[group]Installed versions
+2026-11-04T09:20:12.0968551Z (node:7624) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-04T09:20:12.0970250Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-04T09:20:12.0971329Z Successfully set up CPython (3.12.10)
+2026-11-04T09:20:12.0972224Z ##[endgroup]
+2026-11-04T09:20:12.1284512Z ##[group]Run python -m pip install --disable-pip-version-check --no-cache-dir --only-binary=:all: --require-hashes -r requirements-ci-crypto.lock
+2026-11-04T09:20:12.1285749Z [36;1mpython -m pip install --disable-pip-version-check --no-cache-dir --only-binary=:all: --require-hashes -r requirements-ci-crypto.lock[0m
+2026-11-04T09:20:12.3248073Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-11-04T09:20:12.3248830Z env:
+2026-11-04T09:20:12.3249649Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-11-04T09:20:12.3250724Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-11-04T09:20:12.3251737Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-11-04T09:20:12.3252928Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-11-04T09:20:12.3254010Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-11-04T09:20:12.3254485Z ##[endgroup]
+2026-11-04T09:20:18.9137301Z Collecting cryptography==50.0.2 (from -r requirements-ci-crypto.lock (line 1))
+2026-11-04T09:20:19.1637532Z   Downloading cryptography-50.0.2-cp311-abi3-win_amd64.whl (3.8 MB)
+2026-11-04T09:20:19.5937403Z      ---------------------------------------- 3.8/3.8 MB 12.0 MB/s  0:00:00
+2026-11-04T09:20:19.7316854Z Collecting cffi==2.1.1 (from -r requirements-ci-crypto.lock (line 60))
+2026-11-04T09:20:19.7525822Z   Downloading cffi-2.1.1-cp312-cp312-win_amd64.whl (185 kB)
+2026-11-04T09:20:19.7830032Z Collecting pycparser==3.12 (from -r requirements-ci-crypto.lock (line 160))
+2026-11-04T09:20:19.8087851Z   Downloading pycparser-3.12-py3-none-any.whl (62 kB)
+2026-11-04T09:20:20.6004432Z Installing collected packages: pycparser, cffi, cryptography
+2026-11-04T09:20:20.9086970Z 
+2026-11-04T09:20:20.9106765Z Successfully installed cffi-2.1.1 cryptography-50.0.2 pycparser-3.12
+2026-11-04T09:20:21.1503244Z ##[group]Run python -m unittest discover -s tests -p test_clock017.py -v
+2026-11-04T09:20:21.1503856Z [36;1mpython -m unittest discover -s tests -p test_clock017.py -v[0m
+2026-11-04T09:20:21.1504351Z [36;1mpython scripts/verify-017-clock.py research/stage03-017/samples.json[0m
+2026-11-04T09:20:21.1574043Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-11-04T09:20:21.1574384Z env:
+2026-11-04T09:20:21.1574654Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-11-04T09:20:21.1575123Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-11-04T09:20:21.1575560Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-11-04T09:20:21.1575955Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-11-04T09:20:21.1576351Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-11-04T09:20:21.1576856Z   PYTHONPATH: src
+2026-11-04T09:20:21.1577098Z ##[endgroup]
+2026-11-04T09:20:21.8788266Z test_delegation_expiry (test_clock017.Clock017Tests.test_delegation_expiry) ... ok
+2026-11-04T09:20:21.8816108Z test_deployed_profile_without_nonce_echo_still_rejects_replay (test_clock017.Clock017Tests.test_deployed_profile_without_nonce_echo_still_rejects_replay) ... ok
+2026-11-04T09:20:21.8851259Z test_duplicate_tags_bad_offsets_and_truncation (test_clock017.Clock017Tests.test_duplicate_tags_bad_offsets_and_truncation) ... ok
+2026-11-04T09:20:21.8876717Z test_interval_includes_full_rtt_and_never_grants_drift (test_clock017.Clock017Tests.test_interval_includes_full_rtt_and_never_grants_drift) ... ok
+2026-11-04T09:20:21.8913497Z test_merkle_index (test_clock017.Clock017Tests.test_merkle_index) ... ok
+2026-11-04T09:20:21.8939423Z test_nonce_replay (test_clock017.Clock017Tests.test_nonce_replay) ... ok
+2026-11-04T09:20:21.8960845Z test_nonfinite_or_reverse_clock (test_clock017.Clock017Tests.test_nonfinite_or_reverse_clock) ... ok
+2026-11-04T09:20:21.8987582Z test_request_profile_and_frame_length (test_clock017.Clock017Tests.test_request_profile_and_frame_length) ... ok
+2026-11-04T09:20:21.9021998Z test_response_signature_tampering (test_clock017.Clock017Tests.test_response_signature_tampering) ... ok
+2026-11-04T09:20:21.9024128Z test_signed_delegation_response_nonce_and_radius (test_clock017.Clock017Tests.test_signed_delegation_response_nonce_and_radius) ... ok
+2026-11-04T09:20:21.9032388Z test_wrong_root_key (test_clock017.Clock017Tests.test_wrong_root_key) ... ok
+2026-11-04T09:20:21.9047312Z test_zero_radius_does_not_self_admit (test_clock017.Clock017Tests.test_zero_radius_does_not_self_admit) ... ok
+2026-11-04T09:20:21.9071817Z 
+2026-11-04T09:20:21.9074013Z ----------------------------------------------------------------------
+2026-11-04T09:20:21.9084665Z Ran 12 tests in 0.021s
+2026-11-04T09:20:21.9085425Z 
+2026-11-04T09:20:21.9085902Z OK
+2026-11-04T09:20:21.9978083Z {
+2026-11-04T09:20:21.9978671Z   "forward_armed": false,
+2026-11-04T09:20:21.9979555Z   "historical_publisher_pit": "HOLD",
+2026-11-04T09:20:22.0000640Z   "maximum_future_drift_proved": false,
+2026-11-04T09:20:22.0001511Z   "observed_wall_vs_mono_ppm": 1.592772069569648,
+2026-11-04T09:20:22.0002145Z   "results": [
+2026-11-04T09:20:22.0002564Z     {
+2026-11-04T09:20:22.0002971Z       "index": 0,
+2026-11-04T09:20:22.0003412Z       "interval": {
+2026-11-04T09:20:22.0003874Z         "below_one_second": false,
+2026-11-04T09:20:22.0004411Z         "forward_armed": false,
+2026-11-04T09:20:22.0004982Z         "local_error_bound_seconds": 1.1648551088989259,
+2026-11-04T09:20:22.0005631Z         "max_drift_ppm": null,
+2026-11-04T09:20:22.0006289Z         "reason": "INDEPENDENT_SOURCE_AND_DRIFT_ADMISSION_REQUIRED",
+2026-11-04T09:20:22.0006970Z         "status": "HOLD",
+2026-11-04T09:20:22.0007464Z         "utc_received_interval": [
+2026-11-04T09:20:22.0007988Z           1793769343,
+2026-11-04T09:20:22.0008437Z           1793769345.0177288
+2026-11-04T09:20:22.0008932Z         ],
+2026-11-04T09:20:22.0013542Z         "wall_monotonic_residual_seconds": 2.4897277832031106e-06
+2026-11-04T09:20:22.0014311Z       },
+2026-11-04T09:20:22.0014770Z       "rtt_seconds": 0.0177287,
+2026-11-04T09:20:22.0015552Z       "verification": {
+2026-11-04T09:20:22.0016055Z         "absolute_utc_admitted": false,
+2026-11-04T09:20:22.0016641Z         "midpoint": 1793769344,
+2026-11-04T09:20:22.0017191Z         "nonce_binding": "SIGNED_MERKLE_INCLUSION",
+2026-11-04T09:20:22.0017758Z         "nonce_echo_present": false,
+2026-11-04T09:20:22.0018267Z         "radius_seconds": 1,
+2026-11-04T09:20:22.0018737Z         "signature_verified": true,
+2026-11-04T09:20:22.0019231Z         "version": 2147483659
+2026-11-04T09:20:22.0019666Z       }
+2026-11-04T09:20:22.0020030Z     },
+2026-11-04T09:20:22.0020403Z     {
+2026-11-04T09:20:22.0021076Z       "index": 1,
+2026-11-04T09:20:22.0021516Z       "interval": {
+2026-11-04T09:20:22.0021941Z         "below_one_second": false,
+2026-11-04T09:20:22.0022760Z         "forward_armed": false,
+2026-11-04T09:20:22.0023273Z         "local_error_bound_seconds": 1.216447938092041,
+2026-11-04T09:20:22.0023843Z         "max_drift_ppm": null,
+2026-11-04T09:20:22.0024448Z         "reason": "INDEPENDENT_SOURCE_AND_DRIFT_ADMISSION_REQUIRED",
+2026-11-04T09:20:22.0025108Z         "status": "HOLD",
+2026-11-04T09:20:22.0025571Z         "utc_received_interval": [
+2026-11-04T09:20:22.0026069Z           1793769373,
+2026-11-04T09:20:22.0026500Z           1793769375.0175023
+2026-11-04T09:20:22.0026947Z         ],
+2026-11-04T09:20:22.0027431Z         "wall_monotonic_residual_seconds": 2.253659057618179e-06
+2026-11-04T09:20:22.0028017Z       },
+2026-11-04T09:20:22.0028398Z       "rtt_seconds": 0.0175022,
+2026-11-04T09:20:22.0028883Z       "verification": {
+2026-11-04T09:20:22.0029341Z         "absolute_utc_admitted": false,
+2026-11-04T09:20:22.0029935Z         "midpoint": 1793769374,
+2026-11-04T09:20:22.0030445Z         "nonce_binding": "SIGNED_MERKLE_INCLUSION",
+2026-11-04T09:20:22.0031060Z         "nonce_echo_present": false,
+2026-11-04T09:20:22.0031570Z         "radius_seconds": 1,
+2026-11-04T09:20:22.0032089Z         "signature_verified": true,
+2026-11-04T09:20:22.0032639Z         "version": 2147483659
+2026-11-04T09:20:22.0033121Z       }
+2026-11-04T09:20:22.0033512Z     }
+2026-11-04T09:20:22.0033912Z   ],
+2026-11-04T09:20:22.0034305Z   "status": "HOLD"
+2026-11-04T09:20:22.0034738Z }
+2026-11-04T09:20:22.1406593Z Post job cleanup.
+2026-11-04T09:20:22.3625253Z (node:5128) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-04T09:20:22.3650203Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-04T09:20:22.4072956Z Post job cleanup.
+2026-11-04T09:20:23.1304593Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-11-04T09:20:23.1822090Z git version 2.56.0.windows.4
+2026-11-04T09:20:23.2050956Z Temporarily overriding HOME='D:\a\_temp\327de5ec-d5ac-471e-a4d1-a31c6052639a' before making global git config changes
+2026-11-04T09:20:23.2052085Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-04T09:20:23.2053561Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\zs-crypto-signals\zs-crypto-signals
+2026-11-04T09:20:24.1822030Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-11-04T09:20:24.2670684Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-11-04T09:20:25.2490226Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-04T09:20:25.2923265Z http.https://github.com/.extraheader
+2026-11-04T09:20:25.2979923Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all http.https://github.com/.extraheader
+2026-11-04T09:20:25.3534545Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-11-04T09:20:27.4928270Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-04T09:20:27.5365045Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-11-04T09:20:28.5640523Z Cleaning up orphan processes
+2026-11-04T09:20:28.6204683Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

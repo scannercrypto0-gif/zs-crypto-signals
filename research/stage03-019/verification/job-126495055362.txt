@@ -1,0 +1,402 @@
+﻿2026-11-04T09:20:05.0312383Z Current runner version: '2.338.2'
+2026-11-04T09:20:05.0339046Z ##[group]Runner Image Provisioner
+2026-11-04T09:20:05.0340203Z Hosted Compute Agent
+2026-11-04T09:20:05.0340704Z Version: 20261028.624
+2026-11-04T09:20:05.0341306Z Commit: 54898b74c23fde5556c9b3c3a2290865feef0dfe
+2026-11-04T09:20:05.0341962Z Build Date: 2026-10-28T21:51:42Z
+2026-11-04T09:20:05.0342569Z Worker ID: {47dd5cab-474a-475a-83de-c486cc37156b}
+2026-11-04T09:20:05.0343239Z Region: westus3
+2026-11-04T09:20:05.0343705Z Cloud: Azure
+2026-11-04T09:20:05.0344223Z ##[endgroup]
+2026-11-04T09:20:05.0345763Z ##[group]Operating System
+2026-11-04T09:20:05.0346333Z Ubuntu
+2026-11-04T09:20:05.0346807Z 26.04.1
+2026-11-04T09:20:05.0347258Z LTS
+2026-11-04T09:20:05.0347733Z ##[endgroup]
+2026-11-04T09:20:05.0348264Z ##[group]Runner Image
+2026-11-04T09:20:05.0348766Z Image: ubuntu-26.04
+2026-11-04T09:20:05.0349652Z Version: 20261101.186.1
+2026-11-04T09:20:05.0350756Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261101.186/images/ubuntu/Ubuntu2604-Readme.md
+2026-11-04T09:20:05.0352145Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261101.186
+2026-11-04T09:20:05.0353008Z ##[endgroup]
+2026-11-04T09:20:05.0354001Z ##[group]GITHUB_TOKEN Permissions
+2026-11-04T09:20:05.0356074Z Contents: read
+2026-11-04T09:20:05.0356611Z Metadata: read
+2026-11-04T09:20:05.0357102Z ##[endgroup]
+2026-11-04T09:20:05.0358978Z Secret source: Actions
+2026-11-04T09:20:05.0360104Z Cache mode: write
+2026-11-04T09:20:05.0360792Z Prepare workflow directory
+2026-11-04T09:20:05.0671060Z Prepare all required actions
+2026-11-04T09:20:05.0727477Z Getting action download info
+2026-11-04T09:20:05.3734916Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-11-04T09:20:05.4804619Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+2026-11-04T09:20:05.7354012Z Complete job name: reproduce (ubuntu-latest)
+2026-11-04T09:20:05.8171333Z ##[group]Run actions/checkout@v4
+2026-11-04T09:20:05.8172241Z with:
+2026-11-04T09:20:05.8172796Z   ref: 2f4c6266fb88893dbb1f2e1805f28afdacca1bbb
+2026-11-04T09:20:05.8173468Z   persist-credentials: false
+2026-11-04T09:20:05.8174167Z   repository: scannercrypto0-gif/zs-crypto-signals
+2026-11-04T09:20:05.8178057Z   token: ***
+2026-11-04T09:20:05.8178539Z   ssh-strict: true
+2026-11-04T09:20:05.8179044Z   ssh-user: git
+2026-11-04T09:20:05.8179851Z   clean: true
+2026-11-04T09:20:05.8180441Z   sparse-checkout-cone-mode: true
+2026-11-04T09:20:05.8181013Z   fetch-depth: 1
+2026-11-04T09:20:05.8181498Z   fetch-tags: false
+2026-11-04T09:20:05.8182008Z   show-progress: true
+2026-11-04T09:20:05.8182508Z   lfs: false
+2026-11-04T09:20:05.8183014Z   submodules: false
+2026-11-04T09:20:05.8183501Z   set-safe-directory: true
+2026-11-04T09:20:05.8184035Z   allow-unsafe-pr-checkout: false
+2026-11-04T09:20:05.8184859Z ##[endgroup]
+2026-11-04T09:20:06.1338851Z Syncing repository: scannercrypto0-gif/zs-crypto-signals
+2026-11-04T09:20:06.1380619Z ##[group]Getting Git version info
+2026-11-04T09:20:06.1382483Z Working directory is '/home/runner/work/zs-crypto-signals/zs-crypto-signals'
+2026-11-04T09:20:06.1384802Z [command]/usr/bin/git version
+2026-11-04T09:20:06.1385815Z git version 2.56.0
+2026-11-04T09:20:06.1388563Z ##[endgroup]
+2026-11-04T09:20:06.1395242Z Temporarily overriding HOME='/home/runner/work/_temp/ab27386d-df60-422d-954e-9d2611fd61c0' before making global git config changes
+2026-11-04T09:20:06.1397390Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-04T09:20:06.1420014Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/zs-crypto-signals/zs-crypto-signals
+2026-11-04T09:20:06.1426272Z Deleting the contents of '/home/runner/work/zs-crypto-signals/zs-crypto-signals'
+2026-11-04T09:20:06.1428395Z ##[group]Initializing the repository
+2026-11-04T09:20:06.1430273Z [command]/usr/bin/git init /home/runner/work/zs-crypto-signals/zs-crypto-signals
+2026-11-04T09:20:06.1503889Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-04T09:20:06.1507206Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-04T09:20:06.1509714Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-04T09:20:06.1511874Z hint: call:
+2026-11-04T09:20:06.1513058Z hint:
+2026-11-04T09:20:06.1514660Z hint: 	git config --global init.defaultBranch <name>
+2026-11-04T09:20:06.1516194Z hint:
+2026-11-04T09:20:06.1519060Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-04T09:20:06.1537076Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-04T09:20:06.1538366Z hint:
+2026-11-04T09:20:06.1539592Z hint: 	git branch -m <name>
+2026-11-04T09:20:06.1540531Z hint:
+2026-11-04T09:20:06.1541623Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-04T09:20:06.1554745Z Initialized empty Git repository in /home/runner/work/zs-crypto-signals/zs-crypto-signals/.git/
+2026-11-04T09:20:06.1559926Z [command]/usr/bin/git remote add origin https://github.com/scannercrypto0-gif/zs-crypto-signals
+2026-11-04T09:20:06.1641786Z ##[endgroup]
+2026-11-04T09:20:06.1643032Z ##[group]Disabling automatic garbage collection
+2026-11-04T09:20:06.1644248Z [command]/usr/bin/git config --local gc.auto 0
+2026-11-04T09:20:06.2987845Z ##[endgroup]
+2026-11-04T09:20:06.2989472Z ##[group]Setting up auth
+2026-11-04T09:20:06.2990842Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-04T09:20:06.2994699Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-04T09:20:06.2998273Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-04T09:20:06.3003183Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-04T09:20:06.3007136Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-04T09:20:06.3010609Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-04T09:20:06.3219028Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-04T09:20:06.3239841Z ##[endgroup]
+2026-11-04T09:20:06.3242000Z ##[group]Fetching the repository
+2026-11-04T09:20:06.3250274Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 2f4c6266fb88893dbb1f2e1805f28afdacca1bbb
+2026-11-04T09:20:07.0151268Z From https://github.com/scannercrypto0-gif/zs-crypto-signals
+2026-11-04T09:20:07.0160781Z  * branch            2f4c6266fb88893dbb1f2e1805f28afdacca1bbb -> FETCH_HEAD
+2026-11-04T09:20:07.0173746Z ##[endgroup]
+2026-11-04T09:20:07.0176249Z ##[group]Determining the checkout info
+2026-11-04T09:20:07.0180927Z ##[endgroup]
+2026-11-04T09:20:07.0182646Z [command]/usr/bin/git sparse-checkout disable
+2026-11-04T09:20:07.0187037Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-04T09:20:07.0195431Z ##[group]Checking out the ref
+2026-11-04T09:20:07.0198002Z [command]/usr/bin/git checkout --progress --force 2f4c6266fb88893dbb1f2e1805f28afdacca1bbb
+2026-11-04T09:20:07.0330470Z Note: switching to '2f4c6266fb88893dbb1f2e1805f28afdacca1bbb'.
+2026-11-04T09:20:07.0332245Z 
+2026-11-04T09:20:07.0333741Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-11-04T09:20:07.0336659Z changes and commit them, and you can discard any commits you make in this
+2026-11-04T09:20:07.0340023Z state without impacting any branches by switching back to a branch.
+2026-11-04T09:20:07.0344190Z 
+2026-11-04T09:20:07.0350869Z If you want to create a new branch to retain commits you create, you may
+2026-11-04T09:20:07.0354057Z do so (now or later) by using -c with the switch command. Example:
+2026-11-04T09:20:07.0362003Z 
+2026-11-04T09:20:07.0363174Z   git switch -c <new-branch-name>
+2026-11-04T09:20:07.0364556Z 
+2026-11-04T09:20:07.0365242Z Or undo this operation with:
+2026-11-04T09:20:07.0366117Z 
+2026-11-04T09:20:07.0366826Z   git switch -
+2026-11-04T09:20:07.0367778Z 
+2026-11-04T09:20:07.0368998Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-11-04T09:20:07.0371269Z 
+2026-11-04T09:20:07.0374030Z HEAD is now at 2f4c626 Correct019 input eligibility comparison and expose selected raw receipt identities; preserve preliminary evidence
+2026-11-04T09:20:07.0382915Z ##[endgroup]
+2026-11-04T09:20:07.0387818Z [command]/usr/bin/git log -1 --format=%H
+2026-11-04T09:20:07.0418239Z 2f4c6266fb88893dbb1f2e1805f28afdacca1bbb
+2026-11-04T09:20:07.0428274Z ##[group]Removing auth
+2026-11-04T09:20:07.0431488Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-04T09:20:07.0459760Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-04T09:20:07.0685076Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-04T09:20:07.0708665Z http.https://github.com/.extraheader
+2026-11-04T09:20:07.0718551Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-11-04T09:20:07.0751302Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-04T09:20:07.0973145Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-04T09:20:07.1003814Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-04T09:20:07.1321189Z ##[endgroup]
+2026-11-04T09:20:07.1666727Z ##[group]Run actions/checkout@v4
+2026-11-04T09:20:07.1668056Z with:
+2026-11-04T09:20:07.1669075Z   ref: 4efcdea24c4229179ee63ce0c45ec42e4f7ee298
+2026-11-04T09:20:07.1670567Z   path: github-016
+2026-11-04T09:20:07.1671610Z   persist-credentials: false
+2026-11-04T09:20:07.1672889Z   repository: scannercrypto0-gif/zs-crypto-signals
+2026-11-04T09:20:07.1682022Z   token: ***
+2026-11-04T09:20:07.1682964Z   ssh-strict: true
+2026-11-04T09:20:07.1683924Z   ssh-user: git
+2026-11-04T09:20:07.1684881Z   clean: true
+2026-11-04T09:20:07.1685939Z   sparse-checkout-cone-mode: true
+2026-11-04T09:20:07.1687161Z   fetch-depth: 1
+2026-11-04T09:20:07.1688038Z   fetch-tags: false
+2026-11-04T09:20:07.1688943Z   show-progress: true
+2026-11-04T09:20:07.1689943Z   lfs: false
+2026-11-04T09:20:07.1690789Z   submodules: false
+2026-11-04T09:20:07.1691736Z   set-safe-directory: true
+2026-11-04T09:20:07.1692772Z   allow-unsafe-pr-checkout: false
+2026-11-04T09:20:07.1693837Z ##[endgroup]
+2026-11-04T09:20:07.2995445Z Syncing repository: scannercrypto0-gif/zs-crypto-signals
+2026-11-04T09:20:07.2998714Z ##[group]Getting Git version info
+2026-11-04T09:20:07.3003745Z Working directory is '/home/runner/work/zs-crypto-signals/zs-crypto-signals/github-016'
+2026-11-04T09:20:07.3007612Z [command]/usr/bin/git version
+2026-11-04T09:20:07.3009521Z git version 2.56.0
+2026-11-04T09:20:07.3029408Z ##[endgroup]
+2026-11-04T09:20:07.3040392Z Temporarily overriding HOME='/home/runner/work/_temp/130653b0-1f70-4790-ad59-ca9b5a01b34b' before making global git config changes
+2026-11-04T09:20:07.3046255Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-04T09:20:07.3050434Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/zs-crypto-signals/zs-crypto-signals/github-016
+2026-11-04T09:20:07.3090914Z ##[group]Initializing the repository
+2026-11-04T09:20:07.3094688Z [command]/usr/bin/git init /home/runner/work/zs-crypto-signals/zs-crypto-signals/github-016
+2026-11-04T09:20:07.3162999Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-04T09:20:07.3167682Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-04T09:20:07.3179687Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-04T09:20:07.3205050Z hint: call:
+2026-11-04T09:20:07.3210504Z hint:
+2026-11-04T09:20:07.3224375Z hint: 	git config --global init.defaultBranch <name>
+2026-11-04T09:20:07.3243727Z hint:
+2026-11-04T09:20:07.3268193Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-04T09:20:07.3273720Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-04T09:20:07.3280348Z hint:
+2026-11-04T09:20:07.3282150Z hint: 	git branch -m <name>
+2026-11-04T09:20:07.3310690Z hint:
+2026-11-04T09:20:07.3312915Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-04T09:20:07.3316934Z Initialized empty Git repository in /home/runner/work/zs-crypto-signals/zs-crypto-signals/github-016/.git/
+2026-11-04T09:20:07.3356836Z [command]/usr/bin/git remote add origin https://github.com/scannercrypto0-gif/zs-crypto-signals
+2026-11-04T09:20:07.3420990Z ##[endgroup]
+2026-11-04T09:20:07.3432643Z ##[group]Disabling automatic garbage collection
+2026-11-04T09:20:07.3451331Z [command]/usr/bin/git config --local gc.auto 0
+2026-11-04T09:20:07.3456755Z ##[endgroup]
+2026-11-04T09:20:07.3459965Z ##[group]Setting up auth
+2026-11-04T09:20:07.3462403Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-04T09:20:07.3469700Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-04T09:20:07.3784335Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-04T09:20:07.3857880Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-04T09:20:07.4143325Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-04T09:20:07.4232233Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-04T09:20:07.4499804Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-04T09:20:07.4548329Z ##[endgroup]
+2026-11-04T09:20:07.4551236Z ##[group]Fetching the repository
+2026-11-04T09:20:07.4554684Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 4efcdea24c4229179ee63ce0c45ec42e4f7ee298
+2026-11-04T09:20:08.0902061Z From https://github.com/scannercrypto0-gif/zs-crypto-signals
+2026-11-04T09:20:08.0920029Z  * branch            4efcdea24c4229179ee63ce0c45ec42e4f7ee298 -> FETCH_HEAD
+2026-11-04T09:20:08.0954759Z ##[endgroup]
+2026-11-04T09:20:08.0955763Z ##[group]Determining the checkout info
+2026-11-04T09:20:08.0956546Z ##[endgroup]
+2026-11-04T09:20:08.0957006Z [command]/usr/bin/git sparse-checkout disable
+2026-11-04T09:20:08.2682267Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-04T09:20:08.3702906Z ##[group]Checking out the ref
+2026-11-04T09:20:08.3720877Z [command]/usr/bin/git checkout --progress --force 4efcdea24c4229179ee63ce0c45ec42e4f7ee298
+2026-11-04T09:20:08.3816411Z Note: switching to '4efcdea24c4229179ee63ce0c45ec42e4f7ee298'.
+2026-11-04T09:20:08.3835348Z 
+2026-11-04T09:20:08.3845283Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-11-04T09:20:08.3846556Z changes and commit them, and you can discard any commits you make in this
+2026-11-04T09:20:08.3847478Z state without impacting any branches by switching back to a branch.
+2026-11-04T09:20:08.3848503Z 
+2026-11-04T09:20:08.3849119Z If you want to create a new branch to retain commits you create, you may
+2026-11-04T09:20:08.3850357Z do so (now or later) by using -c with the switch command. Example:
+2026-11-04T09:20:08.3850891Z 
+2026-11-04T09:20:08.3851204Z   git switch -c <new-branch-name>
+2026-11-04T09:20:08.3851689Z 
+2026-11-04T09:20:08.3852015Z Or undo this operation with:
+2026-11-04T09:20:08.3852421Z 
+2026-11-04T09:20:08.3852719Z   git switch -
+2026-11-04T09:20:08.3853241Z 
+2026-11-04T09:20:08.3853795Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-11-04T09:20:08.3854456Z 
+2026-11-04T09:20:08.3855153Z HEAD is now at 4efcdea Order016 preserve I3 unit-domain erratum and corrected versioned decisions, no silent overwrite
+2026-11-04T09:20:08.3857363Z ##[endgroup]
+2026-11-04T09:20:08.3900489Z [command]/usr/bin/git log -1 --format=%H
+2026-11-04T09:20:08.3950222Z 4efcdea24c4229179ee63ce0c45ec42e4f7ee298
+2026-11-04T09:20:08.3965072Z ##[group]Removing auth
+2026-11-04T09:20:08.3966000Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-04T09:20:08.3987985Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-04T09:20:08.4222281Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-04T09:20:08.4243542Z http.https://github.com/.extraheader
+2026-11-04T09:20:08.4255337Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-11-04T09:20:08.4346944Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-04T09:20:08.4567612Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-04T09:20:08.4596537Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-04T09:20:08.4820799Z ##[endgroup]
+2026-11-04T09:20:08.5066250Z ##[group]Run actions/checkout@v4
+2026-11-04T09:20:08.5066698Z with:
+2026-11-04T09:20:08.5067125Z   ref: 007925325914338536f76cd42962a776c82a4ee3
+2026-11-04T09:20:08.5067608Z   path: github-015-source
+2026-11-04T09:20:08.5067989Z   persist-credentials: false
+2026-11-04T09:20:08.5068479Z   repository: scannercrypto0-gif/zs-crypto-signals
+2026-11-04T09:20:08.5072206Z   token: ***
+2026-11-04T09:20:08.5072634Z   ssh-strict: true
+2026-11-04T09:20:08.5073006Z   ssh-user: git
+2026-11-04T09:20:08.5073424Z   clean: true
+2026-11-04T09:20:08.5073808Z   sparse-checkout-cone-mode: true
+2026-11-04T09:20:08.5074343Z   fetch-depth: 1
+2026-11-04T09:20:08.5074828Z   fetch-tags: false
+2026-11-04T09:20:08.5075213Z   show-progress: true
+2026-11-04T09:20:08.5075550Z   lfs: false
+2026-11-04T09:20:08.5075925Z   submodules: false
+2026-11-04T09:20:08.5076334Z   set-safe-directory: true
+2026-11-04T09:20:08.5076724Z   allow-unsafe-pr-checkout: false
+2026-11-04T09:20:08.5077158Z ##[endgroup]
+2026-11-04T09:20:08.6020988Z Syncing repository: scannercrypto0-gif/zs-crypto-signals
+2026-11-04T09:20:08.6022555Z ##[group]Getting Git version info
+2026-11-04T09:20:08.6023533Z Working directory is '/home/runner/work/zs-crypto-signals/zs-crypto-signals/github-015-source'
+2026-11-04T09:20:08.6110500Z [command]/usr/bin/git version
+2026-11-04T09:20:08.6170334Z git version 2.56.0
+2026-11-04T09:20:08.6211142Z ##[endgroup]
+2026-11-04T09:20:08.6237050Z Temporarily overriding HOME='/home/runner/work/_temp/410387b6-8dfb-47e3-86e4-b7c2101f1ee5' before making global git config changes
+2026-11-04T09:20:08.6238540Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-04T09:20:08.6242587Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/zs-crypto-signals/zs-crypto-signals/github-015-source
+2026-11-04T09:20:08.6510805Z ##[group]Initializing the repository
+2026-11-04T09:20:08.6530647Z [command]/usr/bin/git init /home/runner/work/zs-crypto-signals/zs-crypto-signals/github-015-source
+2026-11-04T09:20:08.7701888Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-04T09:20:08.7702765Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-04T09:20:08.7703814Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-04T09:20:08.7704399Z hint: call:
+2026-11-04T09:20:08.7704994Z hint:
+2026-11-04T09:20:08.7705733Z hint: 	git config --global init.defaultBranch <name>
+2026-11-04T09:20:08.7706416Z hint:
+2026-11-04T09:20:08.7707014Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-04T09:20:08.7708022Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-04T09:20:08.7708603Z hint:
+2026-11-04T09:20:08.7709069Z hint: 	git branch -m <name>
+2026-11-04T09:20:08.7710103Z hint:
+2026-11-04T09:20:08.7710896Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-04T09:20:08.7712116Z Initialized empty Git repository in /home/runner/work/zs-crypto-signals/zs-crypto-signals/github-015-source/.git/
+2026-11-04T09:20:08.7714778Z [command]/usr/bin/git remote add origin https://github.com/scannercrypto0-gif/zs-crypto-signals
+2026-11-04T09:20:08.8380841Z ##[endgroup]
+2026-11-04T09:20:08.8381628Z ##[group]Disabling automatic garbage collection
+2026-11-04T09:20:08.8382220Z [command]/usr/bin/git config --local gc.auto 0
+2026-11-04T09:20:08.8580474Z ##[endgroup]
+2026-11-04T09:20:08.8582139Z ##[group]Setting up auth
+2026-11-04T09:20:08.8583124Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-04T09:20:08.8618046Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-04T09:20:08.8879757Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-04T09:20:08.8910218Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-04T09:20:08.9262579Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-04T09:20:08.9358124Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-04T09:20:08.9709871Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-04T09:20:09.1068286Z ##[endgroup]
+2026-11-04T09:20:09.1087671Z ##[group]Fetching the repository
+2026-11-04T09:20:09.1089489Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 007925325914338536f76cd42962a776c82a4ee3
+2026-11-04T09:20:13.9927408Z From https://github.com/scannercrypto0-gif/zs-crypto-signals
+2026-11-04T09:20:13.9929098Z  * branch            007925325914338536f76cd42962a776c82a4ee3 -> FETCH_HEAD
+2026-11-04T09:20:13.9931532Z ##[endgroup]
+2026-11-04T09:20:13.9932509Z ##[group]Determining the checkout info
+2026-11-04T09:20:13.9935322Z ##[endgroup]
+2026-11-04T09:20:13.9936245Z [command]/usr/bin/git sparse-checkout disable
+2026-11-04T09:20:13.9992994Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-04T09:20:14.0027910Z ##[group]Checking out the ref
+2026-11-04T09:20:14.0028750Z [command]/usr/bin/git checkout --progress --force 007925325914338536f76cd42962a776c82a4ee3
+2026-11-04T09:20:14.2477468Z Note: switching to '007925325914338536f76cd42962a776c82a4ee3'.
+2026-11-04T09:20:14.2478177Z 
+2026-11-04T09:20:14.2480321Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-11-04T09:20:14.2481256Z changes and commit them, and you can discard any commits you make in this
+2026-11-04T09:20:14.2482496Z state without impacting any branches by switching back to a branch.
+2026-11-04T09:20:14.2489995Z 
+2026-11-04T09:20:14.2491023Z If you want to create a new branch to retain commits you create, you may
+2026-11-04T09:20:14.2491821Z do so (now or later) by using -c with the switch command. Example:
+2026-11-04T09:20:14.2492292Z 
+2026-11-04T09:20:14.2492746Z   git switch -c <new-branch-name>
+2026-11-04T09:20:14.2493090Z 
+2026-11-04T09:20:14.2493401Z Or undo this operation with:
+2026-11-04T09:20:14.2493912Z 
+2026-11-04T09:20:14.2494175Z   git switch -
+2026-11-04T09:20:14.2494619Z 
+2026-11-04T09:20:14.2495009Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-11-04T09:20:14.2495538Z 
+2026-11-04T09:20:14.2496101Z HEAD is now at 0079253 Order015 persist all 51 existing raw files under owner-approved consolidated 48MiB
+2026-11-04T09:20:14.2497924Z ##[endgroup]
+2026-11-04T09:20:14.2537299Z [command]/usr/bin/git log -1 --format=%H
+2026-11-04T09:20:14.2560168Z 007925325914338536f76cd42962a776c82a4ee3
+2026-11-04T09:20:14.2570745Z ##[group]Removing auth
+2026-11-04T09:20:14.2575070Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-04T09:20:14.2603969Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-04T09:20:14.2828661Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-04T09:20:14.2848141Z http.https://github.com/.extraheader
+2026-11-04T09:20:14.2855561Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-11-04T09:20:14.2884416Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-04T09:20:14.3103210Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-04T09:20:14.3131383Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-04T09:20:14.3352125Z ##[endgroup]
+2026-11-04T09:20:14.3514817Z ##[group]Run actions/setup-python@v5
+2026-11-04T09:20:14.3515186Z with:
+2026-11-04T09:20:14.3515504Z   python-version: 3.12
+2026-11-04T09:20:14.3515805Z   check-latest: false
+2026-11-04T09:20:14.3518098Z   token: ***
+2026-11-04T09:20:14.3518398Z   update-environment: true
+2026-11-04T09:20:14.3518717Z   allow-prereleases: false
+2026-11-04T09:20:14.3519058Z   freethreaded: false
+2026-11-04T09:20:14.3519559Z ##[endgroup]
+2026-11-04T09:20:14.4973749Z ##[group]Installed versions
+2026-11-04T09:20:14.5143072Z (node:2540) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-04T09:20:14.5160083Z Successfully set up CPython (3.12.16)
+2026-11-04T09:20:14.5170335Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-04T09:20:14.5172271Z ##[endgroup]
+2026-11-04T09:20:14.5396139Z ##[group]Run python scripts/restore-016-e2e.py --snapshot github-016 --custody github-015-source --output reproduced016
+2026-11-04T09:20:14.5397883Z [36;1mpython scripts/restore-016-e2e.py --snapshot github-016 --custody github-015-source --output reproduced016[0m
+2026-11-04T09:20:14.5458795Z shell: /usr/bin/bash -e {0}
+2026-11-04T09:20:14.5459373Z env:
+2026-11-04T09:20:14.5459848Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.16/x64
+2026-11-04T09:20:14.5460422Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib/pkgconfig
+2026-11-04T09:20:14.5460897Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+2026-11-04T09:20:14.5461372Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+2026-11-04T09:20:14.5461810Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+2026-11-04T09:20:14.5462448Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib
+2026-11-04T09:20:14.5462884Z   PYTHONPATH: src
+2026-11-04T09:20:14.5463308Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-04T09:20:14.5463648Z ##[endgroup]
+2026-11-04T09:20:34.8228612Z ZS016_REPRODUCTION_RESULT={"calibration_sha256": "f8d84fb96409a6a20cf59fbedecb32134ee14833913411dc0cda031521dedbb0", "decision_hashes": {"archive-BTCUSDT": "82298242446ad64205d5296b74d6a426003fe6be8195a2b4b8026ac5de1b6815", "archive-ETHUSDT": "25f308f2c4a71acaec96ec688727ea68733c4765ac6dad3fb86daa0c40506990", "compatibility-BTCUSDT": "7008405fbb3de91e9a125b00e34c2f144e8cb8058f5ac3fb3e6f751cf8177334", "compatibility-ETHUSDT": "9188f62979497fa9314c9b0553bdd528f60eb3ace3ae443baf02406dcd5d514c"}, "decision_version": "ZS016_RESEARCH_V2_UNIT_DOMAIN_GUARDED", "erratum": "I3_OUT_OF_UNIT_SUPERSEDED_NO_SILENT_CLIPPING", "evidence_bytes": 959413, "forward_live_capture_events": 0, "full_V2": "UNAVAILABLE", "historical_publisher_pit": "HOLD", "live_probe_attempts": 6, "live_probe_response_bytes": 45853, "live_probe_weight": 31, "migration_read_only": "ACCEPTED015_RAW_READ_FOR_NEW_SOURCE_LINEAGE_NOT_RE_MIGRATION", "network_during_reproduction": "DISABLED", "new_eligible_OOS_events": 0, "new_provider_requests_in_CI": 0, "prospective_causality": "HOLD_INDEPENDENT_UTC_PROOF_MISSING", "scientific_winner": null, "source": "PINNED_GITHUB_ONLY", "source_lineage": "EXACT_ORIGINAL_BINANCE_ARCHIVE_SUBSET_VERIFIED", "spool": "TEMPORARY_RUNNER_ONLY", "stage04": [{"claim_receipt_records": 22, "manifest_sha256": "ffeb18fe22b915c7ddb5cab5e95fa5718aa31034c8677a91737f08cfe77147fd", "study": "zs03-016-integrated"}, {"claim_receipt_records": 22, "manifest_sha256": "4a0c0323cddff5d151d1301d93b9a00504e4f61e64883a4bd821866e1f2c28f6", "study": "zs03-016-public-compat"}, {"claim_receipt_records": 12, "manifest_sha256": "22a9a29ae33e6c5cebf4d3ab07ed1a938a7f032629e3e41b3250ec08526beb3b", "study": "zs03-016-engineering-revision"}], "status": "ENGINEERING_E2E_PASS_CANDIDATE"}
+2026-11-04T09:20:34.8470973Z Post job cleanup.
+2026-11-04T09:20:34.9694251Z (node:2566) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-04T09:20:34.9695628Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-04T09:20:34.9938645Z Post job cleanup.
+2026-11-04T09:20:35.1280814Z [command]/usr/bin/git version
+2026-11-04T09:20:35.1281549Z git version 2.56.0
+2026-11-04T09:20:35.1911229Z Temporarily overriding HOME='/home/runner/work/_temp/5c3b985d-6fca-4ae0-a367-5920780fd9ac' before making global git config changes
+2026-11-04T09:20:35.1940263Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-04T09:20:35.2311887Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/zs-crypto-signals/zs-crypto-signals/github-015-source
+2026-11-04T09:20:35.2313994Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-04T09:20:35.2316508Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-04T09:20:35.2318815Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-04T09:20:35.2321596Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-04T09:20:35.2323851Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-04T09:20:35.2340116Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-04T09:20:35.2993831Z Post job cleanup.
+2026-11-04T09:20:35.3998909Z [command]/usr/bin/git version
+2026-11-04T09:20:35.4270526Z git version 2.56.0
+2026-11-04T09:20:35.4408223Z Temporarily overriding HOME='/home/runner/work/_temp/30cc09ad-dacd-4794-ae58-95c685465651' before making global git config changes
+2026-11-04T09:20:35.4412998Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-04T09:20:35.4414545Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/zs-crypto-signals/zs-crypto-signals/github-016
+2026-11-04T09:20:35.4418676Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-04T09:20:35.4423145Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-04T09:20:35.4766599Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-04T09:20:35.4776298Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-04T09:20:35.5181039Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-04T09:20:35.5215628Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-04T09:20:35.5489506Z Post job cleanup.
+2026-11-04T09:20:35.7014626Z [command]/usr/bin/git version
+2026-11-04T09:20:35.7030063Z git version 2.56.0
+2026-11-04T09:20:35.7131226Z Temporarily overriding HOME='/home/runner/work/_temp/5359843d-97a0-4ef3-90f5-1b51fdb80e2c' before making global git config changes
+2026-11-04T09:20:35.7160149Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-04T09:20:35.7200672Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/zs-crypto-signals/zs-crypto-signals
+2026-11-04T09:20:35.7210886Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-04T09:20:35.7212738Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-04T09:20:35.7675010Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-04T09:20:35.7705623Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-04T09:20:35.8144801Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-04T09:20:35.8220207Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-04T09:20:35.8648489Z Cleaning up orphan processes
+2026-11-04T09:20:35.8967059Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

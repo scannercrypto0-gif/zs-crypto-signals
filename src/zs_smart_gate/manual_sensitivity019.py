@@ -193,11 +193,14 @@ def scenarios():
 
 def comparison():
     cases=scenarios();results={name:evaluate(**f) for name,f in cases.items()};base=results['ideal_wall']
+    def eligibility_signature(r):
+        return sorted((x['event_id'],x['frame'],x.get('eligible',False),x['selected_for_decision'],
+                       x.get('freshness_role','UNAVAILABLE'),str(x['source_closed_confirmed']),
+                       str(x['received_before_decision']),str(x['data_fresh'])) for x in r['inputs'])
     rows=[]
     for name,r in results.items():
         rows.append(dict(case=name,status=r['status'],reasons=r['reasons'],
-            input_eligibility_changed=(r['source_closed_confirmed'],r['received_before_decision'],r['data_fresh'])!=
-                                      (base['source_closed_confirmed'],base['received_before_decision'],base['data_fresh']),
+            input_eligibility_changed=eligibility_signature(r)!=eligibility_signature(base),
             decision_state_changed=r['status']!=base['status'],
             indicator_availability_changed=(r['indicators'] is None)!=(base['indicators'] is None),
             indicators_changed_when_defined=None if r['indicators'] is None else r['indicators']!=base['indicators'],

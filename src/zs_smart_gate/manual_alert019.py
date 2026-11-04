@@ -85,7 +85,9 @@ def evaluate(events, raw_by_hash, *, study_id, epoch, anchor, decision_mono_ns, 
     except (KeyError,TypeError,ValueError) as exc:reasons.append(str(exc))
     for seq,e in enumerate(events,1):
         row=dict(event_id=e.get('event_id'),frame=e.get('frame'),source_closed_confirmed='UNKNOWN',
-                 received_before_decision=False,data_fresh='UNKNOWN')
+                 received_before_decision=False,data_fresh='UNKNOWN',study_id=e.get('study_id'),
+                 source=e.get('source'),raw_hash=e.get('raw_hash'),receipt_digest=e.get('digest'),
+                 revision=e.get('revision'),selected_for_decision=False)
         try:
             if (type(e['seq']) is not int or e['symbol'] not in ('BTCUSDT','ETHUSDT') or
                 type(e['wall_ms']) not in (int,float) or not math.isfinite(e['wall_ms']) or
@@ -165,6 +167,7 @@ def evaluate(events, raw_by_hash, *, study_id, epoch, anchor, decision_mono_ns, 
     if not used_digests or len(set(used_digests))!=len(used_digests):reasons.append('EMPTY_OR_DUPLICATE_INPUT_SET')
     if any(x not in available for x in used_digests):reasons.append('FUTURE_UNKNOWN_OR_SUPERSEDED_INPUT')
     chosen=[available[x] for x in used_digests if x in available]
+    for _,_,r in chosen:r['selected_for_decision']=True
     refs=sorted([(e,v,r) for e,v,r in chosen if e['frame']=='time_reference'],key=lambda t:t[1]['received'])
     if refs:
         valid_refs=len(refs)>=2 and all(r['data_fresh'] is True for _,_,r in refs)
