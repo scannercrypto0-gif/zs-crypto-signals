@@ -85,17 +85,17 @@
   "source017_samples_sha256": "da45a4a47990a2d6977472826869c2b22b10f86a492177d04734269de89bfe1d",
   "new_file_sha256": {
     "src/zs_smart_gate/prospective_causality_v2.py": "4d2ddf13ef0b01f9626cac6a9918ec50fbaef2a771b5ae4f26982d1f91114275",
-    "src/zs_smart_gate/integrated_research018.py": "382636de6c542556a3410cbd38007e3a5059e9f6cb5e2ec80582d6e9cd6950de",
-    "src/zs_smart_gate/forward_slot018.py": "ce4dc49c9bf5039133f42e8e07bede0b24a19c091a53ba2973a91f1880fd9562",
-    "scripts/restore-018-time-bound.py": "63b77c4bc56c724467abc4e4f10842c73e19de55310cabaa35db2cbda2c53a93",
-    "tests/test_prospective018.py": "be75b523c7e49d09028a42565817fd1926619f6e73f42969d192ebd1294421c0",
-    "tests/test_integration018.py": "28c1710c0ef8e10da01e6df6267e776608c374388b0eb91e6f5236e409818fb3",
-    ".github/workflows/018-time-bound-reproduction.yml": "325ce53cbb3135cd322d23929934303c835843b81b3cd7b3cd143e0c984e604a",
-    ".gitattributes": "77940c4648461c320f93a599043cd382427e48dd0e0a8c8bbb5042ad0fd79573",
-    "research/stage03-018/preserved-git-blobs.json": "d3b60f96ef4fe99fdf3f3031cfd6c80bb7c42f1ab9575ed845378e8722c4b43c",
-    "research/stage03-018/protocol-v2.json": "d1fa751f5b75d291fa090063f2f25e8e54a3d9b092c9e40a5e694f94f6e7585b",
     "research/stage03-018/reevaluation-017.json": "7582c9561c730a92dfe0906d5f0976048c2fbb4dc05d7dd9412164863e4ae98c",
-    "research/stage03-018/review.md": "7380768dfab6ecd2d050b9fd8f935499b47b590d500a37668daa7fe7fcfa347d"
+    ".github/workflows/018-time-bound-reproduction.yml": "325ce53cbb3135cd322d23929934303c835843b81b3cd7b3cd143e0c984e604a",
+    "research/stage03-018/review.md": "7380768dfab6ecd2d050b9fd8f935499b47b590d500a37668daa7fe7fcfa347d",
+    ".gitattributes": "77940c4648461c320f93a599043cd382427e48dd0e0a8c8bbb5042ad0fd79573",
+    "tests/test_prospective018.py": "be75b523c7e49d09028a42565817fd1926619f6e73f42969d192ebd1294421c0",
+    "research/stage03-018/preserved-git-blobs.json": "d3b60f96ef4fe99fdf3f3031cfd6c80bb7c42f1ab9575ed845378e8722c4b43c",
+    "tests/test_integration018.py": "670eda5c436f99ac221908db1cc3164274eac40ede2bf35e6747946c86dc693d",
+    "research/stage03-018/protocol-v2.json": "d1fa751f5b75d291fa090063f2f25e8e54a3d9b092c9e40a5e694f94f6e7585b",
+    "src/zs_smart_gate/forward_slot018.py": "ce4dc49c9bf5039133f42e8e07bede0b24a19c091a53ba2973a91f1880fd9562",
+    "src/zs_smart_gate/integrated_research018.py": "382636de6c542556a3410cbd38007e3a5059e9f6cb5e2ec80582d6e9cd6950de",
+    "scripts/restore-018-time-bound.py": "63b77c4bc56c724467abc4e4f10842c73e19de55310cabaa35db2cbda2c53a93"
   },
   "logs": [
     {
@@ -188,5 +188,9 @@
   "clock_scientific_state": "HOLD_INDEPENDENT_COUNTER_CALIBRATION_AND_DRIFT_PROOF_MISSING",
   "forward": "NOT_ARMED",
   "merged": false,
-  "scope": "APPLICATION_CUSTODY_ONLY_NOT_INDEPENDENT_SCIENTIFIC_ACCEPTANCE"
+  "scope": "APPLICATION_CUSTODY_ONLY_NOT_INDEPENDENT_SCIENTIFIC_ACCEPTANCE",
+  "metadata_revision": {
+    "supersedes_index_commit": "e3c748c073f972cbe04f12fdbc85b95069edf303",
+    "reason": "Hash final published GitHub bytes directly; test source has an extra trailing newline from shell output, semantically unchanged; initial index used the temporary local file bytes."
+  }
 }
