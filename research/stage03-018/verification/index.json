@@ -1,0 +1,192 @@
+{
+  "packet": "ZS03_PROSPECTIVE_TIME_BOUND_V2_REVIEW_PACKET_018",
+  "code_sha": "f8f9507ff45a914edabfdea19c90155d2c7f01d5",
+  "parent017_sha": "445d7b04fd834c2dc84ad3d296e406ea357c055e",
+  "main_at_execution": "a0f8493aee1228bc625360fd55a553cc5c69954f",
+  "all_final_jobs": [
+    {
+      "id": 126425861775,
+      "name": "clock-review (ubuntu-latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126425861962,
+      "name": "clock-review (windows-latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126425861255,
+      "name": "reproduce (ubuntu-latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126425861437,
+      "name": "reproduce (windows-latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126425860870,
+      "name": "reproduce-v2 (windows-latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126425861312,
+      "name": "reproduce-v2 (ubuntu-latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126425861265,
+      "name": "offline (windows-latest, 3.11)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126425861503,
+      "name": "offline (ubuntu-latest, 3.11)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126425861512,
+      "name": "offline (ubuntu-latest, 3.12)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126425861727,
+      "name": "offline (windows-latest, 3.12)",
+      "conclusion": "success"
+    }
+  ],
+  "runs": [
+    {
+      "id": 41785273480,
+      "name": "Order017 offline signed clock review",
+      "url": "https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/41785273480"
+    },
+    {
+      "id": 41785273324,
+      "name": "Order016 frozen GitHub-only source decision science reproduction",
+      "url": "https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/41785273324"
+    },
+    {
+      "id": 41785273308,
+      "name": "Order018 V2 time-bound GitHub-only reproduction",
+      "url": "https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/41785273308"
+    },
+    {
+      "id": 41785273414,
+      "name": "FOUNDATION-001 offline unit and integration tests",
+      "url": "https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/41785273414"
+    }
+  ],
+  "preserved_historical_blob_count": 139,
+  "local_Windows": {
+    "executed": 518,
+    "skipped": 0
+  },
+  "source017_samples_sha256": "da45a4a47990a2d6977472826869c2b22b10f86a492177d04734269de89bfe1d",
+  "new_file_sha256": {
+    "src/zs_smart_gate/prospective_causality_v2.py": "4d2ddf13ef0b01f9626cac6a9918ec50fbaef2a771b5ae4f26982d1f91114275",
+    "src/zs_smart_gate/integrated_research018.py": "382636de6c542556a3410cbd38007e3a5059e9f6cb5e2ec80582d6e9cd6950de",
+    "src/zs_smart_gate/forward_slot018.py": "ce4dc49c9bf5039133f42e8e07bede0b24a19c091a53ba2973a91f1880fd9562",
+    "scripts/restore-018-time-bound.py": "63b77c4bc56c724467abc4e4f10842c73e19de55310cabaa35db2cbda2c53a93",
+    "tests/test_prospective018.py": "be75b523c7e49d09028a42565817fd1926619f6e73f42969d192ebd1294421c0",
+    "tests/test_integration018.py": "28c1710c0ef8e10da01e6df6267e776608c374388b0eb91e6f5236e409818fb3",
+    ".github/workflows/018-time-bound-reproduction.yml": "325ce53cbb3135cd322d23929934303c835843b81b3cd7b3cd143e0c984e604a",
+    ".gitattributes": "77940c4648461c320f93a599043cd382427e48dd0e0a8c8bbb5042ad0fd79573",
+    "research/stage03-018/preserved-git-blobs.json": "d3b60f96ef4fe99fdf3f3031cfd6c80bb7c42f1ab9575ed845378e8722c4b43c",
+    "research/stage03-018/protocol-v2.json": "d1fa751f5b75d291fa090063f2f25e8e54a3d9b092c9e40a5e694f94f6e7585b",
+    "research/stage03-018/reevaluation-017.json": "7582c9561c730a92dfe0906d5f0976048c2fbb4dc05d7dd9412164863e4ae98c",
+    "research/stage03-018/review.md": "7380768dfab6ecd2d050b9fd8f935499b47b590d500a37668daa7fe7fcfa347d"
+  },
+  "logs": [
+    {
+      "path": "research/stage03-018/verification/job-126425861775.txt",
+      "type": "blob",
+      "mode": "100644",
+      "sha": "dc2039bac849c7c20e2ecd9710cce3aa9d82fbd6"
+    },
+    {
+      "path": "research/stage03-018/verification/job-126425861962.txt",
+      "type": "blob",
+      "mode": "100644",
+      "sha": "51172953c12cffea06e50ec95d8d85e3054e5f95"
+    },
+    {
+      "path": "research/stage03-018/verification/job-126425861255.txt",
+      "type": "blob",
+      "mode": "100644",
+      "sha": "8b7c0a61e8a3f992eddc9f606ee0e9522b547f08"
+    },
+    {
+      "path": "research/stage03-018/verification/job-126425861437.txt",
+      "type": "blob",
+      "mode": "100644",
+      "sha": "cc53d5f399b68b822e94b2f388cb96a4c7afe6a3"
+    },
+    {
+      "path": "research/stage03-018/verification/job-126425860870.txt",
+      "type": "blob",
+      "mode": "100644",
+      "sha": "2a9c423925d44327774e4f97313876c1678d42f9"
+    },
+    {
+      "path": "research/stage03-018/verification/job-126425861312.txt",
+      "type": "blob",
+      "mode": "100644",
+      "sha": "c8c477b4890bb815884b0be2871648705bf0d5ad"
+    },
+    {
+      "path": "research/stage03-018/verification/job-126425861265.txt",
+      "type": "blob",
+      "mode": "100644",
+      "sha": "6765b330fe231c747256ef42af4a66e17fffe851"
+    },
+    {
+      "path": "research/stage03-018/verification/job-126425861503.txt",
+      "type": "blob",
+      "mode": "100644",
+      "sha": "c0a0855566e00f3b7e6380ff7615045de4494fe5"
+    },
+    {
+      "path": "research/stage03-018/verification/job-126425861512.txt",
+      "type": "blob",
+      "mode": "100644",
+      "sha": "428d8a4d69c41121fae0ff79a80e1a71f2f6b496"
+    },
+    {
+      "path": "research/stage03-018/verification/job-126425861727.txt",
+      "type": "blob",
+      "mode": "100644",
+      "sha": "3a095784e9fa0df98aba66a01dfca94f38f44449"
+    },
+    {
+      "path": "research/stage03-018/verification/job-126425116259.txt",
+      "type": "blob",
+      "mode": "100644",
+      "sha": "5d0067ca0be6239f18a14353a01ab36b1565076b"
+    },
+    {
+      "path": "research/stage03-018/verification/job-126425116578.txt",
+      "type": "blob",
+      "mode": "100644",
+      "sha": "790aa79f70e5be40a34d0b347b251e2cb24707eb"
+    },
+    {
+      "path": "research/stage03-018/verification/local-Windows-518-tests.txt",
+      "type": "blob",
+      "mode": "100644",
+      "sha": "8e35bbaddd26d9b39cc0f65247a286dbe5a8ca8c"
+    }
+  ],
+  "previous_failed_head": "60289bc0884043a435fda1d5c1921969fa98492d",
+  "previous_failed_run": 41785032544,
+  "previous_failure_cause": "New expiry test assumed a nonzero successive monotonic tick; deterministic injected clocks fix test, no acceptance threshold or production guard changed",
+  "new_market_requests": 0,
+  "new_clock_requests": 0,
+  "new_admitted_clock_proofs": 0,
+  "new_forward_observations": 0,
+  "new_oos_events": 0,
+  "clock_scientific_state": "HOLD_INDEPENDENT_COUNTER_CALIBRATION_AND_DRIFT_PROOF_MISSING",
+  "forward": "NOT_ARMED",
+  "merged": false,
+  "scope": "APPLICATION_CUSTODY_ONLY_NOT_INDEPENDENT_SCIENTIFIC_ACCEPTANCE"
+}

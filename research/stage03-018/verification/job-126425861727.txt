@@ -1,0 +1,728 @@
+﻿2026-11-04T06:24:14.2573351Z Current runner version: '2.338.2'
+2026-11-04T06:24:14.2607554Z ##[group]Runner Image Provisioner
+2026-11-04T06:24:14.2608505Z Hosted Compute Agent
+2026-11-04T06:24:14.2609110Z Version: 20261021.618
+2026-11-04T06:24:14.2610319Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+2026-11-04T06:24:14.2611152Z Build Date: 2026-10-21T00:45:21Z
+2026-11-04T06:24:14.2612228Z Worker ID: {88dd42e0-199a-4443-a77b-bdd1c4a18239}
+2026-11-04T06:24:14.2613116Z Region: eastus
+2026-11-04T06:24:14.2613698Z Cloud: Azure
+2026-11-04T06:24:14.2614281Z ##[endgroup]
+2026-11-04T06:24:14.2616043Z ##[group]Operating System
+2026-11-04T06:24:14.2616825Z Microsoft Windows Server 2025
+2026-11-04T06:24:14.2617724Z 10.0.26100
+2026-11-04T06:24:14.2618330Z Datacenter
+2026-11-04T06:24:14.2619190Z ##[endgroup]
+2026-11-04T06:24:14.2619817Z ##[group]Runner Image
+2026-11-04T06:24:14.2620465Z Image: windows-2025-vs2026
+2026-11-04T06:24:14.2621150Z Version: 20261030.294.1
+2026-11-04T06:24:14.2622964Z Included Software: https://github.com/actions/runner-images/blob/win25-vs2026/20261030.294/images/windows/Windows2025-VS2026-Readme.md
+2026-11-04T06:24:14.2625004Z Image Release: https://github.com/actions/runner-images/releases/tag/win25-vs2026%2F20261030.294
+2026-11-04T06:24:14.2626164Z ##[endgroup]
+2026-11-04T06:24:14.2627449Z ##[group]GITHUB_TOKEN Permissions
+2026-11-04T06:24:14.2629499Z Contents: read
+2026-11-04T06:24:14.2630158Z Metadata: read
+2026-11-04T06:24:14.2630742Z Packages: read
+2026-11-04T06:24:14.2631347Z ##[endgroup]
+2026-11-04T06:24:14.2634001Z Secret source: Actions
+2026-11-04T06:24:14.2635079Z Cache mode: write
+2026-11-04T06:24:14.2635931Z Prepare workflow directory
+2026-11-04T06:24:14.3031094Z Prepare all required actions
+2026-11-04T06:24:14.3088288Z Getting action download info
+2026-11-04T06:24:14.4792744Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-11-04T06:24:14.6351870Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+2026-11-04T06:24:14.9234823Z Complete job name: offline (windows-latest, 3.12)
+2026-11-04T06:24:15.0969222Z ##[group]Run actions/checkout@v4
+2026-11-04T06:24:15.0970337Z with:
+2026-11-04T06:24:15.0970912Z   repository: scannercrypto0-gif/zs-crypto-signals
+2026-11-04T06:24:15.0974441Z   token: ***
+2026-11-04T06:24:15.0974763Z   ssh-strict: true
+2026-11-04T06:24:15.0975082Z   ssh-user: git
+2026-11-04T06:24:15.0975405Z   persist-credentials: true
+2026-11-04T06:24:15.0975760Z   clean: true
+2026-11-04T06:24:15.0976081Z   sparse-checkout-cone-mode: true
+2026-11-04T06:24:15.0976452Z   fetch-depth: 1
+2026-11-04T06:24:15.0976757Z   fetch-tags: false
+2026-11-04T06:24:15.0977071Z   show-progress: true
+2026-11-04T06:24:15.0977383Z   lfs: false
+2026-11-04T06:24:15.0977682Z   submodules: false
+2026-11-04T06:24:15.0978013Z   set-safe-directory: true
+2026-11-04T06:24:15.0978387Z   allow-unsafe-pr-checkout: false
+2026-11-04T06:24:15.0978993Z ##[endgroup]
+2026-11-04T06:24:17.0533344Z Syncing repository: scannercrypto0-gif/zs-crypto-signals
+2026-11-04T06:24:17.0535663Z ##[group]Getting Git version info
+2026-11-04T06:24:17.0537137Z Working directory is 'D:\a\zs-crypto-signals\zs-crypto-signals'
+2026-11-04T06:24:17.0539869Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-11-04T06:24:17.0547006Z git version 2.56.0.windows.4
+2026-11-04T06:24:17.0550039Z ##[endgroup]
+2026-11-04T06:24:17.0555445Z Temporarily overriding HOME='D:\a\_temp\721687a2-98ae-404d-9029-743e6bbc62be' before making global git config changes
+2026-11-04T06:24:17.0557361Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-04T06:24:17.0559564Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\zs-crypto-signals\zs-crypto-signals
+2026-11-04T06:24:17.0562847Z Deleting the contents of 'D:\a\zs-crypto-signals\zs-crypto-signals'
+2026-11-04T06:24:17.0564590Z ##[group]Initializing the repository
+2026-11-04T06:24:17.0566062Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\zs-crypto-signals\zs-crypto-signals
+2026-11-04T06:24:17.0570276Z Initialized empty Git repository in D:/a/zs-crypto-signals/zs-crypto-signals/.git/
+2026-11-04T06:24:17.0573068Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/scannercrypto0-gif/zs-crypto-signals
+2026-11-04T06:24:17.0577010Z ##[endgroup]
+2026-11-04T06:24:17.0578883Z ##[group]Disabling automatic garbage collection
+2026-11-04T06:24:17.0580585Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+2026-11-04T06:24:17.0595255Z ##[endgroup]
+2026-11-04T06:24:17.0596837Z ##[group]Setting up auth
+2026-11-04T06:24:17.0598870Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-11-04T06:24:17.0604000Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-11-04T06:24:17.5124690Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-04T06:24:17.5564435Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-11-04T06:24:18.2423280Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-04T06:24:18.2644816Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-11-04T06:24:19.0343514Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+2026-11-04T06:24:19.1199303Z ##[endgroup]
+2026-11-04T06:24:19.1223388Z ##[group]Fetching the repository
+2026-11-04T06:24:19.1525795Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +d5c4305742d984e7ebb0d269890a7f144af26eb7:refs/remotes/pull/30/merge
+2026-11-04T06:24:23.5946666Z From https://github.com/scannercrypto0-gif/zs-crypto-signals
+2026-11-04T06:24:23.5968508Z  * [new ref]         d5c4305742d984e7ebb0d269890a7f144af26eb7 -> pull/30/merge
+2026-11-04T06:24:23.6011159Z ##[endgroup]
+2026-11-04T06:24:23.6011793Z ##[group]Determining the checkout info
+2026-11-04T06:24:23.6027761Z ##[endgroup]
+2026-11-04T06:24:23.6031866Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+2026-11-04T06:24:23.6483157Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+2026-11-04T06:24:23.8775708Z ##[group]Checking out the ref
+2026-11-04T06:24:23.8776618Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force refs/remotes/pull/30/merge
+2026-11-04T06:24:23.8777468Z Note: switching to 'refs/remotes/pull/30/merge'.
+2026-11-04T06:24:23.8777928Z 
+2026-11-04T06:24:23.8778292Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-11-04T06:24:23.8778946Z changes and commit them, and you can discard any commits you make in this
+2026-11-04T06:24:23.8779615Z state without impacting any branches by switching back to a branch.
+2026-11-04T06:24:23.8780033Z 
+2026-11-04T06:24:23.8780297Z If you want to create a new branch to retain commits you create, you may
+2026-11-04T06:24:23.8780833Z do so (now or later) by using -c with the switch command. Example:
+2026-11-04T06:24:23.8781266Z 
+2026-11-04T06:24:23.8781498Z   git switch -c <new-branch-name>
+2026-11-04T06:24:23.8781769Z 
+2026-11-04T06:24:23.8781954Z Or undo this operation with:
+2026-11-04T06:24:23.8782200Z 
+2026-11-04T06:24:23.8782350Z   git switch -
+2026-11-04T06:24:23.8782606Z 
+2026-11-04T06:24:23.8782933Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-11-04T06:24:23.8784354Z 
+2026-11-04T06:24:23.8784847Z HEAD is now at d5c4305 Merge f8f9507ff45a914edabfdea19c90155d2c7f01d5 into 18cc6238112a75321d2b194419cd1a38ec4eb5f0
+2026-11-04T06:24:23.8786225Z ##[endgroup]
+2026-11-04T06:24:23.8787069Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+2026-11-04T06:24:23.8787546Z d5c4305742d984e7ebb0d269890a7f144af26eb7
+2026-11-04T06:24:23.9060497Z ##[group]Run actions/setup-python@v5
+2026-11-04T06:24:23.9060791Z with:
+2026-11-04T06:24:23.9060964Z   python-version: 3.12
+2026-11-04T06:24:23.9061138Z   check-latest: false
+2026-11-04T06:24:23.9063030Z   token: ***
+2026-11-04T06:24:23.9063193Z   update-environment: true
+2026-11-04T06:24:23.9063383Z   allow-prereleases: false
+2026-11-04T06:24:23.9063551Z   freethreaded: false
+2026-11-04T06:24:23.9063707Z ##[endgroup]
+2026-11-04T06:24:24.0436103Z ##[group]Installed versions
+2026-11-04T06:24:24.0635712Z (node:6444) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-04T06:24:24.0636890Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-04T06:24:24.0637652Z Successfully set up CPython (3.12.10)
+2026-11-04T06:24:24.0641078Z ##[endgroup]
+2026-11-04T06:24:24.0899561Z ##[group]Run python -m pip install --disable-pip-version-check --no-cache-dir --only-binary=:all: --require-hashes -r requirements-ci-crypto.lock
+2026-11-04T06:24:24.0900524Z [36;1mpython -m pip install --disable-pip-version-check --no-cache-dir --only-binary=:all: --require-hashes -r requirements-ci-crypto.lock[0m
+2026-11-04T06:24:24.1688915Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-11-04T06:24:24.1689242Z env:
+2026-11-04T06:24:24.1689489Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-11-04T06:24:24.1689894Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-11-04T06:24:24.1690257Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-11-04T06:24:24.1690590Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-11-04T06:24:24.1690897Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-11-04T06:24:24.1691141Z ##[endgroup]
+2026-11-04T06:24:30.2400709Z Collecting cryptography==50.0.2 (from -r requirements-ci-crypto.lock (line 1))
+2026-11-04T06:24:30.4566302Z   Downloading cryptography-50.0.2-cp311-abi3-win_amd64.whl (3.8 MB)
+2026-11-04T06:24:30.7094501Z      ---------------------------------------- 3.8/3.8 MB 20.8 MB/s  0:00:00
+2026-11-04T06:24:31.3845178Z Collecting cffi==2.1.1 (from -r requirements-ci-crypto.lock (line 60))
+2026-11-04T06:24:31.7442426Z   Downloading cffi-2.1.1-cp312-cp312-win_amd64.whl (185 kB)
+2026-11-04T06:24:31.7443433Z Collecting pycparser==3.12 (from -r requirements-ci-crypto.lock (line 160))
+2026-11-04T06:24:31.7466321Z   Downloading pycparser-3.12-py3-none-any.whl (62 kB)
+2026-11-04T06:24:31.7485843Z Installing collected packages: pycparser, cffi, cryptography
+2026-11-04T06:24:31.7492925Z 
+2026-11-04T06:24:31.7514828Z Successfully installed cffi-2.1.1 cryptography-50.0.2 pycparser-3.12
+2026-11-04T06:24:31.7716477Z ##[group]Run python scripts/run-offline-ci.py
+2026-11-04T06:24:31.7716822Z [36;1mpython scripts/run-offline-ci.py[0m
+2026-11-04T06:24:31.7776579Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-11-04T06:24:31.7776854Z env:
+2026-11-04T06:24:31.7777071Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-11-04T06:24:31.7777417Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-11-04T06:24:31.7777765Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-11-04T06:24:31.7778068Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-11-04T06:24:31.7778372Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-11-04T06:24:31.7778611Z   PYTHONPATH: src
+2026-11-04T06:24:31.7778770Z ##[endgroup]
+2026-11-04T06:24:32.9210740Z test_close_time_inclusive_conversion_and_partial_exclusion (test_binance_live.BinanceLiveAdapterOfflineTests.test_close_time_inclusive_conversion_and_partial_exclusion) ... ok
+2026-11-04T06:24:32.9212956Z test_endpoint_whitelist_blocks_account_and_order (test_binance_live.BinanceLiveAdapterOfflineTests.test_endpoint_whitelist_blocks_account_and_order) ... ok
+2026-11-04T06:24:32.9214582Z test_incorrect_exchange_close_semantics_rejected (test_binance_live.BinanceLiveAdapterOfflineTests.test_incorrect_exchange_close_semantics_rejected) ... ok
+2026-11-04T06:24:32.9216113Z test_insufficient_history_is_not_a_signal (test_binance_live.BinanceLiveAdapterOfflineTests.test_insufficient_history_is_not_a_signal) ... ok
+2026-11-04T06:24:32.9225235Z test_live_cli_requires_explicit_opt_in (test_binance_live.BinanceLiveAdapterOfflineTests.test_live_cli_requires_explicit_opt_in) ... ok
+2026-11-04T06:24:32.9226686Z test_malformed_kline_schema_rejected (test_binance_live.BinanceLiveAdapterOfflineTests.test_malformed_kline_schema_rejected) ... ok
+2026-11-04T06:24:32.9228161Z test_private_or_unexpected_symbols_rejected_before_network (test_binance_live.BinanceLiveAdapterOfflineTests.test_private_or_unexpected_symbols_rejected_before_network) ... ok
+2026-11-04T06:24:32.9243329Z test_rate_limit_retry_after_respects_budget (test_binance_live.BinanceLiveAdapterOfflineTests.test_rate_limit_retry_after_respects_budget) ... ok
+2026-11-04T06:24:32.9244855Z test_spot_permissions_fail_closed_when_unknown (test_binance_live.BinanceLiveAdapterOfflineTests.test_spot_permissions_fail_closed_when_unknown) ... ok
+2026-11-04T06:24:32.9316643Z test_delegation_expiry (test_clock017.Clock017Tests.test_delegation_expiry) ... ok
+2026-11-04T06:24:32.9325882Z test_deployed_profile_without_nonce_echo_still_rejects_replay (test_clock017.Clock017Tests.test_deployed_profile_without_nonce_echo_still_rejects_replay) ... ok
+2026-11-04T06:24:32.9327766Z test_duplicate_tags_bad_offsets_and_truncation (test_clock017.Clock017Tests.test_duplicate_tags_bad_offsets_and_truncation) ... ok
+2026-11-04T06:24:32.9333612Z test_interval_includes_full_rtt_and_never_grants_drift (test_clock017.Clock017Tests.test_interval_includes_full_rtt_and_never_grants_drift) ... ok
+2026-11-04T06:24:32.9338784Z test_merkle_index (test_clock017.Clock017Tests.test_merkle_index) ... ok
+2026-11-04T06:24:32.9342365Z test_nonce_replay (test_clock017.Clock017Tests.test_nonce_replay) ... ok
+2026-11-04T06:24:32.9344419Z test_nonfinite_or_reverse_clock (test_clock017.Clock017Tests.test_nonfinite_or_reverse_clock) ... ok
+2026-11-04T06:24:32.9348187Z test_request_profile_and_frame_length (test_clock017.Clock017Tests.test_request_profile_and_frame_length) ... ok
+2026-11-04T06:24:32.9353995Z test_response_signature_tampering (test_clock017.Clock017Tests.test_response_signature_tampering) ... ok
+2026-11-04T06:24:32.9359455Z test_signed_delegation_response_nonce_and_radius (test_clock017.Clock017Tests.test_signed_delegation_response_nonce_and_radius) ... ok
+2026-11-04T06:24:32.9365239Z test_wrong_root_key (test_clock017.Clock017Tests.test_wrong_root_key) ... ok
+2026-11-04T06:24:32.9373436Z test_zero_radius_does_not_self_admit (test_clock017.Clock017Tests.test_zero_radius_does_not_self_admit) ... ok
+2026-11-04T06:24:32.9375980Z test_bad_alignment (test_core.FoundationTests.test_bad_alignment) ... ok
+2026-11-04T06:24:32.9379076Z test_bad_duration (test_core.FoundationTests.test_bad_duration) ... ok
+2026-11-04T06:24:32.9384005Z test_candidate_deterministic_and_json_safe (test_core.FoundationTests.test_candidate_deterministic_and_json_safe) ... ok
+2026-11-04T06:24:32.9387472Z test_candidate_ineligible_still_auditable (test_core.FoundationTests.test_candidate_ineligible_still_auditable) ... ok
+2026-11-04T06:24:32.9390771Z test_candidate_rejects_unavailable_future (test_core.FoundationTests.test_candidate_rejects_unavailable_future) ... ok
+2026-11-04T06:24:32.9392020Z test_experimental_impulse_probe_boundaries (test_core.FoundationTests.test_experimental_impulse_probe_boundaries) ... ok
+2026-11-04T06:24:32.9395504Z test_future_market_snapshot_is_completely_suppressed (test_core.FoundationTests.test_future_market_snapshot_is_completely_suppressed) ... ok
+2026-11-04T06:24:32.9398669Z test_future_received_data_leakage (test_core.FoundationTests.test_future_received_data_leakage) ... ok
+2026-11-04T06:24:32.9401887Z test_incomplete_last_candle (test_core.FoundationTests.test_incomplete_last_candle) ... ok
+2026-11-04T06:24:32.9404881Z test_ineligible_spot_quote_status_and_future (test_core.FoundationTests.test_ineligible_spot_quote_status_and_future) ... ok
+2026-11-04T06:24:32.9407711Z test_invalid_ohlc (test_core.FoundationTests.test_invalid_ohlc) ... ok
+2026-11-04T06:24:32.9410558Z test_invalid_snapshot_spread (test_core.FoundationTests.test_invalid_snapshot_spread) ... ok
+2026-11-04T06:24:32.9413508Z test_invalid_volume (test_core.FoundationTests.test_invalid_volume) ... ok
+2026-11-04T06:24:32.9416613Z test_market_eligibility_boundary (test_core.FoundationTests.test_market_eligibility_boundary) ... ok
+2026-11-04T06:24:32.9419358Z test_missing_candle (test_core.FoundationTests.test_missing_candle) ... ok
+2026-11-04T06:24:32.9420598Z test_missing_score_inputs_not_filled_with_zero (test_core.FoundationTests.test_missing_score_inputs_not_filled_with_zero) ... ok
+2026-11-04T06:24:32.9423238Z test_naive_timestamp_rejected (test_core.FoundationTests.test_naive_timestamp_rejected) ... ok
+2026-11-04T06:24:32.9426640Z test_no_automatic_durable_or_delivery_side_effects (test_core.FoundationTests.test_no_automatic_durable_or_delivery_side_effects) ... ok
+2026-11-04T06:24:32.9429563Z test_non_finite_and_bool_numbers_rejected (test_core.FoundationTests.test_non_finite_and_bool_numbers_rejected) ... ok
+2026-11-04T06:24:32.9430828Z test_partial_score_accepts_zero_rvol_and_spread (test_core.FoundationTests.test_partial_score_accepts_zero_rvol_and_spread) ... ok
+2026-11-04T06:24:32.9432042Z test_partial_score_rejects_invalid_spread (test_core.FoundationTests.test_partial_score_rejects_invalid_spread) ... ok
+2026-11-04T06:24:32.9433367Z test_partial_score_rejects_negative_and_nonfinite_rvol (test_core.FoundationTests.test_partial_score_rejects_negative_and_nonfinite_rvol) ... ok
+2026-11-04T06:24:32.9435906Z test_price_basis_independent (test_core.FoundationTests.test_price_basis_independent) ... ok
+2026-11-04T06:24:32.9438822Z test_rvol_base_quote_distinct (test_core.FoundationTests.test_rvol_base_quote_distinct) ... ok
+2026-11-04T06:24:32.9441910Z test_rvol_invalid_or_missing (test_core.FoundationTests.test_rvol_invalid_or_missing) ... ok
+2026-11-04T06:24:32.9442939Z test_score_partial_never_probability (test_core.FoundationTests.test_score_partial_never_probability) ... ok
+2026-11-04T06:24:32.9443948Z test_spread_above_and_invalid (test_core.FoundationTests.test_spread_above_and_invalid) ... ok
+2026-11-04T06:24:32.9444915Z test_spread_zero_and_20_boundary (test_core.FoundationTests.test_spread_zero_and_20_boundary) ... ok
+2026-11-04T06:24:32.9446888Z test_time_gap (test_core.FoundationTests.test_time_gap) ... ok
+2026-11-04T06:24:32.9449860Z test_time_order (test_core.FoundationTests.test_time_order) ... ok
+2026-11-04T06:24:32.9451402Z test_utc_normalization (test_core.FoundationTests.test_utc_normalization) ... ok
+2026-11-04T06:24:32.9453716Z test_valid_closed_21 (test_core.FoundationTests.test_valid_closed_21) ... ok
+2026-11-04T06:24:32.9458118Z test_zero_volume_denominator_not_zero (test_core.FoundationTests.test_zero_volume_denominator_not_zero) ... ok
+2026-11-04T06:24:32.9460212Z test_approved_raw_reservation_still_stops_at_48mib (test_custody_capacity015.OwnerCapacity015Tests.test_approved_raw_reservation_still_stops_at_48mib) ... ok
+2026-11-04T06:24:33.0146596Z test_consolidated_cap_cannot_be_evaded_by_packet_splitting (test_custody_capacity015.OwnerCapacity015Tests.test_consolidated_cap_cannot_be_evaded_by_packet_splitting) ... ok
+2026-11-04T06:24:33.0149053Z test_only_exact_owner_approved_namespace_is_extended (test_custody_capacity015.OwnerCapacity015Tests.test_only_exact_owner_approved_namespace_is_extended) ... ok
+2026-11-04T06:24:33.0155173Z test_unknown_or_missing_packet_is_not_accepted (test_custody_capacity015.OwnerCapacity015Tests.test_unknown_or_missing_packet_is_not_accepted) ... ok
+2026-11-04T06:24:33.0156723Z test_absolute_windows_and_traversal_paths_rejected (test_custody_restore.CustodyRestoreTests.test_absolute_windows_and_traversal_paths_rejected) ... ok
+2026-11-04T06:24:33.0346587Z test_exact_restore_and_explicit_partial_status (test_custody_restore.CustodyRestoreTests.test_exact_restore_and_explicit_partial_status) ... ok
+2026-11-04T06:24:33.0511867Z test_missing_source_cannot_materialize_as_complete (test_custody_restore.CustodyRestoreTests.test_missing_source_cannot_materialize_as_complete) ... ok
+2026-11-04T06:24:33.0618307Z test_tampered_remote_receipt_fails_before_output (test_custody_restore.CustodyRestoreTests.test_tampered_remote_receipt_fails_before_output) ... ok
+2026-11-04T06:24:33.0813260Z test_valid_journal_cannot_authorize_path_traversal (test_custody_restore.CustodyRestoreTests.test_valid_journal_cannot_authorize_path_traversal) ... ok
+2026-11-04T06:24:33.0904488Z test_wrong_manifest_pin_rejected (test_custody_restore.CustodyRestoreTests.test_wrong_manifest_pin_rejected) ... ok
+2026-11-04T06:24:33.0906215Z test_bad_payload_checksum_is_rejected (test_evidence_journal.JournalTests.test_bad_payload_checksum_is_rejected) ... ok
+2026-11-04T06:24:33.0907652Z test_claim_clock_errors_fail_closed (test_evidence_journal.JournalTests.test_claim_clock_errors_fail_closed) ... ok
+2026-11-04T06:24:33.0914639Z test_claim_failure_or_unverified_readback_fails_closed (test_evidence_journal.JournalTests.test_claim_failure_or_unverified_readback_fails_closed) ... ok
+2026-11-04T06:24:33.0918137Z test_claim_receipt_checksum_and_readback (test_evidence_journal.JournalTests.test_claim_receipt_checksum_and_readback) ... ok
+2026-11-04T06:24:33.0949494Z test_concurrent_duplicate_claim_has_one_winner (test_evidence_journal.JournalTests.test_concurrent_duplicate_claim_has_one_winner) ... ok
+2026-11-04T06:24:33.0973205Z test_duplicate_claim_and_cross_study_denied (test_evidence_journal.JournalTests.test_duplicate_claim_and_cross_study_denied) ... ok
+2026-11-04T06:24:33.0996683Z test_receipt_clock_errors_fail_closed (test_evidence_journal.JournalTests.test_receipt_clock_errors_fail_closed) ... ok
+2026-11-04T06:24:33.1018618Z test_receipt_rejects_tampered_claim_identity_and_schema (test_evidence_journal.JournalTests.test_receipt_rejects_tampered_claim_identity_and_schema) ... ok
+2026-11-04T06:24:33.1041374Z test_spool_rejects_naive_timestamps (test_evidence_journal.JournalTests.test_spool_rejects_naive_timestamps) ... ok
+2026-11-04T06:24:33.1063713Z test_spool_size_duplicate_and_24h_expiry (test_evidence_journal.JournalTests.test_spool_size_duplicate_and_24h_expiry) ... ok
+2026-11-04T06:24:33.1086682Z test_study_capacity_is_bounded (test_evidence_journal.JournalTests.test_study_capacity_is_bounded) ... ok
+2026-11-04T06:24:33.1252786Z test_changed_or_expanded_plan_is_not_authorized (test_forward_slot016.ForwardSlot016Tests.test_changed_or_expanded_plan_is_not_authorized) ... ok
+2026-11-04T06:24:33.1274667Z test_default_admission_is_zero_capture (test_forward_slot016.ForwardSlot016Tests.test_default_admission_is_zero_capture) ... ok
+2026-11-04T06:24:33.1280594Z test_github_offline_claim_stops_before_any_get (test_forward_slot016.ForwardSlot016Tests.test_github_offline_claim_stops_before_any_get) ... ok
+2026-11-04T06:24:33.1456082Z test_injected_approval_double_still_claims_once_and_never_starts_service (test_forward_slot016.ForwardSlot016Tests.test_injected_approval_double_still_claims_once_and_never_starts_service) ... ok
+2026-11-04T06:24:33.1502811Z test_missed_slot_never_backfilled (test_forward_slot016.ForwardSlot016Tests.test_missed_slot_never_backfilled) ... ok
+2026-11-04T06:24:33.1532751Z test_missing_clock_proof_stops_before_any_get (test_forward_slot016.ForwardSlot016Tests.test_missing_clock_proof_stops_before_any_get) ... ok
+2026-11-04T06:24:33.1562078Z test_network_failure_consumes_claim_and_never_retries (test_forward_slot016.ForwardSlot016Tests.test_network_failure_consumes_claim_and_never_retries) ... ok
+2026-11-04T06:24:33.1589678Z test_receipt_failure_does_not_repeat_captured_get (test_forward_slot016.ForwardSlot016Tests.test_receipt_failure_does_not_repeat_captured_get) ... ok
+2026-11-04T06:24:33.1608217Z test_constructor_rejects_bad_scope_and_timeout (test_github_contents_transport.GitHubContentsHTTPTests.test_constructor_rejects_bad_scope_and_timeout) ... ok
+2026-11-04T06:24:33.1611074Z test_explicit_timeout_and_urlerror_both_methods (test_github_contents_transport.GitHubContentsHTTPTests.test_explicit_timeout_and_urlerror_both_methods) ... ok
+2026-11-04T06:24:33.1612555Z test_get_404_missing_but_other_http_is_sanitized (test_github_contents_transport.GitHubContentsHTTPTests.test_get_404_missing_but_other_http_is_sanitized) ... ok
+2026-11-04T06:24:33.1614184Z test_get_github_newline_wrapped_base64_with_exact_bytes_and_sha (test_github_contents_transport.GitHubContentsHTTPTests.test_get_github_newline_wrapped_base64_with_exact_bytes_and_sha) ... ok
+2026-11-04T06:24:33.1615779Z test_get_malformed_response_fail_closed (test_github_contents_transport.GitHubContentsHTTPTests.test_get_malformed_response_fail_closed) ... ok
+2026-11-04T06:24:33.1617221Z test_get_ref_url_path_headers_timeout_and_base64 (test_github_contents_transport.GitHubContentsHTTPTests.test_get_ref_url_path_headers_timeout_and_base64) ... ok
+2026-11-04T06:24:33.1618749Z test_get_rejects_non_wrapping_whitespace_in_base64 (test_github_contents_transport.GitHubContentsHTTPTests.test_get_rejects_non_wrapping_whitespace_in_base64) ... ok
+2026-11-04T06:24:33.1620302Z test_put_conflict_and_rejected_http_are_fail_closed (test_github_contents_transport.GitHubContentsHTTPTests.test_put_conflict_and_rejected_http_are_fail_closed) ... ok
+2026-11-04T06:24:33.1621792Z test_put_create_update_payload_branch_and_sha (test_github_contents_transport.GitHubContentsHTTPTests.test_put_create_update_payload_branch_and_sha) ... ok
+2026-11-04T06:24:33.1623246Z test_put_malformed_success_response_fail_closed (test_github_contents_transport.GitHubContentsHTTPTests.test_put_malformed_success_response_fail_closed) ... ok
+2026-11-04T06:24:33.1626247Z test_unexpected_success_status_is_rejected (test_github_contents_transport.GitHubContentsHTTPTests.test_unexpected_success_status_is_rejected) ... ok
+2026-11-04T06:24:33.1627588Z test_claim_receipt_and_capacity_index (test_github_evidence_backend.GitHubBackendTests.test_claim_receipt_and_capacity_index) ... ok
+2026-11-04T06:24:33.1629046Z test_conflict_timeout_403_429_and_readback_fail_closed (test_github_evidence_backend.GitHubBackendTests.test_conflict_timeout_403_429_and_readback_fail_closed) ... ok
+2026-11-04T06:24:33.1630732Z test_disabled_by_default_and_main_branch_rejected (test_github_evidence_backend.GitHubBackendTests.test_disabled_by_default_and_main_branch_rejected) ... ok
+2026-11-04T06:24:33.1632232Z test_duplicate_reservation_and_study_cap (test_github_evidence_backend.GitHubBackendTests.test_duplicate_reservation_and_study_cap) ... ok
+2026-11-04T06:24:33.1633925Z test_invalid_paths_and_payload_checksum (test_github_evidence_backend.GitHubBackendTests.test_invalid_paths_and_payload_checksum) ... ok
+2026-11-04T06:24:33.1635501Z test_restore_from_clean_snapshot_and_detect_tamper_or_missing (test_github_evidence_backend.GitHubBackendTests.test_restore_from_clean_snapshot_and_detect_tamper_or_missing) ... ok
+2026-11-04T06:24:33.1637030Z test_conflicting_remote_sha_fails_closed (test_integrated016.Integrated016Tests.test_conflicting_remote_sha_fails_closed) ... ok
+2026-11-04T06:24:33.1638521Z test_crash_or_network_after_claim_cannot_make_durable_decision (test_integrated016.Integrated016Tests.test_crash_or_network_after_claim_cannot_make_durable_decision) ... ok
+2026-11-04T06:24:33.1640152Z test_current_liquidity_cannot_be_backfilled_into_old_data (test_integrated016.Integrated016Tests.test_current_liquidity_cannot_be_backfilled_into_old_data) ... ok
+2026-11-04T06:24:33.1641891Z test_explicit_daily_weekly_contexts_are_accepted_only_when_already_received (test_integrated016.Integrated016Tests.test_explicit_daily_weekly_contexts_are_accepted_only_when_already_received) ... ok
+2026-11-04T06:24:33.1643722Z test_forming_candle_explicitly_rejected (test_integrated016.Integrated016Tests.test_forming_candle_explicitly_rejected) ... ok
+2026-11-04T06:24:33.1645411Z test_future_cannot_restart_hash_chain_at_each_decision (test_integrated016.Integrated016Tests.test_future_cannot_restart_hash_chain_at_each_decision) ... ok
+2026-11-04T06:24:33.1647074Z test_future_path_requires_actual_monotonic_collector_provenance (test_integrated016.Integrated016Tests.test_future_path_requires_actual_monotonic_collector_provenance) ... ok
+2026-11-04T06:24:33.1648600Z test_gap_and_duplicate_kline_rejected (test_integrated016.Integrated016Tests.test_gap_and_duplicate_kline_rejected) ... ok
+2026-11-04T06:24:33.1649919Z test_late_parent_context_cannot_be_used (test_integrated016.Integrated016Tests.test_late_parent_context_cannot_be_used) ... ok
+2026-11-04T06:24:33.1651151Z test_late_source_context_rejected (test_integrated016.Integrated016Tests.test_late_source_context_rejected) ... ok
+2026-11-04T06:24:33.1652478Z test_liquidity_missing_gapped_future_stale_crossed (test_integrated016.Integrated016Tests.test_liquidity_missing_gapped_future_stale_crossed) ... ok
+2026-11-04T06:24:33.1653941Z test_modified_raw_fails_before_calculation (test_integrated016.Integrated016Tests.test_modified_raw_fails_before_calculation) ... ok
+2026-11-04T06:24:33.1675701Z test_old_candles_relabelled_with_new_receipt_never_become_future_data (test_integrated016.Integrated016Tests.test_old_candles_relabelled_with_new_receipt_never_become_future_data) ... ok
+2026-11-04T06:24:33.1716371Z test_price_gaps_do_not_create_an_out_of_unit_normalized_feature (test_integrated016.Integrated016Tests.test_price_gaps_do_not_create_an_out_of_unit_normalized_feature) ... ok
+2026-11-04T06:24:33.1784036Z test_source_decision_journal_readback_restore_and_recompute (test_integrated016.Integrated016Tests.test_source_decision_journal_readback_restore_and_recompute) ... ok
+2026-11-04T06:24:33.1804710Z test_source_to_frames_to_24_features_and_explicit_blocked_decision (test_integrated016.Integrated016Tests.test_source_to_frames_to_24_features_and_explicit_blocked_decision) ... ok
+2026-11-04T06:24:33.1834520Z test_write_failure_no_success_or_automatic_retry (test_integrated016.Integrated016Tests.test_write_failure_no_success_or_automatic_retry) ... ok
+2026-11-04T06:24:33.1840009Z test_bad_spread_is_explicit_in_candidate (test_integration.OfflineResearchPathTests.test_bad_spread_is_explicit_in_candidate) ... ok
+2026-11-04T06:24:33.1844923Z test_complete_eligible_path_with_independent_oracles (test_integration.OfflineResearchPathTests.test_complete_eligible_path_with_independent_oracles) ... ok
+2026-11-04T06:24:33.1849173Z test_future_snapshot_isolation_under_mutated_market_values (test_integration.OfflineResearchPathTests.test_future_snapshot_isolation_under_mutated_market_values) ... ok
+2026-11-04T06:24:33.1854483Z test_ineligible_market_retains_observable_research_and_reason (test_integration.OfflineResearchPathTests.test_ineligible_market_retains_observable_research_and_reason) ... ok
+2026-11-04T06:24:33.1856979Z test_late_candle_cannot_enter_research_features (test_integration.OfflineResearchPathTests.test_late_candle_cannot_enter_research_features) ... ok
+2026-11-04T06:24:33.1861110Z test_missing_candle_blocks_all_derived_features (test_integration.OfflineResearchPathTests.test_missing_candle_blocks_all_derived_features) ... ok
+2026-11-04T06:24:33.1865552Z test_repeat_path_is_deterministic_and_has_no_execution (test_integration.OfflineResearchPathTests.test_repeat_path_is_deterministic_and_has_no_execution) ... ok
+2026-11-04T06:24:33.1869860Z test_time_gap_blocks_path (test_integration.OfflineResearchPathTests.test_time_gap_blocks_path) ... ok
+2026-11-04T06:24:33.1875378Z test_zero_volume_does_not_fabricate_rvol (test_integration.OfflineResearchPathTests.test_zero_volume_does_not_fabricate_rvol) ... ok
+2026-11-04T06:24:33.1881381Z test_bound_above_v1_below_v2_injected_slot_still_claims_once (test_integration018.Integration018Tests.test_bound_above_v1_below_v2_injected_slot_still_claims_once) ... ok
+2026-11-04T06:24:33.1882977Z test_dormant_scope_v2_is_required_before_any_io (test_integration018.Integration018Tests.test_dormant_scope_v2_is_required_before_any_io) ... ok
+2026-11-04T06:24:33.1884677Z test_exact_ceiling_prevents_transport (test_integration018.Integration018Tests.test_exact_ceiling_prevents_transport) ... ok
+2026-11-04T06:24:33.1893379Z test_expiry_mid_slot_consumes_claim_without_retry (test_integration018.Integration018Tests.test_expiry_mid_slot_consumes_claim_without_retry) ... ok
+2026-11-04T06:24:33.1908589Z test_future_context_rejected_before_use (test_integration018.Integration018Tests.test_future_context_rejected_before_use) ... ok
+2026-11-04T06:24:33.1931851Z test_integration_candle_uncertainty_margin_is_enforced (test_integration018.Integration018Tests.test_integration_candle_uncertainty_margin_is_enforced) ... ok
+2026-11-04T06:24:33.1961073Z test_latency_limit_is_separate_and_not_changed_to_1p5 (test_integration018.Integration018Tests.test_latency_limit_is_separate_and_not_changed_to_1p5) ... ok
+2026-11-04T06:24:33.1983689Z test_new_decision_routes_through_v2_and_stays_research_only (test_integration018.Integration018Tests.test_new_decision_routes_through_v2_and_stays_research_only) ... ok
+2026-11-04T06:24:33.1985342Z test_previous_study_cannot_be_relabelled_with_v2 (test_integration018.Integration018Tests.test_previous_study_cannot_be_relabelled_with_v2) ... ok
+2026-11-04T06:24:33.1986840Z test_v2_without_clock_admission_performs_zero_gets (test_integration018.Integration018Tests.test_v2_without_clock_admission_performs_zero_gets) ... ok
+2026-11-04T06:24:33.1988295Z test_actual_N_never_certified_by_event_count (test_prospective016.Inference016Tests.test_actual_N_never_certified_by_event_count) ... ok
+2026-11-04T06:24:33.1989657Z test_cost_sensitivity_does_not_claim_fills (test_prospective016.Inference016Tests.test_cost_sensitivity_does_not_claim_fills) ... ok
+2026-11-04T06:24:33.1991037Z test_estimated_effectiveN_never_qualified (test_prospective016.Inference016Tests.test_estimated_effectiveN_never_qualified) ... ok
+2026-11-04T06:24:33.1992483Z test_exploratory_cdf_is_dev_only_and_ties_are_explicit (test_prospective016.Inference016Tests.test_exploratory_cdf_is_dev_only_and_ties_are_explicit) ... ok
+2026-11-04T06:24:33.1993864Z test_insufficient_purge_is_rejected (test_prospective016.Inference016Tests.test_insufficient_purge_is_rejected) ... ok
+2026-11-04T06:24:33.1995026Z test_multiplicity_widens_bound (test_prospective016.Inference016Tests.test_multiplicity_widens_bound) ... ok
+2026-11-04T06:24:33.1996259Z test_nonbounded_or_nonfinite_loss_rejected (test_prospective016.Inference016Tests.test_nonbounded_or_nonfinite_loss_rejected) ... ok
+2026-11-04T06:24:33.1997663Z test_old_or_unadmitted_data_never_new_oos (test_prospective016.Inference016Tests.test_old_or_unadmitted_data_never_new_oos) ... ok
+2026-11-04T06:24:33.1999286Z test_prefrozen_paired_loss_and_missing_domain (test_prospective016.Inference016Tests.test_prefrozen_paired_loss_and_missing_domain) ... ok
+2026-11-04T06:24:33.2000741Z test_synthetic_or_old_oos_cannot_create_winner (test_prospective016.Inference016Tests.test_synthetic_or_old_oos_cannot_create_winner) ... ok
+2026-11-04T06:24:33.2002362Z test_valid_negative_study_has_no_winner (test_prospective016.Inference016Tests.test_valid_negative_study_has_no_winner) ... ok
+2026-11-04T06:24:33.2003930Z test_admitted_document_cannot_be_reused_with_smaller_error_bound (test_prospective016.Receipt016Tests.test_admitted_document_cannot_be_reused_with_smaller_error_bound) ... ok
+2026-11-04T06:24:33.2005802Z test_decision_calibration_cannot_certify_earlier_uncovered_receipts (test_prospective016.Receipt016Tests.test_decision_calibration_cannot_certify_earlier_uncovered_receipts) ... ok
+2026-11-04T06:24:33.2007209Z test_decision_wall_step (test_prospective016.Receipt016Tests.test_decision_wall_step) ... ok
+2026-11-04T06:24:33.2009085Z test_drift_bound (test_prospective016.Receipt016Tests.test_drift_bound) ... ok
+2026-11-04T06:24:33.2009917Z test_duplicate (test_prospective016.Receipt016Tests.test_duplicate) ... ok
+2026-11-04T06:24:33.2011196Z test_duplicate_decision_inputs_are_not_extra_evidence (test_prospective016.Receipt016Tests.test_duplicate_decision_inputs_are_not_extra_evidence) ... ok
+2026-11-04T06:24:33.2012399Z test_expired_clock (test_prospective016.Receipt016Tests.test_expired_clock) ... ok
+2026-11-04T06:24:33.2013554Z test_finality_requires_margin_for_utc_uncertainty (test_prospective016.Receipt016Tests.test_finality_requires_margin_for_utc_uncertainty) ... ok
+2026-11-04T06:24:33.2014701Z test_forming_candle (test_prospective016.Receipt016Tests.test_forming_candle) ... ok
+2026-11-04T06:24:33.2015942Z test_forward_network_clock_storage_and_recovery_fail_closed (test_prospective016.Receipt016Tests.test_forward_network_clock_storage_and_recovery_fail_closed) ... ok
+2026-11-04T06:24:33.2017333Z test_forward_zero_capture_default (test_prospective016.Receipt016Tests.test_forward_zero_capture_default) ... ok
+2026-11-04T06:24:33.2018331Z test_gap_sequence (test_prospective016.Receipt016Tests.test_gap_sequence) ... ok
+2026-11-04T06:24:33.2019631Z test_injected_independent_trust_double_exercises_candidate_only (test_prospective016.Receipt016Tests.test_injected_independent_trust_double_exercises_candidate_only) ... ok
+2026-11-04T06:24:33.2020948Z test_late_receipt (test_prospective016.Receipt016Tests.test_late_receipt) ... ok
+2026-11-04T06:24:33.2022278Z test_linked_revision_supersedes_old_inputs_without_rewriting_history (test_prospective016.Receipt016Tests.test_linked_revision_supersedes_old_inputs_without_rewriting_history) ... ok
+2026-11-04T06:24:33.2023983Z test_nonfinite_clock (test_prospective016.Receipt016Tests.test_nonfinite_clock) ... ok
+2026-11-04T06:24:33.2025294Z test_nts_authentication_or_unreviewed_pin_is_not_absolute_time (test_prospective016.Receipt016Tests.test_nts_authentication_or_unreviewed_pin_is_not_absolute_time) ... ok
+2026-11-04T06:24:33.2026901Z test_old_archive_never_new_oos_even_with_trust_double (test_prospective016.Receipt016Tests.test_old_archive_never_new_oos_even_with_trust_double) ... ok
+2026-11-04T06:24:33.2028087Z test_raw_tamper (test_prospective016.Receipt016Tests.test_raw_tamper) ... ok
+2026-11-04T06:24:33.2029302Z test_ready_is_not_started_even_for_mock_positive_dependencies (test_prospective016.Receipt016Tests.test_ready_is_not_started_even_for_mock_positive_dependencies) ... ok
+2026-11-04T06:24:33.2031114Z test_receipt_is_separate_from_utc_and_publisher (test_prospective016.Receipt016Tests.test_receipt_is_separate_from_utc_and_publisher) ... ok
+2026-11-04T06:24:33.2032129Z test_reconnect_epoch (test_prospective016.Receipt016Tests.test_reconnect_epoch) ... ok
+2026-11-04T06:24:33.2033079Z test_source_gap_barrier (test_prospective016.Receipt016Tests.test_source_gap_barrier) ... ok
+2026-11-04T06:24:33.2034286Z test_synthetic_proof_cannot_certify_utc (test_prospective016.Receipt016Tests.test_synthetic_proof_cannot_certify_utc) ... ok
+2026-11-04T06:24:33.2035254Z test_tampered_hash_chain (test_prospective016.Receipt016Tests.test_tampered_hash_chain) ... ok
+2026-11-04T06:24:33.2036125Z test_unknown_future_variable (test_prospective016.Receipt016Tests.test_unknown_future_variable) ... ok
+2026-11-04T06:24:33.2037382Z test_1499_accepts_only_complete_independently_admitted_double (test_prospective018.Prospective018Tests.test_1499_accepts_only_complete_independently_admitted_double) ... ok
+2026-11-04T06:24:33.2038541Z test_1500_rejected (test_prospective018.Prospective018Tests.test_1500_rejected) ... ok
+2026-11-04T06:24:33.2039286Z test_1501_rejected (test_prospective018.Prospective018Tests.test_1501_rejected) ... ok
+2026-11-04T06:24:33.2040363Z test_absent_unreviewed_or_synthetic_witness_is_hold (test_prospective018.Prospective018Tests.test_absent_unreviewed_or_synthetic_witness_is_hold) ... ok
+2026-11-04T06:24:33.2042062Z test_accumulated_drift_exactly_reaches_1500_not_rounded_into_pass (test_prospective018.Prospective018Tests.test_accumulated_drift_exactly_reaches_1500_not_rounded_into_pass) ... ok
+2026-11-04T06:24:33.2043310Z test_archive_not_new_oos (test_prospective018.Prospective018Tests.test_archive_not_new_oos) ... ok
+2026-11-04T06:24:33.2044606Z test_close_inside_uncertainty_margin_rejected (test_prospective018.Prospective018Tests.test_close_inside_uncertainty_margin_rejected) ... ok
+2026-11-04T06:24:33.2045986Z test_counter_calibration_and_drift_claims_are_mandatory (test_prospective018.Prospective018Tests.test_counter_calibration_and_drift_claims_are_mandatory) ... ok
+2026-11-04T06:24:33.2047257Z test_decision_can_cross_ceiling_after_valid_receipt (test_prospective018.Prospective018Tests.test_decision_can_cross_ceiling_after_valid_receipt) ... ok
+2026-11-04T06:24:33.2048478Z test_error_budget_components_cannot_be_hidden (test_prospective018.Prospective018Tests.test_error_budget_components_cannot_be_hidden) ... ok
+2026-11-04T06:24:33.2049593Z test_expired_calibration_and_reboot_epoch_hold (test_prospective018.Prospective018Tests.test_expired_calibration_and_reboot_epoch_hold) ... ok
+2026-11-04T06:24:33.2050698Z test_invalid_or_negative_clock_fields (test_prospective018.Prospective018Tests.test_invalid_or_negative_clock_fields) ... ok
+2026-11-04T06:24:33.2052253Z test_late_unknown_context_digest_rejected (test_prospective018.Prospective018Tests.test_late_unknown_context_digest_rejected) ... ok
+2026-11-04T06:24:33.2053667Z test_latency_is_separate_from_clock_uncertainty (test_prospective018.Prospective018Tests.test_latency_is_separate_from_clock_uncertainty) ... ok
+2026-11-04T06:24:33.2055034Z test_monotonic_future_input_is_rejected (test_prospective018.Prospective018Tests.test_monotonic_future_input_is_rejected) ... ok
+2026-11-04T06:24:33.2056399Z test_no_forward_admission_or_automatic_activation (test_prospective018.Prospective018Tests.test_no_forward_admission_or_automatic_activation) ... ok
+2026-11-04T06:24:33.2058173Z test_receipt_after_decision_cannot_use_new_1500ms_slack (test_prospective018.Prospective018Tests.test_receipt_after_decision_cannot_use_new_1500ms_slack) ... ok
+2026-11-04T06:24:33.2059985Z test_receipt_outside_calibration_hold_even_if_decision_inside (test_prospective018.Prospective018Tests.test_receipt_outside_calibration_hold_even_if_decision_inside) ... ok
+2026-11-04T06:24:33.2061517Z test_tampered_admitted_attestation_is_fail (test_prospective018.Prospective018Tests.test_tampered_admitted_attestation_is_fail) ... ok
+2026-11-04T06:24:33.2062658Z test_unclosed_candle_rejected (test_prospective018.Prospective018Tests.test_unclosed_candle_rejected) ... ok
+2026-11-04T06:24:33.2063968Z test_unknown_drift_is_hold_even_with_admitted_document (test_prospective018.Prospective018Tests.test_unknown_drift_is_hold_even_with_admitted_document) ... ok
+2026-11-04T06:24:33.2065439Z test_v1_not_silently_promoted_and_v1_numeric_limit_unchanged (test_prospective018.Prospective018Tests.test_v1_not_silently_promoted_and_v1_numeric_limit_unchanged) ... ok
+2026-11-04T06:24:33.2067163Z test_wall_residual_contributes_to_total_uncertainty (test_prospective018.Prospective018Tests.test_wall_residual_contributes_to_total_uncertainty) ... ok
+2026-11-04T06:24:33.2093375Z test_013_and_014_legacy_functions_cannot_start_network (test_retired016.RetiredProbe016Tests.test_013_and_014_legacy_functions_cannot_start_network) ... ok
+2026-11-04T06:24:33.2101552Z test_429_blocks_next_symbol_and_cannot_be_passed (test_scanner.BoundedScannerTests.test_429_blocks_next_symbol_and_cannot_be_passed) ... ok
+2026-11-04T06:24:33.2123026Z test_429_retries_then_blocks_no_later_symbols (test_scanner.BoundedScannerTests.test_429_retries_then_blocks_no_later_symbols) ... ok
+2026-11-04T06:24:33.2176443Z test_actual_transport_no_retry_counts_six_sends (test_scanner.BoundedScannerTests.test_actual_transport_no_retry_counts_six_sends) ... ok
+2026-11-04T06:24:33.2204935Z test_all_eligible_fixture_is_scanned_but_no_production_claim (test_scanner.BoundedScannerTests.test_all_eligible_fixture_is_scanned_but_no_production_claim) ... ok
+2026-11-04T06:24:33.2206689Z test_api_getter_receipt_metadata_mandatory (test_scanner.BoundedScannerTests.test_api_getter_receipt_metadata_mandatory) ... ok
+2026-11-04T06:24:33.2214126Z test_cli_rejects_nonlive_and_bad_sample_before_requests (test_scanner.BoundedScannerTests.test_cli_rejects_nonlive_and_bad_sample_before_requests) ... ok
+2026-11-04T06:24:33.2236017Z test_decision_time_cannot_precede_last_receipt_by_rounding (test_scanner.BoundedScannerTests.test_decision_time_cannot_precede_last_receipt_by_rounding) ... ok
+2026-11-04T06:24:33.2237817Z test_duplicate_exchange_and_book_are_rejected (test_scanner.BoundedScannerTests.test_duplicate_exchange_and_book_are_rejected) ... ok
+2026-11-04T06:24:33.2291641Z test_expanded_sample_reuses_universe_and_stays_inside_budget (test_scanner.BoundedScannerTests.test_expanded_sample_reuses_universe_and_stays_inside_budget) ... ok
+2026-11-04T06:24:33.2297568Z test_failed_bootstrap_attempt_exposes_truthful_telemetry (test_scanner.BoundedScannerTests.test_failed_bootstrap_attempt_exposes_truthful_telemetry) ... ok
+2026-11-04T06:24:33.2299642Z test_full_universe_and_baseline_are_not_modified (test_scanner.BoundedScannerTests.test_full_universe_and_baseline_are_not_modified) ... ok
+2026-11-04T06:24:33.2304806Z test_future_market_observation_fails_closed (test_scanner.BoundedScannerTests.test_future_market_observation_fails_closed) ... ok
+2026-11-04T06:24:33.2335029Z test_missing_inventory_row_does_not_become_eligible (test_scanner.BoundedScannerTests.test_missing_inventory_row_does_not_become_eligible) ... ok
+2026-11-04T06:24:33.2342298Z test_missing_klines_causes_fail_not_missing_as_zero (test_scanner.BoundedScannerTests.test_missing_klines_causes_fail_not_missing_as_zero) ... ok
+2026-11-04T06:24:33.2343857Z test_missing_ticker_book_and_invalid_market_are_explicit (test_scanner.BoundedScannerTests.test_missing_ticker_book_and_invalid_market_are_explicit) ... ok
+2026-11-04T06:24:33.2361792Z test_network_retry_is_counted_before_stop (test_scanner.BoundedScannerTests.test_network_retry_is_counted_before_stop) ... ok
+2026-11-04T06:24:33.2373194Z test_no_network_when_imported_or_scanning_just_fixtures (test_scanner.BoundedScannerTests.test_no_network_when_imported_or_scanning_just_fixtures) ... ok
+2026-11-04T06:24:33.2375225Z test_observed_weight_safety_stop_before_next_request (test_scanner.BoundedScannerTests.test_observed_weight_safety_stop_before_next_request) ... ok
+2026-11-04T06:24:33.2407585Z test_offline_e2e_two_symbols_real_core_and_serialization (test_scanner.BoundedScannerTests.test_offline_e2e_two_symbols_real_core_and_serialization) ... ok
+2026-11-04T06:24:33.2424172Z test_partial_eligible_candle_coverage_not_confused_with_inventory (test_scanner.BoundedScannerTests.test_partial_eligible_candle_coverage_not_confused_with_inventory) ... ok
+2026-11-04T06:24:33.2494438Z test_retry_near_attempt_eight_cannot_send_ninth_get (test_scanner.BoundedScannerTests.test_retry_near_attempt_eight_cannot_send_ninth_get) ... ok
+2026-11-04T06:24:33.2548482Z test_retry_then_success_counts_both_physical_attempts (test_scanner.BoundedScannerTests.test_retry_then_success_counts_both_physical_attempts) ... ok
+2026-11-04T06:24:33.2550440Z test_rotating_selection_covers_every_eligible_without_duplicates (test_scanner.BoundedScannerTests.test_rotating_selection_covers_every_eligible_without_duplicates) ... ok
+2026-11-04T06:24:33.2552131Z test_short_base_asset_names_are_not_lost_from_universe (test_scanner.BoundedScannerTests.test_short_base_asset_names_are_not_lost_from_universe) ... ok
+2026-11-04T06:24:33.2573289Z test_slow_inflight_response_cannot_report_deadline_compliant (test_scanner.BoundedScannerTests.test_slow_inflight_response_cannot_report_deadline_compliant) ... ok
+2026-11-04T06:24:33.2584495Z test_soft_guard_halts_next_attempt_after_slow_inventory (test_scanner.BoundedScannerTests.test_soft_guard_halts_next_attempt_after_slow_inventory) ... ok
+2026-11-04T06:24:33.2614965Z test_stale_klines_are_not_reported_as_success (test_scanner.BoundedScannerTests.test_stale_klines_are_not_reported_as_success) ... ok
+2026-11-04T06:24:33.2622147Z test_unfetched_blocked_symbol_does_not_count_as_scanned (test_scanner.BoundedScannerTests.test_unfetched_blocked_symbol_does_not_count_as_scanned) ... ok
+2026-11-04T06:24:33.2623762Z test_unusual_exchange_symbol_name_is_not_silently_filtered (test_scanner.BoundedScannerTests.test_unusual_exchange_symbol_name_is_not_silently_filtered) ... ok
+2026-11-04T06:24:33.2626690Z test_zero_eligible_is_not_full_market_scan_success (test_scanner.BoundedScannerTests.test_zero_eligible_is_not_full_market_scan_success) ... ok
+2026-11-04T06:24:33.2652170Z test_03a_and_03c_identity_serializations_are_not_interchangeable (test_stage03_contract_alignment.ContractAlignmentTests.test_03a_and_03c_identity_serializations_are_not_interchangeable) ... ok
+2026-11-04T06:24:33.2716344Z test_03c_called_with_empty_mapping_not_descriptive_or_supplied_groups (test_stage03_contract_alignment.ContractAlignmentTests.test_03c_called_with_empty_mapping_not_descriptive_or_supplied_groups) ... ok
+2026-11-04T06:24:33.2740768Z test_03c_numeric_reference_still_not_authorized_for_raw_path (test_stage03_contract_alignment.ContractAlignmentTests.test_03c_numeric_reference_still_not_authorized_for_raw_path) ... ok
+2026-11-04T06:24:33.2746950Z test_both_existing_unavailable_contracts_share_status_not_version (test_stage03_contract_alignment.ContractAlignmentTests.test_both_existing_unavailable_contracts_share_status_not_version) ... ok
+2026-11-04T06:24:33.2749694Z test_fail_closed_if_weight_or_name_drifted (test_stage03_contract_alignment.ContractAlignmentTests.test_fail_closed_if_weight_or_name_drifted) ... ok
+2026-11-04T06:24:33.2752223Z test_twelve_concepts_have_weight_parity_and_no_silent_ambiguity (test_stage03_contract_alignment.ContractAlignmentTests.test_twelve_concepts_have_weight_parity_and_no_silent_ambiguity) ... ok
+2026-11-04T06:24:33.2801594Z test_utc_and_no_http_in_postmerge_integration (test_stage03_contract_alignment.ContractAlignmentTests.test_utc_and_no_http_in_postmerge_integration) ... ok
+2026-11-04T06:24:33.2839361Z test_both_horizons_actual_adapter_provenance_but_no_pit (test_stage03_g0_online_smoke.BoundedOnlineG0FixtureTests.test_both_horizons_actual_adapter_provenance_but_no_pit) ... ok
+2026-11-04T06:24:33.2847052Z test_closed_weekly_monday_boundary_and_cli_opt_in (test_stage03_g0_online_smoke.BoundedOnlineG0FixtureTests.test_closed_weekly_monday_boundary_and_cli_opt_in) ... ok
+2026-11-04T06:24:33.2850683Z test_geographical_or_waf_http_denial_is_online_blocked_not_code_failure (test_stage03_g0_online_smoke.BoundedOnlineG0FixtureTests.test_geographical_or_waf_http_denial_is_online_blocked_not_code_failure) ... ok
+2026-11-04T06:24:33.2868929Z test_incomplete_daily_weekly_context_fail_without_substitution (test_stage03_g0_online_smoke.BoundedOnlineG0FixtureTests.test_incomplete_daily_weekly_context_fail_without_substitution) ... ok
+2026-11-04T06:24:33.2877269Z test_missing_child_is_data_unavailable_not_fake_pass (test_stage03_g0_online_smoke.BoundedOnlineG0FixtureTests.test_missing_child_is_data_unavailable_not_fake_pass) ... ok
+2026-11-04T06:24:33.2884030Z test_network_block_and_weight_guard_without_retries (test_stage03_g0_online_smoke.BoundedOnlineG0FixtureTests.test_network_block_and_weight_guard_without_retries) ... ok
+2026-11-04T06:24:33.2888632Z test_second_physical_attempt_is_blocked (test_stage03_g0_online_smoke.BoundedOnlineG0FixtureTests.test_second_physical_attempt_is_blocked) ... ok
+2026-11-04T06:24:33.2892660Z test_wrong_symbol_at_http_fetch_is_rejected_early (test_stage03_g0_online_smoke.BoundedOnlineG0FixtureTests.test_wrong_symbol_at_http_fetch_is_rejected_early) ... ok
+2026-11-04T06:24:33.2949070Z test_context_current_unclosed_or_arriving_after_decision_is_not_usable (test_stage03_offline_scientific_preflight.ScientificG0PreflightTests.test_context_current_unclosed_or_arriving_after_decision_is_not_usable) ... ok
+2026-11-04T06:24:33.2965275Z test_future_pivot_and_mismatched_pivot_source_block_without_bos_claim (test_stage03_offline_scientific_preflight.ScientificG0PreflightTests.test_future_pivot_and_mismatched_pivot_source_block_without_bos_claim) ... ok
+2026-11-04T06:24:33.2986903Z test_invalid_context_and_pivot_input_types_rejected (test_stage03_offline_scientific_preflight.ScientificG0PreflightTests.test_invalid_context_and_pivot_input_types_rejected) ... ok
+2026-11-04T06:24:33.2998484Z test_last_known_context_used_instead_of_newer_future_bar (test_stage03_offline_scientific_preflight.ScientificG0PreflightTests.test_last_known_context_used_instead_of_newer_future_bar) ... ok
+2026-11-04T06:24:33.3042866Z test_missing_invalid_frame_and_mixed_source_fail_closed (test_stage03_offline_scientific_preflight.ScientificG0PreflightTests.test_missing_invalid_frame_and_mixed_source_fail_closed) ... ok
+2026-11-04T06:24:33.3056190Z test_raw_unapproved_and_missing_parent_stay_unscored (test_stage03_offline_scientific_preflight.ScientificG0PreflightTests.test_raw_unapproved_and_missing_parent_stay_unscored) ... ok
+2026-11-04T06:24:33.3078553Z test_up_down_and_retry_share_parent_cluster_not_independent_samples (test_stage03_offline_scientific_preflight.ScientificG0PreflightTests.test_up_down_and_retry_share_parent_cluster_not_independent_samples) ... ok
+2026-11-04T06:24:33.3113896Z test_valid_synthetic_mtf_both_horizons_directions_but_no_scientific_pit (test_stage03_offline_scientific_preflight.ScientificG0PreflightTests.test_valid_synthetic_mtf_both_horizons_directions_but_no_scientific_pit) ... ok
+2026-11-04T06:24:33.3123022Z test_assets_do_not_multiply_week_sample_units (test_stage03_order013.BoundedTests.test_assets_do_not_multiply_week_sample_units) ... ok
+2026-11-04T06:24:33.3124948Z test_direction_pool_rejected (test_stage03_order013.BoundedTests.test_direction_pool_rejected) ... ok
+2026-11-04T06:24:33.3133660Z test_i2_different_missing_slots_do_not_force_equal_signature (test_stage03_order013.BoundedTests.test_i2_different_missing_slots_do_not_force_equal_signature) ... ok
+2026-11-04T06:24:33.3135129Z test_known_answer_and_extreme_domain (test_stage03_order013.BoundedTests.test_known_answer_and_extreme_domain) ... ok
+2026-11-04T06:24:33.3147544Z test_missingness_not_filled_and_partial_weeks_rejected (test_stage03_order013.BoundedTests.test_missingness_not_filled_and_partial_weeks_rejected) ... ok
+2026-11-04T06:24:33.3148813Z test_no_independence_claim_and_family_widening (test_stage03_order013.BoundedTests.test_no_independence_claim_and_family_widening) ... ok
+2026-11-04T06:24:33.3212492Z test_anchor_bytes_and_escape (test_stage03_order013.CapsuleTests.test_anchor_bytes_and_escape) ... ok
+2026-11-04T06:24:33.3215013Z test_clock_step_and_server_processing_reject (test_stage03_order013.ClockTests.test_clock_step_and_server_processing_reject) ... ok
+2026-11-04T06:24:33.3216249Z test_conditional_not_absolute (test_stage03_order013.ClockTests.test_conditional_not_absolute) ... ok
+2026-11-04T06:24:33.3217605Z test_large_dispersion_does_not_pass_bound (test_stage03_order013.ClockTests.test_large_dispersion_does_not_pass_bound) ... ok
+2026-11-04T06:24:33.3219130Z test_large_offset_is_not_hidden_by_small_radius (test_stage03_order013.ClockTests.test_large_offset_is_not_hidden_by_small_radius) ... ok
+2026-11-04T06:24:33.3220359Z test_market_schema_is_not_publication (test_stage03_order013.ClockTests.test_market_schema_is_not_publication) ... ok
+2026-11-04T06:24:33.3221653Z test_origin_mode_unsynchronized_and_short_packet (test_stage03_order013.ClockTests.test_origin_mode_unsynchronized_and_short_packet) ... ok
+2026-11-04T06:24:33.3223136Z test_authenticated_source_still_requires_error_attestation (test_stage03_order014.AuthorityTests.test_authenticated_source_still_requires_error_attestation) ... ok
+2026-11-04T06:24:33.3224662Z test_external_review_and_all_liquidity_channels_required (test_stage03_order014.AuthorityTests.test_external_review_and_all_liquidity_channels_required) ... ok
+2026-11-04T06:24:33.3226038Z test_ke_complete_and_strict_negotiation (test_stage03_order014.AuthorityTests.test_ke_complete_and_strict_negotiation) ... ok
+2026-11-04T06:24:33.3227374Z test_no_host_or_port_redirect (test_stage03_order014.AuthorityTests.test_no_host_or_port_redirect) ... ok
+2026-11-04T06:24:33.3228508Z test_source_timestamps_alone_never_qualify (test_stage03_order014.AuthorityTests.test_source_timestamps_alone_never_qualify) ... ok
+2026-11-04T06:24:33.3229852Z test_tls_dns_exact_or_single_label_wildcard_only (test_stage03_order014.AuthorityTests.test_tls_dns_exact_or_single_label_wildcard_only) ... ok
+2026-11-04T06:24:33.3231355Z test_unauthenticated_expired_divergent_or_unknown_drift_fail (test_stage03_order014.AuthorityTests.test_unauthenticated_expired_divergent_or_unknown_drift_fail) ... ok
+2026-11-04T06:24:33.3233000Z test_unknown_critical_error_truncated_and_duplicate_fail (test_stage03_order014.AuthorityTests.test_unknown_critical_error_truncated_and_duplicate_fail) ... ok
+2026-11-04T06:24:33.3262920Z test_client_request_matches_aead_contract (test_stage03_order014.CryptoTests.test_client_request_matches_aead_contract) ... ok
+2026-11-04T06:24:33.3264102Z test_rfc5297_known_answer (test_stage03_order014.CryptoTests.test_rfc5297_known_answer) ... ok
+2026-11-04T06:24:33.3265331Z test_tamper_nonce_tag_uid_header_and_trailer_rejected (test_stage03_order014.CryptoTests.test_tamper_nonce_tag_uid_header_and_trailer_rejected) ... ok
+2026-11-04T06:24:33.3266728Z test_verified_packet_is_only_clock_partial (test_stage03_order014.CryptoTests.test_verified_packet_is_only_clock_partial) ... ok
+2026-11-04T06:24:33.3303141Z test_both_horizons_and_directions_valid_closed_synthetic (test_stage03_qualification_readiness.QualificationReadinessTests.test_both_horizons_and_directions_valid_closed_synthetic) ... ok
+2026-11-04T06:24:33.3320033Z test_core_missing_future_misaligned_and_child_disagreement (test_stage03_qualification_readiness.QualificationReadinessTests.test_core_missing_future_misaligned_and_child_disagreement) ... ok
+2026-11-04T06:24:33.3333022Z test_delayed_parent_and_unclosed_parent_fail_closed (test_stage03_qualification_readiness.QualificationReadinessTests.test_delayed_parent_and_unclosed_parent_fail_closed) ... ok
+2026-11-04T06:24:33.3357209Z test_ephemeral_dedup_retry_distinct_close_direction_and_discriminator (test_stage03_qualification_readiness.QualificationReadinessTests.test_ephemeral_dedup_retry_distinct_close_direction_and_discriminator) ... ok
+2026-11-04T06:24:33.3373476Z test_market_future_preparent_and_ineligible (test_stage03_qualification_readiness.QualificationReadinessTests.test_market_future_preparent_and_ineligible) ... ok
+2026-11-04T06:24:33.3387617Z test_missing_and_late_child_or_changed_source (test_stage03_qualification_readiness.QualificationReadinessTests.test_missing_and_late_child_or_changed_source) ... ok
+2026-11-04T06:24:33.3393384Z test_no_non_utc_or_malformed_source_input (test_stage03_qualification_readiness.QualificationReadinessTests.test_no_non_utc_or_malformed_source_input) ... ok
+2026-11-04T06:24:33.3400768Z test_normalized_input_unknown_and_declared_is_never_scored (test_stage03_qualification_readiness.QualificationReadinessTests.test_normalized_input_unknown_and_declared_is_never_scored) ... ok
+2026-11-04T06:24:33.3409954Z test_wrong_horizon_market_symbol_and_unavailable_source (test_stage03_qualification_readiness.QualificationReadinessTests.test_wrong_horizon_market_symbol_and_unavailable_source) ... ok
+2026-11-04T06:24:33.3411863Z test_bad_timing_symbol_cross_and_level_are_rejected (test_stage03_research_012.DepthTests.test_bad_timing_symbol_cross_and_level_are_rejected) ... ok
+2026-11-04T06:24:33.3413150Z test_duplicate_does_not_advance (test_stage03_research_012.DepthTests.test_duplicate_does_not_advance) ... ok
+2026-11-04T06:24:33.3414262Z test_failed_resync_does_not_retain_valid_book (test_stage03_research_012.DepthTests.test_failed_resync_does_not_retain_valid_book) ... ok
+2026-11-04T06:24:33.3415461Z test_gap_blocks_until_new_epoch (test_stage03_research_012.DepthTests.test_gap_blocks_until_new_epoch) ... ok
+2026-11-04T06:24:33.3417171Z test_seed_needs_bridging_update (test_stage03_research_012.DepthTests.test_seed_needs_bridging_update) ... ok
+2026-11-04T06:24:33.3621233Z test_claim_survives_new_process_object_without_retry (test_stage03_research_012.DurableTests.test_claim_survives_new_process_object_without_retry) ... ok
+2026-11-04T06:24:33.3763672Z test_crash_remains_unclosed_and_auditable (test_stage03_research_012.DurableTests.test_crash_remains_unclosed_and_auditable) ... ok
+2026-11-04T06:24:33.3902107Z test_resource_bound_and_nonfinite_payload (test_stage03_research_012.DurableTests.test_resource_bound_and_nonfinite_payload) ... ok
+2026-11-04T06:24:33.4084862Z test_roundtrip_and_exclusive_creation (test_stage03_research_012.DurableTests.test_roundtrip_and_exclusive_creation) ... ok
+2026-11-04T06:24:33.4324558Z test_tamper_duplicate_truncation (test_stage03_research_012.DurableTests.test_tamper_duplicate_truncation) ... ok
+2026-11-04T06:24:33.4985680Z test_bounded_smoke_no_live_requests_duplicate_denied (test_stage03_research_012.ForwardTests.test_bounded_smoke_no_live_requests_duplicate_denied) ... ok
+2026-11-04T06:24:33.5123766Z test_default_never_consumes_input_or_claims (test_stage03_research_012.ForwardTests.test_default_never_consumes_input_or_claims) ... ok
+2026-11-04T06:24:33.5417770Z test_future_scope_or_late_event_is_blocked (test_stage03_research_012.ForwardTests.test_future_scope_or_late_event_is_blocked) ... ok
+2026-11-04T06:24:33.6487257Z test_manifest_integrity_and_asset_identity (test_stage03_research_012.ForwardTests.test_manifest_integrity_and_asset_identity) ... ok
+2026-11-04T06:24:33.6663507Z test_missing_proof_is_zero_attempts (test_stage03_research_012.ForwardTests.test_missing_proof_is_zero_attempts) ... ok
+2026-11-04T06:24:33.7156351Z test_timing_raw_journal_depth_replay_integration (test_stage03_research_012.ForwardTests.test_timing_raw_journal_depth_replay_integration) ... ok
+2026-11-04T06:24:33.7157943Z test_clock_drift_must_be_bounded_through_decision (test_stage03_research_012.PitTests.test_clock_drift_must_be_bounded_through_decision) ... ok
+2026-11-04T06:24:33.7159268Z test_exchange_clock_does_not_self_certify (test_stage03_research_012.PitTests.test_exchange_clock_does_not_self_certify) ... ok
+2026-11-04T06:24:33.7160558Z test_explicit_external_review_contract_only (test_stage03_research_012.PitTests.test_explicit_external_review_contract_only) ... ok
+2026-11-04T06:24:33.7161792Z test_future_receipt_and_clock_regressions (test_stage03_research_012.PitTests.test_future_receipt_and_clock_regressions) ... ok
+2026-11-04T06:24:33.7162870Z test_independent_review_is_required (test_stage03_research_012.PitTests.test_independent_review_is_required) ... ok
+2026-11-04T06:24:33.7164033Z test_missing_publication_is_not_inferred_from_close (test_stage03_research_012.PitTests.test_missing_publication_is_not_inferred_from_close) ... ok
+2026-11-04T06:24:33.7165182Z test_proof_digest_must_match (test_stage03_research_012.PitTests.test_proof_digest_must_match) ... ok
+2026-11-04T06:24:33.7166613Z test_subsecond_is_strict_and_clock_age_bounded (test_stage03_research_012.PitTests.test_subsecond_is_strict_and_clock_age_bounded) ... ok
+2026-11-04T06:24:33.7172188Z test_directional_and_horizon_cohorts_remain_separate (test_stage03_research_012.ScienceTests.test_directional_and_horizon_cohorts_remain_separate) ... ok
+2026-11-04T06:24:33.7174264Z test_late_reference_and_duplicate_event_rejected (test_stage03_research_012.ScienceTests.test_late_reference_and_duplicate_event_rejected) ... ok
+2026-11-04T06:24:33.7175633Z test_lineage_does_not_multiply_observations (test_stage03_research_012.ScienceTests.test_lineage_does_not_multiply_observations) ... ok
+2026-11-04T06:24:33.7176829Z test_no_refit_or_relabelled_old_oos (test_stage03_research_012.ScienceTests.test_no_refit_or_relabelled_old_oos) ... ok
+2026-11-04T06:24:33.7178060Z test_normalization_ties_tails_missing_and_zero_mad (test_stage03_research_012.ScienceTests.test_normalization_ties_tails_missing_and_zero_mad) ... ok
+2026-11-04T06:24:33.7179646Z test_planning_not_actual_effective_samples (test_stage03_research_012.ScienceTests.test_planning_not_actual_effective_samples) ... ok
+2026-11-04T06:24:33.7180801Z test_pooled_cancellation_is_refused (test_stage03_research_012.ScienceTests.test_pooled_cancellation_is_refused) ... ok
+2026-11-04T06:24:33.7181875Z test_reference_tamper_is_rejected (test_stage03_research_012.ScienceTests.test_reference_tamper_is_rejected) ... ok
+2026-11-04T06:24:33.7183982Z test_bad_child_frame_and_gap (test_stage03a.MtfContractsTests.test_bad_child_frame_and_gap) ... ok
+2026-11-04T06:24:33.7187155Z test_base_and_quote_volume_mismatches (test_stage03a.MtfContractsTests.test_base_and_quote_volume_mismatches) ... ok
+2026-11-04T06:24:33.7189379Z test_context_only_latest_closed_available (test_stage03a.MtfContractsTests.test_context_only_latest_closed_available) ... ok
+2026-11-04T06:24:33.7191325Z test_duplicate_child (test_stage03a.MtfContractsTests.test_duplicate_child) ... ok
+2026-11-04T06:24:33.7194619Z test_explicit_same_source_tolerance (test_stage03a.MtfContractsTests.test_explicit_same_source_tolerance) ... ok
+2026-11-04T06:24:33.7197177Z test_intraday_exact_six_and_pit (test_stage03a.MtfContractsTests.test_intraday_exact_six_and_pit) ... ok
+2026-11-04T06:24:33.7199410Z test_late_child_does_not_promote (test_stage03a.MtfContractsTests.test_late_child_does_not_promote) ... ok
+2026-11-04T06:24:33.7201262Z test_missing_child (test_stage03a.MtfContractsTests.test_missing_child) ... ok
+2026-11-04T06:24:33.7203432Z test_mixed_source_unverified (test_stage03a.MtfContractsTests.test_mixed_source_unverified) ... ok
+2026-11-04T06:24:33.7206973Z test_parent_open_close_high_low_mismatches (test_stage03a.MtfContractsTests.test_parent_open_close_high_low_mismatches) ... ok
+2026-11-04T06:24:33.7208629Z test_swing_exact_four_and_pit (test_stage03a.MtfContractsTests.test_swing_exact_four_and_pit) ... ok
+2026-11-04T06:24:33.7210985Z test_unaligned_and_invalid_ohlcv (test_stage03a.MtfContractsTests.test_unaligned_and_invalid_ohlcv) ... ok
+2026-11-04T06:24:33.7213030Z test_unclosed_parent_does_not_promote (test_stage03a.MtfContractsTests.test_unclosed_parent_does_not_promote) ... ok
+2026-11-04T06:24:33.7242098Z test_utc_rollover_alignment (test_stage03a.MtfContractsTests.test_utc_rollover_alignment) ... ok
+2026-11-04T06:24:33.7243238Z test_weekly_context_rejects_incomplete_future (test_stage03a.MtfContractsTests.test_weekly_context_rejects_incomplete_future) ... ok
+2026-11-04T06:24:33.7244508Z test_weekly_monday_close_and_availability (test_stage03a.MtfContractsTests.test_weekly_monday_close_and_availability) ... ok
+2026-11-04T06:24:33.7246024Z test_canonical_key_accepts_utc_equivalent_timestamp_and_short_symbol (test_stage03a.SchemaAndIdentityTests.test_canonical_key_accepts_utc_equivalent_timestamp_and_short_symbol) ... ok
+2026-11-04T06:24:33.7247550Z test_e2e_future_child_fails_without_signal (test_stage03a.SchemaAndIdentityTests.test_e2e_future_child_fails_without_signal) ... ok
+2026-11-04T06:24:33.7249452Z test_e2e_identity_must_match_decision_window_not_future_close (test_stage03a.SchemaAndIdentityTests.test_e2e_identity_must_match_decision_window_not_future_close) ... ok
+2026-11-04T06:24:33.7250920Z test_e2e_unavailable_core_not_promoted (test_stage03a.SchemaAndIdentityTests.test_e2e_unavailable_core_not_promoted) ... ok
+2026-11-04T06:24:33.7252194Z test_forged_event_key_direct_constructor_is_rejected (test_stage03a.SchemaAndIdentityTests.test_forged_event_key_direct_constructor_is_rejected) ... ok
+2026-11-04T06:24:33.7253750Z test_full_candidate_through_v1_core_and_03a_contract_json (test_stage03a.SchemaAndIdentityTests.test_full_candidate_through_v1_core_and_03a_contract_json) ... ok
+2026-11-04T06:24:33.7258952Z test_full_swing_four_hour_end_to_end_contract_only (test_stage03a.SchemaAndIdentityTests.test_full_swing_four_hour_end_to_end_contract_only) ... ok
+2026-11-04T06:24:33.7260866Z test_immutable_key_and_signal_id_not_issued (test_stage03a.SchemaAndIdentityTests.test_immutable_key_and_signal_id_not_issued) ... ok
+2026-11-04T06:24:33.7265894Z test_invalid_spot_asset_schema_and_enum_types_fail_closed (test_stage03a.SchemaAndIdentityTests.test_invalid_spot_asset_schema_and_enum_types_fail_closed) ... ok
+2026-11-04T06:24:33.7267760Z test_key_stable_retry_vs_independent_event (test_stage03a.SchemaAndIdentityTests.test_key_stable_retry_vs_independent_event) ... ok
+2026-11-04T06:24:33.7274238Z test_lifecycle_enum_but_no_qualified_transition (test_stage03a.SchemaAndIdentityTests.test_lifecycle_enum_but_no_qualified_transition) ... ok
+2026-11-04T06:24:33.7275637Z test_low_score_component_not_a_gate_or_total (test_stage03a.SchemaAndIdentityTests.test_low_score_component_not_a_gate_or_total) ... ok
+2026-11-04T06:24:33.7277985Z test_missing_score_no_redistribution_and_bad_weights (test_stage03a.SchemaAndIdentityTests.test_missing_score_no_redistribution_and_bad_weights) ... ok
+2026-11-04T06:24:33.7279278Z test_pivot_lookahead_rejected (test_stage03a.SchemaAndIdentityTests.test_pivot_lookahead_rejected) ... ok
+2026-11-04T06:24:33.7281863Z test_pivot_timestamp_order_and_future_observation (test_stage03a.SchemaAndIdentityTests.test_pivot_timestamp_order_and_future_observation) ... ok
+2026-11-04T06:24:33.7283589Z test_raw_watch_contracts_not_qualified (test_stage03a.SchemaAndIdentityTests.test_raw_watch_contracts_not_qualified) ... ok
+2026-11-04T06:24:33.7287986Z test_registry_cannot_be_tricked_by_mismatched_key_or_fields (test_stage03a.SchemaAndIdentityTests.test_registry_cannot_be_tricked_by_mismatched_key_or_fields) ... ok
+2026-11-04T06:24:33.7291325Z test_replace_key_or_any_canonical_identity_field_rejected (test_stage03a.SchemaAndIdentityTests.test_replace_key_or_any_canonical_identity_field_rejected) ... ok
+2026-11-04T06:24:33.7294184Z test_research_update_is_immutable_and_not_signal_publication (test_stage03a.SchemaAndIdentityTests.test_research_update_is_immutable_and_not_signal_publication) ... ok
+2026-11-04T06:24:33.7295802Z test_snapshot_future_receipt_rejected_without_any_signal (test_stage03a.SchemaAndIdentityTests.test_snapshot_future_receipt_rejected_without_any_signal) ... ok
+2026-11-04T06:24:33.7297307Z test_trade_plan_is_frozen_and_nonfinite_rejected (test_stage03a.SchemaAndIdentityTests.test_trade_plan_is_frozen_and_nonfinite_rejected) ... ok
+2026-11-04T06:24:33.7298662Z test_trade_plan_null_price_levels_and_down_spot (test_stage03a.SchemaAndIdentityTests.test_trade_plan_null_price_levels_and_down_spot) ... ok
+2026-11-04T06:24:33.7300079Z test_trade_plan_rejects_any_issued_signal_id_in_03a (test_stage03a.SchemaAndIdentityTests.test_trade_plan_rejects_any_issued_signal_id_in_03a) ... ok
+2026-11-04T06:24:33.7301861Z test_trade_ready_futures_and_fake_levels_rejected (test_stage03a.SchemaAndIdentityTests.test_trade_ready_futures_and_fake_levels_rejected) ... ok
+2026-11-04T06:24:33.7303200Z test_v1_frozen_research_regression_oracle (test_stage03a.SchemaAndIdentityTests.test_v1_frozen_research_regression_oracle) ... ok
+2026-11-04T06:24:33.7304526Z test_v2_group_maxes_for_both_horizons_directions (test_stage03a.SchemaAndIdentityTests.test_v2_group_maxes_for_both_horizons_directions) ... ok
+2026-11-04T06:24:33.7310837Z test_wrong_identity_and_wrong_direction_rejected (test_stage03a.SchemaAndIdentityTests.test_wrong_identity_and_wrong_direction_rejected) ... ok
+2026-11-04T06:24:33.7317136Z test_child_stale_window_is_rejected_not_rebranded (test_stage03b1.LiveProbeFixtureTests.test_child_stale_window_is_rejected_not_rebranded) ... ok
+2026-11-04T06:24:33.7327276Z test_duplicate_child_fails_integrity_and_does_not_emit (test_stage03b1.LiveProbeFixtureTests.test_duplicate_child_fails_integrity_and_does_not_emit) ... ok
+2026-11-04T06:24:33.7328763Z test_eighth_attempt_safety_stop_prevents_ninth (test_stage03b1.LiveProbeFixtureTests.test_eighth_attempt_safety_stop_prevents_ninth) ... ok
+2026-11-04T06:24:33.7330151Z test_fixture_utc_alignment_and_inclusive_end (test_stage03b1.LiveProbeFixtureTests.test_fixture_utc_alignment_and_inclusive_end) ... ok
+2026-11-04T06:24:33.7340071Z test_intraday_real_core_mtf_identity_both_directions_e2e (test_stage03b1.LiveProbeFixtureTests.test_intraday_real_core_mtf_identity_both_directions_e2e) ... ok
+2026-11-04T06:24:33.7345758Z test_late_receipt_and_future_parent_never_pass (test_stage03b1.LiveProbeFixtureTests.test_late_receipt_and_future_parent_never_pass) ... ok
+2026-11-04T06:24:33.7352122Z test_live_cli_requires_explicit_opt_in_before_network (test_stage03b1.LiveProbeFixtureTests.test_live_cli_requires_explicit_opt_in_before_network) ... ok
+2026-11-04T06:24:33.7354647Z test_missing_child_history_fails_closed (test_stage03b1.LiveProbeFixtureTests.test_missing_child_history_fails_closed) ... ok
+2026-11-04T06:24:33.7356012Z test_partial_parent_from_exchange_fails_closed (test_stage03b1.LiveProbeFixtureTests.test_partial_parent_from_exchange_fails_closed) ... ok
+2026-11-04T06:24:33.7357417Z test_pre_attempt_soft_guard_blocks_before_send (test_stage03b1.LiveProbeFixtureTests.test_pre_attempt_soft_guard_blocks_before_send) ... ok
+2026-11-04T06:24:33.7366685Z test_quote_volume_discrepancy_recorded_not_forgiven (test_stage03b1.LiveProbeFixtureTests.test_quote_volume_discrepancy_recorded_not_forgiven) ... ok
+2026-11-04T06:24:33.7368326Z test_retry_attempts_counted_and_bootstrap_failure_visible (test_stage03b1.LiveProbeFixtureTests.test_retry_attempts_counted_and_bootstrap_failure_visible) ... ok
+2026-11-04T06:24:33.7369860Z test_spot_universe_symbol_mismatch_fails_closed (test_stage03b1.LiveProbeFixtureTests.test_spot_universe_symbol_mismatch_fails_closed) ... ok
+2026-11-04T06:24:33.7377096Z test_swing_four_hour_core_and_four_one_hour_e2e (test_stage03b1.LiveProbeFixtureTests.test_swing_four_hour_core_and_four_one_hour_e2e) ... ok
+2026-11-04T06:24:33.7378436Z test_v1_unchanged_research_semantics (test_stage03b1.LiveProbeFixtureTests.test_v1_unchanged_research_semantics) ... ok
+2026-11-04T06:24:33.7381828Z test_metric_contract_rejects_unapproved_status_or_nan (test_stage03b1.PureResearchMetricTests.test_metric_contract_rejects_unapproved_status_or_nan) ... ok
+2026-11-04T06:24:33.7384888Z test_metric_rejects_future_and_mismatched_source (test_stage03b1.PureResearchMetricTests.test_metric_rejects_future_and_mismatched_source) ... ok
+2026-11-04T06:24:33.7388482Z test_up_down_symmetric_without_score (test_stage03b1.PureResearchMetricTests.test_up_down_symmetric_without_score) ... ok
+2026-11-04T06:24:33.7391221Z test_zero_absolute_tolerance_source_contract (test_stage03b1.PureResearchMetricTests.test_zero_absolute_tolerance_source_contract) ... ok
+2026-11-04T06:24:33.7393471Z test_zero_range_path_and_volume_explicit_missing (test_stage03b1.PureResearchMetricTests.test_zero_range_path_and_volume_explicit_missing) ... ok
+2026-11-04T06:24:33.7403470Z test_partial_coverage_is_not_extrapolated (test_stage03b2.FeatureAndStudyTests.test_partial_coverage_is_not_extrapolated) ... ok
+2026-11-04T06:24:33.7421481Z test_record_tampering_and_holdout_time_leakage_refused (test_stage03b2.FeatureAndStudyTests.test_record_tampering_and_holdout_time_leakage_refused) ... ok
+2026-11-04T06:24:33.7426102Z test_signed_up_down_and_gap_aware_comparison (test_stage03b2.FeatureAndStudyTests.test_signed_up_down_and_gap_aware_comparison) ... ok
+2026-11-04T06:24:33.7431250Z test_zero_division_explicit_missing_and_source_future_rejected (test_stage03b2.FeatureAndStudyTests.test_zero_division_explicit_missing_and_source_future_rejected) ... ok
+2026-11-04T06:24:33.7433825Z test_any_change_requires_new_study_sha (test_stage03b2.ManifestTests.test_any_change_requires_new_study_sha) ... ok
+2026-11-04T06:24:33.7437148Z test_asset_duplication_window_session_prohibited (test_stage03b2.ManifestTests.test_asset_duplication_window_session_prohibited) ... ok
+2026-11-04T06:24:33.7438440Z test_chronological_split_and_utc_rollover (test_stage03b2.ManifestTests.test_chronological_split_and_utc_rollover) ... ok
+2026-11-04T06:24:33.7439662Z test_frozen_sha_stability_and_immutable_fields (test_stage03b2.ManifestTests.test_frozen_sha_stability_and_immutable_fields) ... ok
+2026-11-04T06:24:33.7441834Z test_split_leakage_overlap_and_duplicate_window_rejected (test_stage03b2.ManifestTests.test_split_leakage_overlap_and_duplicate_window_rejected) ... ok
+2026-11-04T06:24:33.7524691Z test_all_frozen_sessions_e2e_and_no_signal (test_stage03b2.SessionTests.test_all_frozen_sessions_e2e_and_no_signal) ... ok
+2026-11-04T06:24:33.7529721Z test_bad_session_and_no_live_opt_in (test_stage03b2.SessionTests.test_bad_session_and_no_live_opt_in) ... ok
+2026-11-04T06:24:33.7531345Z test_future_parent_stops_after_time_only (test_stage03b2.SessionTests.test_future_parent_stops_after_time_only) ... ok
+2026-11-04T06:24:33.7563563Z test_invalid_or_missing_history_never_has_features (test_stage03b2.SessionTests.test_invalid_or_missing_history_never_has_features) ... ok
+2026-11-04T06:24:33.7564871Z test_pre_attempt_guard_before_network (test_stage03b2.SessionTests.test_pre_attempt_guard_before_network) ... ok
+2026-11-04T06:24:33.7571942Z test_real_source_sha_cannot_be_confused_with_publication (test_stage03b2.SessionTests.test_real_source_sha_cannot_be_confused_with_publication) ... ok
+2026-11-04T06:24:33.7573336Z test_retry_physical_attempt_stop_at_eight (test_stage03b2.SessionTests.test_retry_physical_attempt_stop_at_eight) ... ok
+2026-11-04T06:24:33.7576078Z test_wrong_symbol_or_ineligible_today_fails_closed (test_stage03b2.SessionTests.test_wrong_symbol_or_ineligible_today_fails_closed) ... ok
+2026-11-04T06:24:33.7580094Z test_all_changes_new_fingerprint_or_explicit_rejection (test_stage03b3.FrozenProtocolTests.test_all_changes_new_fingerprint_or_explicit_rejection) ... ok
+2026-11-04T06:24:33.7581639Z test_study_id_deterministic_and_prior_study_unchanged (test_stage03b3.FrozenProtocolTests.test_study_id_deterministic_and_prior_study_unchanged) ... ok
+2026-11-04T06:24:33.7583941Z test_two_future_utc_aligned_per_horizon_and_strict_24h_stop (test_stage03b3.FrozenProtocolTests.test_two_future_utc_aligned_per_horizon_and_strict_24h_stop) ... ok
+2026-11-04T06:24:33.7625638Z test_bad_source_inputs_fail_closed (test_stage03b3.ProspectiveCaptureTests.test_bad_source_inputs_fail_closed) ... ok
+2026-11-04T06:24:33.7627629Z test_current_ineligibility_not_historical_eligibility (test_stage03b3.ProspectiveCaptureTests.test_current_ineligibility_not_historical_eligibility) ... ok
+2026-11-04T06:24:33.7629056Z test_explicit_time_exclusion_per_step (test_stage03b3.ProspectiveCaptureTests.test_explicit_time_exclusion_per_step) ... ok
+2026-11-04T06:24:33.7630246Z test_future_not_attempted_no_network (test_stage03b3.ProspectiveCaptureTests.test_future_not_attempted_no_network) ... ok
+2026-11-04T06:24:33.7634041Z test_live_opt_in_is_mandatory (test_stage03b3.ProspectiveCaptureTests.test_live_opt_in_is_mandatory) ... ok
+2026-11-04T06:24:33.7635814Z test_max_eight_physical_gets_including_retries (test_stage03b3.ProspectiveCaptureTests.test_max_eight_physical_gets_including_retries) ... ok
+2026-11-04T06:24:33.7637359Z test_no_request_after_soft_60s_guard (test_stage03b3.ProspectiveCaptureTests.test_no_request_after_soft_60s_guard) ... ok
+2026-11-04T06:24:33.7680719Z test_six_and_four_child_real_cross_stage_pit_e2e (test_stage03b3.ProspectiveCaptureTests.test_six_and_four_child_real_cross_stage_pit_e2e) ... ok
+2026-11-04T06:24:33.7682257Z test_ten_minute_expiry_no_retroactive_http (test_stage03b3.ProspectiveCaptureTests.test_ten_minute_expiry_no_retroactive_http) ... ok
+2026-11-04T06:24:33.7694323Z test_backdated_pit_or_future_receipt_rejected (test_stage03b3.TerminalTests.test_backdated_pit_or_future_receipt_rejected) ... ok
+2026-11-04T06:24:33.7707012Z test_duplicate_captures_rejected_prevent_false_12_of_12 (test_stage03b3.TerminalTests.test_duplicate_captures_rejected_prevent_false_12_of_12) ... ok
+2026-11-04T06:24:33.7708494Z test_expired_missing_slots_are_explicit_blocked_data (test_stage03b3.TerminalTests.test_expired_missing_slots_are_explicit_blocked_data) ... ok
+2026-11-04T06:24:33.7720032Z test_forbidden_score_or_trade_plan_and_attempt_overrun (test_stage03b3.TerminalTests.test_forbidden_score_or_trade_plan_and_attempt_overrun) ... ok
+2026-11-04T06:24:33.7731782Z test_forged_sha_or_raw_content_rejected (test_stage03b3.TerminalTests.test_forged_sha_or_raw_content_rejected) ... ok
+2026-11-04T06:24:33.7732912Z test_old_v1_research_unmodified (test_stage03b3.TerminalTests.test_old_v1_research_unmodified) ... ok
+2026-11-04T06:24:33.7815825Z test_terminal_twelve_exact_and_twentyfour_hour_cap (test_stage03b3.TerminalTests.test_terminal_twelve_exact_and_twentyfour_hour_cap) ... ok
+2026-11-04T06:24:33.7817325Z test_first_sorted_asset_and_reject_tampered_order (test_stage03b3.UniversePreselectionTests.test_first_sorted_asset_and_reject_tampered_order) ... ok
+2026-11-04T06:24:33.7819475Z test_selection_real_universe_module_and_four_attempts (test_stage03b3.UniversePreselectionTests.test_selection_real_universe_module_and_four_attempts) ... ok
+2026-11-04T06:24:33.7901065Z test_all_four_frozen_horizons_three_symbols_true_fixture_e2e (test_stage03b3_auto.AutoScheduleTests.test_all_four_frozen_horizons_three_symbols_true_fixture_e2e) ... ok
+2026-11-04T06:24:33.7965338Z test_capture_cli_refuses_any_manual_dispatch_or_rerun (test_stage03b3_auto.AutoScheduleTests.test_capture_cli_refuses_any_manual_dispatch_or_rerun) ... ok
+2026-11-04T06:24:33.7971503Z test_capture_window_can_expire_mid_batch (test_stage03b3_auto.AutoScheduleTests.test_capture_window_can_expire_mid_batch) ... ok
+2026-11-04T06:24:33.8085461Z test_exclusive_artifact_per_asset_and_no_overwrite (test_stage03b3_auto.AutoScheduleTests.test_exclusive_artifact_per_asset_and_no_overwrite) ... ok
+2026-11-04T06:24:33.8087036Z test_four_exact_utc_crons_and_same_unchanged_protocol (test_stage03b3_auto.AutoScheduleTests.test_four_exact_utc_crons_and_same_unchanged_protocol) ... ok
+2026-11-04T06:24:33.8088608Z test_invalid_schedule_rejected_before_any_transport (test_stage03b3_auto.AutoScheduleTests.test_invalid_schedule_rejected_before_any_transport) ... ok
+2026-11-04T06:24:33.8094733Z test_late_scheduler_strict_600_seconds_and_no_retro_fetch (test_stage03b3_auto.AutoScheduleTests.test_late_scheduler_strict_600_seconds_and_no_retro_fetch) ... ok
+2026-11-04T06:24:33.8111336Z test_one_ineligible_not_erase_other_two_sealed_rows (test_stage03b3_auto.AutoScheduleTests.test_one_ineligible_not_erase_other_two_sealed_rows) ... ok
+2026-11-04T06:24:33.8116420Z test_owner_cancelled_study_has_no_active_github_workflows (test_stage03b3_auto.AutoScheduleTests.test_owner_cancelled_study_has_no_active_github_workflows) ... ok
+2026-11-04T06:24:33.8121214Z test_per_symbol_attempt_guard_retries_eighth_blocks_ninth (test_stage03b3_auto.AutoScheduleTests.test_per_symbol_attempt_guard_retries_eighth_blocks_ninth) ... ok
+2026-11-04T06:24:33.8138537Z test_unexpected_per_symbol_failure_records_actual_physical_attempts (test_stage03b3_auto.AutoScheduleTests.test_unexpected_per_symbol_failure_records_actual_physical_attempts) ... ok
+2026-11-04T06:24:33.8145479Z test_wrong_actual_time_before_declared_parent_never_get (test_stage03b3_auto.AutoScheduleTests.test_wrong_actual_time_before_declared_parent_never_get) ... ok
+2026-11-04T06:24:33.8151989Z test_wrong_year_and_dates_never_get_network (test_stage03b3_auto.AutoScheduleTests.test_wrong_year_and_dates_never_get_network) ... ok
+2026-11-04T06:24:33.8154232Z test_complete_zero_and_one_features_are_bounded (test_stage03c_score_contracts.ScoreContractTests.test_complete_zero_and_one_features_are_bounded) ... ok
+2026-11-04T06:24:33.8156119Z test_delivery_is_blocked_even_with_numeric_research_score (test_stage03c_score_contracts.ScoreContractTests.test_delivery_is_blocked_even_with_numeric_research_score) ... ok
+2026-11-04T06:24:33.8158092Z test_equivalent_timestamp_offsets_share_canonical_event_key (test_stage03c_score_contracts.ScoreContractTests.test_equivalent_timestamp_offsets_share_canonical_event_key) ... ok
+2026-11-04T06:24:33.8160006Z test_event_identity_is_deterministic_and_sensitive_to_event_dimensions (test_stage03c_score_contracts.ScoreContractTests.test_event_identity_is_deterministic_and_sensitive_to_event_dimensions) ... ok
+2026-11-04T06:24:33.8161850Z test_event_timestamp_must_be_valid_and_timezone_aware (test_stage03c_score_contracts.ScoreContractTests.test_event_timestamp_must_be_valid_and_timezone_aware) ... ok
+2026-11-04T06:24:33.8164111Z test_exact_contributions_are_summed_before_final_rounding (test_stage03c_score_contracts.ScoreContractTests.test_exact_contributions_are_summed_before_final_rounding) ... ok
+2026-11-04T06:24:33.8165732Z test_extra_group_rejected_to_prevent_silent_weight_drift (test_stage03c_score_contracts.ScoreContractTests.test_extra_group_rejected_to_prevent_silent_weight_drift) ... ok
+2026-11-04T06:24:33.8167190Z test_invalid_feature_values_are_rejected (test_stage03c_score_contracts.ScoreContractTests.test_invalid_feature_values_are_rejected) ... ok
+2026-11-04T06:24:33.8168598Z test_missing_group_means_no_partial_score (test_stage03c_score_contracts.ScoreContractTests.test_missing_group_means_no_partial_score) ... ok
+2026-11-04T06:24:33.8170098Z test_weight_contract_is_immutable_at_both_levels (test_stage03c_score_contracts.ScoreContractTests.test_weight_contract_is_immutable_at_both_levels) ... ok
+2026-11-04T06:24:33.8171444Z test_weight_tables_sum_to_100 (test_stage03c_score_contracts.ScoreContractTests.test_weight_tables_sum_to_100) ... ok
+2026-11-04T06:24:33.8221336Z test_authorized_main_branch_403_or_422_blocks_before_any_write (test_stage04_evidence_packet.Stage04CanaryAuthorizedMockTests.test_authorized_main_branch_403_or_422_blocks_before_any_write) ... ok
+2026-11-04T06:24:33.8257223Z test_authorized_main_one_branch_full_write_readback_fresh_restore (test_stage04_evidence_packet.Stage04CanaryAuthorizedMockTests.test_authorized_main_one_branch_full_write_readback_fresh_restore) ... ok
+2026-11-04T06:24:33.8286412Z test_authorized_main_stops_at_operation_ceiling_without_retry (test_stage04_evidence_packet.Stage04CanaryAuthorizedMockTests.test_authorized_main_stops_at_operation_ceiling_without_retry) ... ok
+2026-11-04T06:24:33.8296926Z test_branch_once_http_denial_conflict_and_network_timeout_no_retry (test_stage04_evidence_packet.Stage04CanaryAuthorizedMockTests.test_branch_once_http_denial_conflict_and_network_timeout_no_retry) ... ok
+2026-11-04T06:24:33.8308744Z test_branch_once_rejects_success_shape_status_and_sha_mismatch (test_stage04_evidence_packet.Stage04CanaryAuthorizedMockTests.test_branch_once_rejects_success_shape_status_and_sha_mismatch) ... ok
+2026-11-04T06:24:33.8313196Z test_branch_once_sends_one_post_and_requires_ref_and_base_sha (test_stage04_evidence_packet.Stage04CanaryAuthorizedMockTests.test_branch_once_sends_one_post_and_requires_ref_and_base_sha) ... ok
+2026-11-04T06:24:33.8315175Z test_operation_budget_rejects_65th_request_before_transport (test_stage04_evidence_packet.Stage04CanaryAuthorizedMockTests.test_operation_budget_rejects_65th_request_before_transport) ... ok
+2026-11-04T06:24:33.8336341Z test_sha_gate_prevents_post_even_with_other_approvals (test_stage04_evidence_packet.Stage04CanaryAuthorizedMockTests.test_sha_gate_prevents_post_even_with_other_approvals) ... ok
+2026-11-04T06:24:33.8348120Z test_403_429_503_outage_fail_closed_without_leaking_remote_body (test_stage04_evidence_packet.Stage04EvidencePacketTests.test_403_429_503_outage_fail_closed_without_leaking_remote_body) ... ok
+2026-11-04T06:24:33.8357009Z test_duplicate_is_unknown_no_overwrite_or_blind_retry (test_stage04_evidence_packet.Stage04EvidencePacketTests.test_duplicate_is_unknown_no_overwrite_or_blind_retry) ... ok
+2026-11-04T06:24:33.8368824Z test_manifest_claim_receipt_hash_and_independent_remote_restore (test_stage04_evidence_packet.Stage04EvidencePacketTests.test_manifest_claim_receipt_hash_and_independent_remote_restore) ... ok
+2026-11-04T06:24:33.8373477Z test_manifest_validation_checks_integrity_and_cap_not_all_time (test_stage04_evidence_packet.Stage04EvidencePacketTests.test_manifest_validation_checks_integrity_and_cap_not_all_time) ... ok
+2026-11-04T06:24:33.8393632Z test_no_network_or_token_writes_without_explicit_canary_gates (test_stage04_evidence_packet.Stage04EvidencePacketTests.test_no_network_or_token_writes_without_explicit_canary_gates) ... ok
+2026-11-04T06:24:33.8407388Z test_orphan_reservation_and_claim_only_detected_independently (test_stage04_evidence_packet.Stage04EvidencePacketTests.test_orphan_reservation_and_claim_only_detected_independently) ... ok
+2026-11-04T06:24:33.8415601Z test_pinned_manifest_hash_not_replaced_from_untrusted_remote (test_stage04_evidence_packet.Stage04EvidencePacketTests.test_pinned_manifest_hash_not_replaced_from_untrusted_remote) ... ok
+2026-11-04T06:24:33.8481969Z test_record_validation_rejects_future_or_fake_signal_and_secrets (test_stage04_evidence_packet.Stage04EvidencePacketTests.test_record_validation_rejects_future_or_fake_signal_and_secrets) ... ok
+2026-11-04T06:24:33.8493481Z test_rejects_unapproved_extra_fields_and_claim_after_receipt (test_stage04_evidence_packet.Stage04EvidencePacketTests.test_rejects_unapproved_extra_fields_and_claim_after_receipt) ... ok
+2026-11-04T06:24:33.8505430Z test_tampered_record_manifest_and_missing_remote_are_never_restored (test_stage04_evidence_packet.Stage04EvidencePacketTests.test_tampered_record_manifest_and_missing_remote_are_never_restored) ... ok
+2026-11-04T06:24:33.8512235Z test_unknown_partial_on_cas_conflict_and_commit_with_lost_response (test_stage04_evidence_packet.Stage04EvidencePacketTests.test_unknown_partial_on_cas_conflict_and_commit_with_lost_response) ... ok
+2026-11-04T06:24:33.8515779Z test_clock_stopped_stale_unknown (test_windows_control.ControlTests.test_clock_stopped_stale_unknown) ... ok
+2026-11-04T06:24:33.8520417Z test_consoleless_management (test_windows_control.ControlTests.test_consoleless_management) ... ok
+2026-11-04T06:24:33.8553217Z test_health_success_failure_persists_without_console (test_windows_control.ControlTests.test_health_success_failure_persists_without_console) ... ok
+2026-11-04T06:24:33.8557996Z test_mismatch_and_unknown (test_windows_control.ControlTests.test_mismatch_and_unknown) ... ok
+2026-11-04T06:24:36.3641498Z test_native_timezone_conversion (test_windows_control.ControlTests.test_native_timezone_conversion) ... ok
+2026-11-04T06:24:36.3647256Z test_offline_simulation_no_live (test_windows_control.ControlTests.test_offline_simulation_no_live) ... ok
+2026-11-04T06:24:36.3656044Z test_owner_export_boundaries_and_expiry (test_windows_control.ControlTests.test_owner_export_boundaries_and_expiry) ... ok
+2026-11-04T06:24:36.3662396Z test_rapid_resume_never_runs_or_renews (test_windows_control.ControlTests.test_rapid_resume_never_runs_or_renews) ... ok
+2026-11-04T06:24:36.3665949Z test_running_paused_expired (test_windows_control.ControlTests.test_running_paused_expired) ... ok
+2026-11-04T06:24:36.3709994Z test_arm_once_creates_distinct_no_console_scheduler_task_and_consumes (test_windows_diagnostic.BridgeTests.test_arm_once_creates_distinct_no_console_scheduler_task_and_consumes) ... ok
+2026-11-04T06:24:36.3804515Z test_duplicate_scheduler_trigger_cannot_reprobe_or_overwrite_success (test_windows_diagnostic.BridgeTests.test_duplicate_scheduler_trigger_cannot_reprobe_or_overwrite_success) ... ok
+2026-11-04T06:24:36.3892344Z test_eighth_attempt_stop_is_visible_without_ninth_network_send (test_windows_diagnostic.BridgeTests.test_eighth_attempt_stop_is_visible_without_ninth_network_send) ... ok
+2026-11-04T06:24:36.4096275Z test_expired_or_clock_early_intent_never_uses_network (test_windows_diagnostic.BridgeTests.test_expired_or_clock_early_intent_never_uses_network) ... ok
+2026-11-04T06:24:36.4098059Z test_failed_scheduler_registration_consumes_intent_no_autoretry (test_windows_diagnostic.BridgeTests.test_failed_scheduler_registration_consumes_intent_no_autoretry) ... ok
+2026-11-04T06:24:36.4099652Z test_pin_mismatch_and_no_d_path_escape_are_gated (test_windows_diagnostic.BridgeTests.test_pin_mismatch_and_no_d_path_escape_are_gated) ... ok
+2026-11-04T06:24:36.4206585Z test_provider_failure_preserves_failure_status_and_consumes_permission (test_windows_diagnostic.BridgeTests.test_provider_failure_preserves_failure_status_and_consumes_permission) ... ok
+2026-11-04T06:24:36.4253567Z test_real_stage03b1_core_fixture_from_scheduled_bridge_zero_real_sockets (test_windows_diagnostic.BridgeTests.test_real_stage03b1_core_fixture_from_scheduled_bridge_zero_real_sockets) ... ok
+2026-11-04T06:24:36.4282446Z test_simulation_and_prospective_entrypoints_remain_closed (test_windows_diagnostic.BridgeTests.test_simulation_and_prospective_entrypoints_remain_closed) ... ok
+2026-11-04T06:24:36.4324362Z test_unapproved_or_bad_token_never_invokes_probe (test_windows_diagnostic.BridgeTests.test_unapproved_or_bad_token_never_invokes_probe) ... ok
+2026-11-04T06:24:36.4390711Z test_unexpected_failure_sanitized_and_once_only (test_windows_diagnostic.BridgeTests.test_unexpected_failure_sanitized_and_once_only) ... ok
+2026-11-04T06:24:36.4415601Z test_accepted_mtf_core_fixture_no_http (test_windows_operations.AdapterTests.test_accepted_mtf_core_fixture_no_http) ... ok
+2026-11-04T06:24:36.4417219Z test_late_never_dispatches (test_windows_operations.AdapterTests.test_late_never_dispatches) ... ok
+2026-11-04T06:24:36.4418382Z test_live_gate_never_arms_transport (test_windows_operations.AdapterTests.test_live_gate_never_arms_transport) ... ok
+2026-11-04T06:24:36.4419391Z test_retry_cap (test_windows_operations.AdapterTests.test_retry_cap) ... ok
+2026-11-04T06:24:36.4822315Z test_bounded_metadata (test_windows_operations.StorageTests.test_bounded_metadata) ... ok
+2026-11-04T06:24:36.4919849Z test_config_changes_and_checksum (test_windows_operations.StorageTests.test_config_changes_and_checksum) ... ok
+2026-11-04T06:24:36.4922343Z test_d_and_canonical_target (test_windows_operations.StorageTests.test_d_and_canonical_target) ... ok
+2026-11-04T06:24:36.5519519Z test_scheduled_entry_denies_socket_creation (test_windows_operations.StorageTests.test_scheduled_entry_denies_socket_creation) ... ok
+2026-11-04T06:24:36.5529023Z test_temp_fallback_rejected (test_windows_operations.StorageTests.test_temp_fallback_rejected) ... ok
+2026-11-04T06:24:36.5536462Z test_blocked_zero_attempts_and_outage (test_windows_prospective.ProspectiveTests.test_blocked_zero_attempts_and_outage) ... ok
+2026-11-04T06:24:36.5540518Z test_boundary_before_after_and_wrong_date (test_windows_prospective.ProspectiveTests.test_boundary_before_after_and_wrong_date) ... ok
+2026-11-04T06:24:36.5603162Z test_eight_twentyfour_ninetysix (test_windows_prospective.ProspectiveTests.test_eight_twentyfour_ninetysix) ... ok
+2026-11-04T06:24:36.5606028Z test_new_identity_twelve_slots_and_freeze (test_windows_prospective.ProspectiveTests.test_new_identity_twelve_slots_and_freeze) ... ok
+2026-11-04T06:24:36.5609374Z test_strict_clock_current_dispersion_rejected (test_windows_prospective.ProspectiveTests.test_strict_clock_current_dispersion_rejected) ... ok
+2026-11-04T06:24:36.6257093Z test_429_timeout_offline_no_retry (test_windows_runner.RunnerTests.test_429_timeout_offline_no_retry) ... ok
+2026-11-04T06:24:36.6518440Z test_admission_only_decision_deadline (test_windows_runner.RunnerTests.test_admission_only_decision_deadline) ... ok
+2026-11-04T06:24:36.6524457Z test_aware_utc_riyadh_dst (test_windows_runner.RunnerTests.test_aware_utc_riyadh_dst) ... ok
+2026-11-04T06:24:36.6710354Z test_backward_restart (test_windows_runner.RunnerTests.test_backward_restart) ... ok
+2026-11-04T06:24:36.6716350Z test_boundaries (test_windows_runner.RunnerTests.test_boundaries) ... ok
+2026-11-04T06:24:36.6722568Z test_clock_unknown_skew_stale_nonfinite (test_windows_runner.RunnerTests.test_clock_unknown_skew_stale_nonfinite) ... ok
+2026-11-04T06:24:36.6762871Z test_corrupt_receipt (test_windows_runner.RunnerTests.test_corrupt_receipt) ... ok
+2026-11-04T06:24:36.7503850Z test_eight_attempt_bound (test_windows_runner.RunnerTests.test_eight_attempt_bound) ... ok
+2026-11-04T06:24:36.7510513Z test_explicit_scope_and_alignment (test_windows_runner.RunnerTests.test_explicit_scope_and_alignment) ... ok
+2026-11-04T06:24:36.7516199Z test_independent_exchange_proof (test_windows_runner.RunnerTests.test_independent_exchange_proof) ... ok
+2026-11-04T06:24:36.7810107Z test_no_http_default_and_cli (test_windows_runner.RunnerTests.test_no_http_default_and_cli) ... ok
+2026-11-04T06:24:36.7816333Z test_parent_horizons (test_windows_runner.RunnerTests.test_parent_horizons) ... ok
+2026-11-04T06:24:36.9190087Z test_process_lock_and_crash_release (test_windows_runner.RunnerTests.test_process_lock_and_crash_release) ... ok
+2026-11-04T06:24:36.9418604Z test_receipt_decision_expiry (test_windows_runner.RunnerTests.test_receipt_decision_expiry) ... ok
+2026-11-04T06:24:36.9700119Z test_restart_and_interrupted_claim_never_retry (test_windows_runner.RunnerTests.test_restart_and_interrupted_claim_never_retry) ... ok
+2026-11-04T06:24:36.9863317Z test_sleep_wake_outage_no_catchup (test_windows_runner.RunnerTests.test_sleep_wake_outage_no_catchup) ... ok
+2026-11-04T06:24:37.0087783Z test_slow_claim_does_not_dispatch (test_windows_runner.RunnerTests.test_slow_claim_does_not_dispatch) ... ok
+2026-11-04T06:24:37.0097147Z test_status_is_read_only (test_windows_runner.RunnerTests.test_status_is_read_only) ... ok
+2026-11-04T06:24:37.0301491Z test_time_jump_during_request (test_windows_runner.RunnerTests.test_time_jump_during_request) ... ok
+2026-11-04T06:24:37.0306730Z test_original_cancelled_github_workflows_not_in_active_checkout (test_windows_runner_frozen.FrozenBaselineTests.test_original_cancelled_github_workflows_not_in_active_checkout) ... ok
+2026-11-04T06:24:37.0317449Z test_stage03b3_blob_identities (test_windows_runner_frozen.FrozenBaselineTests.test_stage03b3_blob_identities) ... ok
+2026-11-04T06:24:37.0321079Z test_late_or_unknown_clock_zero_transport (test_windows_source.SourceTests.test_late_or_unknown_clock_zero_transport) ... ok
+2026-11-04T06:24:37.0322856Z test_measured_clock_uncertainty_and_wall_jump (test_windows_source.SourceTests.test_measured_clock_uncertainty_and_wall_jump) ... ok
+2026-11-04T06:24:37.0498885Z test_twelve_slots_use_accepted_source_and_shared_budget (test_windows_source.SourceTests.test_twelve_slots_use_accepted_source_and_shared_budget) ... ok
+2026-11-04T06:24:37.0499958Z 
+2026-11-04T06:24:37.0500140Z {
+2026-11-04T06:24:37.0500660Z ----------------------------------------------------------------------
+2026-11-04T06:24:37.0501051Z   "mode": "DRY_RUN",
+2026-11-04T06:24:37.0501465Z Ran 518 tests in 4.129s
+2026-11-04T06:24:37.0501734Z   "trigger_utc": "2026-11-04T06:24:36.770334+00:00",
+2026-11-04T06:24:37.0502197Z 
+2026-11-04T06:24:37.0502313Z   "riyadh": "2026-11-04T09:24:36.770334+03:00",
+2026-11-04T06:24:37.0502729Z OK
+2026-11-04T06:24:37.0503088Z   "config_sha": "15e30e9ff6d2a1899adf024f07fadf38a4eec8cac959d5bfee8e2bf9c9503339",
+2026-11-04T06:24:37.0503887Z   "input_sha": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+2026-11-04T06:24:37.0504461Z   "events": [],
+2026-11-04T06:24:37.0504765Z   "attempts": 0,
+2026-11-04T06:24:37.0505071Z   "http_attempts": 0,
+2026-11-04T06:24:37.0505388Z   "exit_code": 0,
+2026-11-04T06:24:37.0505699Z   "budget_seconds": 5,
+2026-11-04T06:24:37.0506313Z   "journal_gate": "BLOCKED / OWNER DECISION: approved durable GitHub journal and LIVE authorization required",
+2026-11-04T06:24:37.0506985Z   "clock": "UNKNOWN",
+2026-11-04T06:24:37.0507640Z   "status": "SIMULATION_COMPLETE"
+2026-11-04T06:24:37.0507992Z }
+2026-11-04T06:24:37.0508266Z NO_BOUNDED_DIAGNOSTIC
+2026-11-04T06:24:37.0508768Z ZS015_TEST_COUNTS {'discovered': 518, 'executed': 518, 'skipped': 0, 'unexpected_skips': 0}
+2026-11-04T06:24:37.1704467Z ##[group]Run $env:TEMP = $env:RUNNER_TEMP
+2026-11-04T06:24:37.1704799Z [36;1m$env:TEMP = $env:RUNNER_TEMP[0m
+2026-11-04T06:24:37.1705014Z [36;1m$env:TMP = $env:RUNNER_TEMP[0m
+2026-11-04T06:24:37.1705230Z [36;1mpython -m venv .runner-test-venv[0m
+2026-11-04T06:24:37.1705637Z [36;1m./tests/windows-runner.Tests.ps1 -PythonPath (Resolve-Path .runner-test-venv/Scripts/python.exe).Path[0m
+2026-11-04T06:24:37.1763451Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-11-04T06:24:37.1763724Z env:
+2026-11-04T06:24:37.1763934Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-11-04T06:24:37.1764481Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-11-04T06:24:37.1764826Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-11-04T06:24:37.1765128Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-11-04T06:24:37.1765496Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-11-04T06:24:37.1765733Z ##[endgroup]
+2026-11-04T06:24:46.3839182Z PASS native definition + mocked lifecycle; no OS registration; D-only test files
+2026-11-04T06:24:46.4899015Z Post job cleanup.
+2026-11-04T06:24:46.6162659Z (node:3816) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-04T06:24:46.6163819Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-04T06:24:46.6455454Z Post job cleanup.
+2026-11-04T06:24:46.8289451Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-11-04T06:24:46.8826813Z git version 2.56.0.windows.4
+2026-11-04T06:24:46.9064818Z Temporarily overriding HOME='D:\a\_temp\e6263232-c9d8-4e00-99dd-eaf83986810a' before making global git config changes
+2026-11-04T06:24:46.9080572Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-04T06:24:46.9082176Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\zs-crypto-signals\zs-crypto-signals
+2026-11-04T06:24:46.9455640Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-11-04T06:24:46.9947207Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-11-04T06:24:47.6644297Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-04T06:24:47.6944404Z http.https://github.com/.extraheader
+2026-11-04T06:24:47.6992187Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all http.https://github.com/.extraheader
+2026-11-04T06:24:48.5864187Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-11-04T06:24:48.5866086Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-04T06:24:48.5867402Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-11-04T06:24:48.9245825Z Cleaning up orphan processes
+2026-11-04T06:24:48.9711557Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
