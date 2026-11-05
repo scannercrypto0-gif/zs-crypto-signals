@@ -1,0 +1,81 @@
+{
+  "version": "ORDER022_HISTORICAL_REPLAY_PROTOCOL_V1",
+  "authority": "Issue25-comment-6653952899",
+  "source": "OFFLINE_EXISTING_BINANCE_VISION_SPOT_MONTHLY_ARCHIVES_ONLY",
+  "study": "PRICE_VOLUME_PARTIAL_NO_HISTORICAL_MARKET_BOOK",
+  "setup_version": "ORDER021_SETUP_V1_1_FROZEN",
+  "setup_contract_sha256": "0cb5f5aed50ac219d00188cca9827b26ab75dd15a9786773e683b40d10d818ce",
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ],
+  "months": [
+    "2025-01",
+    "2025-02",
+    "2025-03",
+    "2025-04",
+    "2025-05",
+    "2025-06"
+  ],
+  "interval": "5m",
+  "strict_microsecond_archive_layout": "exact_12_column_ohlcv_quote_csv",
+  "warmup": {
+    "start_ms": 1735689600000,
+    "end_exclusive_ms": 1738368000000
+  },
+  "partitions": {
+    "DEV": {
+      "start_ms": 1738368000000,
+      "end_exclusive_ms": 1743379200000
+    },
+    "OOS": {
+      "start_ms": 1743552000000,
+      "end_exclusive_ms": 1751328000000
+    }
+  },
+  "boundary_purge": "2025-03-31 and 2025-04-01 UTC excluded between DEV and OOS; no 22-bar predicate window or 12-bar outcome may use other partition",
+  "conditions": {
+    "direction": "UP",
+    "horizon": "INTRADAY_5M",
+    "history_bars": 22,
+    "previous_high_bars": 20,
+    "quote_volume_multiple": "1.20",
+    "transition": "FALSE_TO_TRUE",
+    "historical_market_book": "MISSING_NO_FABRICATION",
+    "historical_24hr_ticker": "MISSING_NO_FABRICATION",
+    "receipt_policy": "HISTORICAL_REPLAY_PIT_UNVERIFIED_NO_SIMULATED_RECEIPT_IN_SETUP021",
+    "output_type": "PARTIAL_PRICE_VOLUME_PATTERN_NOT_DETECTED_SIGNAL"
+  },
+  "outcome": {
+    "horizon_bars": 12,
+    "label": "FUTURE_CLOSE_STRICTLY_GT_TRIGGER_CLOSE",
+    "do_not_call": "TRADE_SUCCESS_OR_PROBABILITY",
+    "nonoverlap": "admitted_partial_pattern_suppresses_next_11_trigger_indices; outcome future only within same phase and gapless bars",
+    "unknown": "UNAVAILABLE_WHEN_FUTURE_GAP_OR_CROSS_PARTITION",
+    "reference": "UTC_HOURLY_GRID_EVERY_12_BARS_NO_TRIGGER_FIT_PRICE_ONLY_DIRECTION_REFERENCE",
+    "fee_per_side_bps": 10,
+    "slippage_per_side_bps": 5,
+    "roundtrip_cost_bps_if_execution_data_later": 30,
+    "executable_net_returns": "NOT_CALCULATED_WITHOUT_TIME_VALID_BID_ASK"
+  },
+  "inference_policy": {
+    "minimum_price_only_independent_horizon_labels_per_symbol_per_phase": 100,
+    "minimum_partial_patterns_per_symbol_per_phase": 100,
+    "meaning": "HEURISTIC_DESCRIPTIVE_ONLY_NOT_POWER_OR_QUALIFIED_SAMPLE_SIZE",
+    "true_N_required": "UNDETERMINED",
+    "scientific_status": "INSUFFICIENT_EVIDENCE_UNTIL_DATA_RIGHTS_COVERAGE_INDEPENDENT_PIT_AND_LIQUIDITY",
+    "no_combined_DEV_OOS_score": true,
+    "no_OOS_retuning": true,
+    "no_optimization_of_20_1_20_90_second_thresholds": true
+  },
+  "custody": {
+    "dataset_manifest": "frozen_after_verified_12_archives_before_first_real_analysis",
+    "sha256": "catalog_sha256_must_match_local_zip_bytes",
+    "old_010_B_raw": "PRIVATE_OWNER_D_NOT_COPIED_TO_GITHUB",
+    "no_network": true,
+    "no_live_binance": true,
+    "no_stage05": true,
+    "no_trading": true,
+    "no_telegram": true
+  }
+}
