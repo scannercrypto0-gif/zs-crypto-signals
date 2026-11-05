@@ -29,6 +29,8 @@ class Setup021ContractTests(unittest.TestCase):
         self.assertEqual(CONFIG["lookback_closed_bars"], 20)
         self.assertEqual(CONFIG["quote_volume_factor"], "1.20")
         self.assertEqual(CONFIG["direction"], "UP")
+        self.assertEqual(CONFIG["max_market_snapshot_age_seconds"], 90)
+        self.assertEqual(VERSION, "ORDER021_SETUP_V1_1_FROZEN")
         self.assertEqual(CONFIG_SHA256, digest(CONFIG))
 
     def test_actual_parser_scanner_core_positive(self):
@@ -105,6 +107,88 @@ class Setup021ContractTests(unittest.TestCase):
         a = evaluate(**x, partition="DEV")
         self.assertEqual(a["status"], "RESEARCH_CANDIDATE")
         self.assertEqual(a["reason_codes"][:2], ["SCANNER_OR_CORE_REJECTED", "MISSING_RVOL_BASE_OR_QUOTE"])
+
+    def test_independent_incomplete_source_rows_have_distinct_keys(self):
+        # Missing last candle timestamps must never collapse all rejected rows
+        # for a symbol into one row_key=sha256(version+symbol+null).
+        x = scenario(DEV)
+        first = copy.deepcopy(x)
+        first["klines"].pop(12)
+        second = copy.deepcopy(x)
+        second["klines"].pop(13)
+        a, b = (evaluate(**item, partition="DEV") for item in (first, second))
+        self.assertEqual(a["status"], "RESEARCH_CANDIDATE")
+        self.assertEqual(b["status"], "RESEARCH_CANDIDATE")
+        self.assertNotEqual(a["input_sha256"], b["input_sha256"])
+        self.assertNotEqual(a["row_key"], b["row_key"])
+        with tempfile.TemporaryDirectory() as d:
+            store = SQLiteResearchJournal(Path(d) / "db.sqlite")
+            self.assertEqual(store.append_readback(a), "COMMITTED_AND_READBACK_VERIFIED")
+            self.assertEqual(store.append_readback(b), "COMMITTED_AND_READBACK_VERIFIED")
+            self.assertEqual(len(store.rows()), 2)
+
+    def test_invalid_last_timestamp_rows_are_distinct_candidates(self):
+        x, y = scenario(DEV), scenario(DEV)
+        x["klines"][-1][0] = "bad-open"
+        y["klines"][-1][0] = "different-bad-open"
+        a, b = evaluate(**x, partition="DEV"), evaluate(**y, partition="DEV")
+        self.assertEqual(a["reason_codes"], ["INVALID_LAST_KLINE_TIMESTAMP"])
+        self.assertEqual(b["reason_codes"], ["INVALID_LAST_KLINE_TIMESTAMP"])
+        self.assertNotEqual(a["row_key"], b["row_key"])
+        self.assertIsNone(a["event_id"])
+
+    def test_bad_22_row_schema_is_sanitized_candidate_not_exception(self):
+        x = scenario(DEV)
+        x["klines"][7] = ["truncated"]
+        a = evaluate(**x, partition="DEV")
+        self.assertEqual(a["status"], "RESEARCH_CANDIDATE")
+        self.assertEqual(a["reason_codes"], ["PARSER_OR_PREDICATE_REJECTED", "KLINES_SCHEMA"])
+        self.assertEqual(len(a["input_sha256"]), 64)
+        with tempfile.TemporaryDirectory() as d:
+            self.assertEqual(SQLiteResearchJournal(Path(d) / "db.sqlite").append_readback(a),
+                             "COMMITTED_AND_READBACK_VERIFIED")
+
+    def test_bad_numeric_kline_field_is_nonfatal_and_redacted(self):
+        x = scenario(DEV)
+        x["klines"][5][4] = "definitely-not-a-price"
+        a = evaluate(**x, partition="DEV")
+        self.assertEqual(a["status"], "RESEARCH_CANDIDATE")
+        self.assertEqual(a["reason_codes"], ["PARSER_OR_PREDICATE_REJECTED", "INVALID_KLINE_FIELDS"])
+        self.assertNotIn("definitely-not-a-price", str(a))
+
+    def test_stale_market_snapshot_rejected_at_declared_90s_limit(self):
+        x = scenario(DEV)
+        x["market"] = replace(x["market"], observed_at=x["decision_at"] - timedelta(days=2))
+        a = evaluate(**x, partition="DEV")
+        self.assertEqual(a["status"], "RESEARCH_CANDIDATE")
+        self.assertEqual(a["reason_codes"], ["MARKET_SNAPSHOT_STALE"])
+        self.assertEqual(a["market_observed_at"], x["market"].observed_at.isoformat())
+        # Exact boundary is allowed, and no price/volume thresholds changed.
+        x["market"] = replace(x["market"], observed_at=x["decision_at"] - timedelta(seconds=90))
+        self.assertEqual(evaluate(**x, partition="DEV")["status"], "DETECTED_SIGNAL")
+
+    def test_input_and_decision_evidence_changes_for_same_event(self):
+        x = scenario(DEV)
+        one = evaluate(**x, partition="DEV")
+        y = copy.deepcopy(x)
+        y["klines"][3][5] = "11"  # volume input differs, trigger identity unchanged
+        two = evaluate(**y, partition="DEV")
+        self.assertEqual(one["status"], "DETECTED_SIGNAL")
+        self.assertEqual(two["status"], "DETECTED_SIGNAL")
+        self.assertEqual(one["row_key"], two["row_key"])
+        self.assertEqual(one["event_id"], two["event_id"])
+        self.assertNotEqual(one["input_sha256"], two["input_sha256"])
+        self.assertEqual(one["received_at"], x["received_at"].isoformat())
+        self.assertEqual(one["decision_at"], x["decision_at"].isoformat())
+        self.assertEqual(one["market_observed_at"], x["market"].observed_at.isoformat())
+        with tempfile.TemporaryDirectory() as d:
+            store = SQLiteResearchJournal(Path(d) / "db.sqlite")
+            store.append_readback(one)
+            with self.assertRaisesRegex(ResearchStoreError, "DUPLICATE_CONFLICT"):
+                store.append_readback(two)
+        z = copy.deepcopy(x)
+        z["decision_at"] += timedelta(seconds=1)
+        self.assertNotEqual(one["input_sha256"], evaluate(**z, partition="DEV")["input_sha256"])
 
     def test_partition_oos_no_retuning_and_no_probability(self):
         a = sample(OOS, partition="OOS")
@@ -207,6 +291,44 @@ class Setup021StorageTests(unittest.TestCase):
             with patch.object(db, "_connect", side_effect=sqlite3.OperationalError("injected storage unavailable")):
                 with self.assertRaises(sqlite3.OperationalError):
                     db.append_readback(sample())
+
+    def test_storage_rejects_scientific_promotion_flag_spoofing(self):
+        for status_case in ("DETECTED_SIGNAL", "RESEARCH_CANDIDATE"):
+            base = sample() if status_case == "DETECTED_SIGNAL" else sample(breakout=False)
+            changes = (
+                ("publishable", True),
+                ("qualified", True),
+                ("score", 99),
+                ("probability", 0.99),
+                ("score_status", "SCORE_AVAILABLE"),
+                ("historical_pit", "PIT_VERIFIED"),
+                ("contract_version", "SPOOFED_CONTRACT"),
+                ("source", "OTHER_SOURCE"),
+            )
+            with tempfile.TemporaryDirectory() as d:
+                db = SQLiteResearchJournal(Path(d) / "db.sqlite")
+                for key, val in changes:
+                    with self.subTest(status=status_case, field=key):
+                        tampered = copy.deepcopy(base)
+                        tampered[key] = val
+                        with self.assertRaisesRegex(ResearchStoreError, "RESEARCH_ONLY_INVARIANT"):
+                            db.append_readback(tampered)
+                self.assertEqual(db.rows(), [])
+
+    def test_missing_input_or_receipt_evidence_refused(self):
+        with tempfile.TemporaryDirectory() as d:
+            db = SQLiteResearchJournal(Path(d) / "db.sqlite")
+            for key, val, expected in (
+                ("input_sha256", "0", "INPUT_FINGERPRINT_REQUIRED"),
+                ("received_at", None, "DECISION_TIMING_EVIDENCE_REQUIRED"),
+                ("decision_at", "not-a-date", "DECISION_TIMING_EVIDENCE_INVALID"),
+                ("market_observed_at", "2026-11-05T12:00:00", "DECISION_TIMING_EVIDENCE_INVALID"),
+            ):
+                with self.subTest(field=key):
+                    obj = sample()
+                    obj[key] = val
+                    with self.assertRaisesRegex(ResearchStoreError, expected):
+                        db.append_readback(obj)
 
     def test_storage_rejects_spoofed_qualified_or_foreign_contract(self):
         with tempfile.TemporaryDirectory() as d:

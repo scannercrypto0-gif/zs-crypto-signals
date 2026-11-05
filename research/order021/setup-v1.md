@@ -3,6 +3,56 @@
 Authority: Issue #25 comment 6652586815, MASTER v1.37 on main
 \`1723c4c4b0299034084aa0dadf75eceb54d1394b\`. **Development only.**
 
+## Independent PM 1.4 targeted revision: frozen v1.1 qualification gate
+
+Reviewed comment: [PR #34 #6653214131](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/34#issuecomment-6653214131).
+
+**Old version retained immutably in Git history:** `ORDER021_SETUP_V1_FROZEN`,
+reviewed at commit `5e889349b22a398fecad4278c4159314b0d3c4b3`;
+old frozen contract digest `cd42554435a669d1b9494691aadbb81cd1c3583cc848296fd92f328d56d454e6`.
+Those synthetic outputs are **not rewritten or reclassified**. This fix
+uses **`ORDER021_SETUP_V1_1_FROZEN`** and a **new computed
+`CONFIG_SHA256`** before evaluation of any genuine independently collected
+OOS data. It is an explicit version change because the new snapshot freshness
+gate changes *eligibility*, not a stealth change to prior V1 evidence.
+
+**No changes** to UP direction, 5-minute horizon, 20-bar high, bullish close,
+1.20 quote-volume ratio, FALSE→TRUE transition, supported symbols, source,
+or the prior 90-second receipt-delay guard. Added **`MAX_MARKET_SNAPSHOT_AGE_SECONDS=90`**:
+`decision_at - market.observed_at` greater than 90 seconds returns
+`RESEARCH_CANDIDATE / MARKET_SNAPSHOT_STALE`. The previous core future-market
+observation rejection remains in effect. The boundary of exactly 90 seconds
+is allowed. The threshold matches the declared short-lived 90-second receipt
+guard and is **not optimized against OOS outcomes**; PM must assess whether it
+is suitable when real source/receipt measurements become available.
+
+**Minimal decision evidence** on every row (including rejected incomplete
+kline inputs): `input_sha256` over canonical, complete supplied kline JSON,
+typed public `MarketSnapshot` attributes, `received_at` and
+`decision_at`; plus the three explicit `received_at`,
+`decision_at`, `market_observed_at` timezone-aware ISO timestamps.
+The journal rejects rows missing these fields, false claims of
+`publishable`/`qualified`, invented score/probability, false
+historical PIT, wrong source/version, or corrupt fingerprints. A malformed
+row remains a **non-publishable candidate**, with a sanitized reason and no
+untrusted error message in the record. Incomplete candidates with
+`trigger_open_ms=None` use the input SHA and observed receipt/decision times
+as a fallback research row key; distinct invalid observations remain
+separate. Replaying exact same invalid inputs/times remains idempotent.
+
+For a given *valid* candle time and partition, the stable row key does **not**
+incorporate the input SHA. This is intentional: altered input content for the
+same claimed event produces `DUPLICATE_CONFLICT`, rather than silently storing
+a changed event as an independent success. Event IDs stay keyed to the
+original event fields, not to outcomes.
+
+This is evidence of **replay input and time labels**, not independently
+attested historical source publication, real prospective receipts, or clock
+uncertainty resolution. Raw Binance response bodies are not archived, so
+`input_sha256` is a compare/reference fingerprint rather than an
+independently reconstructible publication proof. No production or live-source
+authority is granted by this revision.
+
 ## One setup, no optimization on OOS
 
 **ORDER021_SETUP_V1_FROZEN** selects:

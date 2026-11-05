@@ -9,10 +9,12 @@ from __future__ import annotations
 from contextlib import contextmanager, closing
 import hashlib
 import json
+import re
+from datetime import datetime
 from pathlib import Path
 import sqlite3
 
-from .setup021 import canonical, CONFIG_SHA256
+from .setup021 import canonical, CONFIG_SHA256, SOURCE, VERSION
 
 
 class ResearchStoreError(RuntimeError):
@@ -58,6 +60,35 @@ class SQLiteResearchJournal:
             raise ResearchStoreError("PARTITION_INVALID")
         if result.get("status") not in ("RESEARCH_CANDIDATE", "DETECTED_SIGNAL"):
             raise ResearchStoreError("UNAUTHORIZED_RESULT_TYPE")
+        # Fail closed against *any* attempted scientific promotion, even if
+        # the superficial status and event_id fields remain unchanged.
+        required = {
+            "publishable": False,
+            "qualified": False,
+            "score": None,
+            "probability": None,
+            "score_status": "SCORE_UNAVAILABLE",
+            "historical_pit": "HISTORICAL_PIT_UNVERIFIED",
+            "contract_version": VERSION,
+            "source": SOURCE,
+        }
+        for key, expected in required.items():
+            actual = result.get(key, object())
+            if type(actual) is not type(expected) or actual != expected:
+                raise ResearchStoreError("RESEARCH_ONLY_INVARIANT_VIOLATION")
+        fingerprint = result.get("input_sha256")
+        if not isinstance(fingerprint, str) or re.fullmatch("[0-9a-f]{64}", fingerprint) is None:
+            raise ResearchStoreError("INPUT_FINGERPRINT_REQUIRED")
+        for key in ("received_at", "decision_at", "market_observed_at"):
+            val = result.get(key)
+            if not isinstance(val, str):
+                raise ResearchStoreError("DECISION_TIMING_EVIDENCE_REQUIRED")
+            try:
+                observed = datetime.fromisoformat(val)
+            except ValueError as exc:
+                raise ResearchStoreError("DECISION_TIMING_EVIDENCE_INVALID") from exc
+            if observed.tzinfo is None or observed.utcoffset() is None:
+                raise ResearchStoreError("DECISION_TIMING_EVIDENCE_INVALID")
         event_id = result.get("event_id")
         if result["status"] == "DETECTED_SIGNAL" and not event_id:
             raise ResearchStoreError("EVENT_ID_REQUIRED")
