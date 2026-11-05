@@ -2,9 +2,9 @@
 
 This program never downloads market data, modifies old ZIP bytes, commits raw
 files, tunes any strategy, or publishes a signal. Only explicit 'upload' invokes
-GitHub CLI, after a separate owner's rights-and-hosting acknowledgement.
-GitHub release assets are accessible to authorized repository collaborators:
-private does not mean an immutable archive or legal redistribution permission.
+GitHub CLI, after pinned-source SHA checks and private-repository verification.
+GitHub release assets are accessible to authorized repository collaborators;
+private releases are not immutable archives.
 """
 from __future__ import annotations
 
@@ -174,7 +174,6 @@ def locally_pinned_inputs(original_root, private_run):
         "frozen_manifest_sha256": _sha(frozen_path),
         "setup_contract_sha256": CONFIG_SHA256,
         "protocol_sha256": proto_sha,
-        "legal_scope": "OWNER_PERSONAL_NONCOMMERCIAL_RESEARCH_SUBJECT_TO_DATA_LICENSE",
         "publication_time_or_pit": "NOT_ATTESTED",
         "scientific_status": "NOT_YET_INDEPENDENTLY_REPRODUCED",
         "asset_hashes": {
@@ -264,9 +263,7 @@ def assert_remote_private():
         raise ResearchBlocked("REMOTE_REPOSITORY_NOT_PRIVATE")
 
 
-def upload(original, private_run, *, rights_reviewed):
-    if rights_reviewed is not True:
-        raise ResearchBlocked("DATA_LICENSE_AND_PRIVATE_HOSTING_REVIEW_REQUIRED")
+def upload(original, private_run):
     assets, index_doc = locally_pinned_inputs(original, private_run)
     assert_remote_private()
     if gh(["release", "view", TAG], allow_failure=True).returncode == 0:
@@ -277,11 +274,10 @@ def upload(original, private_run, *, rights_reviewed):
         index_path.write_bytes(canonical(index_doc)+b"\n")
         notes = temp / "release-notes.md"
         notes.write_text(
-            "ORDER-022 original market archives. OWNER-RESTRICTED PRIVATE personal "
-            "noncommercial research only; Binance Vision attribution; subject to "
-            "applicable dataset rights. Not production, not source PIT proof. "
-            "Do not change repository visibility or mirror assets. "
-            "This release is not proof of independent scientific verification.\n",
+            "ORDER-022 original historical Spot market archives (Binance Vision). "
+            "OWNER-RESTRICTED PRIVATE evidence, not production or source PIT proof. "
+            "Do not change repository visibility or publicly mirror assets. "
+            "This release is not independent scientific qualification.\n",
             encoding="utf-8")
         gh(["release", "create", TAG, "--title", "ORDER022 PRIVATE preserved 010-B original bytes",
             "--notes-file", str(notes), "--prerelease", "--latest=false",
@@ -314,7 +310,6 @@ def main(argv=None):
     for sp in (prepare,upload_p):
         sp.add_argument("--original-root", required=True)
         sp.add_argument("--private-run-dir", required=True)
-    upload_p.add_argument("--rights-reviewed", action="store_true")
     verify_p = sub.add_parser("verify")
     verify_p.add_argument("--download-dir", required=True)
     verify_p.add_argument("--require-transfer-receipt", action="store_true")
@@ -330,8 +325,7 @@ def main(argv=None):
                               "asset_count":len(doc["asset_hashes"]),
                               "report_sha256":REPORT_SHA,"market_requests":0}))
         else:
-            upload(args.original_root,args.private_run_dir,
-                   rights_reviewed=args.rights_reviewed)
+            upload(args.original_root,args.private_run_dir)
     except (ResearchBlocked, OSError, ValueError, KeyError, TypeError) as exc:
         # Never reveal original Windows file paths or archive contents in logs.
         reason = str(exc).split(":",1)[0]

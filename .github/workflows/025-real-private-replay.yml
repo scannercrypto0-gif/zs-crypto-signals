@@ -1,12 +1,6 @@
 name: ORDER-025 REAL private 010-B archives — manual only
 on:
   workflow_dispatch:
-    inputs:
-      owner_rights_and_private_repo_ack:
-        description: "Owner confirmed personal noncommercial rights and private GitHub custody"
-        type: boolean
-        required: true
-        default: false
 permissions:
   contents: read
 concurrency:
@@ -14,7 +8,6 @@ concurrency:
   cancel-in-progress: false
 jobs:
   verify:
-    if: ${{ inputs.owner_rights_and_private_repo_ack == true }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:

@@ -1,7 +1,7 @@
 """ORDER025 GitHub-only private source custody: synthetic test bytes ONLY.
 
 Never call GitHub CLI or a market endpoint. Real source upload remains an
-explicit owner action after legal/hosting sign-off; no fake private PASS.
+explicit owner action after private-repo and source-SHA checks; no fake private PASS.
 """
 from __future__ import annotations
 
@@ -154,12 +154,26 @@ class PrivateGitHubCustodyTests(unittest.TestCase):
                 with self.assertRaisesRegex(ResearchBlocked,"REPORT_SHA_MISMATCH"):
                     custody.locally_pinned_inputs(original,private)
 
-    def test_not_uploaded_without_rights_explicit_ack(self):
+    def test_upload_rejects_bad_source_pins_before_github(self):
         with patch.object(custody,"locally_pinned_inputs",
-                          side_effect=AssertionError("DO_NOT_READ_UNAUTHORIZED")), \
-             patch.object(custody,"gh",side_effect=AssertionError("NO_GITHUB_UPLOAD")):
-            with self.assertRaisesRegex(ResearchBlocked,"LICENSE"):
-                custody.upload("not-existing","not-existing",rights_reviewed=False)
+                          side_effect=ResearchBlocked("SOURCE_PIN_INVALID")), \
+             patch.object(custody,"gh",side_effect=AssertionError("NO_GITHUB_REQUEST")):
+            with self.assertRaisesRegex(ResearchBlocked,"SOURCE_PIN_INVALID"):
+                custody.upload("not-existing","not-existing")
+
+    def test_upload_requires_private_repo_before_release(self):
+        with patch.object(custody,"locally_pinned_inputs",return_value=({},{})), \
+             patch.object(custody,"assert_remote_private",
+                          side_effect=ResearchBlocked("REMOTE_REPOSITORY_NOT_PRIVATE")), \
+             patch.object(custody,"gh",side_effect=AssertionError("NO_RELEASE_CREATION")):
+            with self.assertRaisesRegex(ResearchBlocked,"NOT_PRIVATE"):
+                custody.upload("fixture-original","fixture-run")
+
+    def test_upload_cli_has_no_rights_ack(self):
+        with patch.object(custody,"upload") as upload:
+            self.assertEqual(custody.main(["upload","--original-root","a",
+                                          "--private-run-dir","b"]),0)
+            upload.assert_called_once_with("a","b")
 
     def test_public_or_unknown_git_visibility_fail_closed(self):
         class Resp:
