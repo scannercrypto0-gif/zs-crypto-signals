@@ -103,7 +103,7 @@ class Setup021ContractTests(unittest.TestCase):
             row[7] = "0"
         a = evaluate(**x, partition="DEV")
         self.assertEqual(a["status"], "RESEARCH_CANDIDATE")
-        self.assertIn("PARSER_OR_PREDICATE_REJECTED", a["reason_codes"])
+        self.assertEqual(a["reason_codes"][:2], ["SCANNER_OR_CORE_REJECTED", "MISSING_RVOL_BASE_OR_QUOTE"])
 
     def test_partition_oos_no_retuning_and_no_probability(self):
         a = sample(OOS, partition="OOS")

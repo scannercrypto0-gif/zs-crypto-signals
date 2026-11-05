@@ -6,6 +6,7 @@ Never imports GitHub, any network client, schedule or sender.
 """
 from __future__ import annotations
 
+from contextlib import contextmanager, closing
 import hashlib
 import json
 from pathlib import Path
@@ -34,12 +35,20 @@ class SQLiteResearchJournal:
                 );
             """)
 
+    @contextmanager
     def _connect(self):
         conn = sqlite3.connect(str(self.path), timeout=3)
-        conn.execute("PRAGMA journal_mode=WAL")
-        conn.execute("PRAGMA synchronous=FULL")
-        conn.execute("PRAGMA busy_timeout=3000")
-        return conn
+        try:
+            conn.execute("PRAGMA journal_mode=WAL")
+            conn.execute("PRAGMA synchronous=FULL")
+            conn.execute("PRAGMA busy_timeout=3000")
+            yield conn
+            conn.commit()
+        except BaseException:
+            conn.rollback()
+            raise
+        finally:
+            conn.close()
 
     def append_readback(self, result):
         """One atomic immutable row, committed before readback; no overwrite."""
@@ -110,7 +119,7 @@ class SQLiteResearchJournal:
         if destination.resolve() == self.path.resolve() or destination.exists():
             raise ResearchStoreError("BACKUP_MUST_BE_NEW_SEPARATE_PATH")
         destination.parent.mkdir(parents=True, exist_ok=True)
-        with self._connect() as source, sqlite3.connect(str(destination)) as target:
+        with self._connect() as source, closing(sqlite3.connect(str(destination))) as target:
             source.backup(target)
         restored = SQLiteResearchJournal(destination)
         with restored._connect() as conn:
