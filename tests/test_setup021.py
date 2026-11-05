@@ -1,5 +1,6 @@
 """ORDER-021 offline only: real accepted parser/scanner/core + frozen setup v1."""
 import copy
+from contextlib import closing
 from dataclasses import replace
 from datetime import timedelta
 import json
@@ -169,8 +170,9 @@ class Setup021StorageTests(unittest.TestCase):
             db = SQLiteResearchJournal(p)
             a = sample()
             db.append_readback(a)
-            with sqlite3.connect(str(p)) as con:
+            with closing(sqlite3.connect(str(p))) as con:
                 con.execute("UPDATE research_rows SET payload=? WHERE row_key=?", (b'{"false":true}', a["row_key"]))
+                con.commit()
             with self.assertRaisesRegex(ResearchStoreError, "READBACK_HASH"):
                 db.read_verified(a["row_key"])
 
