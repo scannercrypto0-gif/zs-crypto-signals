@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 from collections import Counter
+from contextlib import closing
 from datetime import datetime, timezone
 from decimal import Decimal
 import hashlib
@@ -93,7 +94,9 @@ def read_existing_journal(path):
     if not path.is_file():
         raise ResearchBlocked("PRIVATE_JOURNAL_NOT_FOUND")
     uri = path.resolve().as_uri() + "?mode=ro"
-    with sqlite3.connect(uri, uri=True) as con:
+    # sqlite3.Connection.__exit__ commits/rolls back; it does NOT close.
+    # Explicit close is required to release the DB file on Windows.
+    with closing(sqlite3.connect(uri, uri=True)) as con:
         if con.execute("PRAGMA integrity_check").fetchone()[0] != "ok":
             raise ResearchBlocked("PRIVATE_JOURNAL_INTEGRITY_FAILED")
         rows = con.execute("SELECT id, sha256, payload FROM reports ORDER BY id").fetchall()
