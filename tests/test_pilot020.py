@@ -27,7 +27,7 @@ def manifest():
 
 
 def review(m):
-    return dict(decision='020_FIELD_PREFLIGHT_PASS',review_role='PM 1.3',code_sha=m['code_sha'],
+    return dict(decision='020_FIELD_PREFLIGHT_PASS',review_role='PM 1.4',code_sha=m['code_sha'],
         manifest_sha256=sha(m),plan_sha256=m['plan_sha256'],study_id=m['study_id'],
         host_fingerprint_sha256=m['host_fingerprint_sha256'],native_github_storage_pass=True,
         source_rights_and_quota_pass=True,single_event_scope_pass=True,comment_id=123,
@@ -98,6 +98,16 @@ class Pilot020Tests(unittest.TestCase):
     def test_missing_pm_review_blocks(self):
         m=manifest()
         with self.assertRaisesRegex(ValueError,'PREFLIGHT_BLOCKED'):permit(m,{},**self.options(m))
+    def test_reviewer_role_mismatch_fails_closed(self):
+        m=manifest()
+        valid=review(m)
+        self.assertTrue(permit(m,valid,**self.options(m)))
+        for wrong_role in ('PM 1.3','PM 1.5','',None):
+            with self.subTest(role=wrong_role):
+                invalid=copy.deepcopy(valid)
+                invalid['review_role']=wrong_role
+                with self.assertRaisesRegex(ValueError,'PREFLIGHT_BLOCKED'):
+                    permit(m,invalid,**self.options(m))
     def test_synthetic_review_exercises_exact_gate_only(self):
         m=manifest();self.assertTrue(permit(m,review(m),**self.options(m)))
     def test_changed_code_plan_manifest_or_host_not_admitted(self):

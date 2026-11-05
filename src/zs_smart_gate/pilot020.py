@@ -52,7 +52,7 @@ def permit(m,review,*,now,code_sha,host_fingerprint,windows,ci=False):
     if not windows or ci:raise ValueError('OWNER_WINDOWS_ONLY_NOT_CI')
     if code_sha!=m['code_sha'] or host_fingerprint!=m['host_fingerprint_sha256']:
         raise ValueError('CODE_OR_OWNER_HOST_CHANGED')
-    expected={'decision':'020_FIELD_PREFLIGHT_PASS','review_role':'PM 1.3','code_sha':m['code_sha'],
+    expected={'decision':'020_FIELD_PREFLIGHT_PASS','review_role':'PM 1.4','code_sha':m['code_sha'],
         'manifest_sha256':sha(m),'plan_sha256':m['plan_sha256'],'study_id':m['study_id'],
         'host_fingerprint_sha256':host_fingerprint,'native_github_storage_pass':True,
         'source_rights_and_quota_pass':True,'single_event_scope_pass':True}

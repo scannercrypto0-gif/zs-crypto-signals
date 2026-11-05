@@ -49,7 +49,7 @@ claim. Existing03B3/legacy tasks are never stopped, edited or started.
 PM review must be a NEW GitHub Issue25 comment, authored by the governance
 account, containing020_FIELD_PREFLIGHT_PASS and a JSON block with exact
 code_sha,manifest_sha256,plan_sha256,study_id,host_fingerprint_sha256,
-review_role="PM 1.3",independence_statement="PM_REVIEW_NOT_EXECUTOR",
+review_role="PM 1.4",independence_statement="PM_REVIEW_NOT_EXECUTOR",
 native_github_storage_pass=true,source_rights_and_quota_pass=true and
 single_event_scope_pass=true. Comment creation must follow freeze. The runner
 fetches it itself, not a local assertion. Shared governance account/persona
