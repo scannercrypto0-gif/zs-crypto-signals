@@ -119,6 +119,7 @@ class InventoryFrozenPlanTests(unittest.TestCase):
             self.assertEqual(len(bars),40)
             self.assertEqual(audit["missing_5m_slots"],0)
             rows[10][0]=rows[9][0]
+            rows[10][6]=rows[9][6]  # exact duplicated candle, not malformed 10m interval
             (root/name).write_bytes(encoded_zip("BTCUSDT","2025-02",rows))
             with self.assertRaisesRegex(ResearchBlocked,"DUPLICATE"):
                 read_month_zip(root/name,"BTCUSDT","2025-02")
