@@ -185,7 +185,7 @@ def locally_pinned_inputs(original_root, private_run):
     return assets, index_doc
 
 
-def verify_download(directory):
+def verify_download(directory, *, require_transfer_receipt=False):
     directory = Path(directory).resolve(strict=True)
     idx_path = directory / "asset-index.json"
     if not idx_path.is_file() or idx_path.is_symlink():
@@ -210,6 +210,8 @@ def verify_download(directory):
     # An owner upload writes this *after* verifying the original release.
     # The ACTIONS download therefore sees one additional digest-only receipt.
     receipt_path = directory / "transfer-verification.json"
+    if require_transfer_receipt and (not receipt_path.is_file() or receipt_path.is_symlink()):
+        raise ResearchBlocked("GITHUB_TRANSFER_RECEIPT_REQUIRED")
     if receipt_path.is_file():
         transfer_receipt = read_json(receipt_path)
         if (transfer_receipt.get("status") != "GITHUB_TRANSFER_HASHES_VERIFIED"
@@ -315,10 +317,12 @@ def main(argv=None):
     upload_p.add_argument("--rights-reviewed", action="store_true")
     verify_p = sub.add_parser("verify")
     verify_p.add_argument("--download-dir", required=True)
+    verify_p.add_argument("--require-transfer-receipt", action="store_true")
     args = p.parse_args(argv)
     try:
         if args.action == "verify":
-            print(json.dumps(verify_download(args.download_dir),sort_keys=True))
+            print(json.dumps(verify_download(args.download_dir,
+                       require_transfer_receipt=args.require_transfer_receipt),sort_keys=True))
         elif args.action == "preflight":
             _, doc = locally_pinned_inputs(args.original_root,args.private_run_dir)
             print(json.dumps({"status":"LOCAL_SOURCE_SHA_PREFLIGHT_PASS_NO_UPLOAD",

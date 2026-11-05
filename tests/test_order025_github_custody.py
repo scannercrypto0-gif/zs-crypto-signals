@@ -106,7 +106,10 @@ class PrivateGitHubCustodyTests(unittest.TestCase):
                 receipt=custody.verify_download(remote)
                 self.assertEqual(receipt["status"],"GITHUB_TRANSFER_HASHES_VERIFIED")
                 self.assertEqual(receipt["zip_count"],12)
+                with self.assertRaisesRegex(ResearchBlocked,"TRANSFER_RECEIPT_REQUIRED"):
+                    custody.verify_download(remote,require_transfer_receipt=True)
                 (remote/"transfer-verification.json").write_bytes(canonical(receipt)+b"\n")
+                self.assertEqual(custody.verify_download(remote,require_transfer_receipt=True)["assets"],20)
                 self.assertEqual(custody.verify_download(remote)["assets"],20)
                 (remote/filename("BTCUSDT","2025-01")).write_bytes(b"TAMPER")
                 with self.assertRaisesRegex(ResearchBlocked,"SIZE_MISMATCH"):

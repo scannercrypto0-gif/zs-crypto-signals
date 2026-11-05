@@ -47,7 +47,7 @@ jobs:
           tmp="$RUNNER_TEMP/order025-source"
           mkdir -p "$tmp"
           gh release download order022-private-010b-2025-v1 --repo "$GITHUB_REPOSITORY" --dir "$tmp"
-          PYTHONPATH=src python scripts/order025-github-custody.py verify --download-dir "$tmp"
+          PYTHONPATH=src python scripts/order025-github-custody.py verify --download-dir "$tmp" --require-transfer-receipt
           dest="$RUNNER_TEMP/order025-private-run"
           mkdir -p "$dest/verified_5m_archives"
           mv "$tmp"/*.zip "$dest/verified_5m_archives/"
