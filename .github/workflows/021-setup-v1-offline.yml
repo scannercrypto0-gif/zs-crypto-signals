@@ -1,0 +1,39 @@
+name: ORDER-021 Setup v1 synthetic E2E Windows and Ubuntu
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'scripts/order021-offline-e2e.py'
+      - 'research/order021/**'
+      - '.github/workflows/021-setup-v1-offline.yml'
+permissions:
+  contents: read
+jobs:
+  e2e:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ['3.11', '3.12']
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Offline 021 negative cases and bounded integrated synthetic replay
+        env:
+          PYTHONPATH: src
+        run: |
+          python -m unittest discover -s tests -p test_setup021.py -v
+          python scripts/order021-offline-e2e.py --output order021-e2e.json
+      - name: Retain technical evidence without market calls or secrets
+        uses: actions/upload-artifact@v4
+        with:
+          name: order021-offline-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: order021-e2e.json
+          retention-days: 14
