@@ -1,0 +1,30 @@
+name: ORDER-022 private offline importer Windows and Ubuntu
+on:
+  pull_request:
+    paths:
+      - 'scripts/order022-private-import.py'
+      - 'tests/test_order022_private_import.py'
+      - 'research/order022/private-import.md'
+      - '.github/workflows/022-private-import-offline.yml'
+permissions:
+  contents: read
+jobs:
+  private-import-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ['3.11', '3.12']
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Offline negative tests only; no owner data and no market calls
+        env:
+          PYTHONPATH: src
+        run: python -m unittest discover -s tests -p test_order022_private_import.py -v
