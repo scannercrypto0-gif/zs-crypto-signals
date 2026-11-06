@@ -111,6 +111,8 @@ class Market:
     spot_usdt_trading: bool = True
 
     def __post_init__(self) -> None:
+        if not isinstance(self.book, SourceReceipt) or not isinstance(self.ticker24, SourceReceipt):
+            raise Unavailable("SYNTHETIC_MARKET_RECEIPTS_REQUIRED")
         for key in ("bid", "ask", "quote_24h"):
             object.__setattr__(self, key, number(getattr(self, key)))
         if type(self.spot_usdt_trading) is not bool:
@@ -237,12 +239,23 @@ def volume_continuity(children: Sequence[Candle], history: Sequence[Candle]) -> 
 
 
 def onset_timing(history5: Sequence[Candle], children5: Sequence[Candle],
-                 direction: Direction, impulse_state: bool | None) -> Decimal:
-    if impulse_state is None:
+                 direction: Direction, impulse_state: bool | None,
+                 impulse_trace: Sequence[bool | None] | None = None) -> Decimal:
+    """No early credit without a complete as-of, bar-aligned impulse trace.
+
+    This synthetic trace is a DEV fixture, not an approved impulse predicate.
+    """
+    if impulse_state is None or impulse_trace is None:
         raise Unavailable("FULL_IMPULSE_DEFINITION_UNFROZEN")
     history = list(history5) + list(children5)
     if len(history) < 39:
         raise Unavailable("ONSET_HISTORY_INSUFFICIENT")
+    if len(impulse_trace) != len(history):
+        raise Unavailable("IMPULSE_TRACE_LENGTH_MISMATCH")
+    if any(type(flag) is not bool for flag in impulse_trace):
+        raise Unavailable("IMPULSE_TRACE_UNKNOWN_OR_INVALID")
+    if type(impulse_state) is not bool or impulse_trace[-1] != impulse_state:
+        raise Unavailable("IMPULSE_TRACE_CURRENT_STATE_MISMATCH")
     d = DECIMAL_ONE if direction is Direction.UP else -DECIMAL_ONE
     k = len(history) - 1
     crossings = []
@@ -257,7 +270,9 @@ def onset_timing(history5: Sequence[Candle], children5: Sequence[Candle],
             crossings.append(j)
     if len(crossings) > 1:
         raise Unavailable("MULTIPLE_ONSET_EPISODES_UNRESOLVED")
-    if impulse_state or not crossings:
+    # The current false flag alone cannot certify that an impulse did not
+    # already occur between the onset and the decision.
+    if any(impulse_trace[k-19:k+1]) or not crossings:
         return DECIMAL_ZERO
     age = k - crossings[0]
     return clip(DECIMAL_ONE - Decimal(age) / 20) if 1 <= age < 20 else DECIMAL_ZERO
@@ -297,23 +312,25 @@ class Pivot:
 
 def confirmed_pivots(history: Sequence[Candle], parent_open: datetime,
                      left: int = PIVOT_LEFT_CANDIDATE,
-                     right: int = PIVOT_RIGHT_CANDIDATE) -> tuple[Pivot, ...]:
-    """Strict inequality on both sides; right-hand confirmation is historical."""
+                     right: int = PIVOT_RIGHT_CANDIDATE,
+                     witness: ClockWitness | None = None) -> tuple[Pivot, ...]:
+    """Freeze the entire right-hand window to what was known before parent open."""
     if left < 1 or right < 1:
         raise Unavailable("PIVOT_SHAPE_INVALID")
+    opened = utc(parent_open)
+    uncertainty = timedelta(seconds=float(witness.uncertainty_seconds)) if witness else timedelta(0)
+    known = tuple(b for b in history if b.available_at + uncertainty <= opened - uncertainty)
     pivots = []
-    for i in range(left, len(history) - right):
-        center = history[i]
-        neighbors = history[i-left:i] + history[i+1:i+right+1]
+    for i in range(left, len(known) - right):
+        center = known[i]
+        neighbors = known[i-left:i] + known[i+1:i+right+1]
         for kind, val, predicate in (
             ("HIGH", center.h, lambda b: val > b.h),
             ("LOW", center.l, lambda b: val < b.l),
         ):
             if all(predicate(other) for other in neighbors):
-                confirm = history[i+right]
-                # Never use a pivot before the evidence of its right window arrives.
-                if confirm.available_at > parent_open:
-                    continue
+                confirm = known[i+right]
+                # The entire confirmation window was available before parent open.
                 pivots.append(Pivot(kind, val, center.close_at, confirm.close_at,
                                     confirm.available_at,
                                     kind + ":" + center.close_at.isoformat()))
@@ -324,7 +341,11 @@ def structure(history: Sequence[Candle], parent: Candle, direction: Direction,
               mode: str, market: Market, decision: datetime, witness: ClockWitness,
               consumed_levels: frozenset[str]) -> tuple[Decimal, bool, str]:
     check_bars(history, decision, witness, timedelta(hours=4))
-    pivots = confirmed_pivots(history, parent.open_at)
+    if any(b.open_at >= parent.open_at for b in history):
+        raise Unavailable("STRUCTURE_HISTORY_AFTER_PARENT_OPEN")
+    if history[-1].close_at != parent.open_at:
+        raise Unavailable("STRUCTURE_PRIOR_BAR_NOT_ADJACENT")
+    pivots = confirmed_pivots(history, parent.open_at, witness=witness)
     highs = [p for p in pivots if p.kind == "HIGH"]
     lows = [p for p in pivots if p.kind == "LOW"]
     if len(highs) < 2 or len(lows) < 2:
@@ -340,12 +361,15 @@ def structure(history: Sequence[Candle], parent: Candle, direction: Direction,
     level = highs[-1] if direction is Direction.UP else lows[-1]
     if (level.level_id in consumed_levels
             or parent.open_at < level.available_at
-            or parent.open_at - level.confirmed_at > timedelta(hours=4 * PIVOT_VALID_BARS_CANDIDATE)):
+            or parent.open_at - level.available_at > timedelta(hours=4 * PIVOT_VALID_BARS_CANDIDATE)):
         raise Unavailable("LEVEL_EXPIRED_CONSUMED_OR_FUTURE")
+    # Reject an earlier close beyond the same level, even without a supplied
+    # consumed-level ledger. A replayed breakout is not a new event.
+    if any(d * (b.c - level.price) > 0 for b in history
+           if b.open_at >= level.available_at):
+        raise Unavailable("LEVEL_ALREADY_CROSSED_BEFORE_PARENT")
     a = atr14_prev(history)
-    if market.bid <= 0 or market.ask < market.bid:
-        raise Unavailable("BOOK_INVALID_FOR_BREAK")
-    asof(market.book.available_at, decision, witness)
+    liquidity(market, decision, witness)  # same source/age/eligibility guard as N12
     b = d * (parent.c - level.price) - (market.ask - market.bid)
     event = b > BREAK_ATR_CANDIDATE * a
     z_valid = clip(b / a) if event else DECIMAL_ZERO
@@ -356,6 +380,7 @@ def evaluate_r2(*, horizon: Horizon, direction: Direction, mode: str,
                 parent: Candle, children: Sequence[Candle], context: Mapping[str, Sequence[Candle]],
                 market: Market, witness: ClockWitness, decision_at: datetime,
                 impulse_state: bool | None = None,
+                impulse_trace: Sequence[bool | None] | None = None,
                 consumed_levels: frozenset[str] = frozenset()) -> dict:
     """Compute research *group candidates*, never call a numeric score contract.
 
@@ -417,7 +442,7 @@ def evaluate_r2(*, horizon: Horizon, direction: Direction, mode: str,
             past = ctx("5m", 39, 5)
             if past[-1].close_at != children[0].open_at:
                 raise Unavailable("ONSET_HISTORY_NOT_ADJACENT")
-            e = onset_timing(past, children, direction, impulse_state)
+            e = onset_timing(past, children, direction, impulse_state, impulse_trace)
             return (fpos(m)+e)/2
         if name == "VOLUME_CONTINUITY":
             past = ctx("5m", 20, 5)
@@ -432,6 +457,7 @@ def evaluate_r2(*, horizon: Horizon, direction: Direction, mode: str,
                 ctx("structure4h", 8, 240), parent, direction, mode,
                 market, decision_at, witness, consumed_levels)
             candidate["structural_event"] = event
+            candidate["structural_event_kind"] = ("CHoCH" if mode == "REVERSAL" else "BOS") if event else None
             candidate["candidate_level_id"] = level_id
             return score
         if name == "DAILY_WEEKLY_CONTEXT":
