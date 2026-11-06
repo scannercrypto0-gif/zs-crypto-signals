@@ -319,7 +319,17 @@ def confirmed_pivots(history: Sequence[Candle], parent_open: datetime,
         raise Unavailable("PIVOT_SHAPE_INVALID")
     opened = utc(parent_open)
     uncertainty = timedelta(seconds=float(witness.uncertainty_seconds)) if witness else timedelta(0)
-    known = tuple(b for b in history if b.available_at + uncertainty <= opened - uncertainty)
+    known_list = []
+    already_late = False
+    for b in history:
+        if b.available_at + uncertainty <= opened - uncertainty:
+            if already_late:
+                # Filtering non-contiguous availability must not invent pivots.
+                raise Unavailable("PIVOT_ASOF_HISTORY_GAP")
+            known_list.append(b)
+        else:
+            already_late = True
+    known = tuple(known_list)
     pivots = []
     for i in range(left, len(known) - right):
         center = known[i]
@@ -426,7 +436,14 @@ def evaluate_r2(*, horizon: Horizon, direction: Direction, mode: str,
         return candidate
 
     def ctx(key: str, n: int, minutes: int) -> Sequence[Candle]:
-        return required_context(context, key, n, decision_at, witness, timedelta(minutes=minutes))
+        bars = required_context(context, key, n, decision_at, witness, timedelta(minutes=minutes))
+        # Fixed frame boundary, not an arbitrary calendar freshness threshold.
+        prior_frame = ((horizon is Horizon.INTRADAY and key in ("5m", "30m"))
+                       or (horizon is Horizon.SWING and key in ("4h", "structure4h")))
+        anchor = parent.open_at if prior_frame else parent.close_at
+        if bars[-1].close_at > anchor or anchor - bars[-1].close_at >= timedelta(minutes=minutes):
+            raise Unavailable("CONTEXT_NOT_LATEST:" + key)
+        return bars
 
     def calc(name: str) -> Decimal:
         if name in ("30M_STRONG_CLOSE", "FOUR_H_STRONG_CLOSE"):
