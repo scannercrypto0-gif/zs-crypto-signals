@@ -376,7 +376,7 @@ def structure(history: Sequence[Candle], parent: Candle, direction: Direction,
     # Reject an earlier close beyond the same level, even without a supplied
     # consumed-level ledger. A replayed breakout is not a new event.
     if any(d * (b.c - level.price) > 0 for b in history
-           if b.open_at >= level.available_at):
+           if b.close_at >= level.available_at):
         raise Unavailable("LEVEL_ALREADY_CROSSED_BEFORE_PARENT")
     a = atr14_prev(history)
     liquidity(market, decision, witness)  # same source/age/eligibility guard as N12
