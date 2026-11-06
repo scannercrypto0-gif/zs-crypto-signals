@@ -309,6 +309,13 @@ class R2Contracts(TestCase):
 
     def test_n03_impulse_trace_missing_is_fail_closed_in_integration(self):
         kw=intraday()
+        # A real synthetic threshold crossing: the former flat integration
+        # fixture has no onset and would yield zero in *both* branches.
+        closes=(102,103,104,105,106,107)
+        rising=tuple(replace(b,c=D(str(value)),h=D(str(value+1)))
+                     for b,value in zip(kw["children"],closes))
+        kw["children"]=rising
+        kw["parent"]=replace(kw["parent"],h=D("108"),c=D("107"))
         missing=evaluate_r2(**{**kw,"impulse_trace":None})
         self.assertIsNone(missing["normalizers"]["MOMENTUM_EARLY_TIMING"])
         self.assertEqual(missing["missing_reasons"]["MOMENTUM_EARLY_TIMING"],
