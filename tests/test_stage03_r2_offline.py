@@ -15,7 +15,7 @@ from zs_smart_gate.stage03_r2_offline import (
     VERSION, BREAK_ATR_CANDIDATE, Candle, ClockWitness, Market,
     SourceReceipt, Unavailable, asof, close_parts, confirmed_pivots,
     evaluate_r2, liquidity, onset_timing, path_parts, structure,
-    volume_continuity,
+    volume_continuity, atr14_prev,
 )
 
 D = Decimal
@@ -352,6 +352,78 @@ class R2Contracts(TestCase):
                       decision,WITNESS,frozenset())
         with self.assertRaisesRegex(Unavailable,"SYNTHETIC_MARKET_RECEIPTS_REQUIRED"):
             replace(m, book=object())
+
+    def test_context_latest_asof_and_daily_weekly_causal_guards(self):
+        x=intraday()
+        old=dict(x["context"])
+        start=x["parent"].open_at
+        old["1h"]=history(start-timedelta(hours=24),21,60)
+        row=evaluate_r2(**{**x,"context":old})
+        self.assertIsNone(row["normalizers"]["MTF_NEARBY_STRUCTURE"])
+        self.assertEqual(row["missing_reasons"]["MTF_NEARBY_STRUCTURE"],
+                         "CONTEXT_NOT_LATEST:1h")
+        self.assertFalse(row["qualified"])
+        sw=swing()
+        oldsw=dict(sw["context"])
+        s=sw["parent"].open_at
+        oldsw["1d"]=history(s-timedelta(days=21),18,1440)
+        row=evaluate_r2(**{**sw,"context":oldsw})
+        self.assertIsNone(row["normalizers"]["DAILY_WEEKLY_CONTEXT"])
+        self.assertEqual(row["missing_reasons"]["DAILY_WEEKLY_CONTEXT"],
+                         "CONTEXT_NOT_LATEST:1d")
+
+    def test_pivot_asof_middle_receipt_gap_never_compresses_history(self):
+        start=BASE+timedelta(days=15)
+        bars=list(falling_structure(start))
+        # A late middle candle followed by timely later candles must NOT
+        # create a fabricated adjacency after filtering unavailable candles.
+        bars[24]=replace(bars[24],available_at=start+timedelta(seconds=1))
+        with self.assertRaisesRegex(Unavailable,"PIVOT_ASOF_HISTORY_GAP"):
+            confirmed_pivots(tuple(bars),start,witness=WITNESS)
+
+    def test_n07_strict_break_equality_and_both_continuation_directions(self):
+        start=BASE+timedelta(days=15)
+        downhist=falling_structure(start)
+        decision=start+timedelta(hours=4,seconds=20)
+        m=market(decision,spread=".20")
+        a=atr14_prev(downhist)
+        equality_close=D("100")+D(".20")+BREAK_ATR_CANDIDATE*a
+        equality_parent=candle(start,240,o="95",h="113",l="94",
+                               c=str(equality_close))
+        _,at_equality,_=structure(downhist,equality_parent,Direction.UP,
+                                  "REVERSAL",m,decision,WITNESS,frozenset())
+        self.assertFalse(at_equality)
+        downparent=candle(start,240,o="95",h="96",l="74",c="75")
+        _,down_event,_=structure(downhist,downparent,Direction.DOWN,
+                                 "CONTINUATION",m,decision,WITNESS,frozenset())
+        self.assertTrue(down_event)
+        rising=list(downhist)
+        for index,high in ((6,"100"),(14,"105"),(22,"110")):
+            rising[index]=replace(rising[index],h=D(high))
+        for index,low in ((9,"80"),(17,"85"),(25,"90")):
+            rising[index]=replace(rising[index],l=D(low))
+        upparent=candle(start,240,o="95",h="113",l="94",c="112")
+        _,up_event,_=structure(tuple(rising),upparent,Direction.UP,
+                               "CONTINUATION",m,decision,WITNESS,frozenset())
+        self.assertTrue(up_event)
+
+    def test_n08_n09_n10_n11_n12_swing_contract_values_and_no_03c_calls(self):
+        from zs_smart_gate import stage03c_score_contracts
+        kw=swing()
+        with patch.object(stage03c_score_contracts,"score_v2",
+                          side_effect=AssertionError("03C_NOT_AUTHORIZED")):
+            row=evaluate_r2(**kw)
+        self.assertEqual(D(row["normalizers"]["FOUR_H_STRONG_CLOSE"]),D(".35"))
+        self.assertEqual(D(row["normalizers"]["FOUR_1H_INTERNAL_QUALITY"]),D("0"))
+        self.assertEqual(D(row["normalizers"]["DAILY_WEEKLY_CONTEXT"]),D("0"))
+        self.assertEqual(D(row["normalizers"]["MOMENTUM_VOLUME"]),D(".3"))
+        self.assertGreater(D(row["normalizers"]["LIQUIDITY_QUALITY"]),D(".49"))
+        self.assertLess(D(row["normalizers"]["LIQUIDITY_QUALITY"]),D(".51"))
+        self.assertIsNone(row["normalizers"]["MARKET_STRUCTURE"])
+        self.assertEqual(row["score_status"],"SCORE_UNAVAILABLE")
+        self.assertFalse(row["qualified"])
+        self.assertFalse(row["publishable"])
+
 
 if __name__ == "__main__":
     import unittest
