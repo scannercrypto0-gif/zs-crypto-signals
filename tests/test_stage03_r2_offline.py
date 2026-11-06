@@ -342,6 +342,20 @@ class R2Contracts(TestCase):
         with self.assertRaisesRegex(Unavailable,"LEVEL_ALREADY_CROSSED"):
             structure(tuple(crossed),parent,Direction.UP,"REVERSAL",m,
                       decision,WITNESS,frozenset())
+        # Immediate next bar opened when right-window candle closed, but
+        # BEFORE its receipt arrived one second later. Its CLOSE can still
+        # cross the level, and must block any later duplicate break.
+        boundary=list(hist)
+        for i in range(25,32):
+            boundary[i]=replace(boundary[i],h=D(str(102+i-25)))
+        boundary[25]=replace(boundary[25],c=D("101"))
+        level_confirm_close=hist[24].close_at
+        self.assertEqual(boundary[25].open_at,level_confirm_close)
+        self.assertGreater(hist[24].available_at,boundary[25].open_at)
+        self.assertLess(hist[24].available_at,boundary[25].close_at)
+        with self.assertRaisesRegex(Unavailable,"LEVEL_ALREADY_CROSSED"):
+            structure(tuple(boundary),parent,Direction.UP,"REVERSAL",m,
+                      decision,WITNESS,frozenset())
         # The structure history cannot include the parent candle itself.
         with self.assertRaisesRegex(Unavailable,"STRUCTURE_HISTORY_AFTER_PARENT_OPEN"):
             structure(hist+(parent,),parent,Direction.UP,"REVERSAL",m,
