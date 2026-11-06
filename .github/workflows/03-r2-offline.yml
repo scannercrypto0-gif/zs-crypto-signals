@@ -1,0 +1,31 @@
+name: STAGE03 R2 synthetic-only DEV candidate regressions
+on:
+  pull_request:
+    paths:
+      - 'src/zs_smart_gate/stage03_r2_offline.py'
+      - 'tests/test_stage03_r2_offline.py'
+      - 'research/order025/r2-offline-coverage.md'
+      - '.github/workflows/03-r2-offline.yml'
+permissions:
+  contents: read
+jobs:
+  r2-synthetic:
+    name: r2-offline (${{ matrix.os }}, py${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: R2 synthetic-only unit integration regression
+        env:
+          PYTHONPATH: src
+        run: python -m unittest discover -s tests -p "test_stage03_r2_offline.py" -v
