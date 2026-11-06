@@ -62,7 +62,8 @@ def intraday():
     return dict(horizon=Horizon.INTRADAY, direction=Direction.UP,
                 mode="CONTINUATION", parent=parent, children=children,
                 context=context, market=market(decision), witness=WITNESS,
-                decision_at=decision, impulse_state=False)
+                decision_at=decision, impulse_state=False,
+                impulse_trace=(False,)*45)
 
 
 def swing():
@@ -228,17 +229,33 @@ class R2Contracts(TestCase):
         closes=[102,103,104,105,106,107]
         children=tuple(candle(t+timedelta(minutes=5*i),5,c=str(c),
                               h=str(c+1),l="99") for i,c in enumerate(closes))
-        self.assertEqual(onset_timing(past,children,Direction.UP,False),D(".75"))
-        self.assertEqual(onset_timing(past,children,Direction.UP,True),D("0"))
-        self.assertEqual(onset_timing(past,history(t,6,5),Direction.UP,False),D("0"))
+        clean = (False,)*45
+        self.assertEqual(onset_timing(past,children,Direction.UP,False,clean),D(".75"))
+        earlier_impulse = list(clean)
+        earlier_impulse[-3] = True  # already happened; now False cannot erase it
+        self.assertEqual(onset_timing(past,children,Direction.UP,False,
+                                      tuple(earlier_impulse)),D("0"))
+        current_impulse = clean[:-1] + (True,)
+        self.assertEqual(onset_timing(past,children,Direction.UP,True,
+                                      current_impulse),D("0"))
+        self.assertEqual(onset_timing(past,history(t,6,5),Direction.UP,
+                                      False,clean),D("0"))
         with self.assertRaisesRegex(Unavailable,"FULL_IMPULSE_DEFINITION_UNFROZEN"):
             onset_timing(past,children,Direction.UP,None)
+        with self.assertRaisesRegex(Unavailable,"FULL_IMPULSE_DEFINITION_UNFROZEN"):
+            onset_timing(past,children,Direction.UP,False)
+        with self.assertRaisesRegex(Unavailable,"IMPULSE_TRACE_LENGTH_MISMATCH"):
+            onset_timing(past,children,Direction.UP,False,clean[:-1])
+        with self.assertRaisesRegex(Unavailable,"IMPULSE_TRACE_UNKNOWN_OR_INVALID"):
+            onset_timing(past,children,Direction.UP,False,clean[:-2]+(None,False))
+        with self.assertRaisesRegex(Unavailable,"IMPULSE_TRACE_CURRENT_STATE_MISMATCH"):
+            onset_timing(past,children,Direction.UP,False,current_impulse)
         with self.assertRaisesRegex(Unavailable,"ONSET_HISTORY_INSUFFICIENT"):
-            onset_timing(past[-10:],children,Direction.UP,False)
-        # Changing a future candle cannot affect an earlier decision's onset.
-        result=onset_timing(past,children,Direction.UP,False)
+            onset_timing(past[-10:],children,Direction.UP,False,clean)
+        # Future candle after decision must not change an existing onset computation.
+        result=onset_timing(past,children,Direction.UP,False,clean)
         future=candle(children[-1].close_at,5,c="999",h="1000",l="99")
-        self.assertEqual(onset_timing(past,children,Direction.UP,False),result)
+        self.assertEqual(onset_timing(past,children,Direction.UP,False,clean),result)
         self.assertGreater(future.open_at,children[-2].open_at)
 
     def test_n07_confirmed_pivots_require_right_hand_receipts_and_no_ties(self):
@@ -289,6 +306,45 @@ class R2Contracts(TestCase):
         self.assertIn("PIVOT_HISTORY_INSUFFICIENT",result["missing_reasons"]["MARKET_STRUCTURE"])
         self.assertFalse(result["qualified"])
 
+
+    def test_n03_impulse_trace_missing_is_fail_closed_in_integration(self):
+        kw=intraday()
+        missing=evaluate_r2(**{**kw,"impulse_trace":None})
+        self.assertIsNone(missing["normalizers"]["MOMENTUM_EARLY_TIMING"])
+        self.assertEqual(missing["missing_reasons"]["MOMENTUM_EARLY_TIMING"],
+                         "FULL_IMPULSE_DEFINITION_UNFROZEN")
+        self.assertFalse(missing["qualified"])
+        historical=list(kw["impulse_trace"])
+        historical[-3]=True
+        prior=evaluate_r2(**{**kw,"impulse_trace":tuple(historical)})
+        no_impulse=evaluate_r2(**kw)
+        self.assertIsNotNone(no_impulse["normalizers"]["MOMENTUM_EARLY_TIMING"])
+        self.assertLess(D(prior["normalizers"]["MOMENTUM_EARLY_TIMING"]),
+                        D(no_impulse["normalizers"]["MOMENTUM_EARLY_TIMING"]))
+
+    def test_n07_replay_crossing_future_history_and_stale_book(self):
+        start=BASE+timedelta(days=15)
+        hist=falling_structure(start)
+        parent=candle(start,240,o="95",h="103",l="94",c="102",q="40")
+        decision=parent.close_at+timedelta(seconds=20)
+        m=market(decision,spread=".20")
+        # Historical close above the known level makes a second crossing ineligible,
+        # even if no consumed_levels ledger was supplied.
+        crossed=list(hist)
+        crossed[30]=replace(crossed[30],c=D("101"),h=D("102"))
+        with self.assertRaisesRegex(Unavailable,"LEVEL_ALREADY_CROSSED"):
+            structure(tuple(crossed),parent,Direction.UP,"REVERSAL",m,
+                      decision,WITNESS,frozenset())
+        # The structure history cannot include the parent candle itself.
+        with self.assertRaisesRegex(Unavailable,"STRUCTURE_HISTORY_AFTER_PARENT_OPEN"):
+            structure(hist+(parent,),parent,Direction.UP,"REVERSAL",m,
+                      decision,WITNESS,frozenset())
+        stale=market(decision,book_age=12)
+        with self.assertRaisesRegex(Unavailable,"MARKET_SNAPSHOT_STALE"):
+            structure(hist,parent,Direction.UP,"REVERSAL",stale,
+                      decision,WITNESS,frozenset())
+        with self.assertRaisesRegex(Unavailable,"SYNTHETIC_MARKET_RECEIPTS_REQUIRED"):
+            replace(m, book=object())
 
 if __name__ == "__main__":
     import unittest
