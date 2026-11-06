@@ -84,7 +84,8 @@ def swing():
 
 def falling_structure(start):
     first = start-timedelta(hours=32*4)
-    bars = list(history(first, 32, 240))
+    bars = [replace(b, o=D("95"), c=D("95"), h=D("97"), l=D("93"))
+            for b in history(first, 32, 240)]
     for i, high in ((6, "110"), (14, "105"), (22, "100")):
         bars[i] = replace(bars[i], h=D(high))
     for i, low in ((9, "90"), (17, "85"), (25, "80")):
