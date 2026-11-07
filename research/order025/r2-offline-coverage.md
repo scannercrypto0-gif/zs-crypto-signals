@@ -35,3 +35,29 @@ New workflow «.github/workflows/03-r2-offline.yml»: pull requests only; Ubuntu
 Not completed in this order: independent real UTC/PIT evidence; publisher timestamps; source rights; real book/24h availability; calibration on future independent DEV; full D3 DOWN inventory/NO_FILL economic outcome; D5 N_REQUIRED, qualified statistical controls, untouched OOS and Forward, scientific acceptance and Stage05.
 
 **Disposition:** «STAGE03_OPEN / STAGE05_FULL_HOLD / DEV_CANDIDATE / FORMULAS_UNFROZEN / HISTORICAL_PIT_UNVERIFIED».
+
+
+## «009A» — bounded functional completion on existing «PR #39»
+
+Authority: [PM 1.6 authorization #6706906310](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/25#issuecomment-6706906310). This extends the *synthetic-only* calculation and Stage03 contract wiring, **not** scientific edge validation or source/PIT approval. «007A/008» historical results are preserved, not rerun.
+
+| Group | Calculation / inputs | «009A» integration verdict | Still blocked |
+| --- | --- | --- | --- |
+| «N01» | closed 30m OHLCV | reused 007A + R2 functional bridge | live source PIT / qualification |
+| «N02» | 6 contiguous 5m children | reused 007A + bridge | live source PIT / qualification |
+| «N03» | 5m onset with previous ATR and externally supplied explicit full-impulse trace | synthetic boundary / unknown=UNAVAILABLE | approved and independently proven full-impulse predicate / historical event trace |
+| «N04» | child quote volume continuity | reused 007A + bridge | live source PIT / qualification |
+| «N05» | closed 1h/4h context | reused 007A + bridge | live source PIT / qualification |
+| «N06» | separately received book + rolling 24h USDT quote volume | unit/window/eligibility/as-of checks, independent numeric reference | authenticated original book/ticker24 source and as-of |
+| «N07» | confirmed pivots, mode, 4h ATR_prev, level consumption, liquidity | fixed 8-bar unreachable call to 32-bar existing synthetic fixture, causal positive/negative tests | original confirmed structure/mode and real liquidity/PIT; parameters UNFROZEN |
+| «N08» | closed 4h OHLCV | reused 007A + bridge | live source PIT / qualification |
+| «N09» | four contiguous 1h children | reused 007A + bridge | live source PIT / qualification |
+| «N10» | last closed+available 1d/1w, prior ATR, context-only direction/mode | independent arithmetic + late weekly rejection | historical 18-week warmup and mode/availability attestation |
+| «N11» | 4h ATR and quote volume | reused 007A + bridge | live source PIT / qualification |
+| «N12» | N06 shared liquidity with separate Swing horizon | unit/window/as-of tests + bridge | real original book/ticker24 and clock |
+
+**Bridge contract:** `src/zs_smart_gate/stage03_r2_functional.py` calls the accepted `assess_readiness` and existing `evaluate_r2` with their **independently typed original input objects**, verifies matching source IDs/price/quote-volume/as-of/parent-and-child windows, then emits a deterministic SHA256 packet. A candidate remains `RESEARCH_CANDIDATE / NOT_EVALUATED / SCORE_UNAVAILABLE / signal_id=None`; source disagreement or failed qualification-readiness becomes `REJECTED`. Neither bridge nor R2 invents `base_volume` from quote turnover. In the one synthetic fixture, the caller explicitly provides both base and quote volumes. The packet digest is a reproducibility fingerprint, **not** independent receipt/custody/PIT certification.
+
+**Fail-closed:** R2 accepts only `SYNTHETIC:` source receipts and synthetic witness; `N03` lacking a defined impulse trace returns unavailable, and positive synthetic trace is labeled unapproved. `N06/N12` enforce explicit USDT quote and rolling-24h ticker semantics, but existing synthetic-fixture defaults do not attest any real provider feed. `N07` still needs confirmed 2-sided pivot evidence and pre-open level; a delayed middle pivot confirmation cannot be silently filtered out. `N10` remains context only, never a reversal trigger. `03C score_v2` and production `DETECTED_SIGNAL` are not invoked.
+
+**Previously accepted tests:** no new run of 007A or 008 is authorized. The closed 008 CI job is disabled for subsequent 009A commits; remaining automatic bounded PR regression jobs verify edited code without market requests. No MASTER/README edit, no Stage05, no Telegram, trading, live market, publication, or merge.
