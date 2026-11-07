@@ -4,6 +4,8 @@ on:
     paths:
       - 'src/zs_smart_gate/stage03_r2_offline.py'
       - 'tests/test_stage03_r2_offline.py'
+      - 'scripts/r2-historical-dev.py'
+      - 'tests/test_r2_historical_dev.py'
       - 'research/order025/r2-offline-coverage.md'
       - '.github/workflows/03-r2-offline.yml'
 permissions:
@@ -29,3 +31,68 @@ jobs:
         env:
           PYTHONPATH: src
         run: python -m unittest discover -s tests -p "test_stage03_r2_offline.py" -v
+  r2-historical-real-dev-007a:
+    if: ${{ github.event.pull_request.number == 39 && github.head_ref == 'stage03-r2-offline-dev-candidate-sd23' }}
+    name: 007A one private real historic DEV (read-only, no market)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Small targeted real-adapter tests only
+        env:
+          PYTHONPATH: src
+        run: python -m unittest discover -s tests -p "test_r2_historical_dev.py" -v
+      - name: Validate private release and replay one historical DEV only
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PYTHONPATH: src
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = "scannercrypto0-gif/zs-crypto-signals"
+          test "$GITHUB_EVENT_NAME" = "pull_request"
+          test "$(git rev-parse HEAD)" = "$PR_HEAD_SHA"
+          test "$(gh api "repos/$GITHUB_REPOSITORY" --jq .private)" = true
+          p="$RUNNER_TEMP/owner-private-original-010b"
+          mkdir -p "$p"
+          gh release download order022-private-010b-2025-v1 --repo "$GITHUB_REPOSITORY" --dir "$p"
+          python scripts/order025-github-custody.py verify --download-dir "$p" --require-transfer-receipt
+          python scripts/r2-historical-dev.py --download-dir "$p" --output-dir "$RUNNER_TEMP/r2-one-dev-007a"
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          folder=Path(os.environ["RUNNER_TEMP"])/"r2-one-dev-007a"
+          f=folder/"freeze-007a.json"
+          report=folder/"dev-aggregate-007a.json"
+          frozen=json.loads(f.read_bytes())
+          r=json.loads(report.read_bytes())
+          assert frozen["status"]=="FROZEN_BEFORE_DEV_COMPUTATION"
+          assert frozen["github_pr_head_sha"]==os.environ["PR_HEAD_SHA"]
+          assert r["schema"]=="ZS03_R2_007A_PRICE_VOLUME_DEV_DESCRIPTIVE_ONLY_V1"
+          assert r["pit_status"]=="HISTORICAL_DESCRIPTIVE_PIT_UNVERIFIED"
+          assert r["qualification"] is False and r["score"] is None
+          assert r["market_rest_get"]==0 and r["market_ws"]==0
+          assert r["oos"]=="NOT_RUN" and r["forward"]=="NOT_RUN"
+          assert r["science_pass"] is False and r["stage05"]=="FULL_HOLD"
+          print("R2_007A_REAL_DEV_AGGREGATE_SHA256="+hashlib.sha256(report.read_bytes()).hexdigest())
+          print("R2_007A_FROZEN_PRECOMPUTATION_SHA256="+hashlib.sha256(f.read_bytes()).hexdigest())
+          print("R2_007A_AGGREGATES_ONLY="+json.dumps(r,sort_keys=True,separators=(",",":")))
+          PY
+      - name: Retain redacted aggregate and precomputed freeze only (no market bytes)
+        uses: actions/upload-artifact@v4
+        with:
+          name: r2-one-private-dev-aggregates-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/r2-one-dev-007a/dev-aggregate-007a.json
+            ${{ runner.temp }}/r2-one-dev-007a/freeze-007a.json
+          if-no-files-found: error
+          retention-days: 14
