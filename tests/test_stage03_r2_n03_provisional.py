@@ -17,7 +17,7 @@ from zs_smart_gate.stage03_r2_offline import Unavailable
 from zs_smart_gate.stage03_r2_functional import stage03_r2_functional_e2e
 from zs_smart_gate.stage03_r2_source_contract import ModeSourceEvidence
 from zs_smart_gate.stage03_r2_n03_provisional import (
-    MODE_RULE_ID, PROPOSAL_SHA256, SPEC,
+    MODE_RULE_ID, SPEC_SHA256, SPEC,
     derive_prior_mode_from_4h, evaluate_provisional_n03,
 )
 
@@ -75,7 +75,7 @@ def call_n03(rows, direction, horizon, decision=None, name="CONTINUATION", sourc
 
 class P0OperationalN03Tests(TestCase):
     def test_frozen_hash_independent_arithmetic_and_both_directions_horizons(self):
-        self.assertEqual(PROPOSAL_SHA256,
+        self.assertEqual(SPEC_SHA256,
             "ae1b645897866eed435ba29c585e75265b36b89e47d3f16cb360d94be4afb4d8")
         self.assertFalse(SPEC["setup_v1_1_equivalent"])
         self.assertEqual(SPEC["horizons_episode_bars"], {"INTRADAY": 20, "SWING": 48})
