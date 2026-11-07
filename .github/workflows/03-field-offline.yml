@@ -1,0 +1,30 @@
+name: ZS03 bounded field collector offline safety
+on:
+  pull_request:
+    paths:
+      - 'src/zs_smart_gate/stage03_windows_field_capture.py'
+      - 'src/zs_smart_gate/stage03_windows_field_review.py'
+      - 'tests/test_stage03_windows_field.py'
+      - 'research/order025/run-stage03-field.ps1'
+      - '.github/workflows/03-field-offline.yml'
+permissions:
+  contents: read
+jobs:
+  field-offline-guard:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Only field collector safety tests; NO market request
+        env:
+          PYTHONPATH: src
+        run: python -m unittest discover -s tests -p "test_stage03_windows_field.py" -v
