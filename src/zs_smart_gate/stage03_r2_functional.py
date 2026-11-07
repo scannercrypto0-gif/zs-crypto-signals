@@ -14,6 +14,7 @@ from .core import MarketSnapshot
 from .mtf_contracts import CandleWindow
 from .stage03_qualification_readiness import assess_readiness
 from .stage03_r2_offline import Candle, Market, Unavailable, evaluate_r2
+from .stage03_r2_n03_provisional import evaluate_provisional_n03
 from .stage03_r2_source_contract import (
     BookTickerPacket, Ticker24Packet, CausalImpulseObservation,
     VersionedFullImpulsePredicate, ModeSourceEvidence,
@@ -37,7 +38,8 @@ def stage03_r2_functional_e2e(*, r2_inputs: Mapping[str, object],
                               full_impulse_definition: VersionedFullImpulsePredicate | None = None,
                               full_impulse_trace: Sequence[CausalImpulseObservation] | None = None,
                               market_source_packets: tuple[BookTickerPacket, Ticker24Packet] | None = None,
-                              mode_source_evidence: ModeSourceEvidence | None = None) -> dict:
+                              mode_source_evidence: ModeSourceEvidence | None = None,
+                              operational_n03_5m: Sequence[Candle] | None = None) -> dict:
     """Connect existing R2 candidates to existing 03A readiness, fail closed.
 
     Each source enters as its ORIGINAL typed contract. This function neither
@@ -70,6 +72,17 @@ def stage03_r2_functional_e2e(*, r2_inputs: Mapping[str, object],
     if "MOMENTUM_EARLY_TIMING" in r2["normalizers"]:
         r2["normalizers"]["MOMENTUM_EARLY_TIMING"] = None
         r2["missing_reasons"]["MOMENTUM_EARLY_TIMING"] = impulse_reason
+
+    # Diagnostic V0.1 is falsifiable but is not an approved scientific
+    # definition, score contribution or source-qualified PRE_MOVE.
+    operational_review = None
+    if operational_n03_5m is not None:
+        operational_review = evaluate_provisional_n03(
+            bars=operational_n03_5m, direction=r2_inputs["direction"],
+            horizon=r2_inputs["horizon"], mode=r2_inputs["mode"],
+            mode_evidence=mode_source_evidence,
+            parent_open_at=r2_inputs["parent"].open_at,
+            decision_at=r2_inputs["decision_at"], witness=r2_inputs["witness"])
 
     mode_review = None
     if r2_inputs["horizon"].value == "SWING":
@@ -176,6 +189,7 @@ def stage03_r2_functional_e2e(*, r2_inputs: Mapping[str, object],
         "source_match_reasons": reasons,
         "r2": r2,
         "full_impulse_trace_review": trace_review,
+        "n03_operational_proxy_review": operational_review,
         "mode_evidence_review": mode_review,
         "market_source_review": source_review,
         "provenance": {
