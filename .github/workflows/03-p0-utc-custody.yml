@@ -5,6 +5,8 @@ on:
       - ".github/workflows/03-p0-utc-custody.yml"
       - "scripts/p0-nts-witness.py"
       - "tests/test_p0_nts_witness.py"
+      - "tests/test_p0_owner_receipt.py"
+      - "scripts/p0-owner-receipt.py"
       - "tests/test_p0_custody_readback.py"
       - "research/order025/p0-readiness/**"
 permissions:
@@ -25,6 +27,8 @@ jobs:
         run: python -m unittest discover -s tests -p "test_p0_custody_readback.py" -v
       - name: UTC evaluator fail-closed unit tests (no network)
         run: python -m unittest discover -s tests -p "test_p0_nts_witness.py" -v
+      - name: Owner external receipt comparison offline negative tests (no network)
+        run: python -m unittest discover -s tests -p "test_p0_owner_receipt.py" -v
   independent-clock:
     # The single authorized live clock probe succeeded on this exact head.
     # Do not repeat it for a Windows raw-byte checkout regression fix.
