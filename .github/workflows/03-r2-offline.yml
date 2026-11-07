@@ -6,6 +6,8 @@ on:
       - 'tests/test_stage03_r2_offline.py'
       - 'scripts/r2-historical-dev.py'
       - 'tests/test_r2_historical_dev.py'
+      - 'scripts/r2-dev-association.py'
+      - 'tests/test_r2_dev_association.py'
       - 'research/order025/r2-offline-coverage.md'
       - '.github/workflows/03-r2-offline.yml'
 permissions:
@@ -31,9 +33,9 @@ jobs:
         env:
           PYTHONPATH: src
         run: python -m unittest discover -s tests -p "test_stage03_r2_offline.py" -v
-  r2-historical-real-dev-007a:
+  one-real-dev-price-association-008:
     if: ${{ github.event.pull_request.number == 39 && github.head_ref == 'stage03-r2-offline-dev-candidate-sd23' }}
-    name: 007A one private real historic DEV (read-only, no market)
+    name: 008 one historical DEV future-price check (no market)
     runs-on: ubuntu-latest
     timeout-minutes: 25
     permissions:
@@ -46,11 +48,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Small targeted real-adapter tests only
+      - name: Only new targeted 008 boundary and baseline tests
         env:
           PYTHONPATH: src
-        run: python -m unittest discover -s tests -p "test_r2_historical_dev.py" -v
-      - name: Validate private release and replay one historical DEV only
+        run: python -m unittest discover -s tests -p "test_r2_dev_association.py" -v
+      - name: Check existing PRIVATE source hashes and execute exactly one DEV association
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -62,37 +64,50 @@ jobs:
           test "$GITHUB_EVENT_NAME" = "pull_request"
           test "$(git rev-parse HEAD)" = "$PR_HEAD_SHA"
           test "$(gh api "repos/$GITHUB_REPOSITORY" --jq .private)" = true
-          p="$RUNNER_TEMP/owner-private-original-010b"
-          mkdir -p "$p"
-          gh release download order022-private-010b-2025-v1 --repo "$GITHUB_REPOSITORY" --dir "$p"
-          python scripts/order025-github-custody.py verify --download-dir "$p" --require-transfer-receipt
-          python scripts/r2-historical-dev.py --download-dir "$p" --output-dir "$RUNNER_TEMP/r2-one-dev-007a"
+          private="$RUNNER_TEMP/owner-private-existing-release"
+          mkdir -p "$private"
+          gh release download order022-private-010b-2025-v1 --repo "$GITHUB_REPOSITORY" --dir "$private"
+          python scripts/order025-github-custody.py verify --download-dir "$private" --require-transfer-receipt
+          python scripts/r2-dev-association.py --download-dir "$private" --output-dir "$RUNNER_TEMP/one-008-private-result"
           python - <<'PY'
           import hashlib,json,os
           from pathlib import Path
-          folder=Path(os.environ["RUNNER_TEMP"])/"r2-one-dev-007a"
-          f=folder/"freeze-007a.json"
-          report=folder/"dev-aggregate-007a.json"
-          frozen=json.loads(f.read_bytes())
-          r=json.loads(report.read_bytes())
-          assert frozen["status"]=="FROZEN_BEFORE_DEV_COMPUTATION"
-          assert frozen["github_pr_head_sha"]==os.environ["PR_HEAD_SHA"]
-          assert r["schema"]=="ZS03_R2_007A_PRICE_VOLUME_DEV_DESCRIPTIVE_ONLY_V1"
-          assert r["pit_status"]=="HISTORICAL_DESCRIPTIVE_PIT_UNVERIFIED"
-          assert r["qualification"] is False and r["score"] is None
-          assert r["market_rest_get"]==0 and r["market_ws"]==0
-          assert r["oos"]=="NOT_RUN" and r["forward"]=="NOT_RUN"
-          assert r["science_pass"] is False and r["stage05"]=="FULL_HOLD"
-          print("R2_007A_REAL_DEV_AGGREGATE_SHA256="+hashlib.sha256(report.read_bytes()).hexdigest())
-          print("R2_007A_FROZEN_PRECOMPUTATION_SHA256="+hashlib.sha256(f.read_bytes()).hexdigest())
-          print("R2_007A_AGGREGATES_ONLY="+json.dumps(r,sort_keys=True,separators=(",",":")))
+          out=Path(os.environ["RUNNER_TEMP"])/"one-008-private-result"
+          spec=json.loads((out/"freeze-008.json").read_bytes())
+          result=json.loads((out/"aggregate-008.json").read_bytes())
+          assert spec["pre_outcome_state"]=="FROZEN_BEFORE_CSV_AND_OUTCOMES"
+          assert spec["pr_head_sha"]==os.environ["PR_HEAD_SHA"]
+          assert result["code_pr_head_sha"]==os.environ["PR_HEAD_SHA"]
+          assert result["schema"]=="ZS03_008_ONE_DEV_PRICE_ASSOCIATION_V1"
+          assert result["source_zip_sha256_verified"]==12
+          assert result["source_pit"]=="HISTORICAL_REPLAY_PIT_UNVERIFIED"
+          assert result["qualified_signal_count"] is None
+          assert result["net_executable_pnl"] is None
+          assert result["market_requests"]==0 and result["oos"]=="NOT_RUN" and result["forward"]=="NOT_RUN"
+          assert result["science_confirmatory_pass"] is False and result["stage05"]=="FULL_HOLD"
+          assert set(result["data"])=={"BTCUSDT","ETHUSDT"}
+          for sym,v in result["data"].items():
+              assert (out/("assignment-seal-008-"+sym+".json")).is_file()
+              assert set(v["eight_cells_by_horizon_and_direction"])=={"INTRADAY","SWING"}
+              for horizon,arms in v["eight_cells_by_horizon_and_direction"].items():
+                  assert set(arms)=={"UP","DOWN"}
+                  for d,cell in arms.items():
+                      assert cell["label_known"]+cell["label_unavailable"]==cell["candidate_predictors"]
+                      assert cell["within_week"]["confidence_interval"] is None
+          print("008_FREEZE_SHA256="+hashlib.sha256((out/"freeze-008.json").read_bytes()).hexdigest())
+          print("008_REPORT_SHA256="+hashlib.sha256((out/"aggregate-008.json").read_bytes()).hexdigest())
+          for sym,v in result["data"].items():
+              print("008_ASSIGNMENT_SHA256_"+sym+"="+v["assignment_seal_sha256"])
+          print("008_AGGREGATES_ONLY="+json.dumps(result,sort_keys=True,separators=(",",":")))
           PY
-      - name: Retain redacted aggregate and precomputed freeze only (no market bytes)
+      - name: Retain only immutable specification, pre-outcome selection hashes and aggregated results
         uses: actions/upload-artifact@v4
         with:
-          name: r2-one-private-dev-aggregates-${{ github.run_id }}-${{ github.run_attempt }}
+          name: 008-dev-association-only-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
-            ${{ runner.temp }}/r2-one-dev-007a/dev-aggregate-007a.json
-            ${{ runner.temp }}/r2-one-dev-007a/freeze-007a.json
+            ${{ runner.temp }}/one-008-private-result/freeze-008.json
+            ${{ runner.temp }}/one-008-private-result/assignment-seal-008-BTCUSDT.json
+            ${{ runner.temp }}/one-008-private-result/assignment-seal-008-ETHUSDT.json
+            ${{ runner.temp }}/one-008-private-result/aggregate-008.json
           if-no-files-found: error
           retention-days: 14
