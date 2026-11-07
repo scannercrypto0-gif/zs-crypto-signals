@@ -1,5 +1,17 @@
 # ZS Crypto Signals — SMART GATE
 
+## قرار المالك — 7 نوفمبر 2026 — «Stage05 OFFLINE/DISABLED» أثناء التطوير
+
+**المرجع الحاكم:** [موافقة المالك في «Issue #25» #6706270216](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/25#issuecomment-6706270216)؛ [تحديث «MASTER v1.38» المقترح](ZS_SMART_GATE_MASTER.md).
+
+- **المسموح:** تكامل «05A/05B/05C» برمجيًا داخل بيئة «OFFLINE/DISABLED» أثناء تطوير المرحلة «03»؛ وتجارب «CI» اصطناعية فقط دون مسارات إرسال حية. إعداد واجهات «Primary/Analytics/Interactive»، «signal_id» واحد، ثلاثة إقرارات منفصلة، «dedup/restart/retry»، وأسباب «SCORE_UNAVAILABLE/RESEARCH_ONLY».
+- **المنع الباقي:** لا اتصال «Telegram» حقيقي حتى التجريبي، ولا تفعيل «Webhooks/Polling» أو مفاتيح أو وجهات حقيقية، ولا سوق جديد أو تداول أو جدولة حية أو دمج تلقائي. لا إغلاق علمي أو تشغيلي لأي مرحلة بمجرد نجاح المحاكاة.
+- **الحالة:** «Stage03 OPEN / SCIENCE_CONFIRMATORY_HOLD»؛ «Stage05 OFFLINE_INTEGRATION_PERMITTED / LIVE_AND_PRODUCTION_FULL_HOLD». التقييم العلمي للمنظومة الكاملة بعد اكتمال التكامل، والتشغيل النهائي على «Windows» بعد اعتماد التسليم.
+
+**ملاحظة الأسبقية:** النص التاريخي أدناه عن منع كل تطوير «05» يُقرأ وفق الاستثناء المعطّل أعلاه، أما حظر التشغيل الحي والإنتاج فما زال ساريًا. هذا التحديث على فرع مراجعة، ولا يُعد مدمجًا إلى «main» قبل تفويض منفصل.
+
+---
+
 ## القرار المعماري الدائم — 5 نوفمبر 2026 — «MASTER v1.37»
 
 **التفريق الإلزامي بين التطوير والاستضافة النهائية؛ المرجع الحاكم [«MASTER v1.37»](ZS_SMART_GATE_MASTER.md).**
