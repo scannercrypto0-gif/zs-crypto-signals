@@ -11,14 +11,17 @@ import hashlib
 import importlib.util
 import json
 from pathlib import Path
+import sys
 import unittest
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))  # P0 job intentionally avoids package installation
 
 from zs_smart_gate.stage03a_contracts import (
     Direction, EventIdentity, Horizon, Lifecycle, LifecycleObservation,
     PITDecisionSnapshot, unavailable_score,
 )
 
-ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location(
     "p0_field_harness_for_scope_check", ROOT / "scripts/p0-field-harness.py")
 guard = importlib.util.module_from_spec(spec)
