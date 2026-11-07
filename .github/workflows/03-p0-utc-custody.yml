@@ -56,6 +56,12 @@ jobs:
           sudo timeout 95s chronyd -x -d -f "$WORK/chrony.conf" > "$WORK/daemon.log" 2>&1 &
           PID=$!
           trap 'sudo kill "$PID" 2>/dev/null || true' EXIT
+          sleep 2
+          if ! kill -0 "$PID" 2>/dev/null; then
+            echo "CLOCK_BLOCKED_DAEMON_EARLY_EXIT"
+            tail -n 100 "$WORK/daemon.log" || true
+            exit 1
+          fi
           SELECTED=0
           for i in $(seq 1 25); do
             if sudo chronyc -n sources 2>/dev/null | grep -qE '^[[:space:]]*\^\*[[:space:]]+'; then
@@ -64,7 +70,12 @@ jobs:
             fi
             sleep 3
           done
-          sudo chronyc -n tracking | tee "$WORK/tracking.txt"
+          if ! sudo chronyc -n tracking > "$WORK/tracking.txt"; then
+            echo "CLOCK_BLOCKED_DAEMON_UNREACHABLE"
+            tail -n 100 "$WORK/daemon.log" || true
+            exit 1
+          fi
+          cat "$WORK/tracking.txt"
           sudo chronyc -n authdata | tee "$WORK/auth.txt"
           sudo chronyc -n ntpdata | tee "$WORK/ntp.txt"
           sudo chronyc -n sources -v | tee "$WORK/sources.txt"
