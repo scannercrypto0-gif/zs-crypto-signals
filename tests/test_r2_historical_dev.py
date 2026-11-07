@@ -28,10 +28,10 @@ class HistoricalR2BoundaryTests(unittest.TestCase):
         self.assertFalse(hasattr(row,"independent_reference"))
 
     def test_aggregate_reuses_real_price_only_math_deterministically(self):
-        rows=[b(i*m.FIVE_MIN,10+i) for i in range(26)]
+        rows=[b(i*m.FIVE_MIN,10+i) for i in range(30)]
         parent=m.aggregate(rows[-6:],6*m.FIVE_MIN)
-        self.assertEqual(parent.start,20*m.FIVE_MIN)
-        self.assertEqual(parent.end,26*m.FIVE_MIN)
+        self.assertEqual(parent.start,24*m.FIVE_MIN)
+        self.assertEqual(parent.end,30*m.FIVE_MIN)
         frames={"5m":rows,"1h":[],"4h":[]}
         ends={k:[x.end for x in v] for k,v in frames.items()}
         x, miss=m.numeric_groups(parent,rows[-6:],frames,ends,Direction.UP,"INTRADAY")
