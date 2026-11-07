@@ -19,6 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha }}
           persist-credentials: false
       - uses: actions/setup-python@v5
         with:
@@ -29,6 +30,49 @@ jobs:
         run: python -m unittest discover -s tests -p "test_p0_nts_witness.py" -v
       - name: Owner external receipt comparison offline negative tests (no network)
         run: python -m unittest discover -s tests -p "test_p0_owner_receipt.py" -v
+      - name: Portable owner receipt creation and negative tests (no network)
+        run: python -m unittest discover -s tests -p "test_p0_owner_anchor.py" -v
+      - name: Emit and verify a pinned synthetic-only handoff receipt
+        shell: bash
+        env:
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          RECEIPT="$RUNNER_TEMP/ZS03_SYNTHETIC_OWNER_RECEIPT.json"
+          python scripts/p0-owner-anchor.py emit \
+            --raw research/order025/p0-readiness/synthetic-raw-v1.txt \
+            --manifest research/order025/p0-readiness/owner-custody-and-field-manifest-draft.md \
+            --study-id ZS03-P0-UTC-CUSTODY-FIELD-READINESS-001 \
+            --event-id ZS03-P0-SYNTHETIC-READBACK-0001 \
+            --code-sha "$PR_HEAD_SHA" \
+            --repository scannercrypto0-gif/zs-crypto-signals \
+            --raw-path research/order025/p0-readiness/synthetic-raw-v1.txt \
+            --manifest-path research/order025/p0-readiness/owner-custody-and-field-manifest-draft.md \
+            --creator SYNTHETIC_CI_WRITER \
+            --output "$RECEIPT"
+          RECEIPT_SHA="$(sha256sum "$RECEIPT" | awk '{print $1}')"
+          python scripts/p0-owner-anchor.py verify \
+            --raw research/order025/p0-readiness/synthetic-raw-v1.txt \
+            --manifest research/order025/p0-readiness/owner-custody-and-field-manifest-draft.md \
+            --receipt "$RECEIPT" \
+            --expected-owner-file-sha256 "$RECEIPT_SHA" \
+            --expected-code-sha "$PR_HEAD_SHA" \
+            --expected-event-id ZS03-P0-SYNTHETIC-READBACK-0001
+          {
+            echo "### Synthetic owner handoff receipt only — NOT independent custody"
+            echo "HEAD: $PR_HEAD_SHA"
+            echo "EVENT_ID: ZS03-P0-SYNTHETIC-READBACK-0001"
+            echo "RECEIPT_FILE_SHA256: $RECEIPT_SHA"
+            echo "RECEIPT_FILE_BYTES: $(wc -c < "$RECEIPT")"
+            echo "OWNER_CUSTODY_ACK_PENDING; owner must independently download/store/ack"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload receipt-only temporary handoff artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ZS03-synthetic-owner-receipt-${{ github.event.pull_request.head.sha }}
+          path: ${{ runner.temp }}/ZS03_SYNTHETIC_OWNER_RECEIPT.json
+          if-no-files-found: error
+          retention-days: 7
   independent-clock:
     # The single authorized live clock probe succeeded on this exact head.
     # Do not repeat it for a Windows raw-byte checkout regression fix.
