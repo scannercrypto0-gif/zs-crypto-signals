@@ -150,6 +150,10 @@ class R2009AMinimalTests(TestCase):
             self.assertEqual(ok["qualification_status"],"NOT_EVALUATED")
             self.assertEqual(ok["r2"]["status"],"DEV_CANDIDATE")
             self.assertEqual(len(ok["r2"]["normalizers"]),6)
+            self.assertIsNone(ok["r2"]["normalizers"]["MOMENTUM_EARLY_TIMING"])
+            self.assertEqual(
+                ok["r2"]["missing_reasons"]["MOMENTUM_EARLY_TIMING"],
+                "FULL_IMPULSE_PREDICATE_NOT_DEFINED_FOR_FUNCTIONAL_CONTRACT")
             self.assertEqual(ok["source_match_reasons"],[])
             self.assertEqual(len(ok["packet_sha256"]),64)
             self.assertEqual(ok["provenance"]["quote24_unit"],"USDT")
