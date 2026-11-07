@@ -54,9 +54,11 @@ jobs:
           port 0
           EOF
           chmod 644 "$WORK/chrony.conf"
-          sudo timeout 95s chronyd -x -d -f "$WORK/chrony.conf" > "$WORK/daemon.log" 2>&1 &
+          # Ubuntu confines chronyd with AppArmor; config must be in /etc/chrony.
+          sudo install -m 644 "$WORK/chrony.conf" /etc/chrony/chrony-p0-one-shot.conf
+          sudo timeout 95s chronyd -x -d -f /etc/chrony/chrony-p0-one-shot.conf > "$WORK/daemon.log" 2>&1 &
           PID=$!
-          trap 'sudo kill "$PID" 2>/dev/null || true' EXIT
+          trap 'sudo kill "$PID" 2>/dev/null || true; sudo rm -f /etc/chrony/chrony-p0-one-shot.conf' EXIT
           sleep 2
           if ! kill -0 "$PID" 2>/dev/null; then
             echo "CLOCK_BLOCKED_DAEMON_EARLY_EXIT"
