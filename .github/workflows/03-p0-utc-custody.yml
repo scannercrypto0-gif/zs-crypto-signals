@@ -4,6 +4,7 @@ on:
     paths:
       - ".github/workflows/03-p0-utc-custody.yml"
       - "scripts/p0-nts-witness.py"
+      - "scripts/p0-stamp-calibration.py"
       - "tests/test_p0_nts_witness.py"
       - "tests/test_p0_owner_receipt.py"
       - "scripts/p0-owner-receipt.py"
@@ -71,6 +72,40 @@ jobs:
         with:
           name: ZS03-synthetic-owner-receipt-${{ github.event.pull_request.head.sha }}
           path: ${{ runner.temp }}/ZS03_SYNTHETIC_OWNER_RECEIPT.json
+          if-no-files-found: error
+          retention-days: 7
+  synthetic-stamp-observation:
+    name: observed synthetic local stamp callback on ephemeral Ubuntu (NO PIT)
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Observe monotonic-to-UTC scheduling window; stop on 100 ms threshold
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/p0-stamp-calibration.py --self-test
+          python scripts/p0-stamp-calibration.py --samples 2048 --margin-ms 100 --output "$RUNNER_TEMP/ZS03_SYNTHETIC_STAMP_OBSERVATION.json"
+          sha256sum "$RUNNER_TEMP/ZS03_SYNTHETIC_STAMP_OBSERVATION.json"
+          {
+            echo "### Synthetic local stamp observation — NOT NTS, not market PIT"
+            echo "Exact PR HEAD: ${{ github.event.pull_request.head.sha }}"
+            echo "Synthetic-only 2048 serialized two-thread callback samples"
+            echo "Observation JSON SHA256: $(sha256sum "$RUNNER_TEMP/ZS03_SYNTHETIC_STAMP_OBSERVATION.json" | awk '{print $1}')"
+            echo "Future independent UTC witness and full end-to-end 100ms upper bound: BLOCKED"
+            echo "Binance REST GET = 0; Binance WS = 0; NTS network probe = 0"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Preserve short-lived synthetic timing JSON (not independent custody)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ZS03-synthetic-stamp-observation-${{ github.event.pull_request.head.sha }}
+          path: ${{ runner.temp }}/ZS03_SYNTHETIC_STAMP_OBSERVATION.json
           if-no-files-found: error
           retention-days: 7
   independent-clock:
