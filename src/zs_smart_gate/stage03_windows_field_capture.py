@@ -190,6 +190,7 @@ def run(args):
             record["record_sha256"] = digest({k: v for k, v in record.items() if k != "record_sha256"})
             f.seek(0)
             f.write(json.dumps(record, ensure_ascii=False, indent=2, sort_keys=True))
+            f.truncate()
             f.flush()
             os.fsync(f.fileno())
         persist()
@@ -198,6 +199,8 @@ def run(args):
             persist()  # record attempt before network; never silently retry
             try:
                 entry = acquire(path, params)
+                if args.phase == "pre" and parse_time(entry["received_utc_unattested"]) >= parent:
+                    raise ValueError("PRE_RECEIPT_NOT_BEFORE_PARENT")
                 record["requests"].append(entry)
                 persist()
             except Exception as exc:
