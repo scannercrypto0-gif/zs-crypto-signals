@@ -75,8 +75,8 @@ class R2009AMinimalTests(TestCase):
         tr = [max(b.h-b.l, abs(b.h-a.c), abs(b.l-a.c))
               for a,b in zip(bars[:-1],bars[1:])]
         atr = sum(tr,D("0"))/14
-        expected = (D("27") + D("8") *
-                    min(D("1"),(D("102")-D("100")-D(".20"))/atr))/D("35")
+        b = (D("102")-D("100")-D(".20"))/atr
+        expected = (D("27") + D("8") * min(D("1"),b))/D("35")
         self.assertEqual(D(row["normalizers"]["MARKET_STRUCTURE"]),expected)
         self.assertLess(prior[24].available_at, parent.open_at)
         self.assertEqual(row["score_status"],"SCORE_UNAVAILABLE")
