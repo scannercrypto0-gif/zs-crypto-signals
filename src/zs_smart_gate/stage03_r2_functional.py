@@ -8,12 +8,17 @@ from __future__ import annotations
 
 import hashlib
 import json
-from typing import Mapping
+from typing import Mapping, Sequence
 
 from .core import MarketSnapshot
 from .mtf_contracts import CandleWindow
 from .stage03_qualification_readiness import assess_readiness
-from .stage03_r2_offline import Candle, Market, evaluate_r2
+from .stage03_r2_offline import Candle, Market, Unavailable, evaluate_r2
+from .stage03_r2_source_contract import (
+    BookTickerPacket, Ticker24Packet, CausalImpulseObservation,
+    VersionedFullImpulsePredicate, ModeSourceEvidence,
+    inspect_full_impulse_trace, market_from_explicit_packets, require_prior_mode,
+)
 
 
 def _matching_bar(raw: Candle, source: CandleWindow) -> bool:
@@ -28,7 +33,11 @@ def _matching_bar(raw: Candle, source: CandleWindow) -> bool:
 
 
 def stage03_r2_functional_e2e(*, r2_inputs: Mapping[str, object],
-                              readiness_inputs: Mapping[str, object]) -> dict:
+                              readiness_inputs: Mapping[str, object],
+                              full_impulse_definition: VersionedFullImpulsePredicate | None = None,
+                              full_impulse_trace: Sequence[CausalImpulseObservation] | None = None,
+                              market_source_packets: tuple[BookTickerPacket, Ticker24Packet] | None = None,
+                              mode_source_evidence: ModeSourceEvidence | None = None) -> dict:
     """Connect existing R2 candidates to existing 03A readiness, fail closed.
 
     Each source enters as its ORIGINAL typed contract. This function neither
@@ -40,18 +49,96 @@ def stage03_r2_functional_e2e(*, r2_inputs: Mapping[str, object],
     if readiness_inputs.get("normalized_groups") is not None:
         raise ValueError("UNAPPROVED_NUMERIC_SCORE_INPUT_FORBIDDEN")
     r2 = evaluate_r2(**r2_inputs)
-    # The legacy synthetic onset fixture supplies boolean flags but does NOT
-    # define/attest the full impulse predicate. Preserve its arithmetic unit
-    # test, while withholding N03 from the integrated Stage03 availability.
-    if r2["normalizers"].get("MOMENTUM_EARLY_TIMING") is not None:
+    # Legacy booleans remain synthetic arithmetic fixtures only. Even a typed
+    # complete trace is UNAPPROVED; the PM expressly rejected any implicit
+    # full-impulse meaning (including equality with Setup v1.1).
+    trace_review = None
+    impulse_reason = "FULL_IMPULSE_PREDICATE_NOT_DEFINED_FOR_FUNCTIONAL_CONTRACT"
+    if full_impulse_definition is not None or full_impulse_trace is not None:
+        try:
+            past = r2_inputs["context"].get("5m", ())
+            trace_review = inspect_full_impulse_trace(
+                definition=full_impulse_definition, trace=full_impulse_trace,
+                candles=tuple(past[-39:]) + tuple(r2_inputs["children"]),
+                direction=r2_inputs["direction"], horizon=r2_inputs["horizon"],
+                mode=r2_inputs["mode"], decision_at=r2_inputs["decision_at"],
+                witness=r2_inputs["witness"])
+            impulse_reason = trace_review["reason"]
+        except Unavailable as exc:
+            impulse_reason = str(exc)
+            trace_review = {"status": "TRACE_BLOCKED", "reason": impulse_reason}
+    if "MOMENTUM_EARLY_TIMING" in r2["normalizers"]:
         r2["normalizers"]["MOMENTUM_EARLY_TIMING"] = None
-        r2["missing_reasons"]["MOMENTUM_EARLY_TIMING"] = (
-            "FULL_IMPULSE_PREDICATE_NOT_DEFINED_FOR_FUNCTIONAL_CONTRACT")
+        r2["missing_reasons"]["MOMENTUM_EARLY_TIMING"] = impulse_reason
+
+    mode_review = None
+    if r2_inputs["horizon"].value == "SWING":
+        try:
+            mode_review = require_prior_mode(
+                mode_source_evidence, mode=r2_inputs["mode"],
+                direction=r2_inputs["direction"], horizon=r2_inputs["horizon"],
+                parent=r2_inputs["parent"], decision_at=r2_inputs["decision_at"],
+                witness=r2_inputs["witness"])
+        except Unavailable as exc:
+            mode_review = {"status": "MODE_BLOCKED", "reason": str(exc)}
+            for group in ("MARKET_STRUCTURE", "DAILY_WEEKLY_CONTEXT"):
+                if r2["normalizers"].get(group) is not None:
+                    r2["normalizers"][group] = None
+                    r2["missing_reasons"][group] = str(exc)
+            r2["structural_event"] = False
+            r2["structural_event_kind"] = None
+            r2["candidate_level_id"] = None
+
+    source_review = {"status": "SOURCE_EXPLICIT_PACKETS_ABSENT",
+                     "real_pit_verified": False}
+    source_mismatch = None
+    if market_source_packets is not None:
+        try:
+            if not isinstance(market_source_packets, tuple) or len(market_source_packets) != 2:
+                raise Unavailable("SOURCE_PACKETS_PAIR_REQUIRED")
+            book, ticker = market_source_packets
+            supplied = market_from_explicit_packets(
+                book=book, ticker=ticker, decision_at=r2_inputs["decision_at"],
+                witness=r2_inputs["witness"])
+            expected = r2_inputs["market"]
+            if (not isinstance(expected, Market) or supplied != expected):
+                raise Unavailable("EXPLICIT_BOOK_TICKER_R2_MARKET_MISMATCH")
+            if book.symbol != readiness_inputs["symbol"]:
+                raise Unavailable("EXPLICIT_BOOK_TICKER_IDENTITY_MISMATCH")
+            source_review = {
+                "status": "SYNTHETIC_PACKETS_VALID_NOT_REAL_PIT",
+                "real_pit_verified": False,
+                "book_source": book.receipt.source_id,
+                "ticker24_source": ticker.receipt.source_id,
+                "book_available_at": book.receipt.available_at.isoformat(),
+                "ticker24_available_at": ticker.receipt.available_at.isoformat(),
+                "atomicity_claim": False,
+            }
+        except Unavailable as exc:
+            source_mismatch = str(exc)
+            source_review = {"status": "SOURCE_PACKETS_BLOCKED",
+                             "reason": source_mismatch,
+                             "real_pit_verified": False}
+    if source_review["status"] != "SYNTHETIC_PACKETS_VALID_NOT_REAL_PIT":
+        if r2["normalizers"].get("LIQUIDITY_QUALITY") is not None:
+            r2["normalizers"]["LIQUIDITY_QUALITY"] = None
+            r2["missing_reasons"]["LIQUIDITY_QUALITY"] = (
+                source_mismatch or "EXPLICIT_BOOK_TICKER_REQUIRED_FOR_E2E")
+        if r2_inputs["horizon"].value == "SWING":
+            if r2["normalizers"].get("MARKET_STRUCTURE") is not None:
+                r2["normalizers"]["MARKET_STRUCTURE"] = None
+                r2["missing_reasons"]["MARKET_STRUCTURE"] = (
+                    source_mismatch or "EXPLICIT_BOOK_TICKER_REQUIRED_FOR_E2E")
+            r2["structural_event"] = False
+            r2["structural_event_kind"] = None
+            r2["candidate_level_id"] = None
     readiness = assess_readiness(**readiness_inputs)
     raw_parent, parent = r2_inputs["parent"], readiness_inputs["parent"]
     raw_children, children = r2_inputs["children"], readiness_inputs["children"]
     raw_market, market = r2_inputs["market"], readiness_inputs["market"]
     reasons = []
+    if source_mismatch is not None:
+        reasons.append("R2_SOURCE_PACKET_REJECTED:" + source_mismatch)
     if (not isinstance(raw_parent, Candle) or not isinstance(parent, CandleWindow)
             or not raw_parent.source_id.startswith("SYNTHETIC:")
             or not _matching_bar(raw_parent, parent)):
@@ -88,6 +175,9 @@ def stage03_r2_functional_e2e(*, r2_inputs: Mapping[str, object],
         "readiness_reason_codes": readiness["reason_codes"],
         "source_match_reasons": reasons,
         "r2": r2,
+        "full_impulse_trace_review": trace_review,
+        "mode_evidence_review": mode_review,
+        "market_source_review": source_review,
         "provenance": {
             "source_kind": "SYNTHETIC_ONLY_NOT_REAL_PIT",
             "parent_source_id": parent.source_id,
