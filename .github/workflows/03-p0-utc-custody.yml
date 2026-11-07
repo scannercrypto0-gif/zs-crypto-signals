@@ -73,6 +73,17 @@ jobs:
             fi
             sleep 3
           done
+          # First selected NTS sample can have high chrony root dispersion.
+          # Allow bounded source settling, NEVER lower the approved 1.5s bound.
+          if [ "$SELECTED" = 1 ]; then
+            for i in $(seq 1 16); do
+              DISP="$(sudo chronyc -n tracking | awk '/^Root dispersion/{print $4}')"
+              if python -c 'import math,sys; x=float(sys.argv[1]); sys.exit(0 if math.isfinite(x) and x < 1.0 else 1)' "$DISP" 2>/dev/null; then
+                break
+              fi
+              sleep 4
+            done
+          fi
           if ! sudo chronyc -n tracking > "$WORK/tracking.txt"; then
             echo "CLOCK_BLOCKED_DAEMON_UNREACHABLE"
             tail -n 100 "$WORK/daemon.log" || true
