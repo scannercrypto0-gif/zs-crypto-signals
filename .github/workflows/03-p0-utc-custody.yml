@@ -7,6 +7,7 @@ on:
       - "scripts/p0-stamp-calibration.py"
       - "scripts/p0-field-harness.py"
       - "tests/test_p0_field_harness.py"
+      - "tests/test_p0_scope_separation.py"
       - "tests/test_p0_nts_witness.py"
       - "tests/test_p0_owner_receipt.py"
       - "scripts/p0-owner-receipt.py"
@@ -37,6 +38,8 @@ jobs:
         run: python -m unittest discover -s tests -p "test_p0_owner_anchor.py" -v
       - name: Offline field harness fail-closed simulations only (no network capability)
         run: python -m unittest discover -s tests -p "test_p0_field_harness.py" -v
+      - name: Functional decision record versus raw PIT evidence scope (offline only)
+        run: python -m unittest discover -s tests -p "test_p0_scope_separation.py" -v
       - name: Emit and verify a pinned synthetic-only handoff receipt
         shell: bash
         env:
