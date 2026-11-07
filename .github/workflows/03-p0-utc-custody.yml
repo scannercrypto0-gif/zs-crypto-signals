@@ -44,15 +44,16 @@ jobs:
           sudo apt-get update -qq
           sudo DEBIAN_FRONTEND=noninteractive apt-get install -y chrony
           sudo systemctl stop chrony || true
-          WORK="${RUNNER_TEMP}/zs03-p0-clock"
+          # chronyd drops root privileges before reading its config.
+          # RUNNER_TEMP is 0700 and was therefore inaccessible to _chrony.
+          WORK="/tmp/zs03-p0-clock-${GITHUB_RUN_ID}"
           mkdir -p "$WORK"
+          chmod 755 "$WORK"
           cat > "$WORK/chrony.conf" <<EOF
           server time.cloudflare.com iburst nts minpoll 4 maxpoll 4
-          driftfile $WORK/drift
-          pidfile $WORK/chronyd.pid
-          logdir $WORK
           port 0
           EOF
+          chmod 644 "$WORK/chrony.conf"
           sudo timeout 95s chronyd -x -d -f "$WORK/chrony.conf" > "$WORK/daemon.log" 2>&1 &
           PID=$!
           trap 'sudo kill "$PID" 2>/dev/null || true' EXIT
