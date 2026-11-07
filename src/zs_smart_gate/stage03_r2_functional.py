@@ -40,6 +40,13 @@ def stage03_r2_functional_e2e(*, r2_inputs: Mapping[str, object],
     if readiness_inputs.get("normalized_groups") is not None:
         raise ValueError("UNAPPROVED_NUMERIC_SCORE_INPUT_FORBIDDEN")
     r2 = evaluate_r2(**r2_inputs)
+    # The legacy synthetic onset fixture supplies boolean flags but does NOT
+    # define/attest the full impulse predicate. Preserve its arithmetic unit
+    # test, while withholding N03 from the integrated Stage03 availability.
+    if r2["normalizers"].get("MOMENTUM_EARLY_TIMING") is not None:
+        r2["normalizers"]["MOMENTUM_EARLY_TIMING"] = None
+        r2["missing_reasons"]["MOMENTUM_EARLY_TIMING"] = (
+            "FULL_IMPULSE_PREDICATE_NOT_DEFINED_FOR_FUNCTIONAL_CONTRACT")
     readiness = assess_readiness(**readiness_inputs)
     raw_parent, parent = r2_inputs["parent"], readiness_inputs["parent"]
     raw_children, children = r2_inputs["children"], readiness_inputs["children"]
