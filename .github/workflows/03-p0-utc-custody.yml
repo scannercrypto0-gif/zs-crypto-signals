@@ -1,0 +1,81 @@
+name: STAGE03 P0 independent time and private custody readiness
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/03-p0-utc-custody.yml"
+      - "scripts/p0-nts-witness.py"
+      - "tests/test_p0_nts_witness.py"
+      - "tests/test_p0_custody_readback.py"
+      - "research/order025/p0-readiness/**"
+permissions:
+  contents: read
+jobs:
+  private-readback:
+    name: synthetic private GitHub readback and fresh restore
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Read back privately committed synthetic raw and verify restored SHA
+        run: python -m unittest discover -s tests -p "test_p0_custody_readback.py" -v
+      - name: UTC evaluator fail-closed unit tests (no network)
+        run: python -m unittest discover -s tests -p "test_p0_nts_witness.py" -v
+  independent-clock:
+    name: one-shot independent authenticated NTS witness (NOT market PIT)
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Bounded independent UTC witness attempt only
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "SOURCE=Cloudflare NTS: time.cloudflare.com ; MARKET_GET=0 ; MARKET_WS=0"
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y chrony
+          sudo systemctl stop chrony || true
+          WORK="${RUNNER_TEMP}/zs03-p0-clock"
+          mkdir -p "$WORK"
+          cat > "$WORK/chrony.conf" <<EOF
+          server time.cloudflare.com iburst nts minpoll 4 maxpoll 4
+          driftfile $WORK/drift
+          pidfile $WORK/chronyd.pid
+          logdir $WORK
+          port 0
+          EOF
+          sudo timeout 95s chronyd -x -d -f "$WORK/chrony.conf" > "$WORK/daemon.log" 2>&1 &
+          PID=$!
+          trap 'sudo kill "$PID" 2>/dev/null || true' EXIT
+          SELECTED=0
+          for i in $(seq 1 25); do
+            if sudo chronyc -n sources 2>/dev/null | grep -qE '^[[:space:]]*\^\*[[:space:]]+'; then
+              SELECTED=1
+              break
+            fi
+            sleep 3
+          done
+          sudo chronyc -n tracking | tee "$WORK/tracking.txt"
+          sudo chronyc -n authdata | tee "$WORK/auth.txt"
+          sudo chronyc -n ntpdata | tee "$WORK/ntp.txt"
+          sudo chronyc -n sources -v | tee "$WORK/sources.txt"
+          if [ "$SELECTED" != 1 ]; then
+            echo "CLOCK_BLOCKED_NO_AUTHENTICATED_SELECTED_SOURCE"
+            tail -n 50 "$WORK/daemon.log" || true
+            exit 1
+          fi
+          python scripts/p0-nts-witness.py \
+            --tracking "$WORK/tracking.txt" \
+            --auth "$WORK/auth.txt" \
+            --ntp "$WORK/ntp.txt" \
+            --sources "$WORK/sources.txt"
+          echo "CLOCK_PROBE_COMPLETED_NO_MARKET_OR_SYSTEM_CLOCK_CHANGE"
