@@ -109,6 +109,11 @@ class Market:
     ask: Decimal
     quote_24h: Decimal
     spot_usdt_trading: bool = True
+    # These defaults are for pre-existing synthetic fixtures, NOT real source evidence.
+    quote_asset: str = "USDT"
+    trading_status: str = "TRADING"
+    ticker24_unit: str = "USDT"
+    ticker24_window: str = "ROLLING_24H"
 
     def __post_init__(self) -> None:
         if not isinstance(self.book, SourceReceipt) or not isinstance(self.ticker24, SourceReceipt):
@@ -208,6 +213,10 @@ def required_context(context: Mapping[str, Sequence[Candle]], key: str, n: int,
 def liquidity(market: Market, decision: datetime, witness: ClockWitness) -> Decimal:
     if not market.spot_usdt_trading or market.bid <= 0 or market.ask < market.bid:
         raise Unavailable("BOOK_OR_MARKET_INELIGIBLE")
+    if (market.quote_asset != "USDT" or market.trading_status != "TRADING"
+            or market.ticker24_unit != "USDT"
+            or market.ticker24_window != "ROLLING_24H"):
+        raise Unavailable("MARKET_QUOTE_UNIT_WINDOW_OR_TRADING_UNVERIFIED")
     mid = (market.bid + market.ask) / 2
     spread = Decimal(10000) * (market.ask - market.bid) / mid
     if spread > 20 or market.quote_24h < 10000000:
@@ -412,7 +421,23 @@ def evaluate_r2(*, horizon: Horizon, direction: Direction, mode: str,
                  "publishable": False, "signal_id": None, "delivery_authorized": False,
                  "pit_status": "SYNTHETIC_ASOF_ONLY_NOT_REAL_PIT",
                  "scientific_status": "NOT_EVALUATED", "forward_status": "NOT_RUN",
-                 "normalizers": {}, "missing_reasons": {}, "structural_event": False}
+                 "normalizers": {}, "missing_reasons": {}, "structural_event": False,
+                 "context_only": ("DAILY_WEEKLY_CONTEXT",),
+                 "full_impulse_predicate": "EXTERNAL_SYNTHETIC_TRACE_NOT_APPROVED",
+                 "source_provenance": {
+                     "parent": parent.source_id,
+                     "book": market.book.source_id,
+                     "ticker24": market.ticker24.source_id,
+                     "book_observed_at": market.book.observed_at.isoformat(),
+                     "book_received_at": market.book.received_at.isoformat(),
+                     "book_available_at": market.book.available_at.isoformat(),
+                     "ticker24_observed_at": market.ticker24.observed_at.isoformat(),
+                     "ticker24_received_at": market.ticker24.received_at.isoformat(),
+                     "ticker24_available_at": market.ticker24.available_at.isoformat(),
+                     "ticker24_unit": market.ticker24_unit,
+                     "ticker24_window": market.ticker24_window,
+                     "independent_clock": "SYNTHETIC_ONLY",
+                 }}
     expected_n = 6 if horizon is Horizon.INTRADAY else 4
     step = timedelta(minutes=5 if horizon is Horizon.INTRADAY else 60)
     try:
@@ -471,7 +496,9 @@ def evaluate_r2(*, horizon: Horizon, direction: Direction, mode: str,
                     + 5*prior_range_alignment(ctx("4h", 21, 240), direction))/15
         if name == "MARKET_STRUCTURE":
             score, event, level_id = structure(
-                ctx("structure4h", 8, 240), parent, direction, mode,
+                # 32 previously existing fixture bars provide 15-bar ATR
+                # warmup plus two-sided confirmed swing pivots.
+                ctx("structure4h", 32, 240), parent, direction, mode,
                 market, decision_at, witness, consumed_levels)
             candidate["structural_event"] = event
             candidate["structural_event_kind"] = ("CHoCH" if mode == "REVERSAL" else "BOS") if event else None
