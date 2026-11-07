@@ -206,12 +206,12 @@ class SyntheticJournal:
         require(type(endpoint) is str and endpoint in REST_BASE,
                 "REST_ENDPOINT_PAIR_OR_PARAMS_NOT_ALLOWLISTED")
         weight = REST_BASE[endpoint]
-        require(self.rest_count < GET_MAX and
-                self.rest_weight + weight <= GET_WEIGHT_MAX,
-                "REST_ATTEMPT_OR_WEIGHT_CAP")
         if endpoint == "exchangeInfo/BTCUSDT,ETHUSDT":
             require(endpoint not in self.rest_unique,
                     "EXCHANGEINFO_REPEAT_FORBIDDEN")
+        require(self.rest_count < GET_MAX and
+                self.rest_weight + weight <= GET_WEIGHT_MAX,
+                "REST_ATTEMPT_OR_WEIGHT_CAP")
         if endpoint in self.rest_unique:
             require(len(self.rest_unique) == GET_BASE and
                     self.rest_count == GET_BASE and
