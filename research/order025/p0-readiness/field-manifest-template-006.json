@@ -1,0 +1,156 @@
+{
+  "schema": "zs03.p0.field-preflight-manifest-template.v1",
+  "activation_state": "DRAFT_NOT_ARMED",
+  "actual_field_capture_go": false,
+  "pm_field_preflight_pass": false,
+  "real_market_transport_enabled": false,
+  "provenance": {
+    "purpose": "OFFLINE_SPECIFICATION_ONLY",
+    "order": "ZS03-P0-FAIL-CLOSED-FIELD-HARNESS-AND-RIGHTS-DECISION-006",
+    "official_order": "https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/25#issuecomment-6705330504",
+    "existing_pr": "https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/40",
+    "old_owner_synthetic_receipt_status": "OWNER_SELF_ATTESTED_INDEPENDENT_CUSTODY_ADMIN_COMPLETE",
+    "old_owner_ack": "https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/25#issuecomment-6705229256",
+    "old_receipt_is_not_real_event_custody": true
+  },
+  "event": {
+    "event_id": null,
+    "study_id": null,
+    "repository_private": true,
+    "code_sha40": null,
+    "manifest_sha256": null,
+    "utc_window_start": null,
+    "utc_window_end": null,
+    "maximum_duration_minutes": 60,
+    "developer_host": "GITHUB_ACTIONS_EPHEMERAL_UBUNTU_PROPOSED_ONLY",
+    "operator_owner_approval_reference": null,
+    "pm_independent_preflight_reference": null
+  },
+  "legal_rights": {
+    "provider_candidate": "BINANCE_SPOT_PUBLIC_API_PROPOSED_ONLY",
+    "source_permission_evidence_sha256": null,
+    "terms_url": "https://developers.binance.com/en/docs/products/spot/PROD-TERMS-OF-USE",
+    "applicable_terms_version": null,
+    "licensing_entity_and_jurisdiction": null,
+    "permitted_noncommercial_private_raw_capture": null,
+    "permitted_private_repository_retention": null,
+    "permitted_reviewer_access": null,
+    "permitted_raw_retention_days": null,
+    "commercial_use_permission": "NOT_REQUESTED_AND_NOT_GRANTED",
+    "provider_support_request_status": "NOT_SENT_BY_SD",
+    "owner_support_query_reference": "https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/25#issuecomment-6705247854",
+    "rights_reviewer_reference": null,
+    "rights_gate": "BLOCKED_PENDING_OFFICIAL_CLARIFICATION"
+  },
+  "scope": {
+    "product": "SPOT_PUBLIC_MARKET_DATA_ONLY",
+    "pairs": [
+      "BTCUSDT",
+      "ETHUSDT"
+    ],
+    "public_rest_hosts_proposed": [
+      "data-api.binance.vision"
+    ],
+    "websocket_host_proposed": "data-stream.binance.vision",
+    "api_key_required": false,
+    "trading_allowed": false,
+    "raw_market_collection_authorized": false,
+    "historical_context_asof_policy": "NO_RETROACTIVE_PIT; actual receipt + signed NTS witness required",
+    "market_capture_implementation_present": false
+  },
+  "budget": {
+    "rest_physical_attempts_base": 11,
+    "rest_physical_attempts_reserve": 1,
+    "rest_physical_attempts_max": 12,
+    "rest_weight_base": 42,
+    "rest_weight_max": 46,
+    "rest_exchangeinfo_weight": 20,
+    "rest_klines_per_symbol_interval_weight": 2,
+    "rest_ticker_24hr_two_symbols_weight": 2,
+    "rest_bookticker_two_symbols_weight": 4,
+    "rest_klines_intervals": [
+      "5m",
+      "1h",
+      "1d",
+      "1w"
+    ],
+    "rest_klines_calls": 8,
+    "ws_base_subscriptions": 6,
+    "ws_physical_subscriptions_max": 12,
+    "ws_allowed_stream_types": [
+      "bookTicker",
+      "ticker",
+      "kline_1m"
+    ],
+    "ws_no_auto_reconnect": true,
+    "exchangeinfo_no_retry": true,
+    "count_attempt_before_dispatch": true,
+    "max_raw_bytes": 4194304,
+    "max_raw_evidence_files": 32,
+    "actual_source_ip_quota_snapshot": null,
+    "source_quota_documentation_version": null,
+    "x_mbx_used_weight_snapshot": null,
+    "no_new_paid_cost_usd": 0
+  },
+  "timestamps": {
+    "independent_nts_event_witness_required": true,
+    "chrony_selected_peer_consistent_across": [
+      "sources",
+      "authdata",
+      "ntpdata",
+      "tracking"
+    ],
+    "require_authenticated_nts": true,
+    "max_utc_uncertainty_ns_exclusive": 1500000000,
+    "synthetic_queue_sample_reference": "https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/42359301547",
+    "queue_sample_is_not_socket_bound": true,
+    "pending_local_socket_latency_review": true,
+    "require_latest_possible_available_before_earliest_decision": true,
+    "source_received_at_utc": null,
+    "source_available_at_utc": null,
+    "decision_at_utc": null,
+    "event_clock_witness_sha256": null,
+    "estimated_socket_to_stamp_margin_ns": null,
+    "pit_status": "BLOCKED_NOT_EVENT_ATTESTED"
+  },
+  "custody": {
+    "original_raw_sha256": null,
+    "original_raw_size_bytes": null,
+    "event_specific_receipt_sha256": null,
+    "event_specific_owner_custody_ack_reference": null,
+    "read_only_restoration_result": null,
+    "raw_storage_location_private": null,
+    "raw_retention_days": null,
+    "raw_and_manifest_recovery_plan_approved": false,
+    "synthetic_003_owner_ack_does_not_substitute": true,
+    "status": "BLOCKED_REAL_EVENT_NOT_OCCURRED"
+  },
+  "science": {
+    "d1_d2_d3_d5_owner_design_scope": "R2_DEV_DESIGN_ONLY",
+    "owner_design_reference": "https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/25#issuecomment-6705154272",
+    "numeric_parameters_frozen": false,
+    "dev_new_dataset_authorized": false,
+    "blind_new_oos_approved": false,
+    "forward_approved": false,
+    "n_required": "UNDETERMINED",
+    "scientific_pass": false
+  },
+  "stop_conditions": [
+    "DEFAULT_NO_GO",
+    "MISSING_PROVIDER_RIGHTS",
+    "MISSING_FIELD_SPECIFIC_PM_AND_OWNER_APPROVAL",
+    "SOURCE_PAIR_ENDPOINT_HOST_NOT_ALLOWLISTED",
+    "NO_ACTUAL_IP_QUOTA_SNAPSHOT",
+    "REST_OR_WS_PHYSICAL_BUDGET_EXCEEDED",
+    "429_OR_418_OR_OTHER_REQUEST_FAILURE",
+    "JOURNAL_NOT_PERSISTED_BEFORE_ATTEMPT",
+    "RAW_BYTES_OR_EVIDENCE_FILE_CAP",
+    "RAW_RESTORE_RECEIPT_MANIFEST_MISMATCH_OR_ABSENT",
+    "NO_EVENT_NTS_OR_UTC_UNCERTAINTY_NOT_STRICT_LT_1_5S",
+    "AS_OF_UNPROVEN",
+    "TIME_WINDOW_EXPIRED_OR_MISSING",
+    "NETWORK_DISCONNECT_OR_AUTOMATIC_RETRY",
+    "NEW_SPEND_OR_ACCOUNT_DATA_OR_TRADING",
+    "ANY_REAL_CAPTURE_WITH_THIS_DRAFT"
+  ]
+}
