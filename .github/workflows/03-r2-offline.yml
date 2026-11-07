@@ -3,6 +3,8 @@ on:
   pull_request:
     paths:
       - 'src/zs_smart_gate/stage03_r2_offline.py'
+      - 'src/zs_smart_gate/stage03_r2_functional.py'
+      - 'tests/test_stage03_r2_functional.py'
       - 'tests/test_stage03_r2_offline.py'
       - 'scripts/r2-historical-dev.py'
       - 'tests/test_r2_historical_dev.py'
@@ -32,9 +34,10 @@ jobs:
       - name: R2 synthetic-only unit integration regression
         env:
           PYTHONPATH: src
-        run: python -m unittest discover -s tests -p "test_stage03_r2_offline.py" -v
+        run: python -m unittest discover -s tests -p "test_stage03_r2_*.py" -v
   one-real-dev-price-association-008:
-    if: ${{ github.event.pull_request.number == 39 && github.head_ref == 'stage03-r2-offline-dev-candidate-sd23' }}
+    # 008 was executed and accepted once; 009A MUST NOT rerun outcome study.
+    if: ${{ false }}
     name: 008 one historical DEV future-price check (no market)
     runs-on: ubuntu-latest
     timeout-minutes: 25
