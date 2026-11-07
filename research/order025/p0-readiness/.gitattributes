@@ -1,0 +1,2 @@
+# Preserve *raw* synthetic evidence bytes across Linux/Windows checkouts.
+synthetic-raw-v1.txt -text

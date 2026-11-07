@@ -26,6 +26,9 @@ jobs:
       - name: UTC evaluator fail-closed unit tests (no network)
         run: python -m unittest discover -s tests -p "test_p0_nts_witness.py" -v
   independent-clock:
+    # The single authorized live clock probe succeeded on this exact head.
+    # Do not repeat it for a Windows raw-byte checkout regression fix.
+    if: ${{ github.event.pull_request.head.sha == '39b890530286267b0e1bb975e53147c6c499116d' }}
     name: one-shot independent authenticated NTS witness (NOT market PIT)
     runs-on: ubuntu-latest
     timeout-minutes: 8
