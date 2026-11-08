@@ -18,7 +18,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
-from urllib.request import Request, urlopen
+from urllib.request import Request, build_opener, HTTPRedirectHandler
 from .stage03_field_clock import witness_pair, bracketed_receive
 
 BASE = "https://data-api.binance.vision"
@@ -131,6 +131,12 @@ def check_rights(path: str, *, require_fresh: bool = True) -> str:
     return hashlib.sha256(raw).hexdigest()
 
 
+class RejectRedirect(HTTPRedirectHandler):
+    """Never issue an uncounted redirected market GET."""
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
 def acquire(path, params):
     url = BASE + path + "?" + urlencode(params)
     before_clock = witness_pair()
@@ -140,7 +146,7 @@ def acquire(path, params):
                   "User-Agent": "ZS03-bounded-field-research/1"})
     try:
         # urlopen here is one single physical GET, with no retry.
-        with urlopen(req, timeout=8) as res:
+        with build_opener(RejectRedirect).open(req, timeout=8) as res:
             if res.status != 200:
                 raise RuntimeError("NON_200_RESPONSE")
             raw = res.read(2_000_001)
