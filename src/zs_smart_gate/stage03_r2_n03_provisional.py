@@ -191,14 +191,21 @@ def evaluate_provisional_n03(
             return result
         # Eligibility depends only on closed, known onsets. Later bars cannot
         # delete an already confirmed event. Overlapping episodes remain UNKNOWN.
-        for prior, following in zip(crossings[:-1], crossings[1:]):
-            if following < prior + n:
-                raise Unavailable("N03_OVERLAPPING_ONSET_EPISODES")
         latest = crossings[-1]
         completed_events = []
         latest_completion = None
         latest_expiry = latest + n - 1
+        previous = None
         for j in crossings:
+            if previous is not None and j < previous + n:
+                # Keep a past confirmation only if it became knowable BEFORE
+                # the conflicting onset. Do not validate the overlapping pair.
+                result["completed_events"] = [
+                    event for event in completed_events
+                    if event["confirmation_index"] < j
+                ]
+                raise Unavailable("N03_OVERLAPPING_ONSET_EPISODES")
+            previous = j
             expiry = j + n - 1
             base, atr = bars[j-3].c, atr14_prev(bars[:j])
             # The second RIGHT confirmation must already be available and
