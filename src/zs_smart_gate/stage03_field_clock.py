@@ -127,3 +127,25 @@ def bracketed_receive(before: dict, after: dict, *, start_wall: float,
         "publisher_timestamp": None,
         "before": before, "after": after,
     }
+
+
+def main(argv=None):
+    import json
+    import sys
+    try:
+        w = witness_pair()
+    except ClockGateError as exc:
+        print("CLOCK_PRECHECK_BLOCKED:" + str(exc), file=sys.stderr)
+        return 2
+    print(json.dumps({
+        "schema":w["schema"],
+        "hosts":[p["host"] for p in w["probes"]],
+        "conservative_absolute_utc_error_seconds":
+            w["conservative_absolute_utc_error_seconds"],
+        "independent_clock_authenticated": False,
+        "status":"NTP_MEASURED_NETWORK_ONLY_NOT_BINANCE_EVENT_ATTESTED",
+    },indent=2,sort_keys=True))
+    return 0
+
+if __name__=="__main__":
+    raise SystemExit(main())
