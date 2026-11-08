@@ -80,9 +80,14 @@ class QuickThirtySafety(unittest.TestCase):
         def receipt(item):
             return receipt_utc
         with patch.object(q,"verify",return_value=(pre,post,end+timedelta(seconds=5))):
+            # The typed win() adapter imports instant() in its own module.
+            # Patch BOTH call sites in this offline fixture. Live verification
+            # continues to use unmocked per-request NTP witnesses.
             with patch.object(q,"instant",side_effect=lambda x:(received,receipt_utc)):
-                with patch.object(q,"strict_pivot_mode",return_value={"status":"UNAVAILABLE"}):
-                    result=q.e2e(Path("pre"),Path("post"),parent,Path("rights"))
+                with patch("zs_smart_gate.stage03_field_real_e2e.instant",
+                           side_effect=lambda x:(received,receipt_utc)):
+                    with patch.object(q,"strict_pivot_mode",return_value={"status":"UNAVAILABLE"}):
+                        result=q.e2e(Path("pre"),Path("post"),parent,Path("rights"))
         self.assertEqual(result["real_30m_03a_e2e"],"PASS")
         self.assertEqual(result["reconciliation"]["status"],"PASS")
         self.assertEqual(result["real_03a_status"],"RESEARCH_CANDIDATE")
