@@ -138,7 +138,7 @@ def stage03_c1c4_research_from_closed_receipts(
             status = "RESEARCH_VALUE_PRESENT_NOT_ACCEPTED"
             reasons = []
         # Even available N03 would NOT prove an approved full-impulse event.
-        if number == "N03" and not research_rejected:
+        if number == "N03" and value is not None and not research_rejected:
             status = "FULL_IMPULSE_DECISION_REQUIRED"
             reasons = list(dict.fromkeys(
                 [*reasons, "FULL_IMPULSE_DEFINITION_UNAPPROVED"]
