@@ -1,5 +1,8 @@
 # ORDER-021 — Simplification matrix, dependencies, and proposed gates
 
+> **SUPERSEDED FOR STAGE03 CLOSURE — OWNER/PM 2026-11-08.** This is a retained historical research record, **not** an active Stage03 closure checklist. The only active Stage03 closure gates are **C1–C4** in [MASTER](../../ZS_SMART_GATE_MASTER.md) and [Issue #25 PM audit](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/25#issuecomment-6721751412). Historical requirements for blind OOS, forward studies, N_eff/N_REQUIRED, predictive edge, executable PnL, fees/slippage economics, full historical publisher PIT, prospective capture, D1–D5 predictive calibration, and full 00–04 E2E **MUST NOT block C1–C4**. Retain their original scientific limitations for future separately authorized work; never interpret them as waived scientific evidence or as production approval. Tests/evidence already accepted are REUSE, not mandatory RETEST. All new acceptance runs are local Windows only; GitHub Actions checks are not Stage03 acceptance evidence. Stage05, market access, trading and Telegram remain unauthorized.
+
+
 **Fixed source:** MASTER v1.37 / Issue25#6652586815. **Owner/PM review**
 required for any tradeoff that changes validity, production safety, or a frozen
 historical result. Classification does **not** authorize merges.
@@ -42,4 +45,4 @@ one-setup research PR. No PR is automatically merge-ready from old green CI.
 | persistence | Local WAL/FULL commit, readback, dedup, independent backup and hash restore | GitHub runner temp disk, not final Windows |
 | CI | New 021 test and full legacy foundation Windows+Ubuntu | Synthetic execution only; production host UNKNOWN |
 | prospective | Distinct, explicitly unavailable | No field rights/timing/manifest and no live approval |
-| Stage03 closure | Proposed only after real coverage, qualified evidence, independent PM+owner decision | STAGE03 SCIENTIFIC HOLD remains |
+| Stage03 closure (historical proposal superseded) | Current owner-approved C1–C4 calculation/source/functional closure only, independent PM and owner decision | Predictive scientific evidence remains separate and deferred |
