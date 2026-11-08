@@ -49,6 +49,8 @@ def probe(host: str, timeout: float = 2.0) -> dict:
             t4 = time.time_ns() / 1e9
     except (OSError, TimeoutError) as exc:
         raise ClockGateError("NTP_UNAVAILABLE_" + host.replace(".", "_")) from exc
+    if sender[0] != remote[0]:
+        raise ClockGateError("NTP_REPLY_SOURCE_ADDRESS_MISMATCH")
     if len(reply) < 48 or reply[24:32] != tx:
         raise ClockGateError("NTP_ORIGIN_MISMATCH")
     li, ver, mode = reply[0] >> 6, (reply[0] >> 3) & 7, reply[0] & 7
@@ -72,7 +74,7 @@ def probe(host: str, timeout: float = 2.0) -> dict:
     if not math.isfinite(bound) or bound >= MAX_U_SECONDS:
         raise ClockGateError("NTP_ERROR_BUDGET_GE_1_5S")
     return {
-        "host": host, "ntp_version": ver, "stratum": stratum,
+        "host": host, "server_ip": remote[0], "ntp_version": ver, "stratum": stratum,
         "roundtrip_seconds": round(rtt, 6),
         "offset_seconds": round(offset, 6),
         "root_delay_seconds": round(root_delay, 6),
@@ -86,6 +88,8 @@ def probe(host: str, timeout: float = 2.0) -> dict:
 def witness_pair() -> dict:
     """Two independent names, one probe each; hard fail on loss/disagreement."""
     a, b = [probe(host) for host in SERVERS]
+    if a["server_ip"] == b["server_ip"]:
+        raise ClockGateError("NTP_INDEPENDENT_SOURCE_IDENTITY_COLLISION")
     d = abs(a["offset_seconds"] - b["offset_seconds"])
     if d > MAX_DISAGREEMENT_SECONDS:
         raise ClockGateError("INDEPENDENT_NTP_SOURCES_DISAGREE")
