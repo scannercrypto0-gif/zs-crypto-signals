@@ -218,3 +218,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Private owner-Windows original market evidence, rights and run results.
+# Keep source code, tests and sanitized custody manifest tracked in GitHub;
+# never accidentally commit host-local receipts or provider market fields.
+/_local_evidence/
