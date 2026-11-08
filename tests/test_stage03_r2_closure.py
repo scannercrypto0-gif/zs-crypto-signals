@@ -25,8 +25,9 @@ class C1C4ClosureAccountingOnly(TestCase):
         self.assertEqual(row["status"], "RESEARCH_CANDIDATE")
         self.assertEqual([x["indicator"] for x in row["component_rows"]],
                          ["N01", "N02", "N03", "N04", "N05", "N06"])
-        self.assertEqual(row["component_rows"][2]["status"],
-                         "FULL_IMPULSE_DECISION_REQUIRED")
+        self.assertEqual(row["component_rows"][2]["status"], "UNAVAILABLE")
+        self.assertIn("N03", row["unavailable_component_ids"])
+        self.assertTrue(row["component_rows"][2]["reason_codes"])
         self.assertEqual(row["component_rows"][1]["status"],
                          "SEMANTIC_DECISION_REQUIRED")
         self.assertEqual(row["component_rows"][3]["status"],
