@@ -106,7 +106,7 @@ def sanitize_payload(path, params, data, receipt_utc_ms):
                 "publisher_time": None}
     raise ValueError("PATH_NOT_ALLOWED")
 
-def check_rights(path: str) -> str:
+def check_rights(path: str, *, require_fresh: bool = True) -> str:
     """Operator attestation, never automated proof of an external data license."""
     raw = Path(path).read_bytes()
     if len(raw) > 4096:
@@ -124,7 +124,7 @@ def check_rights(path: str) -> str:
         raise ValueError("RIGHTS_ATTESTATION_MISSING_OR_NOT_AFFIRMATIVE")
     checked = parse_time(obj["reviewed_at_utc"])
     age = (utcnow() - checked).total_seconds()
-    if not 0 <= age <= 86400:
+    if age < 0 or (require_fresh and age > 86400):
         raise ValueError("RIGHTS_REVIEW_STALE_OR_FUTURE")
     if obj.get("terms_url") != "https://www.binance.com/en/about-legal/terms":
         raise ValueError("RIGHTS_TERMS_REFERENCE_REQUIRED")
