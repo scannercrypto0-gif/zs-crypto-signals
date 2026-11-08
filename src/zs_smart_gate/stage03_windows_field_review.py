@@ -157,9 +157,22 @@ def verify(pre_path, post_path, rights_attestation=None):
     book_first,book_last=instant(post["requests"][4])
     tick_first,tick_last=instant(post["requests"][5])
     # No invented atomicity. Worst-case freshness at final decision boundary.
-    decision=tick_last+timedelta(milliseconds=30)
-    if (decision-book_first).total_seconds()>5 or (decision-tick_first).total_seconds()>60:
+    dw=post.get("decision_witness")
+    if not isinstance(dw,dict) or dw.get("publisher_clock_verified") is not False:
+        raise ValueError("REAL_DECISION_WITNESS_REQUIRED")
+    stamp=parse_time(dw["at_local_utc_unattested"])
+    earliest=parse_time(dw["earliest_utc"])
+    latest=parse_time(dw["latest_utc"])
+    du=dw["independent_utc"]["conservative_absolute_utc_error_seconds"]
+    if (dw["independent_utc"].get("authenticated") is not False or
+            abs((stamp-earliest).total_seconds()-du)>0.00001 or
+            abs((latest-stamp).total_seconds()-du)>0.00001 or not 0<du<1.5):
+        raise ValueError("DECISION_WITNESS_BOUND_INVALID")
+    if max(instant(x)[1] for x in post["requests"])>=earliest:
+        raise ValueError("DECISION_SOURCE_ASOF_OVERLAP")
+    if (latest-book_first).total_seconds()>5 or (latest-tick_first).total_seconds()>60:
         raise ValueError("NONATOMIC_MARKET_SNAPSHOTS_STALE")
+    decision=stamp
     return {"schema":"ZS03_ORIGINAL_SOURCE_REVIEW_V2",
             "source":"BINANCE_SPOT_PUBLIC_REST","symbol":"BTCUSDT",
             "pre_receipt_sha256":pre["record_sha256"],
