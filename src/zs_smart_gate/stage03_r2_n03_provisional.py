@@ -28,6 +28,25 @@ if hashlib.sha256(json.dumps(
 ).encode("utf-8")).hexdigest() != SPEC_SHA256:
     raise RuntimeError("ZS03_IMPULSE_SPEC_SHA_MISMATCH")
 
+# V0.1 is immutable and remains available as the original reviewed proposal.
+# V0.2 identifies ONLY the deterministic episode-selection fix; it does not
+# grant owner acceptance, scoring, or provenance for production N03.
+SELECTION_SPEC = {
+    "version": "STAGE03_N03_CANDIDATE_V0_2_NOT_OWNER_APPROVED",
+    "base_spec_sha256": SPEC_SHA256,
+    "episode_selection": "LATEST_ELIGIBLE_NONOVERLAPPING_ONSET_ASOF_DECISION",
+    "completed_event_log": "ALL_CAUSALLY_CONFIRMED_EPISODES_WITHIN_SUPPLIED_CLOSED_WINDOW",
+    "overlap": "UNKNOWN_UNRESOLVED_OVERLAPPING_ONSETS",
+    "false_semantics": "NOT_COMPLETED_AS_OF_DECISION_NOT_FUTURE_IMPOSSIBILITY",
+    "confirmation": "SECOND_RIGHT_BAR_AVAILABLE_AT_WITHIN_EPISODE",
+    "production_score": False,
+}
+SELECTION_SPEC_SHA256 = "8c73afe1facb0f8f2e6945badfe8b323b999be8763f1355b26ae3cb50f2e25e2"
+if hashlib.sha256(json.dumps(
+        SELECTION_SPEC, sort_keys=True, ensure_ascii=False, separators=(",", ":"),
+).encode("utf-8")).hexdigest() != SELECTION_SPEC_SHA256:
+    raise RuntimeError("ZS03_N03_SELECTION_SPEC_SHA_MISMATCH")
+
 MODE_RULE_ID = "ZS03_PRIOR_CONFIRMED_4H_PIVOT_MODE"
 MODE_RULE_VERSION = "V0_1_OPS_CANDIDATE_NO_REAL_PIT"
 
@@ -111,16 +130,25 @@ def evaluate_provisional_n03(
     mode: str, mode_evidence: ModeSourceEvidence | None,
     parent_open_at: datetime, decision_at: datetime, witness: ClockWitness,
 ) -> dict:
-    """Tri-state operational *proxy*, distinct from source-qualified N03.
+    """Causal V0.2 *candidate* state of the latest eligible episode.
 
-    TRUE only on full strict 2+2 pivot availability. FALSE means no
-    completion yet as of the provided decision, NOT future impossibility.
+    A separate window-scoped event log retains every causally confirmed
+    nonoverlapping episode, so a later onset cannot erase earlier completion.
+    FALSE means NOT completed as-of decision, never a future prediction.
     Missing/late/unknown/overlap => UNKNOWN. No N03/pre-move points.
     """
     result = {
-        "schema": "ZS03_N03_OPERATIONAL_PROXY_V0_1",
-        "predicate_id": SPEC["predicate_id"], "definition_sha256": SPEC_SHA256,
+        "schema": "ZS03_N03_OPERATIONAL_PROXY_V0_2_CANDIDATE",
+        "predicate_id": SPEC["predicate_id"],
+        "definition_version": SELECTION_SPEC["version"],
+        "definition_sha256": SELECTION_SPEC_SHA256,
+        "base_definition_sha256": SPEC_SHA256,
+        "definition_approval": "PENDING_PM_OWNER",
+        "episode_selection": SELECTION_SPEC["episode_selection"],
+        "completed_event_log_scope": "SUPPLIED_CLOSED_WINDOW_ONLY",
+        "completed_events": [],
         "state": ImpulseState.UNKNOWN.value, "reason": "NOT_EVALUATED",
+        "false_semantics": SELECTION_SPEC["false_semantics"],
         "onset_index": None, "confirmation_index": None,
         "event_available_at": None, "episode_expires_at_index": None,
         "n03_status": "UNAVAILABLE", "pre_move_credited": False,
@@ -161,34 +189,54 @@ def evaluate_provisional_n03(
         if not crossings:
             result.update(state=ImpulseState.FALSE.value, reason="FALSE_NO_ONSET")
             return result
-        j = crossings[0]
-        for nxt in crossings[1:]:
-            if nxt < j+n:
+        # Eligibility depends only on closed, known onsets. Later bars cannot
+        # delete an already confirmed event. Overlapping episodes remain UNKNOWN.
+        for prior, following in zip(crossings[:-1], crossings[1:]):
+            if following < prior + n:
                 raise Unavailable("N03_OVERLAPPING_ONSET_EPISODES")
-            j = nxt
-        expiry = j+n-1
-        result.update(onset_index=j, episode_expires_at_index=expiry)
-        base, atr = bars[j-3].c, atr14_prev(bars[:j])
-        # The rightmost confirming candle must lie inside the episode horizon.
-        for e in range(j, min(expiry-2, len(bars)-3)+1):
-            extreme = bars[e].h if direction is Direction.UP else bars[e].l
-            neighbors = [bars[k].h if direction is Direction.UP else bars[k].l
-                         for k in (e-2,e-1,e+1,e+2)]
-            strict = (all(extreme > p for p in neighbors) if direction is Direction.UP
-                      else all(extreme < p for p in neighbors))
-            if strict and d*(extreme-base) >= excursion*atr:
-                result.update(
-                    state=ImpulseState.TRUE.value,
-                    reason="TRUE_CONFIRMED_LOCAL_PIVOT_OPERATIONAL_ONLY",
-                    confirmation_index=e+2,
-                    event_available_at=bars[e+2].available_at.isoformat(),
-                )
-                return result
+        latest = crossings[-1]
+        completed_events = []
+        latest_completion = None
+        latest_expiry = latest + n - 1
+        for j in crossings:
+            expiry = j + n - 1
+            base, atr = bars[j-3].c, atr14_prev(bars[:j])
+            # The second RIGHT confirmation must already be available and
+            # must remain within this episode; ties never form a pivot.
+            for e in range(j, min(expiry-2, len(bars)-3)+1):
+                extreme = bars[e].h if direction is Direction.UP else bars[e].l
+                neighbors = [bars[k].h if direction is Direction.UP else bars[k].l
+                             for k in (e-2,e-1,e+1,e+2)]
+                strict = (all(extreme > p for p in neighbors) if direction is Direction.UP
+                          else all(extreme < p for p in neighbors))
+                if strict and d*(extreme-base) >= excursion*atr:
+                    event = {
+                        "onset_index": j,
+                        "confirmation_index": e + 2,
+                        "event_available_at": bars[e+2].available_at.isoformat(),
+                    }
+                    completed_events.append(event)
+                    if j == latest:
+                        latest_completion = event
+                    break
         result.update(
-            state=ImpulseState.FALSE.value,
-            reason=("FALSE_EXPIRED" if len(bars)-1 >= expiry
-                    else "FALSE_NOT_YET_COMPLETED"),
+            completed_events=completed_events,
+            onset_index=latest,
+            episode_expires_at_index=latest_expiry,
         )
+        if latest_completion is not None:
+            result.update(
+                state=ImpulseState.TRUE.value,
+                reason="TRUE_CONFIRMED_LOCAL_PIVOT_OPERATIONAL_ONLY",
+                confirmation_index=latest_completion["confirmation_index"],
+                event_available_at=latest_completion["event_available_at"],
+            )
+        else:
+            result.update(
+                state=ImpulseState.FALSE.value,
+                reason=("FALSE_EXPIRED" if len(bars)-1 >= latest_expiry
+                        else "FALSE_NOT_YET_COMPLETED"),
+            )
     except (Unavailable, TypeError, ValueError, IndexError, ZeroDivisionError) as exc:
         result.update(
             state=ImpulseState.UNKNOWN.value,
