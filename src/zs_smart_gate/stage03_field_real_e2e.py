@@ -119,15 +119,31 @@ def run(pre_path,post_path,rights_path):
                                      "BINANCE_SPOT_EXACT_PRICE_BASE_1E-8_QUOTE_1E-4_V1")
     evidence_id=hashlib.sha256((review["pre_receipt_sha256"]+
                                 review["post_receipt_sha256"]).encode("ascii")).hexdigest()
-    # One observed original-source Stage03 -> Stage03A functional E2E.
+    # Two independent real-source Stage03 -> 03A research pathways from
+    # the SAME authorized 4+6 capture; no additional market requests.
     outcome=assess_readiness(symbol="BTCUSDT",horizon=Horizon.SWING,
         direction=Direction.UP,parent=parent,children=children,core_5m=core,
         market=market,decision_at=decision,tolerance=tolerance,
         event_discriminator="REAL_SOURCE_RECEIPTS_SHA256:"+evidence_id)
+    thirty_rec=post["requests"][1]
+    thirty_candidates=[row for row in thirty_rec["selected"]["bars"]
+                       if int(row["close_exclusive_ms"])==int(parent_end.timestamp()*1000)]
+    if len(thirty_candidates)!=1:
+        raise ValueError("EXACT_30M_INTRADAY_PARENT_MISSING")
+    thirty=win(thirty_rec,thirty_candidates[0])
+    in_fives=[win(core_rec,row) for row in fives
+              if int(row["open_ms"])>=int((parent_end-timedelta(minutes=30)).timestamp()*1000)]
+    if len(in_fives)!=6:
+        raise ValueError("EXACT_6X5M_INTRADAY_CHILDREN_MISSING")
+    intraday=assess_readiness(symbol="BTCUSDT",horizon=Horizon.INTRADAY,
+        direction=Direction.UP,parent=thirty,children=tuple(in_fives),
+        core_5m=core,market=market,decision_at=decision,tolerance=tolerance,
+        event_discriminator="REAL_SOURCE_RECEIPTS_SHA256:"+evidence_id)
     mode=strict_pivot_mode(pre,parent_open)
-    # This 03A bridge is source-observed; R2 normalizer code still has
-    # explicitly synthetic-only guards and is NOT run on falsely relabeled data.
-    success=outcome["status"]=="RESEARCH_CANDIDATE"
+    # Existing R2 numeric source contract explicitly accepts only synthetic
+    # fixtures; no real bar is secretly re-labelled as synthetic.
+    success=(outcome["status"]=="RESEARCH_CANDIDATE"
+             and intraday["status"]=="RESEARCH_CANDIDATE")
     packet={
         "schema":CONTRACT,"source":"BINANCE_SPOT_PUBLIC_REST_BTCUSDT",
         "capture_pre_sha256":review["pre_receipt_sha256"],
@@ -141,6 +157,10 @@ def run(pre_path,post_path,rights_path):
         "original_source_e2e_executed":True,
         "stage03_to_03a_research_functional_pass":success,
         "real_03a_status":outcome["status"],
+        "intraday_03a_status":intraday["status"],
+        "intraday_03a_reason_codes":intraday["reason_codes"],
+        "intraday_research_identity":intraday["identity"],
+        "intraday_reconciliation":intraday["reconciliation"],
         "real_03a_reason_codes":outcome["reason_codes"],
         "research_identity":outcome["identity"],
         "reconciliation":outcome["reconciliation"],
