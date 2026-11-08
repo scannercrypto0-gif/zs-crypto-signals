@@ -4,6 +4,8 @@ on:
     paths:
       - 'src/zs_smart_gate/stage03_r2_offline.py'
       - 'src/zs_smart_gate/stage03_r2_functional.py'
+      - 'src/zs_smart_gate/stage03_r2_closed_bundle.py'
+      - 'tests/test_stage03_r2_closed_bundle.py'
       - 'src/zs_smart_gate/stage03_r2_source_contract.py'
       - 'src/zs_smart_gate/stage03_r2_n03_provisional.py'
       - 'tests/test_stage03_r2_source_contract.py'
