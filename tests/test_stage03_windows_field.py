@@ -89,6 +89,17 @@ class TestStage03WindowsField(unittest.TestCase):
                                     start_wall=100,received_wall=100.2,
                                     request_duration_s=.2)
 
+    def test_npt_identity_collision_blocks_before_market(self):
+        peer={"server_ip":"192.0.2.1","offset_seconds":0.0,
+              "conservative_absolute_utc_error_seconds":0.15}
+        with patch.object(clock,"probe",side_effect=[peer,peer]):
+            with self.assertRaisesRegex(clock.ClockGateError,"IDENTITY_COLLISION"):
+                clock.witness_pair()
+
+    def test_http_redirect_not_followed(self):
+        self.assertIsNone(cap.RejectRedirect().redirect_request(
+            None,None,302,"Moved",None,"https://unapproved.invalid"))
+
     def test_receipt_sha_tampering_rejected(self):
         with tempfile.TemporaryDirectory() as d:
             path=Path(d)/"receipt.json"
@@ -108,8 +119,6 @@ class TestStage03WindowsField(unittest.TestCase):
 
     def test_mode_missing_real_history_is_unavailable(self):
         fake={"requests":[None,{"selected":{"bars":[]}}]}
-        self.assertEqual(strict_pivot_mode(fake,datetime.now(timezone.utc))["status"],
-                         "UNAVAILABLE") if False else None
         # Strict mode gate requires an actual timestamped pre-parent receipt:
         with self.assertRaises((KeyError,ValueError,TypeError)):
             strict_pivot_mode(fake,datetime.now(timezone.utc))
