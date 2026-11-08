@@ -252,6 +252,36 @@ def run(args):
                 record["failure_code"] = type(exc).__name__ + ":" + str(exc)[:120]
                 persist()
                 raise
+        if args.phase == "post":
+            # A real decision-time checkpoint, NOT a later invented replay timestamp.
+            # The preceding requests may be rejected if too stale at this instant.
+            time.sleep(0.6)
+            last_clock = witness_pair()
+            decision = utcnow()
+            u = float(last_clock["conservative_absolute_utc_error_seconds"])
+            if not 0 < u < 1.5:
+                raise ValueError("DECISION_CLOCK_UNCERTAINTY_INVALID")
+            lo = decision - timedelta(seconds=u)
+            hi = decision + timedelta(seconds=u)
+            if any(parse_time(x["received_utc_unattested"]) +
+                   timedelta(seconds=float(x["uncertainty_bound_s"])) >= lo
+                   for x in record["requests"]):
+                raise ValueError("EVIDENCE_NOT_AVAILABLE_BEFORE_DECISION")
+            # Book and ticker are separate, potentially non-atomic snapshots.
+            book = record["requests"][4]
+            ticker = record["requests"][5]
+            if ((hi - (parse_time(book["received_utc_unattested"]) -
+                       timedelta(seconds=float(book["uncertainty_bound_s"])))).total_seconds()>5
+                or (hi - (parse_time(ticker["received_utc_unattested"]) -
+                          timedelta(seconds=float(ticker["uncertainty_bound_s"])))).total_seconds()>60):
+                raise ValueError("MARKET_SOURCE_EXPIRED_BEFORE_DECISION")
+            record["decision_witness"] = {
+                "at_local_utc_unattested": iso(decision),
+                "earliest_utc": iso(lo),
+                "latest_utc": iso(hi),
+                "independent_utc": last_clock,
+                "publisher_clock_verified": False,
+            }
         record["completed"] = True
         persist()
     return target, record["record_sha256"]
