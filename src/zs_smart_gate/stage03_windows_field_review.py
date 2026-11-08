@@ -100,7 +100,7 @@ def verify(pre_path, post_path, rights_attestation=None):
     if (not isinstance(sha,str) or len(sha)!=64
             or sha != post.get("rights_evidence_sha256")):
         raise ValueError("RIGHTS_EVIDENCE_HASH_CONFLICT")
-    if rights_attestation is not None and check_rights(rights_attestation) != sha:
+    if rights_attestation is not None and check_rights(rights_attestation, require_fresh=False) != sha:
         raise ValueError("RIGHTS_ATTESTATION_FILE_HASH_MISMATCH")
     if any(obj.get("rights_scope")!="PRIVATE_NONCOMMERCIAL_RESEARCH"
            or obj.get("rights_status")!="OPERATOR_ATTESTATION_NOT_INDEPENDENT_LICENSE_VERIFICATION"
