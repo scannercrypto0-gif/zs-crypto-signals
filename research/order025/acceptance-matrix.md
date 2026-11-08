@@ -1,5 +1,8 @@
 # ORDER-025 — Stage03 engineering and scientific acceptance (not an owner approval)
 
+> **SUPERSEDED FOR STAGE03 CLOSURE — OWNER/PM 2026-11-08.** This is a retained historical research record, **not** an active Stage03 closure checklist. The only active Stage03 closure gates are **C1–C4** in [MASTER](../../ZS_SMART_GATE_MASTER.md) and [Issue #25 PM audit](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/25#issuecomment-6721751412). Historical requirements for blind OOS, forward studies, N_eff/N_REQUIRED, predictive edge, executable PnL, fees/slippage economics, full historical publisher PIT, prospective capture, D1–D5 predictive calibration, and full 00–04 E2E **MUST NOT block C1–C4**. Retain their original scientific limitations for future separately authorized work; never interpret them as waived scientific evidence or as production approval. Tests/evidence already accepted are REUSE, not mandatory RETEST. All new acceptance runs are local Windows only; GitHub Actions checks are not Stage03 acceptance evidence. Stage05, market access, trading and Telegram remain unauthorized.
+
+
 Authority: [ORDER-025](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/25#issuecomment-6656960128).
 Pinned base: main `05ced43dcfbc476a60030283004503945be82120`; MASTER v1.37.
 Historical Setup v1.1 SHA256: `0cb5f5aed50ac219d00188cca9827b26ab75dd15a9786773e683b40d10d818ce`.
@@ -35,4 +38,4 @@ The old owner-reported arithmetic is consistent but not independently reproduced
 
 Every row satisfies raw − suppressed = admitted and up + not-up = admitted. Values are from the owner-reported summary in [PM ORDER023 disposition](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/25#issuecomment-6656883207), not re-read archive observations.
 
-**Completion definition:** ALL core tests passed on the same Draft PR head; independent original-archive reproduction; scientific protocol OWNER SIGNED before any new confirmatory outcome; non-fabricated PIT and contemporaneous book/24h for full detection; preset effect/uncertainty/effective N; independent PM validation; explicit owner closure. Until all requirements met, no scientific closure.
+**Historical scientific-qualification completion definition (SUPERSEDED AS A STAGE03 CLOSURE GATE):** ALL core tests passed on the same Draft PR head; independent original-archive reproduction; scientific protocol OWNER SIGNED before any new confirmatory outcome; non-fabricated PIT and contemporaneous book/24h for full detection; preset effect/uncertainty/effective N; independent PM validation; explicit owner closure. These remain historical/future scientific qualification criteria only; they are NOT prerequisites for the current Stage03 C1–C4 component closure. The current Stage03 completion definition is solely C1–C4 plus explicit owner closure.
