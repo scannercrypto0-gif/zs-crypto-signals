@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal
 from enum import Enum
-from typing import Sequence
+from typing import Mapping, Sequence
 
 from .stage03a_contracts import Direction, Horizon
 from .stage03_r2_offline import (
@@ -169,12 +169,50 @@ class Ticker24Packet:
     volume_unit: str
     window: str
     receipt: SourceReceipt
+    # Optional: synthetic packet callers may omit this. A field-parsing
+    # adapter must provide both base "volume" and quote "quoteVolume".
+    base_volume: Decimal | None = None
 
     def __post_init__(self) -> None:
         _identifier(self.symbol, reason="TICKER_SYMBOL_MISSING")
         if not isinstance(self.receipt, SourceReceipt):
             raise Unavailable("TICKER_SOURCE_RECEIPT_REQUIRED")
         object.__setattr__(self, "quote_volume", number(self.quote_volume))
+        if self.quote_volume < 0:
+            raise Unavailable("TICKER_QUOTE_VOLUME_NEGATIVE")
+        if self.base_volume is not None:
+            object.__setattr__(self, "base_volume", number(self.base_volume))
+            if self.base_volume < 0:
+                raise Unavailable("TICKER_BASE_VOLUME_NEGATIVE")
+
+
+def ticker24_from_public_fields(
+    *, raw: Mapping[str, object], endpoint: str, symbol: str,
+    quote_asset: str, receipt: SourceReceipt,
+) -> Ticker24Packet:
+    """Pure field selector for the exact rolling-24h public ticker route.
+
+    Binance "volume" is base asset, while "quoteVolume" is quote asset.
+    Neither their ratio nor their spelling proves source rights or PIT.
+    Route/receipt identity is caller evidence and is not authenticated here.
+    """
+    if endpoint != "/api/v3/ticker/24hr":
+        raise Unavailable("TICKER_24H_ENDPOINT_REQUIRED")
+    if not isinstance(raw, Mapping) or raw.get("symbol") != symbol:
+        raise Unavailable("TICKER_24H_PAYLOAD_SYMBOL_MISMATCH")
+    if quote_asset != "USDT":
+        raise Unavailable("TICKER_24H_QUOTE_ASSET_UNSUPPORTED")
+    if "volume" not in raw or "quoteVolume" not in raw:
+        raise Unavailable("TICKER_BASE_AND_QUOTE_FIELDS_REQUIRED")
+    base = number(raw["volume"])
+    quote = number(raw["quoteVolume"])
+    if base < 0 or quote < 0:
+        raise Unavailable("TICKER_24H_NEGATIVE_VOLUME")
+    return Ticker24Packet(
+        symbol=symbol, quote_asset=quote_asset, quote_volume=quote,
+        volume_unit="USDT", window="ROLLING_24H", receipt=receipt,
+        base_volume=base,
+    )
 
 
 def market_from_explicit_packets(

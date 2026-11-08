@@ -466,6 +466,14 @@ def evaluate_r2(*, horizon: Horizon, direction: Direction, mode: str,
         # contiguous timestamps alone do not prove a common price source.
         if any(b.source_id != parent.source_id for b in bars):
             raise Unavailable("CONTEXT_SOURCE_MISMATCH:" + key)
+        # Binance daily candles begin at 00:00 UTC; weekly candles begin
+        # Monday at 00:00 UTC. A contiguous offset series is still invalid.
+        if key in ("1d", "1w") and any(
+            b.open_at.hour or b.open_at.minute or b.open_at.second
+            or b.open_at.microsecond or (key == "1w" and b.open_at.weekday() != 0)
+            for b in bars
+        ):
+            raise Unavailable("CONTEXT_UTC_BOUNDARY_MISMATCH:" + key)
         # Fixed frame boundary, not an arbitrary calendar freshness threshold.
         prior_frame = ((horizon is Horizon.INTRADAY and key in ("5m", "30m"))
                        or (horizon is Horizon.SWING and key in ("4h", "structure4h")))
