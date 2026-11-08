@@ -462,6 +462,10 @@ def evaluate_r2(*, horizon: Horizon, direction: Direction, mode: str,
 
     def ctx(key: str, n: int, minutes: int) -> Sequence[Candle]:
         bars = required_context(context, key, n, decision_at, witness, timedelta(minutes=minutes))
+        # Reject cross-feed higher-timeframe features; synthetic receipts and
+        # contiguous timestamps alone do not prove a common price source.
+        if any(b.source_id != parent.source_id for b in bars):
+            raise Unavailable("CONTEXT_SOURCE_MISMATCH:" + key)
         # Fixed frame boundary, not an arbitrary calendar freshness threshold.
         prior_frame = ((horizon is Horizon.INTRADAY and key in ("5m", "30m"))
                        or (horizon is Horizon.SWING and key in ("4h", "structure4h")))
