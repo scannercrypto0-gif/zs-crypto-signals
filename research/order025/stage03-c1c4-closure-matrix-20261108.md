@@ -1,36 +1,36 @@
 # «Stage03 C1–C4» — مصفوفة إغلاق المكوّنات، 8 نوفمبر 2026
 
-**السلطة:** [تدقيق «PM» #6721751412](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/25#issuecomment-6721751412)؛ [قرار المالك #6706564402](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/25#issuecomment-6706564402)؛ [«009A» #6706573034](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/25#issuecomment-6706573034). **الأساس:** «main» `a4f9208839ecdae767f2da082c9fa57d4d9ac2fc`. هذه **مصفوفة فحص وصحة الحساب**، وليست اعتماد إغلاق أو معيار جودة تنبؤية جديدًا.
+**السلطة الحالية:** [قرار «PM» #6725877613](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/25#issuecomment-6725877613)؛ [قرار التكامل](n03-v02-r2-timing-integration-decision-20261108.md). **المراجع الأصلية:** [تدقيق «PM» #6721751412](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/25#issuecomment-6721751412). **الأساس:** «main» `a4f9208839ecdae767f2da082c9fa57d4d9ac2fc`. هذه مصفوفة حساب وبحث، لا اعتماد إشارة إنتاجية.
 
-**الأحكام:** «REUSE» = لا تغيير مبرمج للمكون حاليًا وإعادة استخدام الأدلة الموجودة في حدودها، **ولا تعني قبولًا حسابيًا نهائيًا**؛ «FIX» = فجوة برمجية محددة عُولجت بهذه الحزمة؛ «DECISION_REQUIRED» = تعريف أو ربط دلالي لم يعتمد ولا يجوز اختراعه. كل قيم «R2» حاليًا **بحثية غير معتمدة للإشارة الإنتاجية**.
+**الأحكام الحالية:** «REUSE» يعيد استخدام الأدلة السابقة ضمن حدودها، ولا يعني إعادة حساب مستقل جديد؛ «FIX» يشير إلى إصلاح محدد تم التحقق منه؛ «SCOPED_NON_EQUIVALENCE» يثبت اختلاف النطاق دون صيغة بديلة أو تحويل رقمي. تعريف «N03 V0.2» التشغيلي مقبول من المالك، بينما توقيت «R2» يبقى غير متاح.
 
 ## المؤشرات «N01–N12»
 
 | المؤشر | التنفيذ والصيغة والوحدة/النافذة | دليل قائم دون إعادة اختبار | الفجوة أو عدم اليقين الفعلي | الحكم |
 |---|---|---|---|---|
 | «N01» | `close_parts` لـ«30m»: `(8k+6b+6w)/20`؛ اتجاه «UP/DOWN» ونطاق 0–1 | `test_basic_close_path_symmetric_and_unsupported_inputs`؛ `test_stage03_r2_offline.py` | مراجعة مرجع «C1» مستقل لإثبات قبول الصيغة لا مجرد وجود الاختبار | «REUSE» |
-| «N02» | `path_parts` لـ6 شموع «5m»: `(8g+8e+4t)/20`؛ التتابع والأحجام الأصلية محفوظة | `test_r2_n02_n09_path_examples`؛ اختبار تجميع «03A» السابق | معنى الجودة الداخلية مقابل «internal_path» غير معتمد: «SEM-I-01» | «DECISION_REQUIRED» |
-| «N03» | `onset_timing` مرشح تاريخي، و`evaluate_provisional_n03` أساس «V0.1» محفوظ؛ إضافة اختيار الحلقات وسجل الأحداث في «V0.2» بصيغة مرشحة، دون تغيير «ATR14» أو القمة «2+2» | `test_stage03_r2_n03_provisional.py` مقبول سابقًا في نطاقه؛ اختبار إصلاح «V0.2» الجديد **بانتظار «Windows»**، [التعريف والبصمة](n03-full-impulse-candidate-v0-2.md) | مراجعة «PM» والمالك قبل اعتماد معنى «FULL_IMPULSE» النهائي؛ حالة `UNAVAILABLE` تحفظ سبب عدم التوافر، ولا تنتج نقاطًا أو إشارة | «DECISION_REQUIRED» |
-| «N04» | `volume_continuity`: آخر 6 أحجام «quote» مقارنة بـ20 شمعة «5m»، متوسط/وسيط ورفض المرجع الصفري | `test_n04_isolated_spike_vs_continuous_volume` | الربط الدلالي مع «volume» الأوسع يحتاج «SEM-I-02»؛ صحة الصيغة المرجعية مستقلة عن اختيار معنى الرابط | «DECISION_REQUIRED» |
-| «N05» | `prior_range_alignment` لـ21 شمعة «1h» و21 شمعة «4h» قبل قرار «30m»، تجميع `(10a+5b)/15` | «3/3» حارس المصدر السابق `test_intraday_mixed_1h_source_blocks_n05_not_parent_arithmetic` | مراجعة كفاية المرجع الحسابي المستقل عند إغلاق «C1»؛ مصدر مختلط/نافذة ناقصة يُحجبان بالكود | «REUSE» |
+| «N02» | `path_parts` لـ6 شموع «5m»: `(8g+8e+4t)/20`؛ التتابع محفوظ | `test_r2_n02_n09_path_examples`، مرجع حساب سابق | «SEM-I-01» محسوم: **«SCOPED_NON_EQUIVALENCE»** بين الجودة المحددة و`internal_path`؛ لا ربط رقمي بـ«03C» | «REUSE / NO_NUMERIC_03C_MAPPING» |
+| «N03» | `onset_timing` قياس توقيت مبكر مشروط بسجل كامل لكل شمعة؛ `evaluate_provisional_n03` «V0.2» يرصد حالة أحدث حلقة وسجل تأكيدات؛ تعريفه التشغيلي **مقبول** | «4/4» على `0aa25f831ee2565454e82f4e4f1e11e71995fd04`، [قرار التكامل](n03-v02-r2-timing-integration-decision-20261108.md) | ثبت **عدم التكافؤ**: `MOMENTUM_EARLY_TIMING=None` مع سبب أصلي؛ `n03_operational_proxy_review` تشخيصي فقط | «REUSE / R2_UNAVAILABLE_NOT_EQUIVALENT» |
+| «N04» | `volume_continuity`: استمرارية حجم «quote» مع مرجع 20 شمعة «5m» | `test_n04_isolated_spike_vs_continuous_volume` | «SEM-I-02» محسوم: **«SCOPED_NON_EQUIVALENCE»** مع `volume` العام؛ بلا ربط رقمي بـ«03C» | «REUSE / NO_NUMERIC_03C_MAPPING» |
+| «N05» | `prior_range_alignment` لـ21 شمعة «1h» و21 شمعة «4h»، تجميع `(10a+5b)/15` | `test_intraday_mixed_1h_source_blocks_n05_not_parent_arithmetic` لحارس المصدر؛ `test_determinism_and_network_forbidden` يثبت ناتج `MTF_NEARBY_STRUCTURE="0.5"` | **حد مرجع محدد:** لا يظهر في الاختبارين اشتقاق عددي مستقل كامل للتركيب `(10a+5b)/15`؛ لا خلل في الصيغة مثبت ولا شرط اختبار جديد | «REUSE / BOUNDED_REFERENCE» |
 | «N06» | `liquidity` لـ«Intraday»: سعر «bid/ask» و«24hr quoteVolume» مستقلان؛ `(3s+2l)/5`؛ عمر «book» 5 ثوان و«ticker24» 60 ثانية **حدود بحثية غير مجمّدة** | «9/9» السابقة لاختبار الحقول والأحجام ومرجع الحساب، و«3/3» مدخل إيصالات «PR #46» | توثيق صلاحية حدود حداثة «R2» البحثية مقابل سلطة المصدر الحقيقي، **من دون اختلاق دليل «PIT»** | «REUSE» |
 | «N07» | `structure` قمم وقيعان «4h» مؤكدة «2+2» و«BOS/CHoCH»؛ النمط يُشتق من سياق سابق مستقل «32 × 4h»، لا من «N10» | `test_n07_real_reachable_branch_with_prior_confirmed_pivots`، و«9/9» لحراسة المصدر و«prior mode»، و«3/3» مسار «Swing» | تثبيت قبول دلالة النمط السابق ومراجعة المرجع/صلاحية حدّه عند «C1»؛ لا اجتهاد بربط جديد | «REUSE» |
 | «N08» | `close_parts` لـ«4h»: `.4k+.3b+.3w` | `test_n08_n09_n10_n11_n12_swing_contract_values_and_no_03c_calls` | مراجعة المرجع المستقل قبل الحكم النهائي؛ لا خلل برمجي مثبت يتطلب إعادة كتابة | «REUSE» |
-| «N09» | `path_parts` لـ4 شموع «1h»: `.4g+.4e+.2t` | `test_r2_n02_n09_path_examples` واختبارات «Swing» السابقة | «SEM-S-01» جودة أبناء «1h» مقابل «internal_path» | «DECISION_REQUIRED» |
-| «N10» | `context_movement`، سياق 18 شمعة «1d» و18 شمعة «1w»؛ `.6 daily+.4 weekly`، أسبوع «UTC» يبدأ الإثنين، دون إنشاء النمط | «9/9» سابقة لحدود اليوم/الأسبوع، و`test_n10_two_closed_frames_and_context_only` | «SEM-S-02» سياق «1d/1w» مقابل «higher_context»؛ غياب سياق أو نمط سابق ⇒ قيمة غير متاحة | «DECISION_REQUIRED» |
+| «N09» | `path_parts` لـ4 شموع «1h»: `.4g+.4e+.2t` | `test_r2_n02_n09_path_examples` وشواهد «Swing» السابقة | «SEM-S-01» محسوم: **«SCOPED_NON_EQUIVALENCE»** مع `internal_path` الأوسع؛ بلا ربط رقمي بـ«03C» | «REUSE / NO_NUMERIC_03C_MAPPING» |
+| «N10» | `context_movement` لسياقي «1d/1w»؛ `.6 daily+.4 weekly` مع سبب عدم التوافر | «9/9» حدود التقويم و`test_n10_two_closed_frames_and_context_only` | «SEM-S-02» محسوم: **«SCOPED_NON_EQUIVALENCE»** مع `higher_context` الأوسع؛ بلا ربط رقمي بـ«03C» | «REUSE / NO_NUMERIC_03C_MAPPING» |
 | «N11» | `MOMENTUM_VOLUME`: 20 شمعة «4h» قبل الأب، «ATR14» وحجم «quote»؛ `.6fpos(m)+.4fpos(v)` | `test_n08_n09_n10_n11_n12_swing_contract_values_and_no_03c_calls` | مراجعة مستقلة لمرجع «C1» والنافذة؛ لا تعديل حسابي بغير عيب محدد | «REUSE» |
 | «N12» | نفس عقد `liquidity` الحسابي بوضع «Swing»، مع مصدرَي «book/ticker24» المنفصلين | «9/9» لمرجع حجم الأصل/عملة التسعير، و`test_n06_n12_quote24_units_reference_and_missingness` | حدود مصدر/توقيت واقعية غير مثبتة من المعطيات الصناعية؛ لا تُستنتج سيولة غير موجودة | «REUSE» |
 
-**تحديد الحالة دون تضليل:** أسماء الاختبارات في الجدول مراجع لوجود شواهد سابقة، **وليست إعلانًا أن «PM» اعتمد مراجع الحساب الاثني عشر كلها**. قبول المالك السابق محدد النطاق: «9/9» على `4a396b461e67036882ad1b6562d2838b24e40f72`، ثم «3/3» على `55699d441bea42c0bfee98654af2b8bb2bd4fede`، ثم «3/3» على `de94ce1a1727bf0b730a9bbae2adf8b689524adc`. نُقل الكود البحثي المقبول عبر «PR #44» ثم مدخل الإيصالات عبر «PR #46». لا إعادة لاختبارات تلك البصمات.
+**حد القبول:** أكد «PM» جرد أدلة «C1» الاثني عشر لإعادة الاستخدام فقط، لا بوصفه إعادة حساب مستقلة جديدة «12/12». لم يثبت عيب حسابي يستدعي حملة اختبارات. حد المرجع العددي الظاهر تحديدًا هو «N05» في `prior_range_alignment` واختبارَي المصدر والحتمية أعلاه؛ لا يُخلق منه شرط اختبار جديد. نتائج «9/9» و«3/3» و«3/3» السابقة محفوظة في نطاق بصماتها، وكذلك «3/3» لمسودة «C3» و«4/4» لإصلاح «N03» المقدم من المالك.
 
-## القرارات الدلالية الأربع — لا اختيار تلقائي
+## القرارات الدلالية الأربع — حُسمت بعدم التكافؤ دون تحويل رقمي
 
-| المعرّف | الربط المعلّق في `stage03_contract_alignment.py` | الموجود فعلاً | قرار مطلوب من «PM»/المالك | الحكم |
+| المعرّف | الربط في `stage03_contract_alignment.py` | اختلاف المجال | قرار «PM» المقبول | الحكم |
 |---|---|---|---|---|
-| «SEM-I-01» | `SIX_5M_INTERNAL_QUALITY` ↔ `internal_path` | مرشح جودة 6 شموع موجود، والربط `UNMAPPED` | اعتماد أن الصيغتين متكافئتان أو تحديد فرق المجال | «DECISION_REQUIRED» |
-| «SEM-I-02» | `VOLUME_CONTINUITY` ↔ `volume` | مرشح استمرارية «quote» موجود والربط `UNMAPPED` | هل يساوي الحجم العام أم يستلزم تعريفًا مستقلًا؟ | «DECISION_REQUIRED» |
-| «SEM-S-01» | `FOUR_1H_INTERNAL_QUALITY` ↔ `internal_path` | مرشح مسار أبناء «1h» موجود والربط `UNMAPPED` | نطاق الجودة مقابل المسار | «DECISION_REQUIRED» |
-| «SEM-S-02» | `DAILY_WEEKLY_CONTEXT` ↔ `higher_context` | مرشح يومي/أسبوعي موجود والربط `UNMAPPED` | هل يقتصر «higher_context» على هذين الإطارين؟ | «DECISION_REQUIRED» |
+| «SEM-I-01» | `SIX_5M_INTERNAL_QUALITY` ↔ `internal_path` | جودة ست شموع لا تتطابق مع معنى المسار الأوسع | **«SCOPED_NON_EQUIVALENCE / NO_NUMERIC_03C_MAPPING»**؛ يبقى `UNMAPPED` | «RESOLVED_NON_EQUIVALENT» |
+| «SEM-I-02» | `VOLUME_CONTINUITY` ↔ `volume` | الاستمرارية ليست تعريفًا عامًا للحجم | **«SCOPED_NON_EQUIVALENCE / NO_NUMERIC_03C_MAPPING»**؛ يبقى `UNMAPPED` | «RESOLVED_NON_EQUIVALENT» |
+| «SEM-S-01» | `FOUR_1H_INTERNAL_QUALITY` ↔ `internal_path` | جودة الأبناء ليست المسار العام | **«SCOPED_NON_EQUIVALENCE / NO_NUMERIC_03C_MAPPING»**؛ يبقى `UNMAPPED` | «RESOLVED_NON_EQUIVALENT» |
+| «SEM-S-02» | `DAILY_WEEKLY_CONTEXT` ↔ `higher_context` | السياق اليومي والأسبوعي نطاق أضيق | **«SCOPED_NON_EQUIVALENCE / NO_NUMERIC_03C_MAPPING»**؛ يبقى `UNMAPPED` | «RESOLVED_NON_EQUIVALENT» |
 
 ## إصلاح «C3» البرمجي المحدد — «FIX»
 
@@ -38,15 +38,15 @@
 
 **الإصلاح:** `stage03_c1c4_research_from_closed_receipts` داخل `src/zs_smart_gate/stage03_r2_closure.py` يستخدم الكود المقبول دون إعادة حساب الصيغ. يُرجع بصمة نتيجة حتمية، وصفوفًا فردية لكل مؤشر من الأفق المطلوب، وسبب فقده، وقائمة القرارات الأربع المعلّقة. أي إدخال منقوص/مختلط/مستقبلي **يُرفض مع رمز السبب، بلا صنع مرشح أو قيمة مفقودة تساوي الصفر**. كل الحسابات الرقمية تبقى «RESEARCH_VALUE_PRESENT_NOT_ACCEPTED» أو معلّقة دلاليًا؛ لا «production score»، ولا «signal_id».
 
-**معيار الفحص الجديد الوحيد:** `tests/test_stage03_r2_closure.py`: ثلاث حالات للربط الحتمي للبيانات المغلقة إلى «C3» بحثي في «Intraday»، ولحفظ أسباب عدم التوافر في «Swing»، ولرفض ثلاثة مدخلات مخالفة للمصدر/المستقبل/الحجم. لا تتضمن إعادة تنفيذ الاختبارات السابقة.
+**التحقق المعاد استخدامه:** نجحت «3/3» لحزمة «C3» على `fe76cb4743acdb189ec942e76ac4c296abb1c2fc` ثم «4/4» لإصلاح «N03 V0.2» وحالة عدم التوافر على `0aa25f831ee2565454e82f4e4f1e11e71995fd04` بحسب سجل المالك على «Windows»؛ لا إعادة اختبارات أو اختبارات جديدة لهذا القرار الوثائقي.
 
 ## ملخص الأبواب «C1–C4» وحالة التسليم
 
 | الباب | الثابت/الموجود | المتبقي المحدد | الحكم |
 |---|---|---|---|
-| «C1» التعريف والمراجع | مرشحات الحساب الاثنا عشر ودراسات حدود مختارة | قرار «N03» والأربع «SEM»، والتحقق من كفاية المراجع الحسابية المستقلة لكل بند دون إعادة الفحوص المقبولة | **«OPEN»** |
+| «C1» التعريف والمراجع | الجرد المرجعي لـ«N01–N12» مقبول لإعادة الاستخدام؛ تعريف «N03 V0.2» التشغيلي مقبول والأربع «SEM» محسومة بعدم التكافؤ | «N03» و«R2» **غير متكافئين**؛ الاقتران تشخيصي فقط. المتبقي مراجعة «PM» النهائية لعقد «C1–C4» | **«READY_FOR_PM_CLOSE_REVIEW»** |
 | «C2» المصدر والسببية | حراسة إغلاق الشموع و«UTC/as-of» وحقول «24hr» وإيصالات مستقلة صناعية | لا شهادة «PIT» تاريخية؛ إثبات واقعي محدود فقط إذا لزم لسؤال حساب/سببية محدد | **«REUSE / UNVERIFIED_REAL_SOURCE»** |
-| «C3» الربط وحالات الرفض | «Setup v1.1» و«03A/R2» والهوية البحثية ومدخل الإيصالات المدمج | مخرج مُسمّى لكل مؤشر وسبب الرفض — **إصلاح هذه الحزمة، لم يُقبل محليًا بعد** | **«FIX / LOCAL_EXECUTION_PENDING»** |
-| «C4» أدلة القبول | الأدلة «9/9» و«3/3» و«3/3» المقبولة تُستخدم في حدودها | اختبار الحالات الثلاث الجديدة **مرة واحدة على «Windows» عند بصمة هذا الطلب**، ثم مراجعة «PM» وقرار المالك | **«LOCAL_EXECUTION_PENDING»** |
+| «C3» الربط وحالات الرفض | «03A/R2» والهوية البحثية وأسباب الرفض ومخرج المؤشرات | تم تصحيح «N03 UNAVAILABLE» والتحقق منه ضمن «4/4»، دون إنتاج أو تحويل رقمي | **«REUSE / BOUNDED_FIX_VALIDATED»** |
+| «C4» أدلة القبول | الشواهد السابقة على بصماتها، و«3/3» ثم «4/4» محليًا على البصمتين المحددتين | قرار توثيقي دون كود؛ لا اختبارات أخرى. المتبقي مراجعة «PM» وقرار المالك | **«WINDOWS_EVIDENCE_REUSED / PM_SIGNOFF_PENDING»** |
 
-**حدود ثابتة:** «Stage03» ليست مغلقة؛ لا إنجاز علمي جديد مُعلن؛ الرقم التاريخي 31.8% ليس قياس تقدم البرمجة ولا شرط إغلاق. لا «OOS/Forward» ولا ربحية ولا تجربة سوق جديدة، ولا «Stage05» أو «Telegram» أو تداول، ولا تعديل «MASTER/README» أو «PR #39» القديمة. لا دمج قبل قرار «PM» والمالك.
+**حدود ثابتة:** «Stage03» مفتوحة، ولا يُستعاض عن حكم «C1–C4» بنسبة إنجاز. لا اختبارات جديدة أو «OOS/Forward» أو ربحية أو سوق أو «Telegram» أو تداول أو «Stage05»، ولا تعديل لـ«MASTER/README» أو دمج قبل تصريح المالك.
