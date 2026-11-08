@@ -1,5 +1,8 @@
 # ORDER-025 — Scientific protocol candidate for owner approval (NOT FROZEN / NOT EXECUTED)
 
+> **SUPERSEDED FOR STAGE03 CLOSURE — OWNER/PM 2026-11-08.** This is a retained historical research record, **not** an active Stage03 closure checklist. The only active Stage03 closure gates are **C1–C4** in [MASTER](../../ZS_SMART_GATE_MASTER.md) and [Issue #25 PM audit](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/25#issuecomment-6721751412). Historical requirements for blind OOS, forward studies, N_eff/N_REQUIRED, predictive edge, executable PnL, fees/slippage economics, full historical publisher PIT, prospective capture, D1–D5 predictive calibration, and full 00–04 E2E **MUST NOT block C1–C4**. Retain their original scientific limitations for future separately authorized work; never interpret them as waived scientific evidence or as production approval. Tests/evidence already accepted are REUSE, not mandatory RETEST. All new acceptance runs are local Windows only; GitHub Actions checks are not Stage03 acceptance evidence. Stage05, market access, trading and Telegram remain unauthorized.
+
+
 **Current frozen reference**: ORDER021_SETUP_V1_1_FROZEN / original ORDER022 historical protocol unchanged. This document is **a proposed new scientific contract for an as-yet-unseen future prospective/confirmatory set**, not an amendment to the already evaluated historical OOS, and not authorization to run any source.
 
 ## Distinct research questions (do not mix estimands)
