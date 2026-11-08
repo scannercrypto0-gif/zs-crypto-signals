@@ -3,6 +3,8 @@ on:
   pull_request:
     paths:
       - 'src/zs_smart_gate/stage03_windows_field_capture.py'
+      - 'src/zs_smart_gate/stage03_field_clock.py'
+      - 'src/zs_smart_gate/stage03_field_real_e2e.py'
       - 'src/zs_smart_gate/stage03_windows_field_review.py'
       - 'tests/test_stage03_windows_field.py'
       - 'research/order025/run-stage03-field.ps1'
