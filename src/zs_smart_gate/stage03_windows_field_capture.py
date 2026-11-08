@@ -19,10 +19,11 @@ from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
+from .stage03_field_clock import witness_pair, bracketed_receive
 
 BASE = "https://data-api.binance.vision"
 SYMBOL = "BTCUSDT"
-VERSION = "ZS03_WINDOWS_FIELD_CAPTURE_V1"
+VERSION = "ZS03_WINDOWS_FIELD_CAPTURE_V2"
 PHASES = {
     "pre": [
         ("/api/v3/exchangeInfo", {"symbol": SYMBOL}),
@@ -105,8 +106,34 @@ def sanitize_payload(path, params, data, receipt_utc_ms):
                 "publisher_time": None}
     raise ValueError("PATH_NOT_ALLOWED")
 
+def check_rights(path: str) -> str:
+    """Operator attestation, never automated proof of an external data license."""
+    raw = Path(path).read_bytes()
+    if len(raw) > 4096:
+        raise ValueError("RIGHTS_ATTESTATION_TOO_LARGE")
+    obj = json.loads(raw)
+    required = {
+        "schema": "ZS03_RIGHTS_ATTESTATION_V1",
+        "data_host": "data-api.binance.vision",
+        "scope": "PRIVATE_NONCOMMERCIAL_RESEARCH",
+        "redistribution": False,
+        "commercial_use": False,
+        "operator_reviewed_terms": True,
+    }
+    if not isinstance(obj, dict) or any(obj.get(k) != v for k,v in required.items()):
+        raise ValueError("RIGHTS_ATTESTATION_MISSING_OR_NOT_AFFIRMATIVE")
+    checked = parse_time(obj["reviewed_at_utc"])
+    age = (utcnow() - checked).total_seconds()
+    if not 0 <= age <= 86400:
+        raise ValueError("RIGHTS_REVIEW_STALE_OR_FUTURE")
+    if obj.get("terms_url") != "https://www.binance.com/en/about-legal/terms":
+        raise ValueError("RIGHTS_TERMS_REFERENCE_REQUIRED")
+    return hashlib.sha256(raw).hexdigest()
+
+
 def acquire(path, params):
     url = BASE + path + "?" + urlencode(params)
+    before_clock = witness_pair()
     started_wall = utcnow()
     started_mono = time.monotonic_ns()
     req = Request(url, headers={"Accept": "application/json",
@@ -125,6 +152,11 @@ def acquire(path, params):
     finished_wall = utcnow()
     if len(raw) > 2_000_000:
         raise RuntimeError("OVERSIZED_RESPONSE")
+    after_clock = witness_pair()
+    bound = bracketed_receive(
+        before_clock, after_clock, start_wall=started_wall.timestamp(),
+        received_wall=finished_wall.timestamp(),
+        request_duration_s=(finished_mono - started_mono)/1e9)
     try:
         payload = json.loads(raw)
     except ValueError as exc:
@@ -136,12 +168,17 @@ def acquire(path, params):
         "received_utc_unattested": iso(finished_wall),
         "duration_monotonic_ns": finished_mono - started_mono,
         "publisher_time": "UNKNOWN_UNLESS_PAYLOAD_HAS_EXPLICIT_PUBLISH_TIME",
-        "independent_utc_witness": "NOT_ATTESTED", "uncertainty_bound_s": None,
+        "independent_utc_witness": "DUAL_NETWORK_NTP_UNAUTHENTICATED",
+        "uncertainty_bound_s": bound["utc_error_bound_seconds"],
+        "clock_witness": bound,
         "request_weight_1m": weight if weight and weight.isdecimal() else None,
-        "selected": sanitize_payload(path, params, payload, int(finished_wall.timestamp() * 1000)),
+        "selected": sanitize_payload(path, params, payload,
+                                      int(bound["utc_received_earliest_unix_seconds"] * 1000)),
     }
 
 def run(args):
+    rights_sha = check_rights(args.rights_attestation)
+    witness_pair()  # no market GET when clock preflight fails
     parent = parse_time(args.parent_open_utc)
     if parent.minute or parent.second or parent.microsecond or parent.hour % 4:
         raise ValueError("PARENT_MUST_START_AT_00_04_08_12_16_20_UTC")
@@ -175,13 +212,17 @@ def run(args):
                 or pre.get("parent_open_utc") != iso(parent)
                 or pre.get("record_sha256") != digest({k: v for k, v in pre.items()
                                                        if k != "record_sha256"})
-                or len(pre.get("requests", [])) != 4):
+                or len(pre.get("requests", [])) != 4
+                or pre.get("rights_evidence_sha256") != rights_sha
+                or pre.get("completed") is not True):
             raise ValueError("PRE_PHASE_INTEGRITY_OR_SCOPE_INVALID")
     # Exclusive creation BEFORE any market request avoids accidental replay.
     with target.open("x", encoding="utf-8") as f:
         record = {"version": VERSION, "phase": args.phase, "parent_open_utc": iso(parent),
                   "parent_end_utc": iso(end), "symbol": SYMBOL, "requested_by": "MANUAL_OWNER",
                   "rights_scope": args.rights_scope,
+                  "rights_evidence_sha256": rights_sha,
+                  "rights_status": "OPERATOR_ATTESTATION_NOT_INDEPENDENT_LICENSE_VERIFICATION",
                   "retention": "PRIVATE_LOCAL_SELECTED_FIELDS_ONLY",
                   "source_status": "REAL_OBSERVED_NOT_PIT_ATTESTED",
                   "scientific_qualification": "BLOCKED_PENDING_INDEPENDENT_CLOCK_RIGHTS_AND_E2E",
@@ -199,8 +240,12 @@ def run(args):
             persist()  # record attempt before network; never silently retry
             try:
                 entry = acquire(path, params)
-                if args.phase == "pre" and parse_time(entry["received_utc_unattested"]) >= parent:
-                    raise ValueError("PRE_RECEIPT_NOT_BEFORE_PARENT")
+                u = timedelta(seconds=float(entry["uncertainty_bound_s"]))
+                rtime = parse_time(entry["received_utc_unattested"])
+                if args.phase == "pre" and rtime + u >= parent:
+                    raise ValueError("PRE_RECEIPT_UNCERTAINTY_OVERLAPS_PARENT")
+                if args.phase == "post" and rtime - u <= end:
+                    raise ValueError("POST_RECEIPT_UNCERTAINTY_OVERLAPS_PARENT_CLOSE")
                 record["requests"].append(entry)
                 persist()
             except Exception as exc:
@@ -219,6 +264,8 @@ def main(argv=None):
     p.add_argument("--evidence-dir", required=True)
     p.add_argument("--rights-scope", required=True, choices=("PRIVATE_NONCOMMERCIAL_RESEARCH",),
                    help="Operator must independently verify applicable terms; no redistribution")
+    p.add_argument("--rights-attestation", required=True,
+                   help="Local terms-use attestation. Does not grant a third-party license")
     p.add_argument("--manual-authorized", action="store_true")
     args = p.parse_args(argv)
     if not args.manual_authorized:
