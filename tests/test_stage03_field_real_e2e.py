@@ -10,7 +10,7 @@ from zs_smart_gate import stage03_field_real_e2e as e2e
 def ms(dt):
     return int(dt.timestamp()*1000)
 
-def row(at,step,price="100",base="1",quote="100"):
+def row(at,step,price="100",base="0.01",quote="1"):
     return {"open_ms":ms(at),"close_exclusive_ms":ms(at+step),
             "open":price,"high":price,"low":price,"close":price,
             "base_volume":base,"quote_volume":quote}
@@ -28,7 +28,7 @@ class TestOfflineRealAdapter(unittest.TestCase):
         pretime=start-timedelta(minutes=2)
         posttime=end+timedelta(seconds=4)
         dt=timedelta(hours=4)
-        old=[row(start-dt*(32-i),dt) for i in range(32)]
+        old=[row(start-dt*(33-i),dt) for i in range(32)]
         pre={"parent_open_utc":start.isoformat(),
              "requests":[{"selected":{"status":"TRADING","symbol":"BTCUSDT","quoteAsset":"USDT"},
                           "fake_upper":pretime},
@@ -38,13 +38,13 @@ class TestOfflineRealAdapter(unittest.TestCase):
                          rec("1w",[row(start-timedelta(weeks=i+1),
                                        timedelta(weeks=1)) for i in range(19,0,-1)],pretime)]}
         h=timedelta(hours=1)
-        hours=[row(start+i*h,h) for i in range(4)]
+        hours=[row(start+i*h,h,base="0.12",quote="12") for i in range(4)]
         f=timedelta(minutes=5)
         five=[row(end-f*(21-i),f) for i in range(21)]
-        parent=row(start,dt,base="4",quote="400")
+        parent=row(start,dt,base="0.48",quote="48")
         post={"requests":[rec("5m",five,posttime),
                            rec("30m",[row(start+timedelta(minutes=30)*i,
-                                       timedelta(minutes=30)) for i in range(8)],posttime),
+                                       timedelta(minutes=30),base="0.06",quote="6") for i in range(8)],posttime),
                            rec("1h",hours,posttime),
                            rec("4h",[parent],posttime),
                            {"selected":{"symbol":"BTCUSDT","bidPrice":"100","askPrice":"100.1"},
@@ -68,6 +68,8 @@ class TestOfflineRealAdapter(unittest.TestCase):
         self.assertEqual(result["packet_sha256"],again["packet_sha256"])
         self.assertEqual(result["schema"],e2e.CONTRACT)
         self.assertEqual(result["real_03a_status"],"RESEARCH_CANDIDATE")
+        self.assertEqual(result["intraday_03a_status"],"RESEARCH_CANDIDATE")
+        self.assertEqual(result["intraday_reconciliation"]["status"],"PASS")
         self.assertTrue(result["stage03_to_03a_research_functional_pass"])
         self.assertEqual(result["reconciliation"]["status"],"PASS")
         self.assertIsNone(result["score"])
