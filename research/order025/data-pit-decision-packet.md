@@ -1,5 +1,8 @@
 # ORDER-025 — DATA / PIT decision packet for owner (ONE consolidated approval step later)
 
+> **SUPERSEDED FOR STAGE03 CLOSURE — OWNER/PM 2026-11-08.** This is a retained historical research record, **not** an active Stage03 closure checklist. The only active Stage03 closure gates are **C1–C4** in [MASTER](../../ZS_SMART_GATE_MASTER.md) and [Issue #25 PM audit](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/25#issuecomment-6721751412). Historical requirements for blind OOS, forward studies, N_eff/N_REQUIRED, predictive edge, executable PnL, fees/slippage economics, full historical publisher PIT, prospective capture, D1–D5 predictive calibration, and full 00–04 E2E **MUST NOT block C1–C4**. Retain their original scientific limitations for future separately authorized work; never interpret them as waived scientific evidence or as production approval. Tests/evidence already accepted are REUSE, not mandatory RETEST. All new acceptance runs are local Windows only; GitHub Actions checks are not Stage03 acceptance evidence. Stage05, market access, trading and Telegram remain unauthorized.
+
+
 **This document is a request for future choices, not a market authorization.**
 Authority: [ORDER-025](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/25#issuecomment-6656960128). Current engine base `05ced43dcfbc476a60030283004503945be82120` on MASTER v1.37.
 
@@ -31,7 +34,7 @@ Source candidate: official public market-only endpoints `data-api.binance.vision
 
 **Owner decision C:** approve a **new, explicit**, bounded read-only source/capture plan for prospective independent evaluation, following final technical and licensing preflight? **Default NO**. Stage05 still FULL HOLD and no publishing.
 
-## Minimum approvals to achieve genuine scientific closure (in dependency order)
+## Historical/future full predictive scientific qualification approvals — NOT Stage03 C1–C4 closure prerequisites
 
 1. **A1**: owner-private *read-only* reproduction receipt and independent Audit; clarify actual source rights and prohibited dissemination; no market access.
 2. **D1–D5 sign-off**: settle four semantics, twelve group normalizers or explicitly defer V2 from simple v1.1 scope, primary outcome/estimand, costs, independent controls and N/power/multiplicity and untouched forward partition. Scientific standards not weakened; update contracts only in a new version after separate owner approval.
