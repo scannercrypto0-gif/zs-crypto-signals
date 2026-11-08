@@ -74,7 +74,10 @@ class QuickThirtySafety(unittest.TestCase):
         book={"selected":{"bidPrice":"100","askPrice":"100.1",
                            "symbol":"BTCUSDT"}}
         ticker={"selected":{"quoteVolume":"20000000","symbol":"BTCUSDT"}}
+        # The post capture carries a SHA of the already-attested private
+        # rights file. The offline fixture must preserve this source lineage.
         post={"record_sha256":"b"*64,
+              "rights_evidence_sha256":"c"*64,
               "requests":[first,second,book,ticker]}
         receipt_utc=received+timedelta(milliseconds=25)
         def receipt(item):
