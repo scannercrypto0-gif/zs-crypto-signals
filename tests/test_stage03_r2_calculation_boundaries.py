@@ -5,10 +5,11 @@ from decimal import Decimal as D
 from unittest import TestCase
 
 from test_stage03_r2_offline import intraday, swing
-from test_stage03_r2_source_contract import packet_pair
+from test_stage03_r2_source_contract import packet_pair, trace_bundle, mode_evidence
 from zs_smart_gate.stage03_r2_offline import Unavailable, evaluate_r2, liquidity
 from zs_smart_gate.stage03_r2_source_contract import (
     ticker24_from_public_fields, market_from_explicit_packets,
+    inspect_full_impulse_trace, require_prior_mode,
 )
 
 
@@ -88,3 +89,44 @@ class R2N06N10FocusedTests(TestCase):
             market_from_explicit_packets(
                 book=book,ticker=wrong,decision_at=kw["decision_at"],
                 witness=kw["witness"])
+
+    def test_n03_full_impulse_trace_rejects_crossfeed_and_non_5m_candle(self):
+        kw = intraday()
+        definition, trace, candles = trace_bundle(kw)
+        wrong_source_bars = list(candles)
+        wrong_source_trace = list(trace)
+        wrong_source_bars[10] = replace(
+            candles[10], source_id="SYNTHETIC:FOREIGN_PROVIDER")
+        wrong_source_trace[10] = replace(
+            trace[10], source_id="SYNTHETIC:FOREIGN_PROVIDER")
+        args = dict(
+            definition=definition, direction=kw["direction"],
+            horizon=kw["horizon"], mode=kw["mode"],
+            decision_at=kw["decision_at"], witness=kw["witness"])
+        with self.assertRaisesRegex(Unavailable, "FULL_IMPULSE_CANDLE_SOURCE_CONFLICT"):
+            inspect_full_impulse_trace(
+                trace=wrong_source_trace, candles=wrong_source_bars, **args)
+        wrong_frame_bars = list(candles)
+        wrong_frame_trace = list(trace)
+        wrong_frame_bars[0] = replace(
+            candles[0], open_at=candles[0].open_at-timedelta(minutes=1))
+        wrong_frame_trace[0] = replace(
+            trace[0], open_at=wrong_frame_bars[0].open_at)
+        with self.assertRaisesRegex(Unavailable, "FULL_IMPULSE_NOT_5M_FRAME"):
+            inspect_full_impulse_trace(
+                trace=wrong_frame_trace, candles=wrong_frame_bars, **args)
+
+    def test_n07_prior_mode_rejects_stale_evidence_before_parent(self):
+        kw = swing()
+        mode = mode_evidence(kw)
+        reference_close = kw["parent"].open_at - timedelta(hours=9)
+        stale = replace(
+            mode, context_close_at=reference_close,
+            observed_at=reference_close+timedelta(seconds=1),
+            received_at=reference_close+timedelta(seconds=2),
+            available_at=reference_close+timedelta(seconds=3))
+        with self.assertRaisesRegex(Unavailable, "MODE_CONTEXT_STALE_BEFORE_PARENT"):
+            require_prior_mode(
+                stale,mode=kw["mode"],direction=kw["direction"],
+                horizon=kw["horizon"],parent=kw["parent"],
+                decision_at=kw["decision_at"],witness=kw["witness"])

@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 from decimal import Decimal
 from enum import Enum
 from typing import Mapping, Sequence
@@ -109,6 +109,12 @@ def inspect_full_impulse_trace(
         raise Unavailable("FULL_IMPULSE_SCOPE_MISMATCH")
     if len(candles) != 45 or len(trace) != len(candles):
         raise Unavailable("FULL_IMPULSE_TRACE_LENGTH_MISMATCH")
+    if any(not isinstance(x, Candle) for x in candles):
+        raise Unavailable("FULL_IMPULSE_TYPED_CANDLES_REQUIRED")
+    if len({bar.source_id for bar in candles}) != 1:
+        raise Unavailable("FULL_IMPULSE_CANDLE_SOURCE_CONFLICT")
+    if any(bar.close_at - bar.open_at != timedelta(minutes=5) for bar in candles):
+        raise Unavailable("FULL_IMPULSE_NOT_5M_FRAME")
     if any(not isinstance(x, CausalImpulseObservation) for x in trace):
         raise Unavailable("FULL_IMPULSE_TRACE_TYPE_INVALID")
     previous_close = None
@@ -290,8 +296,11 @@ def require_prior_mode(
             or evidence.horizon is not horizon
             or evidence.decision_at != utc(decision_at)):
         raise Unavailable("MODE_SOURCE_SCOPE_OR_DECISION_MISMATCH")
-    if evidence.context_close_at > parent.open_at:
-        raise Unavailable("MODE_CONTEXT_AFTER_PARENT_OPEN")
+    if evidence.context_close_at >= parent.open_at:
+        raise Unavailable("MODE_CONTEXT_NOT_STRICTLY_PRIOR")
+    # Same maximum lag as the existing pre-parent 4h mode derivation.
+    if parent.open_at - evidence.context_close_at > timedelta(hours=8):
+        raise Unavailable("MODE_CONTEXT_STALE_BEFORE_PARENT")
     asof(evidence.available_at, parent.open_at, witness)
     return {
         "mode": evidence.mode, "mode_source": evidence.mode_source,
