@@ -116,7 +116,11 @@ class N03FinalizationOnly(TestCase):
                     self.assertEqual(ambiguous["state"], "UNKNOWN")
                     self.assertEqual(ambiguous["reason"],
                                      "N03_OVERLAPPING_ONSET_EPISODES")
-                    self.assertEqual(ambiguous["completed_events"], [])
+                    self.assertEqual(ambiguous["completed_events"], [{
+                        "onset_index": 25,
+                        "confirmation_index": 28,
+                        "event_available_at": overlap[28].available_at.isoformat(),
+                    }])
 
     def test_missing_n03_value_keeps_original_unavailable_reason(self):
         inputs = intraday()
