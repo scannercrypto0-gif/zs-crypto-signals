@@ -7,6 +7,7 @@ on:
       - 'src/zs_smart_gate/stage03_field_real_e2e.py'
       - 'src/zs_smart_gate/stage03_windows_field_review.py'
       - 'tests/test_stage03_windows_field.py'
+      - 'tests/test_stage03_field_real_e2e.py'
       - 'research/order025/run-stage03-field.ps1'
       - '.github/workflows/03-field-offline.yml'
 permissions:
@@ -30,3 +31,7 @@ jobs:
         env:
           PYTHONPATH: src
         run: python -m unittest discover -s tests -p "test_stage03_windows_field.py" -v
+      - name: One real-adapter E2E contract fixture (offline only)
+        env:
+          PYTHONPATH: src
+        run: python -m unittest discover -s tests -p "test_stage03_field_real_e2e.py" -v
