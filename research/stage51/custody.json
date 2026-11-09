@@ -1,0 +1,93 @@
+{
+  "schema": "ZS_00_05_GITHUB_CUSTODY_V1",
+  "execution_head": "c3f6b8faacab6703435f703e6e597b55932cd928",
+  "execution_tree": "faff5ab4ef00fe81aa40414fc7ccd3fa2a82d8db",
+  "evidence_snapshot": "bf58dd7ac81695b210805f2988123a1197b62f4a",
+  "verified_files": [
+    {
+      "path": "src/zs_smart_gate/e2e51.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4451e3c819d372f253a6ccdf89190d5f3790345c",
+      "sha256": "c0aea5ddc4ce74d4c632160f27e23de37a25fae5a3dd8325b11be2f8e2e9d326"
+    },
+    {
+      "path": "scripts/e2e51-windows.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0f4955cc9a569baf8e2f48bb89470e32aa497649",
+      "sha256": "215398da6983d164f59214b671865f32b534f9cb36678ec8a871ee8d18648628"
+    },
+    {
+      "path": "tests/test_e2e51.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ae561322eea73ec6075f7242f2877d37a5ad3592",
+      "sha256": "61ca79edee382429834102e2870507e42c8de8b0e9cd4efc12fb55eed18ecec7"
+    },
+    {
+      "path": "research/stage51/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cec03f3a5b71733741d4e8c3f546c411c732362a",
+      "sha256": "e4b88f977eb42b5fd00095242794c88c768092845fbb6a7e3c96c9477b1878b5"
+    },
+    {
+      "path": "research/stage51/sql-probe.ps1",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e8dd6d8797691992ea12bff980a43300db07f45f",
+      "sha256": "a691cc64e5a39a2167f0097afe4a33e16005d4366a6501374d1f7f552512f8c4"
+    },
+    {
+      "path": "research/stage51/preflight.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "43af3297b08283e85b81d64110df454b5a50c8e7",
+      "sha256": "c902ab990e34eb6188b5975863b20db12e46d0b3e8edeb35eabd70f60a51e49a"
+    },
+    {
+      "path": "research/stage51/market-report.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d28b0dbbaa4f4412c46a825f63245b9f75de640e",
+      "sha256": "254c7d2c16df069e06046eafdf018d344f1a5d667691a57bfd3e5e0ccc75e7f5"
+    },
+    {
+      "path": "research/stage51/market-receipts.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7fec9653395a7185f9fcaf674b01cc1d0ac86a09",
+      "sha256": "21b9e5556bb726d94939c5c997b9b92f44047deb6eefa62c505edc31ca55d19d"
+    },
+    {
+      "path": "research/stage51/stage04-readback.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1f3c3a2d5746349f875736c5e1e191326d63e35d",
+      "sha256": "bdc49250bb305ae0131b6c768ae43a8f11818bdcebbaa038dc6be6fcfd731311"
+    },
+    {
+      "path": "research/stage51/analytics-test-only.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dee8f175006a44f2215d4804abe4492b355128cc",
+      "sha256": "0bda1f242636f043917f8ce68bde4cfbb4b93e5a010775781e4c2d8eb3c945e4"
+    },
+    {
+      "path": "research/stage51/windows-validation.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "af64a13abf711f943430923370d85ca1e67399bb",
+      "sha256": "be537351df79d1303241a03445f8c5c806b4016db07bf8d3acc09728925bcbde"
+    }
+  ],
+  "remote_bytes_match": true,
+  "remote_replay": {
+    "status": "PASS",
+    "stage04_sha256": "bdc49250bb305ae0131b6c768ae43a8f11818bdcebbaa038dc6be6fcfd731311"
+  },
+  "windows_git_status_clean": true,
+  "native_git_https": "NONINTERACTIVE_CREDENTIAL_UNAVAILABLE_CONNECTOR_USED",
+  "repository_restore": "EXACT_TREE_AND_COMMIT_RECONSTRUCTED_IN_NATIVE_GIT_FROM_VERIFIED_BLOBS_AND_GITHUB_METADATA"
+}
