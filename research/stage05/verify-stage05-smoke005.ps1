@@ -123,7 +123,7 @@ try {
 } finally {
     if ($null -ne $original) {
         $current = (& git -C $Repository rev-parse HEAD 2>$null | Out-String).Trim()
-        $originalUnchanged=([string]::Equals($current,$original)).ToLowerInvariant()
+        $originalUnchanged=([string]::Equals($current,$original)).ToString().ToLowerInvariant()
     }
     $summary=@(
        'STAGE05_HASH_AND_WINDOWS_RECEIPT_005',
