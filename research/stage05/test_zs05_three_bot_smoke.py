@@ -1,5 +1,7 @@
 """Focused Stage05 smoke harness security checks; all network forbidden."""
 from contextlib import redirect_stdout
+from argparse import Namespace
+from tempfile import TemporaryDirectory
 from io import StringIO
 from pathlib import Path
 from unittest import TestCase, main
@@ -72,6 +74,90 @@ class OfflineHarnessTests(TestCase):
             self.assertNotIn(FAKE['05A'],str(caught.exception))
             self.assertEqual(state['api_calls'],1)
             net.assert_called_once()
+
+    def test_full_seven_delivery_scenario_with_fake_api_only(self):
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            calls = []
+            inputs = iter(['ZS05 TEST ONLY', '', 'SEEN ALL 7'])
+            ids = iter(['1001', '1002', '1001'])
+            def fake_api(state, token, method, data=None, document=None):
+                smoke.limit_counter(state)
+                calls.append((method, token, data, document))
+                if method == 'getMe':
+                    role = next(k for k,v in FAKE.items() if v == token)
+                    return {'05A': {'id':123456,'is_bot':True,'username':'ZScryptosignalsbot'},
+                            '05B': {'id':234567,'is_bot':True,'username':'CryptoSignalsDatabot'},
+                            '05C': {'id':345678,'is_bot':True,'username':'CryptoSignalsAnalysisbot'}}[role]
+                if method == 'getWebhookInfo':
+                    return {'url':''}
+                if method == 'getUpdates':
+                    return [{'message':{'message_id':11,'date':2000000000,
+                                        'text':'btcusdt','from':{'id':n},
+                                        'chat':{'id':n,'type':'private'}}}
+                            for n in (1001,1002)]
+                if method in ('sendMessage','sendDocument'):
+                    return {'message_id':100+len(calls), 'date':2000000000}
+                raise AssertionError('unrecognized API method')
+            args = Namespace(repo='irrelevant',head_sha='a'*40,tree_sha='b'*40,
+                             script_sha256='f'*64)
+            with (patch.object(smoke,'verify_pins',return_value='f'*64),
+                  patch.object(smoke,'hidden_token',side_effect=list(FAKE.values())),
+                  patch.object(smoke,'hidden_id',side_effect=ids),
+                  patch('builtins.input',side_effect=lambda _: next(inputs)),
+                  patch.object(smoke,'private_folder',return_value=root),
+                  patch.object(smoke,'api',side_effect=fake_api),
+                  patch.object(smoke.time,'time',return_value=1900000000),
+                  patch.object(smoke.OPENER,'open',side_effect=AssertionError('network forbidden')) as net,
+                  redirect_stdout(StringIO()) as out):
+                self.assertEqual(smoke.run_execute(args),0)
+                net.assert_not_called()
+            self.assertEqual(sum(c[0]=='getMe' for c in calls),3)
+            self.assertEqual(sum(c[0]=='getWebhookInfo' for c in calls),1)
+            self.assertEqual(sum(c[0]=='getUpdates' for c in calls),1)
+            self.assertEqual(sum(c[0]=='sendMessage' for c in calls),5)
+            self.assertEqual(sum(c[0]=='sendDocument' for c in calls),2)
+            self.assertEqual(len(calls),12)
+            report=json.loads((root/'local_evidence.json').read_text())
+            log=(root/'sanitized_log.json').read_text()
+            self.assertEqual(report['api_calls'],12)
+            self.assertEqual(len(report['sends']),7)
+            self.assertEqual(report['authorized_queries'],['A','B'])
+            self.assertEqual(report['status'],'THREE_BOT_TEST_ONLY_REAL_CONNECTIVITY_VERIFIED')
+            self.assertNotIn('1001',log)
+            self.assertNotIn('1002',log)
+            self.assertNotIn(FAKE['05A'],log)
+            self.assertIn('SANITIZED_LOG_SHA256=',out.getvalue())
+
+    def test_partial_unknown_stops_without_retry(self):
+        with TemporaryDirectory() as tmp:
+            calls=[]
+            def failing_api(state,token,method,data=None,document=None):
+                smoke.limit_counter(state)
+                calls.append(method)
+                if method=='getMe':
+                    role=next(k for k,v in FAKE.items() if v==token)
+                    return {'id':int(token.split(':')[0]),'username':smoke.EXPECTED_USERNAMES[role],
+                            'is_bot':True}
+                if method=='getWebhookInfo':return {'url':''}
+                raise smoke.StopSmoke('NETWORK_TIMEOUT_STOP_UNKNOWN')
+            args=Namespace(repo='irrelevant',head_sha='a'*40,tree_sha='b'*40,
+                           script_sha256='f'*64)
+            with (patch.object(smoke,'verify_pins',return_value='f'*64),
+                  patch.object(smoke,'hidden_token',side_effect=list(FAKE.values())),
+                  patch.object(smoke,'hidden_id',side_effect=['1001','1002','1001']),
+                  patch('builtins.input',return_value='ZS05 TEST ONLY'),
+                  patch.object(smoke,'private_folder',return_value=Path(tmp)),
+                  patch.object(smoke,'api',side_effect=failing_api),
+                  patch.object(smoke.OPENER,'open',side_effect=AssertionError('network forbidden')) as net,
+                  redirect_stdout(StringIO())):
+                self.assertEqual(smoke.run_execute(args),4)
+                net.assert_not_called()
+            self.assertEqual(calls,['getMe','getMe','getMe','getWebhookInfo','sendMessage'])
+            result=json.loads((Path(tmp)/'local_evidence.json').read_text())
+            self.assertEqual(result['status'],'PARTIAL_OR_UNKNOWN_STOP_NO_RETRY')
+            self.assertEqual(result['api_calls'],5)
+            self.assertEqual(result['sends']['05A_A']['status'],'UNKNOWN')
 
     def test_cap_and_denied_execute_on_non_windows(self):
         state={'api_calls':17}
