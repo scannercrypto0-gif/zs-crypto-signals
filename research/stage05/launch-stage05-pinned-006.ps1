@@ -84,7 +84,7 @@ try {
     if ($cloneTree -ne $tree) { throw 'APPROVED_TREE_SHA_MISMATCH' }
     if ((GitRead -GitArgs @('-C', $clone, 'rev-parse', ($head + ':' + $relative))) -ne $blob) { throw 'APPROVED_GIT_BLOB_MISMATCH' }
     # Branch and origin/* ref are scoped to the isolated .git only, not the original repository.
-    Native -CommandArgs @('-C', $clone, 'branch', $branch, $head)
+    Native -CommandArgs @('-C', $clone, 'update-ref', ('refs/heads/' + $branch), $head)
     Native -CommandArgs @('-C', $clone, 'update-ref', ('refs/remotes/origin/' + $branch), $head)
     Native -CommandArgs @('-C', $clone, 'checkout', '--force', $branch)
     $cloneHead = GitRead -GitArgs @('-C', $clone, 'rev-parse', 'HEAD')
