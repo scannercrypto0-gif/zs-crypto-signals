@@ -159,6 +159,28 @@ class OfflineHarnessTests(TestCase):
             self.assertEqual(result['api_calls'],5)
             self.assertEqual(result['sends']['05A_A']['status'],'UNKNOWN')
 
+    def test_missing_token_owner_denial_and_duplicate_run_block_before_network(self):
+        with self.assertRaises(smoke.StopSmoke):
+            smoke.check_routes('1001','1002','1001',('1001','1002'),
+                               {**FAKE,'05C':''})
+        args=Namespace(repo='irrelevant',head_sha='a'*40,tree_sha='b'*40,
+                       script_sha256='f'*64)
+        for gate, replay in [('no', False), ('ZS05 TEST ONLY', True)]:
+            with self.subTest(approval=gate,replay=replay):
+                with (patch.object(smoke,'verify_pins',return_value='f'*64),
+                      patch.object(smoke,'hidden_token',side_effect=list(FAKE.values())),
+                      patch.object(smoke,'hidden_id',side_effect=['1001','1002','1001']),
+                      patch('builtins.input',return_value=gate),
+                      patch.object(smoke,'private_folder',side_effect=smoke.StopSmoke('DUPLICATE_RUN_BLOCKED')) as marker,
+                      patch.object(smoke,'api',side_effect=AssertionError('HTTP forbidden')) as api):
+                    with self.assertRaises(smoke.StopSmoke):
+                        smoke.run_execute(args)
+                    api.assert_not_called()
+                    if replay:
+                        marker.assert_called_once()
+                    else:
+                        marker.assert_not_called()
+
     def test_cap_and_denied_execute_on_non_windows(self):
         state={'api_calls':17}
         with self.assertRaisesRegex(smoke.StopSmoke,'API_CALL_LIMIT_17_EXCEEDED'):
