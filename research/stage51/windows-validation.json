@@ -1,0 +1,26 @@
+{
+  "windows_only": true,
+  "python": "3.12.10",
+  "powershell": "7.6.9",
+  "head": "c3f6b8faacab6703435f703e6e597b55932cd928",
+  "tree": "faff5ab4ef00fe81aa40414fc7ccd3fa2a82d8db",
+  "started_utc": "2026-11-09T14:24:09.4709861Z",
+  "finished_utc": "2026-11-09T14:24:11.2409673Z",
+  "preflight_command": "py -3.12 -B scripts/e2e51-windows.py preflight --head c3f6b8faacab6703435f703e6e597b55932cd928",
+  "passed": 5,
+  "failed": 0,
+  "errors": 0,
+  "skipped": 0,
+  "exit_code": 0,
+  "diff_check": "PASS",
+  "exact_source_files_readback": 3,
+  "sql_server_contract_probe": {
+    "engine": "16.0.1210.3",
+    "exit_code": 0,
+    "status": "SQLSERVER_DDL_KEYS_REJECTED_CANDIDATE_UNKNOWN_DELIVERY_ROLLBACK_PASS"
+  },
+  "offline_live_receipt_replay": {
+    "status": "MATCH",
+    "event_sha256": "db48497c3fd4cb98bd379e42f2964466fffcf57583ad2f016ff3fc0b7d94e857"
+  }
+}
