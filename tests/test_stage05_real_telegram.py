@@ -404,8 +404,12 @@ class Stage05RealTransportTargeted(unittest.TestCase):
         self.assertEqual(second["symbol"], "ETHUSDT")
         self.assertNotEqual(second["analysis_request_id"], queued["analysis_request_id"])
         self.assertIsNone(second["signal_id"])
+        # Both IDs belong to allowed accounts, but crossed pairs must fail.
         self.assertEqual(service.accept(text="btcusdt", user_id=1001,
                                         chat_id=1002, message_id=125)["status"], "UNAUTHORIZED")
+        self.assertEqual(service.accept(text="btcusdt", user_id=1002,
+                                        chat_id=1001, message_id=126)["status"], "UNAUTHORIZED")
+        self.assertEqual(len(service.queue), 2)
         result = service.process_one()
         self.assertEqual(result["status"], "READ_ONLY_ANALYSIS")
         rendered = service.format_reply(result)
@@ -432,10 +436,13 @@ class Stage05RealTransportTargeted(unittest.TestCase):
                              transport=fake, clock=lambda: T0, simulation=True)
         self.assertEqual(ack_b["status"], "ACCEPTED")
         self.assertEqual([request[1] for request in fake.requests], ["1001", "1002"])
-        with self.assertRaisesRegex(ContractError, "RECIPIENT_NOT_AUTHORIZED"):
-            respond_once(response=response, chat_id=1003, user_id=1003,
-                         config=config(), store=MemoryOutbox(),
-                         transport=fake, clock=lambda: T0, simulation=True)
+        for bad_user, bad_chat in ((1001, 1002), (1002, 1001), (1003, 1003)):
+            with self.subTest(user=bad_user, chat=bad_chat):
+                with self.assertRaisesRegex(ContractError, "RECIPIENT_NOT_AUTHORIZED"):
+                    respond_once(response=response, chat_id=bad_chat, user_id=bad_user,
+                                 config=config(), store=MemoryOutbox(),
+                                 transport=fake, clock=lambda: T0, simulation=True)
+        self.assertEqual(len(fake.requests), 2)
 
     def test_sql_server_ddl_primary_foreign_unique_and_no_runtime_connection(self):
         path = Path(__file__).resolve().parents[1] / "research" / "stage05" / "sqlserver-contract-v1.sql"
