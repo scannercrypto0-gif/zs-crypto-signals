@@ -1,4 +1,4 @@
-# Stage05: EXACT EIGHT NEW TEST METHODS; owner Windows ONLY; never live Telegram.
+# Stage05: EXACT NINE targeted test methods; owner Windows ONLY; never live Telegram.
 param(
   [Parameter(Mandatory=$true)]
   [ValidatePattern('^[0-9a-f]{40}$')]
@@ -75,8 +75,8 @@ urllib.request.urlopen=block
 suite=unittest.defaultTestLoader.loadTestsFromName(
     "test_stage05_real_telegram.Stage05RealTransportTargeted")
 print("NEW_STAGE05_METHODS="+str(suite.countTestCases()),flush=True)
-if suite.countTestCases()!=8:
-    raise SystemExit("EXPECTED_EIGHT_NEW_METHODS")
+if suite.countTestCases()!=9:
+    raise SystemExit("EXPECTED_NINE_TARGETED_METHODS")
 result=unittest.TextTestRunner(stream=sys.stdout,verbosity=2).run(suite)
 print("NEW_TESTS_RUN="+str(result.testsRun),flush=True)
 print("FAILURES="+str(len(result.failures)),flush=True)
