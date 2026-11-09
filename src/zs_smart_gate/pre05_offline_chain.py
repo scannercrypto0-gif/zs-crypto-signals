@@ -18,6 +18,7 @@ import re
 import sqlite3
 
 from .scanner import build_universe, inspect_candles
+from .binance_live import LiveFailure
 from .setup021 import evaluate as evaluate_setup
 from .stage03_r2_closure import stage03_c1c4_research_from_closed_receipts
 
@@ -77,6 +78,9 @@ def _source_klines(record):
     if record.get("symbol") not in ("BTCUSDT", "ETHUSDT"):
         raise ChainRejected("FROZEN_SETUP_SYMBOL_NOT_ALLOWED")
     decision = instant(record.get("decision_at"), "DECISION")
+    snapshot_received = instant(parent.get("available_at"), "SNAPSHOT_RECEIVED")
+    if snapshot_received > decision:
+        raise ChainRejected("SNAPSHOT_RECEIPT_FROM_FUTURE")
     first = None
     output = []
     prev = None
@@ -92,7 +96,7 @@ def _source_klines(record):
         if (closed-opened != timedelta(minutes=5) or
                 opened.minute % 5 or opened.second or opened.microsecond or
                 (prev is not None and opened != prev) or
-                not closed <= received <= available <= decision):
+                not closed <= received <= available <= snapshot_received):
             raise ChainRejected("SOURCE_5M_GAP_FUTURE_OR_UNCLOSED")
         prev = closed
         if first is None:
@@ -125,6 +129,11 @@ def _market_item(record, exchange_info, decision):
     """Use only the supplied distinct book and ticker receipts, never merge times."""
     book = record["book"]
     ticker = record["ticker24"]
+    if (not isinstance(book, dict) or not isinstance(ticker, dict)
+            or not isinstance(ticker.get("payload"), dict)
+            or not isinstance(book.get("receipt"), dict)
+            or not isinstance(ticker.get("receipt"), dict)):
+        raise ChainRejected("MARKET_RECEIPT_SCHEMA_INVALID")
     sym = record["symbol"]
     if (book.get("symbol") != sym or ticker.get("symbol") != sym
             or ticker.get("payload", {}).get("symbol") != sym
@@ -132,18 +141,21 @@ def _market_item(record, exchange_info, decision):
         raise ChainRejected("MARKET_SYMBOL_OR_ENDPOINT_CONFLICT")
     book_receipt = book["receipt"]
     ticker_receipt = ticker["receipt"]
-    book_at = instant(book_receipt.get("observed_at"), "BOOK_OBSERVED")
-    if (instant(book_receipt.get("available_at"), "BOOK_AVAILABLE") > decision
-            or instant(ticker_receipt.get("available_at"), "TICKER_AVAILABLE") > decision):
+    book_at = instant(book_receipt.get("available_at"), "BOOK_AVAILABLE")
+    ticker_at = instant(ticker_receipt.get("available_at"), "TICKER_AVAILABLE")
+    if book_at > decision or ticker_at > decision:
         raise ChainRejected("MARKET_RECEIPT_FROM_FUTURE")
+    # Composite view may be known only once BOTH independent receipts exist.
+    # Never falsely describe it as an atomic book/24h exchange snapshot.
+    composite_at = max(book_at, ticker_at)
     try:
         universe = build_universe(
             exchange_info,
             [{"symbol": sym, "quoteVolume": ticker["payload"]["quoteVolume"]}],
             [{"symbol": sym, "bidPrice": book["bid"], "askPrice": book["ask"]}],
-            book_at,
+            composite_at,
         )
-    except (ValueError, KeyError, TypeError) as exc:
+    except (ValueError, KeyError, TypeError, LiveFailure) as exc:
         raise ChainRejected("STAGE00_UNIVERSE_INVALID") from exc
     matches = [item for item in universe if item.symbol == sym]
     if len(matches) != 1:
