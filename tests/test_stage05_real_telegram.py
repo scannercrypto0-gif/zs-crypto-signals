@@ -35,8 +35,8 @@ T0 = datetime(2026, 11, 9, 9, 0, 0, tzinfo=timezone.utc)
 def config():
     return BotSecrets(
         DUMMY_SIGNAL_TOKEN, "1001", "1002", DUMMY_INTERACTIVE_TOKEN,
-        frozenset(("44",)), frozenset(("55",)),
-        DUMMY_ANALYTICS_TOKEN, "1003",
+        frozenset(("1001", "1002")), frozenset(("1001", "1002")),
+        DUMMY_ANALYTICS_TOKEN, "1001",
     )
 
 
@@ -157,8 +157,41 @@ class Stage05RealTransportTargeted(unittest.TestCase):
         self.assertFalse(dedicated.verified_backend)
         with self.assertRaisesRegex(ContractError, "THREE_DISTINCT"):
             BotSecrets(DUMMY_SIGNAL_TOKEN, "1001", "1002",
-                       DUMMY_SIGNAL_TOKEN, frozenset(("44",)), frozenset(),
-                       DUMMY_ANALYTICS_TOKEN, "1003").validate()
+                       DUMMY_SIGNAL_TOKEN, frozenset(("1001", "1002")),
+                       frozenset(("1001", "1002")),
+                       DUMMY_ANALYTICS_TOKEN, "1001").validate()
+
+    def test_owner_two_account_contract_rejects_cross_account_and_third_chat(self):
+        cfg = config()
+        cfg.validate()  # A=1001, B=1002, C=A
+        self.assertEqual(cfg.analytics_chat, cfg.signals_chat_a)
+        self.assertNotEqual(cfg.signals_chat_a, cfg.signals_chat_b)
+        changed = dict(
+            signals_token=cfg.signals_token, signals_chat_a=cfg.signals_chat_a,
+            signals_chat_b=cfg.signals_chat_b,
+            interactive_token=cfg.interactive_token,
+            interactive_users=cfg.interactive_users,
+            interactive_chats=cfg.interactive_chats,
+            analytics_token=cfg.analytics_token, analytics_chat=cfg.analytics_chat,
+        )
+        cases = (
+            ("SIGNALS_A_B_MUST_DIFFER", {"signals_chat_b": "1001"}),
+            ("ANALYTICS_C_MUST_EQUAL_SIGNALS_A", {"analytics_chat": "1003"}),
+            ("INTERACTIVE_TWO_ACCOUNT_ALLOWLIST_REQUIRED",
+             {"interactive_users": frozenset(("1001",))}),
+            ("INTERACTIVE_TWO_ACCOUNT_ALLOWLIST_REQUIRED",
+             {"interactive_chats": frozenset(("1001", "1002", "1003"))}),
+            ("INTERACTIVE_TWO_ACCOUNT_ALLOWLIST_REQUIRED",
+             {"interactive_users": frozenset()}),
+            ("INTERACTIVE_TWO_ACCOUNT_ALLOWLIST_REQUIRED",
+             {"interactive_chats": frozenset()}),
+            ("THREE_DISTINCT_BOT_TOKENS_REQUIRED",
+             {"analytics_token": cfg.signals_token}),
+        )
+        for error, overrides in cases:
+            with self.subTest(overrides=overrides):
+                with self.assertRaisesRegex(ContractError, error):
+                    BotSecrets(**{**changed, **overrides}).validate()
 
     def test_qualified_abc_same_signal_rejected_only_c(self):
         good, bad = event(), event(True)
@@ -228,7 +261,9 @@ class Stage05RealTransportTargeted(unittest.TestCase):
         self.assertIn("Entry zone: 100-101", with_plan.transports["SIGNALS"].requests[0][2])
         self.assertIn("Score: 75", with_plan.transports["SIGNALS"].requests[0][2])
         self.assertEqual(sig.requests[1][1], "1002")
-        self.assertEqual(ana.requests[0][1], "1003")
+        self.assertEqual(ana.requests[0][1], "1001")
+        self.assertEqual(sig.requests[0][3], "SIGNALS")
+        self.assertEqual(ana.requests[0][0], "doc")
         again = coord.step(event(), "A")
         self.assertEqual(again["status"], "ACCEPTED")
         self.assertEqual(len(sig.requests), 2)
@@ -358,12 +393,19 @@ class Stage05RealTransportTargeted(unittest.TestCase):
             config=config(), supported_symbols={"BTCUSDT", "ETHUSDT"},
             lookup=lookup, clock=lambda: T0)
         self.assertEqual(parse_symbol("btcusdt", {"BTCUSDT"}), "BTCUSDT")
-        self.assertEqual(service.accept(text="btcusdt", user_id=99,
-                                        chat_id=55, message_id=1)["status"], "UNAUTHORIZED")
-        queued = service.accept(text="btcusdt", user_id=44,
-                                chat_id=55, message_id=123)
+        self.assertEqual(service.accept(text="btcusdt", user_id=1003,
+                                        chat_id=1003, message_id=1)["status"], "UNAUTHORIZED")
+        queued = service.accept(text="btcusdt", user_id=1001,
+                                chat_id=1001, message_id=123)
         self.assertEqual(queued["symbol"], "BTCUSDT")
         self.assertIsNone(queued["signal_id"])
+        second = service.accept(text="ethusdt", user_id=1002,
+                                chat_id=1002, message_id=124)
+        self.assertEqual(second["symbol"], "ETHUSDT")
+        self.assertNotEqual(second["analysis_request_id"], queued["analysis_request_id"])
+        self.assertIsNone(second["signal_id"])
+        self.assertEqual(service.accept(text="btcusdt", user_id=1001,
+                                        chat_id=1002, message_id=125)["status"], "UNAUTHORIZED")
         result = service.process_one()
         self.assertEqual(result["status"], "READ_ONLY_ANALYSIS")
         rendered = service.format_reply(result)
@@ -371,19 +413,27 @@ class Stage05RealTransportTargeted(unittest.TestCase):
                       "Freshness: NOT_REALTIME_VERIFIED",
                       "Source scope: SYNTHETIC_TEST_ONLY", "SCORE_UNAVAILABLE"):
             self.assertIn(token, rendered)
-        self.assertEqual(service.accept(text="btcusdt", user_id=44,
-                                        chat_id=55, message_id=123)["status"], "DUPLICATE")
+        self.assertEqual(service.accept(text="btcusdt", user_id=1001,
+                                        chat_id=1001, message_id=123)["status"], "DUPLICATE")
         with self.assertRaisesRegex(ContractError, "SPOT_USDT_SYMBOL_NOT_IN"):
             parse_symbol("solusdt", {"BTCUSDT", "ETHUSDT"})
         response = dict(result, reply_text=service.format_reply(result))
         fake = FakeBot()
-        ack = respond_once(response=response, chat_id=55, user_id=44,
+        ack = respond_once(response=response, chat_id=1001, user_id=1001,
                            config=config(), store=MemoryOutbox(),
                            transport=fake, clock=lambda: T0, simulation=True)
         self.assertEqual(ack["status"], "ACCEPTED")
         self.assertEqual(fake.requests[0][3], "INTERACTIVE_REPLY")
+        second_result = service.process_one()
+        self.assertEqual(second_result["status"], "READ_ONLY_ANALYSIS")
+        second_response = dict(second_result, reply_text=service.format_reply(second_result))
+        ack_b = respond_once(response=second_response, chat_id=1002, user_id=1002,
+                             config=config(), store=MemoryOutbox(),
+                             transport=fake, clock=lambda: T0, simulation=True)
+        self.assertEqual(ack_b["status"], "ACCEPTED")
+        self.assertEqual([request[1] for request in fake.requests], ["1001", "1002"])
         with self.assertRaisesRegex(ContractError, "RECIPIENT_NOT_AUTHORIZED"):
-            respond_once(response=response, chat_id=99, user_id=44,
+            respond_once(response=response, chat_id=1003, user_id=1003,
                          config=config(), store=MemoryOutbox(),
                          transport=fake, clock=lambda: T0, simulation=True)
 
