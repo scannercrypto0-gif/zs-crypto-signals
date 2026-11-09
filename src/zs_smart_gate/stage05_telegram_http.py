@@ -85,11 +85,20 @@ class BotSecrets:
             or len({self.signals_token, self.analytics_token,
                     self.interactive_token}) != 3):
             raise ContractError("THREE_DISTINCT_BOT_TOKENS_REQUIRED")
+        # Owner's two-account contract: Signals A/B differ; archive C is A.
+        # These are per-bot destinations, not three distinct Telegram users.
         chats = (self.signals_chat_a, self.signals_chat_b, self.analytics_chat)
-        if not all(ID.fullmatch(x or "") for x in chats) or len(set(chats)) != 3:
-            raise ContractError("THREE_DISTINCT_DELIVERY_CHATS_REQUIRED")
-        if not self.interactive_users and not self.interactive_chats:
-            raise ContractError("INTERACTIVE_ALLOWLIST_REQUIRED")
+        if not all(ID.fullmatch(x or "") for x in chats):
+            raise ContractError("DELIVERY_CHAT_ID_INVALID")
+        if self.signals_chat_a == self.signals_chat_b:
+            raise ContractError("SIGNALS_A_B_MUST_DIFFER")
+        if self.analytics_chat != self.signals_chat_a:
+            raise ContractError("ANALYTICS_C_MUST_EQUAL_SIGNALS_A")
+        # 05C uses the same two private accounts; fail closed on missing,
+        # partial, extra or malformed authorization values.
+        accounts = frozenset((self.signals_chat_a, self.signals_chat_b))
+        if self.interactive_users != accounts or self.interactive_chats != accounts:
+            raise ContractError("INTERACTIVE_TWO_ACCOUNT_ALLOWLIST_REQUIRED")
         if any(not ID.fullmatch(x) for x in
                self.interactive_users | self.interactive_chats):
             raise ContractError("INTERACTIVE_ALLOWLIST_INVALID")
