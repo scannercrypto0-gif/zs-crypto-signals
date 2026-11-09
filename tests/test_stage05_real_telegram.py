@@ -422,7 +422,8 @@ class Stage05RealTransportTargeted(unittest.TestCase):
         with self.assertRaisesRegex(ContractError, "SPOT_USDT_SYMBOL_NOT_IN"):
             parse_symbol("solusdt", {"BTCUSDT", "ETHUSDT"})
         response = dict(result, reply_text=service.format_reply(result))
-        fake = FakeBot()
+        # Two authorized independent private chats require two fake ACKs.
+        fake = FakeBot(["ACCEPTED", "ACCEPTED"])
         ack = respond_once(response=response, chat_id=1001, user_id=1001,
                            config=config(), store=MemoryOutbox(),
                            transport=fake, clock=lambda: T0, simulation=True)
