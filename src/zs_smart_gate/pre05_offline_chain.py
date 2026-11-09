@@ -191,6 +191,17 @@ def chain_result(*, receipt_record, exchange_info, partition="DEV"):
                 or setup["score"] is not None or setup["publishable"]
                 or setup["qualified"]):
             raise ChainRejected("STAGE02_UNAUTHORIZED_PROMOTION")
+        # A RESEARCH_CANDIDATE can also be a REJECTED setup observation.
+        # Only the explicitly classified normal nontrigger / causal-trigger
+        # cases may traverse the 02→03 edge; never a timing/source reject.
+        accepted_setup_reasons = {
+            "CLOSED_CAUSAL_TRIGGER", "NO_BREAKOUT",
+            "NO_FALSE_TO_TRUE_TRANSITION",
+        }
+        if (len(setup["reason_codes"]) != 1 or
+                setup["reason_codes"][0] not in accepted_setup_reasons):
+            raise ChainRejected("STAGE02_FAIL_CLOSED:" +
+                                setup["reason_codes"][0])
         base["stages_completed"].append("02_SETUP_V1_1_INTERNAL_CANDIDATE")
         research = stage03_c1c4_research_from_closed_receipts(receipt_record)
         if research["status"] != "RESEARCH_CANDIDATE":
@@ -238,11 +249,12 @@ class LocalChainJournal:
     def __init__(self, path):
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        with self._connection() as db:
+        with closing(self._connection()) as db:
             db.execute("""CREATE TABLE IF NOT EXISTS chain_receipts(
                 identity TEXT PRIMARY KEY,
                 digest TEXT NOT NULL,
                 payload BLOB NOT NULL)""")
+            db.commit()
 
     def _connection(self):
         db = sqlite3.connect(str(self.path), timeout=3)
