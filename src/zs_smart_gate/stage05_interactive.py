@@ -34,11 +34,17 @@ def parse_symbol(text, supported):
 
 
 def _authorized(config, user_id, chat_id):
-    # Both allowlists, when supplied, MUST match; do not implicitly use OR.
+    # 05C serves exactly two OWNER-APPROVED PRIVATE accounts. A private
+    # Telegram chat ID must equal its sender's user ID; accepting each
+    # allowlist independently would permit a cross-account (A user, B chat)
+    # request. Missing/partial/extra allowlists must fail closed.
     uid, cid = str(user_id), str(chat_id)
+    accounts = frozenset((config.signals_chat_a, config.signals_chat_b))
     return bool(
-        (not config.interactive_users or uid in config.interactive_users)
-        and (not config.interactive_chats or cid in config.interactive_chats)
+        uid == cid
+        and uid in accounts
+        and config.interactive_users == accounts
+        and config.interactive_chats == accounts
     )
 
 
