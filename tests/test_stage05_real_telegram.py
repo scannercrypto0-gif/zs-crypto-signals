@@ -436,7 +436,7 @@ class Stage05RealTransportTargeted(unittest.TestCase):
                              config=config(), store=MemoryOutbox(),
                              transport=fake, clock=lambda: T0, simulation=True)
         self.assertEqual(ack_b["status"], "ACCEPTED")
-        self.assertEqual([request[1] for request in fake.requests], ["1001", "1002"])
+        self.assertEqual([str(request[1]) for request in fake.requests], ["1001", "1002"])
         for bad_user, bad_chat in ((1001, 1002), (1002, 1001), (1003, 1003)):
             with self.subTest(user=bad_user, chat=bad_chat):
                 with self.assertRaisesRegex(ContractError, "RECIPIENT_NOT_AUTHORIZED"):
