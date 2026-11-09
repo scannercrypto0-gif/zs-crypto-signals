@@ -23,7 +23,11 @@ $script = Join-Path $clone $scriptRelative
 $raw = Join-Path $session 'raw-git-script.py'
 $receipt = Join-Path $session 'preflight-receipt.txt'
 $original = $null
+$originalBranch = $null
+$originalConfigHash = $null
 $originalAfter = 'UNKNOWN'
+$originalBranchUnchanged = 'UNKNOWN'
+$originalConfigUnchanged = 'UNKNOWN'
 $mode = 'PREPARE_ONLY_NO_TELEGRAM'
 $preflight = 'FAIL'
 $code = 1
@@ -60,6 +64,10 @@ try {
     if (-not [string]::Equals([System.IO.Path]::GetPathRoot($Repository), 'D:\', [System.StringComparison]::OrdinalIgnoreCase)) { throw 'D_DRIVE_REPO_REQUIRED' }
     if (-not (Test-Path -LiteralPath $Repository -PathType Container)) { throw 'ORIGINAL_REPO_NOT_FOUND' }
     $original = GitRead -GitArgs @('-C', $Repository, 'rev-parse', 'HEAD')
+    $originalBranch = GitRead -GitArgs @('-C', $Repository, 'rev-parse', '--abbrev-ref', 'HEAD')
+    $originalConfigPath = Join-Path $Repository '.git\config'
+    if (-not (Test-Path -LiteralPath $originalConfigPath -PathType Leaf)) { throw 'STANDARD_ORIGINAL_CONFIG_REQUIRED' }
+    $originalConfigHash = HashFile $originalConfigPath
     if (-not (Test-Path -LiteralPath $Root -PathType Container)) { New-Item -ItemType Directory -Path $Root -Force | Out-Null }
     New-Item -ItemType Directory -Path $session -ErrorAction Stop | Out-Null
     # --no-hardlinks creates an independent .git object database and independent refs.
@@ -110,6 +118,9 @@ try {
     $dry = 'PASS_NO_NETWORK_NO_SECRETS'
     # Check the actual Python verify_pins() path before any secrets: it requires the origin/* remote-tracking ref.
     if ($cloneRemoteBranch -ne $head) { throw 'SCRIPT_REQUIRED_REMOTE_TRACKING_REF_MISMATCH' }
+    if ((GitRead -GitArgs @('-C', $Repository, 'rev-parse', 'HEAD')) -ne $original) { throw 'ORIGINAL_HEAD_CHANGED' }
+    if ((GitRead -GitArgs @('-C', $Repository, 'rev-parse', '--abbrev-ref', 'HEAD')) -ne $originalBranch) { throw 'ORIGINAL_BRANCH_CHANGED' }
+    if ((HashFile $originalConfigPath) -ne $originalConfigHash) { throw 'ORIGINAL_CONFIG_CHANGED' }
     $preflight = 'PASS'
     $code = 0
 } catch {
@@ -118,7 +129,11 @@ try {
     Write-Output ('PREPARATION_ERROR=' + $failure)
 } finally {
     if ($null -ne $original) {
-        try { $originalAfter = ([string]::Equals((GitRead -GitArgs @('-C', $Repository, 'rev-parse', 'HEAD')), $original)).ToString().ToLowerInvariant() } catch { $originalAfter = 'UNKNOWN' }
+        try {
+            $originalAfter = ([string]::Equals((GitRead -GitArgs @('-C', $Repository, 'rev-parse', 'HEAD')), $original)).ToString().ToLowerInvariant()
+            $originalBranchUnchanged = ([string]::Equals((GitRead -GitArgs @('-C', $Repository, 'rev-parse', '--abbrev-ref', 'HEAD')), $originalBranch)).ToString().ToLowerInvariant()
+            $originalConfigUnchanged = ([string]::Equals((HashFile $originalConfigPath), $originalConfigHash)).ToString().ToLowerInvariant()
+        } catch { $originalAfter = 'UNKNOWN'; $originalBranchUnchanged = 'UNKNOWN'; $originalConfigUnchanged = 'UNKNOWN' }
     }
     $lines = @(
         'STAGE05_PINNED_LAUNCHER_006',
@@ -129,6 +144,7 @@ try {
         ('ISOLATED_HEAD=' + $cloneHead), ('ISOLATED_LOCAL_BRANCH=' + $cloneBranch),
         ('ISOLATED_ORIGIN_TRACKING_REF=' + $cloneRemoteBranch), ('PYTHON_VERSION=' + $python),
         ('DRY_RUN=' + $dry), ('ORIGINAL_HEAD_UNCHANGED=' + $originalAfter),
+        ('ORIGINAL_BRANCH_UNCHANGED=' + $originalBranchUnchanged), ('ORIGINAL_CONFIG_UNCHANGED=' + $originalConfigUnchanged),
         ('PREFLIGHT_STATUS=' + $preflight), ('REAL_API_CALLS_FROM_LAUNCHER_PREPARATION=0'),
         ('LIVE_LAUNCH_REQUESTED=' + $EnableLive.ToString().ToLowerInvariant()),
         ('EXIT_CODE=' + $code)
