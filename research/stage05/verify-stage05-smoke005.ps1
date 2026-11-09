@@ -52,7 +52,11 @@ try {
         $fetchExit = $LASTEXITCODE
     } finally { $ErrorActionPreference = $priorPreference }
     if ($fetchExit -ne 0) { throw 'PINNED_FETCH_FAILED' }
-    if ((GitValue -gitArgs @('rev-parse','FETCH_HEAD')) -ne $head) { throw 'FETCH_HEAD_MISMATCH' }
+    # The PR branch includes this helper after the pinned smoke commit; require pinned commit ancestry, not branch-tip equality.
+    $fetchedHead = GitValue -gitArgs @('rev-parse','FETCH_HEAD')
+    & git -C $Repository merge-base --is-ancestor $head $fetchedHead 2>$null
+    if ($LASTEXITCODE -ne 0) { throw 'PINNED_SMOKE_COMMIT_NOT_IN_FETCHED_BRANCH' }
+    if ((GitValue -gitArgs @('rev-parse',($head + '^{commit}'))) -ne $head) { throw 'PINNED_SMOKE_COMMIT_MISSING' }
     if ((GitValue -gitArgs @('rev-parse',($head + '^{tree}'))) -ne $tree) { throw 'TREE_MISMATCH' }
     if ((GitValue -gitArgs @('rev-parse',($head + ':' + $relative))) -ne $blob) { throw 'GIT_BLOB_MISMATCH' }
     $gitConfig = ((& git -C $Repository config --get core.autocrlf 2>$null | Out-String).Trim())
