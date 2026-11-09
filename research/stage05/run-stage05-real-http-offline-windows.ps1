@@ -8,9 +8,19 @@ param(
 $ErrorActionPreference='Stop'
 $branch='stage05-real-telegram-transport-disabled-20261109'
 $base='f064493e77bd4f70029fb8af1837ac9685d07c41'
-$worktree=Join-Path $env:TEMP ('zs05-real-offline-' + $PinnedSha.Substring(0,12))
-$log=Join-Path $env:TEMP ('zs05-real-offline-' + $PinnedSha.Substring(0,12) + '.log')
 if (-not (Test-Path -LiteralPath $Repo -PathType Container)) { throw 'GIT_REPOSITORY_NOT_FOUND' }
+$repoFull=(Resolve-Path -LiteralPath $Repo).ProviderPath
+if (-not [string]::Equals([System.IO.Path]::GetPathRoot($repoFull), 'D:\\',
+                         [System.StringComparison]::OrdinalIgnoreCase)) {
+  throw 'PROJECT_LOCAL_FILES_MUST_BE_ON_D_DRIVE'
+}
+$runRoot=Join-Path (Split-Path -Parent $repoFull) 'ZS_STAGE05_LOCAL_TEMP'
+New-Item -ItemType Directory -Force -Path $runRoot | Out-Null
+$worktree=Join-Path $runRoot ('zs05-real-offline-' + $PinnedSha.Substring(0,12))
+$log=Join-Path $runRoot ('zs05-real-offline-' + $PinnedSha.Substring(0,12) + '.log')
+$env:TEMP=$runRoot
+$env:TMP=$runRoot
+$env:TMPDIR=$runRoot
 if (Test-Path -LiteralPath $worktree) { throw 'PINNED_WORKTREE_ALREADY_EXISTS' }
 $before=(& git -C $Repo rev-parse HEAD).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'GIT_BASE_INVALID' }

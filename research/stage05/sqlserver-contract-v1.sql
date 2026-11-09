@@ -69,9 +69,17 @@ CREATE TABLE dbo.signal_features (
   feature_json nvarchar(max) NOT NULL,
   CONSTRAINT PK_signal_features PRIMARY KEY (signal_id, indicator_id, feature_version)
 );
+CREATE TABLE dbo.analysis_requests (
+  analysis_request_id char(64) NOT NULL PRIMARY KEY,
+  asset_id nvarchar(32) NOT NULL REFERENCES dbo.assets(asset_id),
+  received_at_utc datetime2(6) NOT NULL,
+  result_status nvarchar(32) NOT NULL,
+  result_json nvarchar(max) NULL
+);
 CREATE TABLE dbo.telegram_deliveries (
   delivery_id char(64) NOT NULL PRIMARY KEY,
-  candidate_id nvarchar(128) NOT NULL REFERENCES dbo.candidates(candidate_id),
+  candidate_id nvarchar(128) NULL REFERENCES dbo.candidates(candidate_id),
+  analysis_request_id char(64) NULL REFERENCES dbo.analysis_requests(analysis_request_id),
   signal_id nvarchar(128) NULL REFERENCES dbo.signals(signal_id),
   bot_id nvarchar(32) NOT NULL CHECK (bot_id IN (N'SIGNALS',N'ANALYTICS',N'INTERACTIVE')),
   destination_label nvarchar(24) NOT NULL,
@@ -83,10 +91,21 @@ CREATE TABLE dbo.telegram_deliveries (
   telegram_accepted_at_utc datetime2(6) NULL,
   telegram_message_date_at_utc datetime2(0) NULL,
   receipt_sha256 char(64) NULL,
-  CONSTRAINT UQ_telegram_delivery_identity UNIQUE (candidate_id, bot_id, destination_label),
+  CONSTRAINT CK_delivery_subject_exactly_one CHECK (
+    (candidate_id IS NOT NULL AND analysis_request_id IS NULL
+     AND bot_id IN (N'SIGNALS',N'ANALYTICS')) OR
+    (candidate_id IS NULL AND analysis_request_id IS NOT NULL
+     AND signal_id IS NULL AND bot_id = N'INTERACTIVE')
+  ),
   CONSTRAINT FK_delivery_signal_same_candidate
     FOREIGN KEY (signal_id, candidate_id) REFERENCES dbo.signals(signal_id, candidate_id)
 );
+CREATE UNIQUE INDEX UQ_delivery_candidate_route
+  ON dbo.telegram_deliveries(candidate_id, bot_id, destination_label)
+  WHERE candidate_id IS NOT NULL;
+CREATE UNIQUE INDEX UQ_delivery_interactive_request_route
+  ON dbo.telegram_deliveries(analysis_request_id, bot_id, destination_label)
+  WHERE analysis_request_id IS NOT NULL;
 CREATE UNIQUE INDEX UQ_telegram_actual_message
   ON dbo.telegram_deliveries(bot_id, chat_id, telegram_message_id)
   WHERE chat_id IS NOT NULL AND telegram_message_id IS NOT NULL;
@@ -123,13 +142,6 @@ CREATE TABLE dbo.signal_updates (
   recorded_at_utc datetime2(6) NOT NULL,
   update_json nvarchar(max) NOT NULL,
   CONSTRAINT UQ_update_version UNIQUE(signal_id,update_version)
-);
-CREATE TABLE dbo.analysis_requests (
-  analysis_request_id char(64) NOT NULL PRIMARY KEY,
-  asset_id nvarchar(32) NOT NULL REFERENCES dbo.assets(asset_id),
-  received_at_utc datetime2(6) NOT NULL,
-  result_status nvarchar(32) NOT NULL,
-  result_json nvarchar(max) NULL
 );
 -- Import policy: verify canonical SHA before insert; reject differing bytes
 -- for an existing PK/UNIQUE key; append outcomes/updates without rewriting the

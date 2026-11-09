@@ -126,10 +126,13 @@ class InteractiveService:
             return {**request, "status": "INVALID_SNAPSHOT",
                     "reason_codes": ["INDICATOR_LIST_UNAVAILABLE"],
                     "indicators": [], "score": None}
-        fields = ("indicator_id", "value", "availability", "threshold", "unit",
-                  "timeframe", "source", "as_of", "version", "reason_codes")
+        fields = ("indicator_id", "raw_value", "value", "availability",
+                  "evaluation", "threshold", "unit", "timeframe", "source",
+                  "as_of", "version", "reason_codes")
         for row in data["indicators"]:
-            if not isinstance(row, dict) or any(x not in row for x in fields):
+            if (not isinstance(row, dict) or any(x not in row for x in fields)
+                    or row.get("evaluation") not in ("PASS", "FAIL", "UNKNOWN")
+                    or not isinstance(row.get("reason_codes"), list)):
                 return {**request, "status": "INVALID_SNAPSHOT",
                         "reason_codes": ["INDICATOR_METADATA_INCOMPLETE"],
                         "indicators": [], "score": None}
@@ -185,20 +188,41 @@ class InteractiveService:
                 "\nSymbol: " + response["symbol"] +
                 "\nStatus: " + response["status"])
         if response["status"] == "READ_ONLY_ANALYSIS":
-            text += "\nAs-of: " + response["as_of"]
+            if not isinstance(response.get("indicators"), list):
+                raise ContractError("INTERACTIVE_INDICATORS_REQUIRED")
+            age_s = (parse_utc(response["requested_at"]) -
+                     parse_utc(response["as_of"])).total_seconds()
+            if age_s < 0:
+                raise ContractError("FUTURE_INTERACTIVE_SNAPSHOT")
+            text += ("\nAs-of UTC: " + response["as_of"] +
+                     "\nSnapshot age seconds: " + str(age_s) +
+                     "\nFreshness: NOT_REALTIME_VERIFIED" +
+                     "\nSource scope: " + str(response.get("source_scope", "UNKNOWN")))
             for row in response["indicators"]:
-                text += ("\n" + str(row["indicator_id"]) + ": " +
-                         str(row["value"]) + " (" + str(row["availability"]) +
-                         "; " + str(row["timeframe"]) + "; " + str(row["unit"]) +
-                         "; threshold=" + str(row["threshold"]) + "; source=" +
-                         str(row["source"]) + "; " + str(row["as_of"]) + ")")
-            text += "\nDecision: " + str(response.get("decision", "UNAVAILABLE"))
+                reasons = ",".join(map(str, row["reason_codes"])) or "NONE"
+                text += ("\n" + str(row["indicator_id"]) + ": value=" +
+                         str(row["value"]) + "; raw=" + str(row["raw_value"]) +
+                         "; availability=" + str(row["availability"]) +
+                         "; evaluation=" + str(row["evaluation"]) +
+                         "; timeframe=" + str(row["timeframe"]) +
+                         "; unit=" + str(row["unit"]) +
+                         "; threshold=" + str(row["threshold"]) +
+                         "; version=" + str(row["version"]) +
+                         "; source=" + str(row["source"]) +
+                         "; as-of=" + str(row["as_of"]) +
+                         "; reasons=" + reasons)
+            score = response.get("score")
+            if isinstance(score, dict) and score.get("approved") is True and score.get("value") is not None:
+                text += "\nScore: " + str(score["value"])
+            else:
+                text += "\nScore: SCORE_UNAVAILABLE (NO_APPROVED_SCORE)"
+            text += "\nDecision: " + str(response.get("decision") or "UNAVAILABLE")
+            text += "\nDecision reasons: " + (",".join(map(str, response.get("reason_codes") or [])) or "NONE")
         else:
-            text += "\nReasons: " + ",".join(response.get("reason_codes", []))
+            text += "\nReasons: " + ",".join(map(str, response.get("reason_codes") or []))
         if len(text) > 3900:
             raise ContractError("INTERACTIVE_REPLY_TOO_LONG")
         return text
-
 
 def respond_once(*, response, chat_id, user_id, config, store, flags=None,
                  permit=None, head_sha=None, transport=None,

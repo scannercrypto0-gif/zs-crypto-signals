@@ -151,6 +151,10 @@ class Stage05RealTransportTargeted(unittest.TestCase):
                 http.send_text("1001", "not sent", flags=all_on,
                                permit=None, head_sha="f" * 40)
             actual.assert_not_called()
+        with self.assertRaisesRegex(ContractError, "OUTBOX_DEDICATED_STAGE05_BRANCH_REQUIRED"):
+            GithubOutbox(object(), "main", verified_backend=True)
+        dedicated = GithubOutbox(object(), "evidence-stage05-owner-test")
+        self.assertFalse(dedicated.verified_backend)
         with self.assertRaisesRegex(ContractError, "THREE_DISTINCT"):
             BotSecrets(DUMMY_SIGNAL_TOKEN, "1001", "1002",
                        DUMMY_SIGNAL_TOKEN, frozenset(("44",)), frozenset(),
@@ -174,6 +178,16 @@ class Stage05RealTransportTargeted(unittest.TestCase):
         coord = DeliveryCoordinator(store=MemoryOutbox(), config=config())
         with self.assertRaisesRegex(ContractError, "SYNTHETIC_EVENT_LIVE"):
             coord.step(good, "A")
+        # Self-declared real-source hashes are NOT independent qualification evidence.
+        forged = event()
+        forged.update(source_scope="APPROVED_REAL_SOURCE",
+                      source_manifest_id="FAKE.MANIFEST",
+                      source_manifest_sha256="b" * 64,
+                      candle_window_sha256="c" * 64,
+                      scan_cycle_id="FAKE.SCAN", quality_policy_version="TEST")
+        forged["clock"]["source"] = "MEASURED_CLOCK"
+        with self.assertRaisesRegex(ContractError, "VERIFIED_UPSTREAM_READBACK_NOT_IMPLEMENTED"):
+            coord.step(forged, "A")
 
     def test_independent_per_chat_receipts_and_duplicate_suppression(self):
         t = [0]
@@ -199,6 +213,20 @@ class Stage05RealTransportTargeted(unittest.TestCase):
         self.assertEqual(len(sig.requests), 2)
         self.assertEqual(len(ana.requests), 1)
         self.assertEqual(sig.requests[0][1], "1001")
+        self.assertIn("SCORE_UNAVAILABLE (NO_APPROVED_SCORE)", sig.requests[0][2])
+        self.assertIn("Gate decisions:", sig.requests[0][2])
+        self.assertIn("Trade plan: RESEARCH_ONLY", sig.requests[0][2])
+        complete = event()
+        complete["trade_plan"] = {"approved": True, "version": "TEST.V1",
+                                  "entry_zone": "100-101", "stop_loss": "98",
+                                  "tp1": "103", "tp2": "105", "tp3": "108"}
+        complete["score"] = {"approved": True, "value": "75", "version": "TEST.V1"}
+        with_plan = DeliveryCoordinator(store=MemoryOutbox(), config=config(),
+                                        clock=clock, transports={"SIGNALS": FakeBot()},
+                                        simulation=True)
+        with_plan.step(complete, "A")
+        self.assertIn("Entry zone: 100-101", with_plan.transports["SIGNALS"].requests[0][2])
+        self.assertIn("Score: 75", with_plan.transports["SIGNALS"].requests[0][2])
         self.assertEqual(sig.requests[1][1], "1002")
         self.assertEqual(ana.requests[0][1], "1003")
         again = coord.step(event(), "A")
@@ -319,7 +347,8 @@ class Stage05RealTransportTargeted(unittest.TestCase):
                     "source_scope": "SYNTHETIC_TEST_ONLY",
                     "decision": "RESEARCH_ONLY", "score": None,
                     "indicators": [{
-                        "indicator_id": "N01", "value": "0.62", "availability": "PRESENT",
+                        "indicator_id": "N01", "value": "0.62", "raw_value": "0.620",
+                        "availability": "PRESENT", "evaluation": "UNKNOWN",
                         "threshold": "NOT_APPROVED", "unit": "fraction",
                         "timeframe": "30m", "source": "SYNTHETIC",
                         "as_of": "2026-11-09T08:55:00Z", "version": "N01.V1",
@@ -337,7 +366,11 @@ class Stage05RealTransportTargeted(unittest.TestCase):
         self.assertIsNone(queued["signal_id"])
         result = service.process_one()
         self.assertEqual(result["status"], "READ_ONLY_ANALYSIS")
-        self.assertIn("N01", service.format_reply(result))
+        rendered = service.format_reply(result)
+        for token in ("N01", "raw=0.620", "evaluation=UNKNOWN", "version=N01.V1",
+                      "Freshness: NOT_REALTIME_VERIFIED",
+                      "Source scope: SYNTHETIC_TEST_ONLY", "SCORE_UNAVAILABLE"):
+            self.assertIn(token, rendered)
         self.assertEqual(service.accept(text="btcusdt", user_id=44,
                                         chat_id=55, message_id=123)["status"], "DUPLICATE")
         with self.assertRaisesRegex(ContractError, "SPOT_USDT_SYMBOL_NOT_IN"):
@@ -366,5 +399,8 @@ class Stage05RealTransportTargeted(unittest.TestCase):
                 self.assertIn("dbo." + name, sql)
         self.assertIn("FOREIGN KEY", sql.upper() if "FOREIGN KEY" in sql.upper() else sql)
         self.assertIn("UQ_telegram_actual_message", sql)
+        self.assertIn("CK_delivery_subject_exactly_one", sql)
+        self.assertIn("UQ_delivery_interactive_request_route", sql)
+        self.assertIn("analysis_request_id char(64) NULL REFERENCES", sql)
         self.assertIn("datetime2(6)", sql.lower())
         self.assertNotIn("CREATE DATABASE", sql)

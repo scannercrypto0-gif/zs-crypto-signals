@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 import re
 from .stage05_contracts import (
-    ContractError, canonical, digest, ensure_event, make_document, utc_now,
+    ContractError, canonical, digest, ensure_event, make_document, parse_utc, utc_now,
 )
 from .stage05_telegram_http import (
     BotSecrets, RuntimeFlags, TelegramHTTP, require_live_permission,
@@ -33,8 +33,11 @@ class GithubOutbox:
     def __init__(self, transport, branch, *, verified_backend=False):
         if not branch or not re.fullmatch(r"[A-Za-z0-9._/-]{1,100}", branch):
             raise ContractError("OUTBOX_BRANCH_INVALID")
+        if not re.fullmatch(r"evidence-stage05-[a-z0-9][a-z0-9-]{0,63}", branch):
+            raise ContractError("OUTBOX_DEDICATED_STAGE05_BRANCH_REQUIRED")
         self._transport = transport
         self._branch = branch
+        # A caller-provided assertion is NOT independent evidence of custody.
         self.verified_backend = verified_backend
 
     def read(self, key):
@@ -130,24 +133,63 @@ def plan(event):
 
 
 def _signal_text(event):
-    # No score-threshold suppression. A missing approved score is explicit.
+    """Render only supplied approved values; never invent plan/score terms."""
     if event["qualification_status"] != "QUALIFIED":
         raise ContractError("SIGNAL_TEXT_REQUIRES_QUALIFIED")
-    t = event["timestamps"]
-    value = event.get("score")
-    score = str(value.get("value")) if value is not None else "SCORE_UNAVAILABLE"
-    return (
-        "ZS05 SIGNAL | " + event["signal_id"] +
-        "\nCandidate: " + event["candidate_id"] +
-        "\nSymbol: " + event["symbol"] +
-        "\nDirection: " + event["direction"] +
-        "\nHorizon: " + event["horizon"] +
-        "\nSetup: " + event["setup_version"] +
-        "\nDecision UTC: " + t["decision_at"] +
-        "\nScore: " + score +
-        "\nTrade plan: " + ("APPROVED" if event.get("trade_plan") else "RESEARCH_ONLY")
-    )
 
+    def shown(value):
+        if isinstance(value, bool) or not isinstance(value, (str, int, float)):
+            return None
+        return str(value).replace("\r", " ").replace("\n", " ")
+
+    score = event.get("score")
+    if score is None:
+        score_line = "SCORE_UNAVAILABLE (NO_APPROVED_SCORE)"
+    elif shown(score.get("value")) is None:
+        score_line = "SCORE_UNAVAILABLE (APPROVED_SCORE_VALUE_MISSING)"
+    else:
+        score_line = shown(score["value"])
+        if shown(score.get("version")):
+            score_line += "; version=" + shown(score["version"])
+        score_line += "; reasons=" + (",".join(map(str, score.get("reason_codes") or [])) or "NONE")
+
+    plan_data = event.get("trade_plan")
+    plan_keys = ("entry_zone", "stop_loss", "tp1", "tp2", "tp3")
+    if plan_data is None:
+        plan_lines = ["Trade plan: RESEARCH_ONLY (NO_APPROVED_TRADE_PLAN)"]
+    elif plan_data.get("approved") is True and all(shown(plan_data.get(k)) for k in plan_keys):
+        plan_lines = ["Trade plan: APPROVED"]
+        if shown(plan_data.get("version")):
+            plan_lines.append("Plan version: " + shown(plan_data["version"]))
+        plan_lines.extend(("Entry zone: " + shown(plan_data["entry_zone"]),
+                           "Stop loss: " + shown(plan_data["stop_loss"]),
+                           "TP1: " + shown(plan_data["tp1"]),
+                           "TP2: " + shown(plan_data["tp2"]),
+                           "TP3: " + shown(plan_data["tp3"])))
+    else:
+        plan_lines = ["Trade plan: RESEARCH_ONLY (APPROVED_PLAN_TERMS_INCOMPLETE)"]
+
+    gate_lines = ["Gate decisions:"]
+    for gate in event["gates"]:
+        reasons = ",".join(map(str, gate["reason_codes"])) or "NONE"
+        gate_lines.append("  " + gate["gate_id"] + "=" + gate["state"] +
+                          " (reasons=" + reasons + ")")
+    times = event["timestamps"]
+    lines = [
+        "ZS05 SIGNAL | " + event["signal_id"],
+        "Candidate: " + event["candidate_id"],
+        "Source scope: " + event["source_scope"],
+        "Symbol: " + event["symbol"],
+        "Direction: " + event["direction"],
+        "Horizon: " + event["horizon"],
+        "Setup: " + event["setup_version"],
+        "Decision UTC: " + times["decision_at"],
+        "Score: " + score_line,
+    ] + gate_lines + plan_lines
+    message = "\n".join(lines)
+    if len(message) > 3900:
+        raise ContractError("SIGNAL_MESSAGE_TEXT_TOO_LONG")
+    return message
 
 class DeliveryCoordinator:
     """Synchronous one-attempt step; the caller owns scheduling outside this.
@@ -197,14 +239,10 @@ class DeliveryCoordinator:
         if not self.simulation:
             if event["source_scope"] != "APPROVED_REAL_SOURCE":
                 raise ContractError("SYNTHETIC_EVENT_LIVE_DISPATCH_FORBIDDEN")
-            if not isinstance(self.store, GithubOutbox) or not self.store.verified_backend:
-                raise ContractError("APPROVED_GITHUB_OUTBOX_REQUIRED")
-            require_live_permission(
-                flags=self.flags, permit=self.permit, head_sha=self.head_sha,
-                action=self._action(job.bot_id))
-            if (not event.get("qualification_evidence_sha256")
-                    and event["qualification_status"] == "QUALIFIED"):
-                raise ContractError("UPSTREAM_QUALIFICATION_RECEIPT_REQUIRED")
+            # Syntactically valid event hashes and caller flags do not prove a
+            # real upstream qualification/source readback. No approved verifier
+            # exists at this stage: hard-block real dispatch until one is reviewed.
+            raise ContractError("VERIFIED_UPSTREAM_READBACK_NOT_IMPLEMENTED")
         # Reuse the readback-verified outbox and stable per-event identities.
         event_key = _key("event", digest(event["detection_event_key"].encode("utf-8")))
         _claim(self.store, event_key, {
