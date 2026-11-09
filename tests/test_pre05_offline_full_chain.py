@@ -54,6 +54,16 @@ def one_source(symbol="BTCUSDT", *, breakout=True):
     return stage03, exchange
 
 
+def change_child(record, index, field, value):
+    record["children"][index][field] = value
+    record["core_5m"][-6:][index][field] = value
+
+
+def duplicate_context_bar(record):
+    record["context"]["5m"][-1] = deepcopy(record["context"]["5m"][-2])
+    record["core_5m"][14] = deepcopy(record["context"]["5m"][-1])
+
+
 class Pre05SingleSourceTargeted(unittest.TestCase):
 
     def test_same_22_bar_source_btc_eth_through_00_04_local_readback(self):
@@ -111,26 +121,44 @@ class Pre05SingleSourceTargeted(unittest.TestCase):
         with TemporaryDirectory(prefix="pre05-negative-") as root:
             db = Path(root) / "rejected.sqlite"
             cases = (
-                ("missing_base", lambda d, e: d["children"][-1].pop("base_volume")),
-                ("future_available", lambda d, e: d["children"][-1].__setitem__(
-                    "available_at", "2099-01-01T00:00:00+00:00")),
-                ("source_mismatch", lambda d, e: d["children"][1].__setitem__(
-                    "source_id", "SYNTHETIC:FOREIGN")),
-                ("duplicate_bar", lambda d, e: d["context"]["5m"].__setitem__(
-                    -1, deepcopy(d["context"]["5m"][-2]))),
-                ("non_utc", lambda d, e: d["parent"].__setitem__(
-                    "close_at", "2026-06-03T03:00:00+03:00")),
-                ("stale_receipt", lambda d, e: d.__setitem__(
-                    "decision_at",
-                    (datetime.fromisoformat(d["decision_at"]) +
-                     timedelta(minutes=3)).isoformat())),
-                ("missing_exchange", lambda d, e: e["symbols"].clear()),
-                ("foreign_book_symbol", lambda d, e: d["book"].__setitem__(
-                    "symbol", "FOREIGNUSDT")),
-                ("incomplete_child", lambda d, e: d["children"][-1].__setitem__(
-                    "close_at", d["children"][-1]["open_at"])),
+                ("missing_base",
+                 lambda d, e: (d["children"][-1].pop("base_volume"),
+                               d["core_5m"][-1].pop("base_volume")),
+                 "ORIGINAL_DECIMAL_STRING_REQUIRED:base_volume"),
+                ("future_available",
+                 lambda d, e: change_child(
+                     d, -1, "available_at", "2099-01-01T00:00:00+00:00"),
+                 "SOURCE_5M_GAP_FUTURE_OR_UNCLOSED"),
+                ("source_mismatch",
+                 lambda d, e: change_child(
+                     d, 1, "source_id", "SYNTHETIC:FOREIGN"),
+                 "SOURCE_ID_OR_FRAME_CONFLICT"),
+                ("duplicate_bar",
+                 lambda d, e: duplicate_context_bar(d),
+                 "SOURCE_5M_GAP_FUTURE_OR_UNCLOSED"),
+                ("non_utc",
+                 lambda d, e: d["parent"].__setitem__(
+                     "close_at", "2026-06-03T03:00:00+03:00"),
+                 "EXPLICIT_UTC_REQUIRED:PARENT_CLOSE"),
+                ("stale_receipt",
+                 lambda d, e: d.__setitem__(
+                     "decision_at",
+                     (datetime.fromisoformat(d["decision_at"]) +
+                      timedelta(minutes=3)).isoformat()),
+                 "STAGE02_FAIL_CLOSED:STALE_OBSERVATION"),
+                ("missing_exchange",
+                 lambda d, e: e["symbols"].clear(),
+                 "STAGE00_EXCHANGE_IDENTITY_MISSING"),
+                ("foreign_book_symbol",
+                 lambda d, e: d["book"].__setitem__(
+                     "symbol", "FOREIGNUSDT"),
+                 "MARKET_SYMBOL_OR_ENDPOINT_CONFLICT"),
+                ("incomplete_child",
+                 lambda d, e: change_child(
+                     d, -1, "close_at", d["children"][-1]["open_at"]),
+                 "SOURCE_5M_GAP_FUTURE_OR_UNCLOSED"),
             )
-            for label, mutate in cases:
+            for label, mutate, expected in cases:
                 with self.subTest(case=label):
                     rec, ex = deepcopy(base), deepcopy(exchange)
                     mutate(rec, ex)
@@ -140,6 +168,7 @@ class Pre05SingleSourceTargeted(unittest.TestCase):
                     self.assertEqual(out["status"], "REJECTED",
                                      (label, out["rejection_reasons"]))
                     self.assertTrue(out["rejection_reasons"])
+                    self.assertIn(expected, out["rejection_reasons"][0])
                     self.assertNotIn("stage04_identity", out)
                     self.assertEqual(out["stage04_store"], "NOT_ATTEMPTED")
                     self.assertIsNone(out["score"])
