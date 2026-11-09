@@ -3,6 +3,7 @@
 Fixture uses the very same 5m source rows for scanner, frozen Setup, 03A/R2.
 GitHub transport is NOT used. SQLite is real local application storage.
 """
+from contextlib import closing
 from copy import deepcopy
 from datetime import timedelta
 from pathlib import Path
@@ -214,9 +215,10 @@ class Pre05SingleSourceTargeted(unittest.TestCase):
                                         "LOCAL_DUPLICATE_CONFLICT_OR_READBACK_FAILURE"):
                 persist_offline_chain(receipt_record=altered,
                                       exchange_info=exchange, journal_path=path)
-            with sqlite3.connect(path) as db:
+            with closing(sqlite3.connect(path)) as db:
                 db.execute("UPDATE chain_receipts SET payload=? WHERE identity=?",
                            (b'{"tampered":true}', identity))
+                db.commit()
             with self.assertRaisesRegex(ChainRejected,
                                         "LOCAL_PAYLOAD_DIGEST_MISMATCH"):
                 LocalChainJournal(path).read_verified(identity)
