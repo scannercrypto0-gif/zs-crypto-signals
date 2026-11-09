@@ -10,7 +10,7 @@ $branch='stage05-real-telegram-transport-disabled-20261109'
 $base='f064493e77bd4f70029fb8af1837ac9685d07c41'
 if (-not (Test-Path -LiteralPath $Repo -PathType Container)) { throw 'GIT_REPOSITORY_NOT_FOUND' }
 $repoFull=(Resolve-Path -LiteralPath $Repo).ProviderPath
-if (-not [string]::Equals([System.IO.Path]::GetPathRoot($repoFull), 'D:\\',
+if (-not [string]::Equals([System.IO.Path]::GetPathRoot($repoFull), 'D:\',
                          [System.StringComparison]::OrdinalIgnoreCase)) {
   throw 'PROJECT_LOCAL_FILES_MUST_BE_ON_D_DRIVE'
 }
