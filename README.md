@@ -1,5 +1,24 @@
 # ZS Crypto Signals — SMART GATE
 
+## قرار Stage05 النهائي — ثلاثة بوتات Telegram مستقلة (9 نوفمبر 2026)
+
+**هذا القرار أحدث من أي وصف تاريخي لبوتين أو إيقاف تطوير Stage05 في الأجزاء القديمة من README.** [العقد المعتمد في MASTER](./ZS_SMART_GATE_MASTER.md) و[Issue #51](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/51) هما المرجع التنفيذي. **التطوير Offline مسموح؛ Telegram الحي والإنتاج والتداول والأسرار ما زالت محظورة دون إذن منفصل.**
+
+| الجزء | البوت المستقل | الوجهات/الوظيفة |
+|---|---|---|
+| **05A Signals** | **البوت الرئيسي الموجود لدى المالك** | إرسال كل إشارة مؤهلة إلى **Chat A + Chat B**، بنفس `signal_id`، درجة متاحة أو سبب عدم توفرها، وخطة صحيحة أو `RESEARCH_ONLY` |
+| **05B Analytics** | **بوت أرشفة مستقل** | **Chat C واحدة**: كل المؤهلة **وكل المرشحات المرفوضة** وأسبابها ونتائج Gates والمؤشرات المنفذة والقيم والمصادر والتوقيتات، مع ملخص + JSON بإصدار + SHA-256 ومرجع أصل |
+| **05C Interactive** | **بوت استعلام ثالث مستقل** | استقبال `btcusdt`/`ethusdt`/`solusdt` مباشرة، والتحقق من الصلاحية والرمز والرد بقيم المؤشرات المبنية فعلًا ونتائجها/وقت البيانات/أسباب الغياب، دون إنشاء Signal أو بثها |
+
+**SQL Server:** `candidate_id` PK للمؤهلة والمرفوضة؛ `signal_id` PK للمؤهلة فقط و**نفسه** في Chats A/B/C؛ المرفوضة ليس لها `signal_id` مزيف. سجلات الإرسال مستقلة بمفاتيحها وتوقيتها و`UNIQUE(bot_id,chat_id,telegram_message_id)`، وتربط PK/FK بين `candidates`, `signals`, `candidate_decisions`, `indicator_values`, `telegram_deliveries`, `signal_outcomes` وغيرها. التصدير من Telegram `result.json` يتطلب extractor والتحقق من المرفقات/البصمات ثم استيراد SQL، ولا يعد وحده أرشيفًا كاملًا. **Stage06B** يختبر roundtrip الحقيقي.
+
+**التوقيت:** حفظ UTC ISO-8601 للتواريخ والساعات والدقائق والثواني، ومللي ثانية عندما تتوفر **فعليًا**، لوقت الشمعة والإتاحة والقرار ومحاولة الإرسال وقبول Telegram **لكل Chat على حدة**؛ حفظ دقة المصدر/عدم يقين الساعة وحالات `UNKNOWN_DELIVERY` دون اختلاق توقيت. `datetime2(3)` مناسب في SQL Server حين تسمح الدقة. لا استخدام بيانات مستقبلية في تقييم الإشارة.
+
+**الحالة:** `STAGE05_THREE_BOTS_DESIGN_OWNER_APPROVED / OFFLINE_DEV_AUTHORIZED / LIVE_TELEGRAM_FULL_HOLD`. Stage00–04 synthetic E2E مقبولة 9/9 وPR #50 مدمجة؛ لا يعني ذلك وجود إشارات مؤهلة إنتاجيًا. تفاصيل المعايير والأمان والأرشفة في MASTER وIssue #51.
+
+---
+
+
 ## إغلاق «Stage03» دون حلقة شروط — معيار «C1–C4» الحاكم، 8 نوفمبر 2026
 
 **المرجع المُلزم:** [تدقيق «PM» النهائي](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/25#issuecomment-6721751412)، و[قرار المالك لصحة المكونات أولًا](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/25#issuecomment-6706564402). **إغلاق «03» أثناء البناء يثبت الحساب والمنطق والمصدر والتكامل، ولا يشترط جودة أو ربحية الإشارة النهائية.**
