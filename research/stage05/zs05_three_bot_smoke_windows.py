@@ -114,6 +114,29 @@ def test_plan():
             "archive_documents": [{"kind": k, "bytes": len(v[1]), "sha256": v[2],
                                    "payload_sha256": json.loads(v[1])["payload_sha256"]}
                                   for k, v in docs.items()],
+            "request_bodies": [
+                {"bot": "05A", "method": "sendMessage", "destination": "A",
+                 "body": {"chat_id": "SYNTHETIC_A", "text": "ZS05 TEST ONLY — NOT A TRADING SIGNAL"}},
+                {"bot": "05A", "method": "sendMessage", "destination": "B",
+                 "body": {"chat_id": "SYNTHETIC_B", "text": "ZS05 TEST ONLY — NOT A TRADING SIGNAL"}},
+                {"bot": "05B", "method": "sendMessage", "destination": "C=A",
+                 "body": {"chat_id": "SYNTHETIC_A", "text": "ZS05 TEST ONLY — ARCHIVE SUMMARY"}},
+                *({"bot": "05B", "method": "sendDocument", "destination": "C=A",
+                   "body": {"chat_id": "SYNTHETIC_A", "filename": item[0],
+                            "document_sha256": item[2]}}
+                  for item in docs.values()),
+                {"bot": "05C", "method": "getUpdates",
+                 "body": {"offset": 0, "limit": 100, "timeout": 0,
+                          "allowed_updates": ["message"]}},
+                *({"bot": "05C", "method": "sendMessage", "destination": role,
+                   "body": {"chat_id": "SYNTHETIC_" + role,
+                            "text": "TEST ONLY / NO_APPROVED_LIVE_SNAPSHOT / NOT_REALTIME_VERIFIED"}}
+                  for role in ("A", "B")),
+            ],
+            "expected_receipts": {label: "API_ACCEPTED + OWNER_SEEN, or UNKNOWN/PARTIAL"
+                                  for label in ("05A_A", "05A_B", "05B_C_SUMMARY",
+                                                "05B_C_QUALIFIED_DOC", "05B_C_REJECTED_DOC",
+                                                "05C_REPLY_A", "05C_REPLY_B")},
             "maximum_api_calls": MAX_CALLS, "real_http_calls": 0, "secrets_requested": False,
             "production": False}
 
@@ -133,7 +156,9 @@ def git_value(repo, *args):
 def verify_pins(repo, head, tree, script_sha):
     if os.name != "nt" or not Path(repo).is_dir() or Path(repo).resolve().drive.upper() != "D:":
         raise StopSmoke("OWNER_WINDOWS_D_DRIVE_REQUIRED")
-    if not (re.fullmatch(r"[0-9a-f]{40}", head) and
+    if not (isinstance(head, str) and isinstance(tree, str) and
+            isinstance(script_sha, str) and
+            re.fullmatch(r"[0-9a-f]{40}", head) and
             re.fullmatch(r"[0-9a-f]{40}", tree) and
             re.fullmatch(r"[0-9a-f]{64}", script_sha)):
         raise StopSmoke("EXACT_SHA_ARGUMENTS_REQUIRED")
@@ -174,9 +199,9 @@ def identity(token, obj, role):
 
 
 def limit_counter(state):
-    state["api_calls"] += 1
-    if state["api_calls"] > MAX_CALLS:
+    if state["api_calls"] >= MAX_CALLS:
         raise StopSmoke("API_CALL_LIMIT_17_EXCEEDED")
+    state["api_calls"] += 1
 
 
 def api(state, token, method, data=None, document=None):
