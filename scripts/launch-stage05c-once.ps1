@@ -39,7 +39,15 @@ if (!(Test-Path -LiteralPath $root)) {
     $acl.SetAccessRuleProtection($true,$false)
     $acl.SetOwner($owner)
     $acl.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new($owner,'FullControl','ContainerInherit,ObjectInherit','None','Allow'))
-    [void][IO.FileSystemAclExtensions]::Create([IO.DirectoryInfo]::new($root),$acl)
+    # PowerShell 5.1/.NET Framework supports this overload: create with protected ACL atomically.
+    $parent = Split-Path -Parent $root
+    if (-not (Test-Path -LiteralPath $parent -PathType Container)) {
+        throw 'ROUND2_SECURE_PARENT_MISSING'
+    }
+    Assert-Private $parent
+    if (-not (Test-Path -LiteralPath $root)) {
+        [void][System.IO.Directory]::CreateDirectory($root, $acl)
+    }
 }
 Assert-Private $root
 # Owner-only, one-time round-2 acknowledgement. No old session or permit is reused.
