@@ -1,0 +1,39 @@
+{
+  "status": "BLOCKED_MISSING_LOCAL_CONFIGURATION",
+  "authority": [
+    "6761924797",
+    "6761959991"
+  ],
+  "windows_code_sha": "56bb82d8d8273a4e7a0ac5377d5896f2c1d71682",
+  "code_tree": "8736e73792a73561726d930b9425bcb573ac15ef",
+  "command": "pwsh -NoProfile -File scripts/launch-e2e51-autonomous.ps1 -Head 56bb82d8d8273a4e7a0ac5377d5896f2c1d71682",
+  "windows_output": "56bb82d8d8273a4e7a0ac5377d5896f2c1d71682\nSTART_UTC=2026-11-10T07:55:54.5618365Z\nPYTHON=Python 3.12.10 POWERSHELL=7.6.9\n.....\n----------------------------------------------------------------------\nRan 5 tests in 0.152s\n\nOK\n...\n----------------------------------------------------------------------\nRan 3 tests in 0.018s\n\nOK\nBLOCKED_MISSING_LOCAL_CONFIGURATION\nEXIT_CODE=2\nEND_UTC=2026-11-10T07:55:58.5016340Z\npreflight.json\n",
+  "offline": {
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0
+  },
+  "configuration": {
+    "documented_dpapi_files_present": 0,
+    "expected": 8,
+    "project_environment_values_present": {
+      "process": 0,
+      "user": 0,
+      "machine": 0
+    },
+    "matching_project_credential_target_present": false
+  },
+  "market_get_attempts": 0,
+  "telegram_api_attempts": 0,
+  "outbound_attempts": 0,
+  "session_claim_created": false,
+  "authorization_consumed": false,
+  "stage05c": "05C_LIVE_INBOUND_NOT_VERIFIED",
+  "owner_visual": "NOT_ATTESTED",
+  "previous_session_reused": false,
+  "notes": [
+    "Prior accepted artifacts preserved. SQL unchanged and prior SQL probe not repeated.",
+    "Unattended route implements the separable 05A and 05B delivery and verification of the three bot identities. Actual 05C inbound needs authorized human sessions and was not attempted.",
+    "No production, trading or persistent service."
+  ]
+}
