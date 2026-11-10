@@ -76,7 +76,7 @@ def smoke_transport():
     return smoke
 
 
-def deliver(event, cfg, api, note, confirm, clock=time.time):
+def deliver(event, cfg, api, note, confirm, clock=time.time, *, interactive=True):
     """One exact test plan. No qualified event or production coordinator."""
     if event["signal_id"] is not None or event["qualification_status"] != "REJECTED":
         raise Stop("NO_SIGNAL_SEND_PATH")
@@ -96,12 +96,14 @@ def deliver(event, cfg, api, note, confirm, clock=time.time):
         note(label, {"status": "API_ACCEPTED", "telegram_server_utc_ms": result["date"] * 1000})
     for label, chat in (("A", a), ("B", b)):
         send("05A_" + label, "05A", "sendMessage", chat,
-             {"text": prefix + "\nSynthetic routing check. No qualifying signal."})
+             {"text": prefix + "\nSYNTHETIC TEST ONLY / NOT A TRADING SIGNAL. No qualifying signal."})
     send("05B_C_SUMMARY", "05B", "sendMessage", a,
          {"text": prefix + "\nBTCUSDT / real bounded Spot snapshot / research-only rejection."})
     send("05B_C_JSON", "05B", "sendDocument", a,
          {"caption": prefix + "\n" + archive["caption"]},
          (archive["manifest"]["file_name"], archive["document"]))
+    if not interactive:
+        return
     earliest = int(clock())
     query = SYMBOL.lower() + " " + case
     confirm("From A and B, send exactly '" + query + "' privately to 05C, then press Enter. ")
