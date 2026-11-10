@@ -1,6 +1,6 @@
 # QV1-B-FINAL-DECISION-PACKET — version 1
 
-Approval state: POLICY_OWNER_APPROVAL_PENDING. Preserve owner-closed C1–C4. Existing source/clock guards and Setup/R2 component contracts remain authoritative within their existing scope.
+Owner decision #6767851362 allows SCORE_UNAVAILABLE after independent qualification under an approved contract. Missing numerical predicates remain POLICY_OWNER_APPROVAL_PENDING. Preserve owner-closed C1–C4. Existing source/clock guards and Setup/R2 component contracts remain authoritative within their existing scope.
 
 | Path | Required windows | Setup / ledger |
 | --- | --- | --- |

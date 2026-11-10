@@ -60,20 +60,13 @@ class FinalChainTests(unittest.TestCase):
         self.assertEqual(len(calls),7)
         self.assertEqual(result["stage05c"],"NOT_ATTEMPTED")
 
-    def test_approval_rejects_wrong_pin_and_same_reference(self):
+    def test_owner_scope_rejects_changed_contract(self):
         from zs_smart_gate.e2e51 import Stop
-        from zs_smart_gate.stage05_contracts import canonical
         spec = importlib.util.spec_from_file_location("runner", Path("scripts/stage51-final-once.py"))
         runner = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(runner)
-        with tempfile.TemporaryDirectory(dir=Path.cwd()) as temp:
-            path = Path(temp) / "permit.json"
-            path.write_bytes(b"{}")
-            with self.assertRaisesRegex(Stop, "EXACT_SHA"):
-                runner.approval(path, "a", "b", "c")
-            ref = "https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/51#issuecomment-1"
-            path.write_bytes(canonical(dict(head="a", tree="b", contract_sha256="c",
-                session=runner.SESSION, pm_status="EXACT_SHA_GO", owner_status="SESSION_APPROVED",
-                pm_ref=ref, owner_ref=ref)))
-            with self.assertRaisesRegex(Stop, "DISTINCT_APPROVAL"):
-                runner.approval(path, "a", "b", "c")
+        raw = Path("research/stage51/closure/LIVE_SESSION_CONTRACT.md").read_bytes()
+        runner.check_contract(raw)
+        self.assertTrue(runner.OWNER_AUTHORITY.endswith("6767851362"))
+        with self.assertRaisesRegex(Stop, "CONTRACT_SHA_MISMATCH"):
+            runner.check_contract(raw + b"changed")

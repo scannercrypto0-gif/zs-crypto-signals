@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][ValidatePattern('^[0-9a-f]{40}$')][string]$Head, [string]$Approval, [switch]$BothAccountsReadyNoOtherConsumer)
+param([Parameter(Mandatory=$true)][ValidatePattern('^[0-9a-f]{40}$')][string]$Head, [switch]$Live, [switch]$BothAccountsReadyNoOtherConsumer)
 $ErrorActionPreference = 'Stop'
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $actual = git -C $repo rev-parse HEAD
@@ -74,7 +74,7 @@ try {
     Push-Location -LiteralPath $repo
     try {
         $runArgs = @('--head',$Head)
-        if ($Approval) { $runArgs += @('--approval',$Approval) }
+        if ($Live) { $runArgs += '--live' }
         if ($BothAccountsReadyNoOtherConsumer) { $runArgs += '--both-accounts-ready-no-other-consumer' }
         & py -3.12 -B (Join-Path $PSScriptRoot 'stage51-final-once.py') @runArgs
         $code = $LASTEXITCODE

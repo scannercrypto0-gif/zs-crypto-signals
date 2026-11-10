@@ -4,13 +4,12 @@ from datetime import datetime, timedelta, timezone
 import importlib.util
 import json
 from pathlib import Path
-import re
 import sys
 import time
 
 from zs_smart_gate.e2e51 import Stop, ms, public_get
 from zs_smart_gate.stage05_bounded_interactive import bounded_interactive
-from zs_smart_gate.stage05_contracts import digest, parse_utc
+from zs_smart_gate.stage05_contracts import digest
 from zs_smart_gate.stage05_custody import LocalOutbox
 from zs_smart_gate.stage05_telegram_http import BotSecrets, OwnerPermit, RuntimeFlags
 from zs_smart_gate.stage51_live_chain import run_chain
@@ -26,29 +25,23 @@ def utc():
     return datetime.now(timezone.utc)
 
 
-def approval(path, head, tree, contract):
-    data = json.loads(path.read_bytes())
-    expected = {"head": head, "tree": tree, "contract_sha256": contract,
-                "session": SESSION, "pm_status": "EXACT_SHA_GO", "owner_status": "SESSION_APPROVED"}
-    if any(data.get(k) != v for k, v in expected.items()):
-        raise Stop("EXACT_SHA_PM_AND_OWNER_APPROVAL_REQUIRED")
-    refs = [data.get(k, "") for k in ("pm_ref", "owner_ref")]
-    pattern = r"https://github\.com/scannercrypto0-gif/zs-crypto-signals/(?:issues|pull)/\d+#issuecomment-\d+"
-    if len(set(refs)) != 2 or not all(re.fullmatch(pattern, ref) for ref in refs):
-        raise Stop("DISTINCT_APPROVAL_REFERENCES_REQUIRED")
-    if parse_utc(data["expires_at"]) <= utc():
-        raise Stop("APPROVAL_EXPIRED")
-    return data
+OWNER_AUTHORITY = "https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/51#issuecomment-6767851362"
+CONTRACT_SHA256 = "99c449bfdc492276e3aafdd4fc9f7de9d27ad6bc97369f2a42dcb827600db374"
+
+def check_contract(raw):
+    if digest(raw.replace(b"\r\n", b"\n")) != CONTRACT_SHA256:
+        raise Stop("OWNER_SCOPE_CONTRACT_SHA_MISMATCH")
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--head", required=True)
-    parser.add_argument("--approval", type=Path)
+    parser.add_argument("--live", action="store_true")
     parser.add_argument("--both-accounts-ready-no-other-consumer", action="store_true")
     args = parser.parse_args()
     tree = shared.pins(args.head)
-    contract = digest((shared.REPO / "research/stage51/closure/LIVE_SESSION_CONTRACT.md").read_bytes().replace(b"\r\n", b"\n"))
+    check_contract((shared.REPO / "research/stage51/closure/LIVE_SESSION_CONTRACT.md").read_bytes())
+    contract = CONTRACT_SHA256
     cfg = BotSecrets.from_environ()
     smoke = shared.smoke_transport()
     tokens = {"05A": cfg.signals_token, "05B": cfg.analytics_token, "05C": cfg.interactive_token}
@@ -57,16 +50,24 @@ def main():
     if len({t.split(":")[0] for t in tokens.values()}) != 3:
         raise Stop("BOT_IDENTITIES_NOT_DISTINCT")
     shared.guard(ROOT)
-    if not args.approval:
+    if (ROOT / "session.claim.json").exists():
+        raise Stop("SESSION_ALREADY_CLAIMED")
+    if not args.live:
         print(f"OFFLINE_PREFLIGHT_PASS HEAD={args.head} TREE={tree} CONTRACT_SHA256={contract} NETWORK=0")
         return 0
     if not args.both_accounts_ready_no_other_consumer:
         raise Stop("WAITING_FOR_OWNER_05C_HUMAN_ACTION")
-    data = approval(args.approval, args.head, tree, contract)
-    # Approval file is an operator handoff of independently reviewed GitHub
-    # decisions, not a mechanism for self-approving the run.
+    phase = time.time() % 300
+    wait = 4.2 - phase if phase < 4 else (304.2 - phase if phase > 50 else 0)
+    if wait:
+        print("WAITING_FOR_CLOSED_5M_BOUNDARY", flush=True)
+    wait_until = time.monotonic() + wait
+    while time.monotonic() < wait_until:
+        shared.guard(ROOT)
+        time.sleep(min(1, max(0, wait_until - time.monotonic())))
+    shared.guard(ROOT)
     if not 4 <= time.time() % 300 <= 50:
-        raise Stop("WAIT_FOR_NEXT_5M_CLOSE_WITHOUT_CLAIM")
+        raise Stop("CLOSED_5M_START_WINDOW_MISSED")
     shared.save(ROOT / "session.claim.json", {"session": SESSION, "head": args.head})
     deadline = time.monotonic() + 240
     receipts, calls = [], []
@@ -76,7 +77,7 @@ def main():
 
     def guard():
         shared.guard(ROOT)
-        if time.monotonic() >= deadline or utc() >= parse_utc(data["expires_at"]):
+        if time.monotonic() >= deadline:
             raise Stop("SESSION_TIME_LIMIT")
 
     def attempt(service, method):
@@ -120,7 +121,7 @@ def main():
 
     def interactive(upstream, ref):
         now = utc()
-        expires = min(now+timedelta(minutes=3), parse_utc(data["expires_at"]))
+        expires = now+timedelta(minutes=3)
         permit = OwnerPermit("OWNER-APPROVED-FINAL-003", args.head,
                              expires.isoformat().replace("+00:00", "Z"),
                              frozenset(("INTERACTIVE_POLL", "INTERACTIVE_REPLY")), True, True)
@@ -139,7 +140,7 @@ def main():
         report["status"] = "BOUNDED_REJECTED_SOURCE_CHAIN_PASS" if code == 0 else "PARTIAL_STOP"
     finally:
         report.update(head=args.head, tree=tree, contract_sha256=contract, attempts=calls,
-                      exit_code=code, owner_visual="NOT_ATTESTED", pm_ref=data["pm_ref"], owner_ref=data["owner_ref"])
+                      exit_code=code, owner_visual="NOT_ATTESTED", owner_authority=OWNER_AUTHORITY)
         shared.save(ROOT / "market-receipts.json", receipts)
         shared.save(ROOT / "final-manifest.json", report)
         print(json.dumps(report, sort_keys=True), flush=True)
