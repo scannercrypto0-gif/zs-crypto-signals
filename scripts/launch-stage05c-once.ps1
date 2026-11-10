@@ -33,7 +33,7 @@ function Assert-Private([string]$Path) {
 if ($missing.Count) { throw 'BLOCKED_MISSING_LOCAL_CONFIGURATION' }
 Assert-Private $secretsRoot
 foreach ($name in $mapping.Keys) { Assert-Private (Join-Path $secretsRoot ($name + '.dpapi')) }
-$root = 'D:\ZS-SMART-GATE\stage51-05c-once'
+$root = 'D:\ZS-SMART-GATE\stage51-05c-round2-6764588810'
 if (!(Test-Path -LiteralPath $root)) {
     $acl = [Security.AccessControl.DirectorySecurity]::new()
     $acl.SetAccessRuleProtection($true,$false)
@@ -42,6 +42,19 @@ if (!(Test-Path -LiteralPath $root)) {
     [void][IO.FileSystemAclExtensions]::Create([IO.DirectoryInfo]::new($root),$acl)
 }
 Assert-Private $root
+# Owner-only, one-time round-2 acknowledgement. No old session or permit is reused.
+if ($Live) {
+    if (-not $BothAccountsReadyNoOtherConsumer) {
+        throw 'ROUND2_BOTH_HUMANS_AND_EXCLUSIVE_POLL_REQUIRED'
+    }
+    if (-not (Test-Path -LiteralPath (Join-Path $root ('preflight-' + $Head + '.json')) -PathType Leaf)) {
+        throw 'ROUND2_EXACT_SHA_OFFLINE_PREFLIGHT_REQUIRED'
+    }
+    $ack = 'AUTHORIZE ISSUE56 ROUND2 ' + $Head
+    if ((Read-Host ('Owner: type exact ' + $ack)) -cne $ack) {
+        throw 'ROUND2_OWNER_CONSOLE_ACK_MISSING'
+    }
+}
 $loaded = @()
 $originalPythonPath = $env:PYTHONPATH
 $code = 2

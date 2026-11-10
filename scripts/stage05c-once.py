@@ -15,8 +15,11 @@ from zs_smart_gate.stage05_custody import LocalOutbox, VerifiedUpstream
 from zs_smart_gate.stage05_telegram_http import BotSecrets, OwnerPermit, RuntimeFlags
 
 PIN = "a580da9fe08cf44e36d775cfc239704a50014b5d4edc86412f33bf4dcee5da11"
-SESSION = "ISSUE51-6762796319-05C-ONCE"
-ROOT = Path("D:/ZS-SMART-GATE/stage51-05c-once")
+# Round 1 authorization and its SQLite custody/lock/receipts are immutable.
+# This independent owner-authorized round 2 must never reuse those paths or keys.
+SESSION = "ISSUE56-6764588810-05C-ROUND2-ONCE"
+ROOT = Path("D:/ZS-SMART-GATE/stage51-05c-round2-6764588810")
+PERMIT_DECISION = "OWNER-APPROVED-ISSUE56-6764588810-05C-ROUND2-ONCE"
 SPEC = importlib.util.spec_from_file_location("pins", Path(__file__).with_name("e2e51-windows.py"))
 shared = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(shared)
@@ -55,14 +58,21 @@ def main():
     upstream = VerifiedUpstream(journal, {identity: PIN})
     upstream.read(identity, PIN)
     if not args.live:
-        print("PREFLIGHT_PASS DPAPI=8/8 ROUTES=PASS HISTORICAL_SNAPSHOT=PASS API_CALLS=0 CLAIM=NONE")
-        shared.save(ROOT / ("preflight-" + args.head + ".json"), {"head": args.head, "tree": tree}) if not (
+        print("PREFLIGHT_PASS ROUND2=ISSUE56-6764588810 DPAPI=8/8 ROUTES=PASS HISTORICAL_SNAPSHOT=PASS API_CALLS=0 CLAIM=NONE")
+        shared.save(ROOT / ("preflight-" + args.head + ".json"), {"head": args.head, "tree": tree,
+                                                                         "round_id": SESSION,
+                                                                         "permit_decision": PERMIT_DECISION}) if not (
             ROOT / ("preflight-" + args.head + ".json")).exists() else None
         return 0
     if not args.both_accounts_ready_no_other_consumer:
         raise Stop("WAITING_FOR_OWNER_05C_HUMAN_ACTION")
-    if not (ROOT / ("preflight-" + args.head + ".json")).exists():
+    preflight_file = ROOT / ("preflight-" + args.head + ".json")
+    if not preflight_file.exists():
         raise Stop("EXACT_SHA_PREFLIGHT_REQUIRED")
+    if json.loads(preflight_file.read_bytes()) != {
+            "head": args.head, "tree": tree, "round_id": SESSION,
+            "permit_decision": PERMIT_DECISION}:
+        raise Stop("ROUND2_PREFLIGHT_PROVENANCE_MISMATCH")
     lock = ROOT / "poll.lock"
     with lock.open("a+b") as f:
         f.seek(0)
@@ -93,7 +103,7 @@ def run_live(head, tree, cfg, store, upstream, identity):
                     {"method": method, "utc": utc().isoformat()})
         calls.append(method)
     actions = frozenset(("INTERACTIVE_POLL", "INTERACTIVE_REPLY"))
-    permit = OwnerPermit("OWNER-APPROVED-ISSUE51-6762796319-PR55-6763240448", head,
+    permit = OwnerPermit(PERMIT_DECISION, head,
                          (start + timedelta(minutes=4)).isoformat().replace("+00:00", "Z"),
                          actions, True, True)
     code = 2
@@ -107,7 +117,8 @@ def run_live(head, tree, cfg, store, upstream, identity):
         if report["status"] == "TWO_API_ACCEPTED_REPLIES":
             code = 0
     finally:
-        report.update(head=head, tree=tree, utc_started=start.isoformat(), utc_finished=utc().isoformat(),
+        report.update(head=head, tree=tree, round_id=SESSION, permit_decision=PERMIT_DECISION,
+                      utc_started=start.isoformat(), utc_finished=utc().isoformat(),
                       market_calls=0, api_attempts=len(calls), send_attempts=calls.count("sendMessage"),
                       owner_visual="NOT_ATTESTED", exit_code=code, historical_snapshot_sha256=PIN)
         shared.save(folder / "report.json", report)
