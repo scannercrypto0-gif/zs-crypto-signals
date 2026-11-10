@@ -20,7 +20,23 @@ $rule=New-Object System.Security.AccessControl.FileSystemAccessRule(
   $user,'FullControl','ContainerInherit,ObjectInherit','None','Allow'
 )
 $dirAcl.AddAccessRule($rule)
-Set-Acl -LiteralPath $root -AclObject $dirAcl
+# Reuse the existing owner-only ACL instead of reapplying security metadata.
+$sid = [Security.Principal.WindowsIdentity]::GetCurrent().User
+if ((Get-Item -LiteralPath $root -Force).Attributes -band [IO.FileAttributes]::ReparsePoint) {
+  throw 'SECRET_DIRECTORY_REPARSE_POINT'
+}
+$current = Get-Acl -LiteralPath $root
+$rules = @($current.GetAccessRules($true,$true,[System.Security.Principal.SecurityIdentifier]))
+if ($current.AreAccessRulesProtected -and
+    $current.GetOwner([System.Security.Principal.SecurityIdentifier]) -eq $sid -and
+    $rules.Count -eq 1 -and $rules[0].IdentityReference -eq $sid -and
+    $rules[0].AccessControlType -eq 'Allow' -and $rules[0].FileSystemRights -eq 'FullControl' -and
+    $rules[0].InheritanceFlags -eq 'ContainerInherit, ObjectInherit' -and
+    $rules[0].PropagationFlags -eq 'None') {
+  # Directory already has the exact ACL established during initial provisioning.
+} else {
+  Set-Acl -LiteralPath $root -AclObject $dirAcl
+}
 $path=Join-Path $root ($Name+'.dpapi')
 if (Test-Path -LiteralPath $path) {
   throw 'EXISTING_SECRET_REFUSE_OVERWRITE_USE_EXPLICIT_ROTATION'
