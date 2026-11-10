@@ -1,0 +1,65 @@
+{
+  "status": "WINDOWS_PREFLIGHT_PASS",
+  "sha": "52d43136b3bfe21fd5ad217777ebecee09d0ce97",
+  "tree": "155d882310a9059434ec126c79d69f91f6cee79e",
+  "command": "py -3.12 -B -m unittest discover -s tests -p test_stage05*.py",
+  "python": "3.12.10",
+  "tests": 16,
+  "exit_code": 0,
+  "windows_output": "................\n----------------------------------------------------------------------\nRan 16 tests in 1.516s\n\nOK\nEXIT_CODE=0\nHEAD=52d43136b3bfe21fd5ad217777ebecee09d0ce97\nPOWERSHELL=7.6.9\nUTC=2026-11-10T09:08:26.6295147Z\n",
+  "launcher": "52d43136b3bfe21fd5ad217777ebecee09d0ce97\nPREFLIGHT_PASS DPAPI=8/8 ROUTES=PASS HISTORICAL_SNAPSHOT=PASS API_CALLS=0 CLAIM=NONE\n",
+  "market_calls": 0,
+  "telegram_calls": 0,
+  "live_claim": false,
+  "code_files": [
+    {
+      "path": "research/stage51/closure/r1-r5.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5af33cbc3a8a8e08d8d26102156f7b68e331e205",
+      "sha256": "fe555874f92c6dc6a99da5d14f99846ab5306c22568953187442ebafeede2dee"
+    },
+    {
+      "path": "scripts/stage05c-once.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ddf1a0905a4f2fe56d0ead1423a519ffc01f7b2e",
+      "sha256": "863fef6ba858dba8a0ba3f39430535af53a788ba7aad3c6d5f79b3012fec6da0"
+    },
+    {
+      "path": "src/zs_smart_gate/stage05_bounded_interactive.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e882614ad2ff279b24929d0734264ae0139cdaf7",
+      "sha256": "435f29f95474aead05e1f5771122902000b0cdc3d3d7bedfd1a25f500170bbb1"
+    },
+    {
+      "path": "src/zs_smart_gate/stage05_interactive.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e4ffafaa9bcb3d8e43a8965f940f70706e1276f4",
+      "sha256": "81f395ac450d9e549aa67bfff6375fb7a520a34d164c91f35a93bb8ea0bd2e10"
+    },
+    {
+      "path": "src/zs_smart_gate/stage05_telegram_http.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "77a15bbf0a0415158b6481930c90bbffeee429c1",
+      "sha256": "f4a4074d452639d64bc4eb74e1b8509a9c315ae3c1f037817a1abdd85e6a5f8f"
+    },
+    {
+      "path": "tests/test_stage05_operational.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6f01f16e0ceb3764ce8c3001f148ff1e11cce3c5",
+      "sha256": "4d4aae052a9287da46259794e7ca3695953b31ed2b76f73076250d90ba419023"
+    },
+    {
+      "path": "tests/test_stage05_real_telegram.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fd0614b835312a82aa061f47a3e2f5913cf755fe",
+      "sha256": "df3f62052b6ad50959db473cc04d510e90d6c94549af260b57622d129e2e064f"
+    }
+  ]
+}
