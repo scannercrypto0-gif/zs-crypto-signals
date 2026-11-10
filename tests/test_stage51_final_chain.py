@@ -34,12 +34,14 @@ class FinalChainTests(unittest.TestCase):
             calls.append("05C")
             clock = datetime.fromtimestamp(now/1000 + 1, timezone.utc)
             start = int(clock.timestamp())
-            fake = Fake((update(101,1,start), update(202,2,start)))
+            request = update(101,1,start)
+            request["message"]["text"] = "btcusdt"
+            fake = Fake((update(202,2,start), request))
             reply = bounded_interactive(config=config(), transport=fake, store=LocalOutbox(root/"out.sqlite"),
                                         upstream=upstream, source_ref=ref, started_at=start,
-                                        session_id="FIXTURE-05C", clock=lambda: clock, simulation=True)
-            self.assertEqual(reply["status"], "TWO_API_ACCEPTED_REPLIES")
-            self.assertEqual([r[0] for r in fake.sends], ["101", "202"])
+                                        session_id="FIXTURE-05C", clock=lambda: clock, simulation=True, account_a_only=True)
+            self.assertEqual(reply["status"], "ACCOUNT_A_API_ACCEPTED_REPLY")
+            self.assertEqual([r[0] for r in fake.sends], ["101"])
             for _, text, _ in fake.sends:
                 self.assertIn(snapshot["source_sha256"], text)
                 self.assertIn(snapshot["decision_sha256"], text)

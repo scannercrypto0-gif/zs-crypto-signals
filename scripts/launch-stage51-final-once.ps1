@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][ValidatePattern('^[0-9a-f]{40}$')][string]$Head, [switch]$Live, [switch]$BothAccountsReadyNoOtherConsumer)
+param([Parameter(Mandatory=$true)][ValidatePattern('^[0-9a-f]{40}$')][string]$Head, [switch]$Live, [switch]$AccountAReadyNoOtherConsumer)
 $ErrorActionPreference = 'Stop'
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $actual = git -C $repo rev-parse HEAD
@@ -33,7 +33,7 @@ function Assert-Private([string]$Path) {
 if ($missing.Count) { throw 'BLOCKED_MISSING_LOCAL_CONFIGURATION' }
 Assert-Private $secretsRoot
 foreach ($name in $mapping.Keys) { Assert-Private (Join-Path $secretsRoot ($name + '.dpapi')) }
-$root = 'D:\ZS-SMART-GATE\stage51-final-003'
+$root = 'D:\ZS-SMART-GATE\stage51-final-003-a'
 if (!(Test-Path -LiteralPath $root)) {
     $acl = [Security.AccessControl.DirectorySecurity]::new()
     $acl.SetAccessRuleProtection($true,$false)
@@ -75,7 +75,7 @@ try {
     try {
         $runArgs = @('--head',$Head)
         if ($Live) { $runArgs += '--live' }
-        if ($BothAccountsReadyNoOtherConsumer) { $runArgs += '--both-accounts-ready-no-other-consumer' }
+        if ($AccountAReadyNoOtherConsumer) { $runArgs += '--account-a-ready-no-other-consumer' }
         & py -3.12 -B (Join-Path $PSScriptRoot 'stage51-final-once.py') @runArgs
         $code = $LASTEXITCODE
     } finally {

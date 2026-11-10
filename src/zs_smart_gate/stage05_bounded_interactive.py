@@ -10,7 +10,7 @@ from .stage05_telegram_http import TelegramHTTP, require_live_permission
 
 def bounded_interactive(*, config, transport, store, upstream, source_ref, started_at,
                         session_id, flags=None, permit=None, head_sha=None,
-                        clock=None, simulation=False, ready=None, guard=lambda: None, on_attempt=None):
+                        clock=None, simulation=False, ready=None, guard=lambda: None, on_attempt=None, account_a_only=False):
     """At most 12 Bot API calls and two replies; never acknowledges updates."""
     config.validate()
     if type(store) is not LocalOutbox or type(upstream) is not VerifiedUpstream:
@@ -37,7 +37,9 @@ def bounded_interactive(*, config, transport, store, upstream, source_ref, start
     if store.read(key) is not None:
         raise ContractError("INTERACTIVE_SESSION_ALREADY_CONSUMED")
     calls = []
-    pair = {"A": config.signals_chat_a, "B": config.signals_chat_b}
+    pair = {"A": config.signals_chat_a}
+    if not account_a_only:
+        pair["B"] = config.signals_chat_b
     pending = {}
 
     def call(label, method, **kwargs):
@@ -95,7 +97,8 @@ def bounded_interactive(*, config, transport, store, upstream, source_ref, start
             uid, cid = sender.get("id"), chat.get("id")
             if (type(uid) is not int or type(cid) is not int or uid != cid
                     or sender.get("is_bot") is not False or chat.get("type") != "private"
-                    or msg.get("text") != "BTCUSDT" or type(msg.get("date")) is not int
+                    or not isinstance(msg.get("text"), str) or msg["text"].strip().upper() != "BTCUSDT"
+                    or type(msg.get("date")) is not int
                     or not started_at <= msg["date"] <= int(clock().timestamp())
                     or type(msg.get("message_id")) is not int or msg["message_id"] <= 0):
                 continue
@@ -105,7 +108,7 @@ def bounded_interactive(*, config, transport, store, upstream, source_ref, start
         if set(pending) == set(pair):
             break
     if set(pending) != set(pair):
-        return result("TWO_HUMAN_REQUESTS_NOT_OBSERVED")
+        return result("ACCOUNT_A_REQUEST_NOT_OBSERVED" if account_a_only else "TWO_HUMAN_REQUESTS_NOT_OBSERVED")
     results = {}
     for role, account in pair.items():
         if not 0 <= int(clock().timestamp())-started_at <= 180:
@@ -128,4 +131,4 @@ def bounded_interactive(*, config, transport, store, upstream, source_ref, start
         if receipt["status"] != "ACCEPTED":
             return result("INTERACTIVE_PARTIAL_STOP", results)
         results[role]["reply_binding_verified"] = not simulation
-    return result("TWO_API_ACCEPTED_REPLIES", results)
+    return result("ACCOUNT_A_API_ACCEPTED_REPLY" if account_a_only else "TWO_API_ACCEPTED_REPLIES", results)
