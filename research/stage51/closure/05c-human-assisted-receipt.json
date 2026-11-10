@@ -1,0 +1,70 @@
+{
+  "schema": "ZS05C_HUMAN_ASSISTED_ACCEPTANCE_V1",
+  "api_attempts": 10,
+  "calls": [
+    {
+      "at": "2026-11-10T09:09:57.304972+00:00",
+      "method": "getMe"
+    },
+    {
+      "at": "2026-11-10T09:09:57.766509+00:00",
+      "method": "getWebhookInfo"
+    },
+    {
+      "at": "2026-11-10T09:09:58.097877+00:00",
+      "method": "getUpdates"
+    },
+    {
+      "at": "2026-11-10T09:10:13.457885+00:00",
+      "method": "getUpdates"
+    },
+    {
+      "at": "2026-11-10T09:10:28.797332+00:00",
+      "method": "getUpdates"
+    },
+    {
+      "at": "2026-11-10T09:10:44.116894+00:00",
+      "method": "getUpdates"
+    },
+    {
+      "at": "2026-11-10T09:10:59.442747+00:00",
+      "method": "getUpdates"
+    },
+    {
+      "at": "2026-11-10T09:11:14.765062+00:00",
+      "method": "getUpdates"
+    },
+    {
+      "at": "2026-11-10T09:11:30.098452+00:00",
+      "method": "getUpdates"
+    },
+    {
+      "at": "2026-11-10T09:11:45.439809+00:00",
+      "method": "getUpdates"
+    }
+  ],
+  "claimed": true,
+  "exit_code": 2,
+  "head": "52d43136b3bfe21fd5ad217777ebecee09d0ce97",
+  "historical_snapshot_sha256": "a580da9fe08cf44e36d775cfc239704a50014b5d4edc86412f33bf4dcee5da11",
+  "market_calls": 0,
+  "owner_visual": "NOT_ATTESTED",
+  "replies": {},
+  "send_attempts": 0,
+  "status": "TWO_HUMAN_REQUESTS_NOT_OBSERVED",
+  "tree": "155d882310a9059434ec126c79d69f91f6cee79e",
+  "utc_finished": "2026-11-10T09:11:45.779041+00:00",
+  "utc_started": "2026-11-10T09:09:57.280198+00:00",
+  "owner_reports_sent_from_both": true,
+  "exact_inbound_payload_and_time_independently_verified": false,
+  "owner_visual_reply": "NOT_ATTESTED",
+  "authorization_consumed": true,
+  "network_retry": false,
+  "windows": {
+    "python": "3.12.10",
+    "powershell": "7.6.9",
+    "command": ".\\scripts\\launch-stage05c-once.ps1 -Head 52d43136b3bfe21fd5ad217777ebecee09d0ce97 -Live -BothAccountsReadyNoOtherConsumer",
+    "preflight_tests_passed": 16
+  },
+  "reason": "The runner observed no complete pair satisfying all private account, text, baseline high-water and time checks. It did not retain individual rejection categories, so the cause cannot be identified from this receipt."
+}
