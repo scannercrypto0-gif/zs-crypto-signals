@@ -25,7 +25,7 @@ function Assert-Private([string]$Path) {
     $acl = Get-Acl -LiteralPath $Path
     $rules = @($acl.GetAccessRules($true,$true,[Security.Principal.SecurityIdentifier]))
     if (($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -or
-        !$acl.AreAccessRulesProtected -or $acl.GetOwner([Security.Principal.SecurityIdentifier]) -ne $owner -or
+        ($item.PSIsContainer -and !$acl.AreAccessRulesProtected) -or $acl.GetOwner([Security.Principal.SecurityIdentifier]) -ne $owner -or
         $rules.Count -ne 1 -or $rules[0].IdentityReference -ne $owner -or $rules[0].AccessControlType -ne 'Allow') {
         throw 'OWNER_ONLY_ACL_REQUIRED'
     }
