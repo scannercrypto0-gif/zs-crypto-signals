@@ -415,7 +415,7 @@ class Stage05RealTransportTargeted(unittest.TestCase):
         self.assertEqual(result["status"], "READ_ONLY_ANALYSIS")
         rendered = service.format_reply(result)
         for token in ("N01", "raw=0.620", "evaluation=UNKNOWN", "version=N01.V1",
-                      "Freshness: NOT_REALTIME_VERIFIED",
+                      "Freshness: HISTORICAL_SNAPSHOT_ONLY / NOT_REALTIME_VERIFIED",
                       "Source scope: SYNTHETIC_TEST_ONLY", "SCORE_UNAVAILABLE"):
             self.assertIn(token, rendered)
         self.assertEqual(service.accept(text="btcusdt", user_id=1001,

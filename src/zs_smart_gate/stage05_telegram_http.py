@@ -166,13 +166,14 @@ class TelegramHTTP:
     No request is made on construction. Every exception returned is sanitized.
     """
 
-    def __init__(self, token, *, test_opener=None, timeout=TIMEOUT_S):
+    def __init__(self, token, *, test_opener=None, timeout=TIMEOUT_S, on_attempt=None):
         if not isinstance(token, str) or not TOKEN.fullmatch(token):
             raise ContractError("BOT_TOKEN_FORMAT_INVALID")
         if not isinstance(timeout, (int, float)) or timeout < 1 or timeout > 12:
             raise ContractError("TELEGRAM_TIMEOUT_OUT_OF_RANGE")
         self._token = token
         self._test_opener = test_opener
+        self._on_attempt = on_attempt
         self._timeout = timeout
 
     def __repr__(self):
@@ -225,6 +226,8 @@ class TelegramHTTP:
             "Content-Type": content_type, "User-Agent": "zs-stage05-disabled-by-default",
         }, method="POST")
         opener = build_opener(NoRedirect()).open if self._test_opener is None else self._test_opener
+        if self._on_attempt is not None:
+            self._on_attempt(method)
         try:
             with opener(request, timeout=self._timeout) as response:
                 status = response.status
@@ -285,6 +288,12 @@ class TelegramHTTP:
                 or str(chat["id"]) != str(payload["chat_id"])
                 or result["message_id"] <= 0 or not 0 < result["date"] < 253402300799):
             return ApiResult("UNKNOWN_DELIVERY")
+        requested_reply = payload.get("reply_parameters")
+        if requested_reply:
+            actual_reply = result.get("reply_to_message")
+            if (not isinstance(actual_reply, dict)
+                    or actual_reply.get("message_id") != requested_reply["message_id"]):
+                return ApiResult("UNKNOWN_DELIVERY")
         # Telegram server provides seconds, not fabricated milliseconds.
         server_time = datetime.fromtimestamp(result["date"], timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         return ApiResult("ACCEPTED", result["message_id"], server_time)

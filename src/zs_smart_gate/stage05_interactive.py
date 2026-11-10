@@ -204,7 +204,7 @@ class InteractiveService:
                 raise ContractError("FUTURE_INTERACTIVE_SNAPSHOT")
             text += ("\nAs-of UTC: " + response["as_of"] +
                      "\nSnapshot age seconds: " + str(age_s) +
-                     "\nFreshness: NOT_REALTIME_VERIFIED" +
+                     "\nFreshness: HISTORICAL_SNAPSHOT_ONLY / NOT_REALTIME_VERIFIED" +
                      "\nSource scope: " + str(response.get("source_scope", "UNKNOWN")))
             for row in response["indicators"]:
                 reasons = ",".join(map(str, row["reason_codes"])) or "NONE"
