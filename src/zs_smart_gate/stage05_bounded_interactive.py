@@ -6,6 +6,7 @@ from .stage05_contracts import ContractError, canonical, digest
 from .stage05_custody import LocalOutbox, VerifiedUpstream
 from .stage05_interactive import InteractiveService, respond_once
 from .stage05_telegram_http import TelegramHTTP, require_live_permission
+from .stage05c_inbound_forensics import InboundDiagnostics
 
 
 def bounded_interactive(*, config, transport, store, upstream, source_ref, started_at,
@@ -39,6 +40,8 @@ def bounded_interactive(*, config, transport, store, upstream, source_ref, start
     calls = []
     pair = {"A": config.signals_chat_a, "B": config.signals_chat_b}
     pending = {}
+    diagnostics = InboundDiagnostics()
+    baseline_update_count = None
 
     def call(label, method, **kwargs):
         guard()
@@ -47,9 +50,12 @@ def bounded_interactive(*, config, transport, store, upstream, source_ref, start
 
     def result(status, replies=None):
         return {"status": status, "replies": replies or {}, "calls": calls,
-                "claimed": store.read(key) is not None}
+                "claimed": store.read(key) is not None,
+                "inbound_diagnostics": dict(diagnostics.summary(),
+                                            baseline_update_count=baseline_update_count)}
 
     def poll():
+        # offset 0 intentionally avoids acknowledging/discarding queued updates.
         return call("getUpdates", transport.get_updates, offset=0)
 
     high_water = -1
@@ -63,6 +69,7 @@ def bounded_interactive(*, config, transport, store, upstream, source_ref, start
                 or any(not isinstance(row, dict) or type(row.get("update_id")) is not int
                        for row in baseline.updates)):
             return result("INTERACTIVE_BASELINE_OR_BACKLOG_BLOCKED")
+        baseline_update_count = len(baseline.updates)
         high_water = max((row["update_id"] for row in baseline.updates), default=-1)
         started_at = int(clock().timestamp())
     if not store.create_if_absent(key, canonical({"started_at": started_at, "head_sha": head_sha,
@@ -80,30 +87,15 @@ def bounded_interactive(*, config, transport, store, upstream, source_ref, start
         updates = poll()
         if updates.status != "ACCEPTED" or len(updates.updates) > 20:
             return result("INTERACTIVE_POLL_FAILED_OR_UNKNOWN")
-        for update in updates.updates:
-            if not isinstance(update, dict):
-                continue
-            if not simulation and (type(update.get("update_id")) is not int
-                                   or update["update_id"] <= high_water):
-                continue
-            msg = update.get("message")
-            if not isinstance(msg, dict):
-                continue
-            sender, chat = msg.get("from"), msg.get("chat")
-            if not isinstance(sender, dict) or not isinstance(chat, dict):
-                continue
-            uid, cid = sender.get("id"), chat.get("id")
-            if (type(uid) is not int or type(cid) is not int or uid != cid
-                    or sender.get("is_bot") is not False or chat.get("type") != "private"
-                    or msg.get("text") != "BTCUSDT" or type(msg.get("date")) is not int
-                    or not started_at <= msg["date"] <= int(clock().timestamp())
-                    or type(msg.get("message_id")) is not int or msg["message_id"] <= 0):
-                continue
-            for role, account in pair.items():
-                if str(uid) == account:
-                    pending.setdefault(role, msg["message_id"])
+        diagnostics.record(updates.updates, baseline=high_water, accounts=pair,
+                           started_at=started_at, observed_at=int(clock().timestamp()), pending=pending,
+                           simulation=simulation)
         if set(pending) == set(pair):
             break
+        # getUpdates(offset=0) reads the oldest 20 without acknowledgement.
+        # A full batch may hide newer human messages: STOP, never advance offset.
+        if not simulation and len(updates.updates) >= 20:
+            return result("INTERACTIVE_BACKLOG_FULL_NO_CURSOR_ADVANCE")
     if set(pending) != set(pair):
         return result("TWO_HUMAN_REQUESTS_NOT_OBSERVED")
     results = {}
