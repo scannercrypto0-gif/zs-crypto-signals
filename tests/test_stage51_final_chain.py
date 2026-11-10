@@ -72,3 +72,13 @@ class FinalChainTests(unittest.TestCase):
         self.assertTrue(runner.OWNER_AUTHORITY.endswith("6767851362"))
         with self.assertRaisesRegex(Stop, "CONTRACT_SHA_MISMATCH"):
             runner.check_contract(raw + b"changed")
+
+    def test_live_entrypoint_passes_account_a_only(self):
+        import ast
+        tree = ast.parse(Path("scripts/stage51-final-once.py").read_text(encoding="utf-8"))
+        calls = [node for node in ast.walk(tree) if isinstance(node, ast.Call)
+                 and isinstance(node.func, ast.Name) and node.func.id == "bounded_interactive"]
+        self.assertEqual(len(calls), 1)
+        args = {kw.arg: kw.value for kw in calls[0].keywords}
+        self.assertIsInstance(args["account_a_only"], ast.Constant)
+        self.assertIs(args["account_a_only"].value, True)

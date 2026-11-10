@@ -130,7 +130,8 @@ def main():
                                    upstream=upstream, source_ref=ref, started_at=int(now.timestamp()),
                                    session_id=SESSION, head_sha=args.head, permit=permit,
                                    flags=RuntimeFlags(send=True, interactive_poll=True, interactive_reply=True),
-                                   ready=lambda: print("READY â€” SEND BTCUSDT NOW", flush=True),
+                                   ready=lambda: print("READY - SEND BTCUSDT FROM A NOW", flush=True),
+                                   account_a_only=True,
                                    guard=guard, on_attempt=lambda method: attempt("05C", method))
 
     try:
