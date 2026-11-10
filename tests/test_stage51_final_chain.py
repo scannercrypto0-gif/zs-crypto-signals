@@ -42,6 +42,8 @@ class FinalChainTests(unittest.TestCase):
                                         session_id="FIXTURE-05C", clock=lambda: clock, simulation=True, account_a_only=True)
             self.assertEqual(reply["status"], "ACCOUNT_A_API_ACCEPTED_REPLY")
             self.assertEqual([r[0] for r in fake.sends], ["101"])
+            self.assertEqual(reply["ingress_counts"]["account_not_allowed"], 1)
+            self.assertEqual(reply["ingress_counts"]["matched_A"], 1)
             for _, text, _ in fake.sends:
                 self.assertIn(snapshot["source_sha256"], text)
                 self.assertIn(snapshot["decision_sha256"], text)

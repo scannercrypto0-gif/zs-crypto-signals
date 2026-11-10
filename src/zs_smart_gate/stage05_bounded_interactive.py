@@ -1,4 +1,5 @@
 """Bounded 05C TEST ONLY orchestration over actual private Telegram updates."""
+from collections import Counter
 from datetime import datetime, timezone
 import time
 
@@ -41,6 +42,7 @@ def bounded_interactive(*, config, transport, store, upstream, source_ref, start
     if not account_a_only:
         pair["B"] = config.signals_chat_b
     pending = {}
+    diagnostics = Counter()
 
     def call(label, method, **kwargs):
         guard()
@@ -49,7 +51,7 @@ def bounded_interactive(*, config, transport, store, upstream, source_ref, start
 
     def result(status, replies=None):
         return {"status": status, "replies": replies or {}, "calls": calls,
-                "claimed": store.read(key) is not None}
+                "claimed": store.read(key) is not None, "ingress_counts": dict(diagnostics)}
 
     def poll():
         return call("getUpdates", transport.get_updates, offset=0)
@@ -83,28 +85,43 @@ def bounded_interactive(*, config, transport, store, upstream, source_ref, start
         if updates.status != "ACCEPTED" or len(updates.updates) > 20:
             return result("INTERACTIVE_POLL_FAILED_OR_UNKNOWN")
         for update in updates.updates:
+            diagnostics["updates_examined"] += 1
             if not isinstance(update, dict):
+                diagnostics["invalid_update"] += 1
                 continue
             if not simulation and (type(update.get("update_id")) is not int
                                    or update["update_id"] <= high_water):
+                diagnostics["baseline_or_invalid_update_id"] += 1
                 continue
             msg = update.get("message")
             if not isinstance(msg, dict):
+                diagnostics["no_message"] += 1
                 continue
             sender, chat = msg.get("from"), msg.get("chat")
             if not isinstance(sender, dict) or not isinstance(chat, dict):
+                diagnostics["invalid_sender_or_chat"] += 1
                 continue
             uid, cid = sender.get("id"), chat.get("id")
             if (type(uid) is not int or type(cid) is not int or uid != cid
-                    or sender.get("is_bot") is not False or chat.get("type") != "private"
-                    or not isinstance(msg.get("text"), str) or msg["text"].strip().upper() != "BTCUSDT"
-                    or type(msg.get("date")) is not int
-                    or not started_at <= msg["date"] <= int(clock().timestamp())
-                    or type(msg.get("message_id")) is not int or msg["message_id"] <= 0):
+                    or sender.get("is_bot") is not False or chat.get("type") != "private"):
+                diagnostics["not_private_human"] += 1
+                continue
+            if str(uid) not in pair.values():
+                diagnostics["account_not_allowed"] += 1
+                continue
+            if not isinstance(msg.get("text"), str) or msg["text"].strip().upper() != "BTCUSDT":
+                diagnostics["symbol_mismatch"] += 1
+                continue
+            if type(msg.get("date")) is not int or not started_at <= msg["date"] <= int(clock().timestamp()):
+                diagnostics["outside_session_time"] += 1
+                continue
+            if type(msg.get("message_id")) is not int or msg["message_id"] <= 0:
+                diagnostics["invalid_message_id"] += 1
                 continue
             for role, account in pair.items():
                 if str(uid) == account:
                     pending.setdefault(role, msg["message_id"])
+                    diagnostics["matched_" + role] += 1
         if set(pending) == set(pair):
             break
     if set(pending) != set(pair):

@@ -14,9 +14,9 @@ from zs_smart_gate.stage05_custody import LocalOutbox
 from zs_smart_gate.stage05_telegram_http import BotSecrets, OwnerPermit, RuntimeFlags
 from zs_smart_gate.stage51_live_chain import run_chain
 
-PRIOR_ROOT = Path("D:/ZS-SMART-GATE/stage51-final-003")
-ROOT = Path("D:/ZS-SMART-GATE/stage51-final-003-a")
-SESSION = "ZS-00-05-ONE-ORDER-FINAL-CLOSURE-20261110-003"
+PRIOR_ROOT = Path("D:/ZS-SMART-GATE/stage51-final-003-a")
+ROOT = Path("D:/ZS-SMART-GATE/stage51-final-003-a-retry1")
+SESSION = "ZS-00-05-ONE-ORDER-FINAL-CLOSURE-20261110-003-A-RETRY1"
 SPEC = importlib.util.spec_from_file_location("shared", Path(__file__).with_name("e2e51-windows.py"))
 shared = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(shared)
@@ -27,7 +27,7 @@ def utc():
 
 
 OWNER_AUTHORITY = "https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/51#issuecomment-6767851362"
-CONTRACT_SHA256 = "99b8428f61d77a922bd5be6cc7272b0bf701ae7fec1d8260121fe1b90ef53456"
+CONTRACT_SHA256 = "6ba993f742f79af4f3e9bae6d3b11e105df35bdee4bb32db5b92f743f5d23120"
 
 def check_contract(raw):
     if digest(raw.replace(b"\r\n", b"\n")) != CONTRACT_SHA256:
@@ -51,13 +51,18 @@ def main():
     if len({t.split(":")[0] for t in tokens.values()}) != 3:
         raise Stop("BOT_IDENTITIES_NOT_DISTINCT")
     shared.guard(ROOT)
-    if any((path / "session.claim.json").exists() for path in (ROOT, PRIOR_ROOT)):
+    if (ROOT / "session.claim.json").exists():
         raise Stop("SESSION_ALREADY_CLAIMED")
     if not args.live:
         print(f"OFFLINE_PREFLIGHT_PASS HEAD={args.head} TREE={tree} CONTRACT_SHA256={contract} NETWORK=0")
         return 0
     if not args.account_a_ready_no_other_consumer:
         raise Stop("WAITING_FOR_OWNER_05C_HUMAN_ACTION")
+    prior = PRIOR_ROOT / "final-manifest.json"
+    if not (PRIOR_ROOT / "session.claim.json").is_file() or not prior.is_file():
+        raise Stop("PRIOR_DEFECT_RECEIPT_REQUIRED")
+    if digest(prior.read_bytes()) != "af2acfaed573c28710edab8d871bcf5c14b9da8d83a1502b51e2706bf088d080":
+        raise Stop("PRIOR_DEFECT_RECEIPT_SHA_MISMATCH")
     phase = time.time() % 300
     wait = 4.2 - phase if phase < 4 else (304.2 - phase if phase > 50 else 0)
     if wait:

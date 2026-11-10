@@ -33,7 +33,7 @@ function Assert-Private([string]$Path) {
 if ($missing.Count) { throw 'BLOCKED_MISSING_LOCAL_CONFIGURATION' }
 Assert-Private $secretsRoot
 foreach ($name in $mapping.Keys) { Assert-Private (Join-Path $secretsRoot ($name + '.dpapi')) }
-$root = 'D:\ZS-SMART-GATE\stage51-final-003-a'
+$root = 'D:\ZS-SMART-GATE\stage51-final-003-a-retry1'
 if (!(Test-Path -LiteralPath $root)) {
     $acl = [Security.AccessControl.DirectorySecurity]::new()
     $acl.SetAccessRuleProtection($true,$false)
