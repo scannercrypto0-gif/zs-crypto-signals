@@ -151,7 +151,20 @@ class InteractiveService:
                 return {**request, "status": "INVALID_SNAPSHOT",
                         "reason_codes": ["INDICATOR_TIME_INVALID"],
                         "indicators": [], "score": None}
-        return {**request, "status": "READ_ONLY_ANALYSIS",
+        source_fields = {}
+        if "source_sha256" in data:
+            try:
+                closed = parse_utc(data.get("closed_at"), "SOURCE_CLOSE")
+                if closed > as_of or data.get("source_frame") != "5m":
+                    raise ContractError("INVALID_SOURCE_TIMELINE")
+                for key in ("source_sha256", "decision_sha256"):
+                    if not isinstance(data.get(key), str) or not re.fullmatch(r"[0-9a-f]{64}", data[key]):
+                        raise ContractError("INVALID_SNAPSHOT_SHA")
+                source_fields = {k: data[k] for k in ("closed_at", "source_frame", "source_sha256", "decision_sha256")}
+            except ContractError:
+                return {**request, "status": "INVALID_SNAPSHOT",
+                        "reason_codes": ["SOURCE_BINDING_INVALID"], "indicators": [], "score": None}
+        return {**request, **source_fields, "status": "READ_ONLY_ANALYSIS",
                 "source_scope": data.get("source_scope", "UNKNOWN"),
                 "as_of": data["as_of"], "indicators": data["indicators"],
                 "score": data.get("score"), "decision": data.get("decision"),
@@ -206,6 +219,10 @@ class InteractiveService:
                      "\nSnapshot age seconds: " + str(age_s) +
                      "\nFreshness: HISTORICAL_SNAPSHOT_ONLY / NOT_REALTIME_VERIFIED" +
                      "\nSource scope: " + str(response.get("source_scope", "UNKNOWN")))
+            if "source_sha256" in response:
+                text += ("\nClosed " + response["source_frame"] + " UTC: " + response["closed_at"]
+                         + "\nSource SHA256: " + response["source_sha256"]
+                         + "\nDecision SHA256: " + response["decision_sha256"])
             for row in response["indicators"]:
                 reasons = ",".join(map(str, row["reason_codes"])) or "NONE"
                 text += ("\n" + str(row["indicator_id"]) + ": value=" +
@@ -265,8 +282,11 @@ def respond_once(*, response, chat_id, user_id, config, store, flags=None,
             return {**json.loads(receipt), "replayed": True}
         return {"status": "UNKNOWN_DELIVERY", "reason": "PRIOR_INTERACTIVE_ATTEMPT",
                 "delivery_id": delivery_id}
+    reply_sha = hashlib.sha256(reply.encode("utf-8")).hexdigest()
     if not _claim(store, key, {"schema": "zs05.interactive-attempt.v1",
-                               "delivery_id": delivery_id, "started_at": stamp}):
+                               "delivery_id": delivery_id, "started_at": stamp,
+                               "reply_sha256": reply_sha,
+                               "source_sha256": response.get("source_sha256")}):
         return {"status": "UNKNOWN_DELIVERY", "reason": "PRIOR_INTERACTIVE_ATTEMPT",
                 "delivery_id": delivery_id}
     http = transport if transport is not None else TelegramHTTP(config.interactive_token)
@@ -280,8 +300,8 @@ def respond_once(*, response, chat_id, user_id, config, store, flags=None,
     except Exception:
         state = "UNKNOWN_DELIVERY"
     receipt = {"schema": "zs05.interactive-receipt.v1",
-               "delivery_id": delivery_id, "status": state,
-               "attempt_at": stamp, "bot_id": "INTERACTIVE",
+               "delivery_id": delivery_id, "status": state, "reply_sha256": reply_sha,
+               "source_sha256": response.get("source_sha256"), "attempt_at": stamp, "bot_id": "INTERACTIVE",
                "destination_label": "INTERACTIVE_REQUEST_CHAT",
                "telegram_accepted_at": utc_now(clock if clock is not None else lambda: datetime.now(timezone.utc))
                    if state == "ACCEPTED" else None,

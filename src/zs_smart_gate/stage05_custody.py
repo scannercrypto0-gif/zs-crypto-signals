@@ -99,5 +99,9 @@ class VerifiedUpstream:
             return None
         return {"symbol": symbol, "as_of": event["timestamps"]["decision_at"],
                 "indicators": event["indicators"], "score": None,
+                "source_sha256": event["source_manifest_sha256"],
+                "decision_sha256": digest(canonical(event)),
+                "closed_at": event["timestamps"]["decision_candle_close_at"],
+                "source_frame": event["candle_metadata"]["frame"],
                 "source_scope": event["source_scope"], "decision": "RESEARCH_ONLY_REJECTED",
                 "reason_codes": event["reject_reason_codes"]}
