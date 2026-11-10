@@ -1,7 +1,8 @@
 """One-source rejection/analysis integration. No production signal path."""
 from .e2e51 import analyze, capture, persist
 from .pre05_offline_chain import LocalChainJournal
-from .stage05_contracts import ContractError, canonical, digest, make_document
+from .stage03_qv1_boundary import recorded_rejection_archive
+from .stage05_contracts import ContractError, canonical, digest
 from .stage05_custody import VerifiedUpstream
 
 
@@ -16,8 +17,7 @@ def run_chain(folder, *, session, get, decision_clock, archive, interactive, rec
     identity, _ = journal.append_readback(stored)
     sha = digest(canonical(stored))
     upstream = VerifiedUpstream(LocalChainJournal(journal.path), {identity: sha})
-    verified = upstream.read(identity, sha)
-    report = make_document(verified)
+    verified, report = recorded_rejection_archive(upstream, identity, sha)
     manifest = dict(session_id=session, source_sha256=verified["source_manifest_sha256"],
                     decision_sha256=digest(canonical(verified)), candidate_id=verified["candidate_id"],
                     event_id=verified["detection_event_key"], signal_id=None,
