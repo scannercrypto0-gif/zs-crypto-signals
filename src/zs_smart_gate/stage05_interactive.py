@@ -7,11 +7,13 @@ from __future__ import annotations
 
 from collections import deque
 from datetime import datetime, timezone
+import json
 import hashlib
 import re
 
 from .stage05_contracts import ContractError, canonical, parse_utc, utc_now
-from .stage05_delivery import GithubOutbox, _claim, _key
+from .stage05_custody import LocalOutbox
+from .stage05_delivery import _claim, _key
 from .stage05_telegram_http import (
     RuntimeFlags, TelegramHTTP, require_live_permission,
 )
@@ -49,7 +51,7 @@ def _authorized(config, user_id, chat_id):
 
 
 def analysis_request_id(user_id, chat_id, message_id):
-    if not isinstance(message_id, int) or message_id < 0:
+    if type(message_id) is not int or message_id <= 0:
         raise ContractError("INTERACTIVE_MESSAGE_ID_REQUIRED")
     return hashlib.sha256(canonical({
         "bot": "INTERACTIVE", "user": str(user_id), "chat": str(chat_id),
@@ -232,15 +234,15 @@ class InteractiveService:
 
 def respond_once(*, response, chat_id, user_id, config, store, flags=None,
                  permit=None, head_sha=None, transport=None,
-                 clock=None, simulation=False):
+                 clock=None, simulation=False, reply_to=None):
     """Optional one-reply action with preclaim; no automatic polling or send."""
     if not isinstance(response, dict) or response.get("signal_id") is not None:
         raise ContractError("INTERACTIVE_IS_NOT_A_SCANNER_SIGNAL")
     if not response.get("analysis_request_id"):
         raise ContractError("INTERACTIVE_ID_REQUIRED")
     if not simulation:
-        if not isinstance(store, GithubOutbox) or not store.verified_backend:
-            raise ContractError("APPROVED_GITHUB_OUTBOX_REQUIRED")
+        if type(store) is not LocalOutbox:
+            raise ContractError("APPROVED_LOCAL_OUTBOX_REQUIRED")
         require_live_permission(flags=flags if flags is not None else RuntimeFlags(),
                                 permit=permit, head_sha=head_sha, action="INTERACTIVE_REPLY")
     if (not _authorized(config, user_id, chat_id)
@@ -258,16 +260,22 @@ def respond_once(*, response, chat_id, user_id, config, store, flags=None,
     key = _key("interactive-attempt", delivery_id)
     old = store.read(key)
     if old is not None:
+        receipt = store.read(_key("interactive-outcome", delivery_id))
+        if receipt is not None:
+            return {**json.loads(receipt), "replayed": True}
         return {"status": "UNKNOWN_DELIVERY", "reason": "PRIOR_INTERACTIVE_ATTEMPT",
                 "delivery_id": delivery_id}
-    _claim(store, key, {"schema": "zs05.interactive-attempt.v1",
-                        "delivery_id": delivery_id, "started_at": stamp})
+    if not _claim(store, key, {"schema": "zs05.interactive-attempt.v1",
+                               "delivery_id": delivery_id, "started_at": stamp}):
+        return {"status": "UNKNOWN_DELIVERY", "reason": "PRIOR_INTERACTIVE_ATTEMPT",
+                "delivery_id": delivery_id}
     http = transport if transport is not None else TelegramHTTP(config.interactive_token)
     # Request identity and chat are validated BEFORE preclaim.
     try:
         outcome = http.send_text(
             chat_id, reply, flags=flags, permit=permit,
-            head_sha=head_sha, action="INTERACTIVE_REPLY")
+            head_sha=head_sha, action="INTERACTIVE_REPLY",
+            **({"reply_to": reply_to} if reply_to is not None else {}))
         state = outcome.status
     except Exception:
         state = "UNKNOWN_DELIVERY"

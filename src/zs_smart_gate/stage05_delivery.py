@@ -4,7 +4,7 @@ Uses the existing GitHub ContentsTransport *interface* for future approved
 application-level create-if-absent/readback (NOT WORM or global exactly-once).
 Never invokes GitHub or Telegram automatically. Offline tests inject a memory
 store and fake transport. Real dispatch additionally demands separate permit,
-flags, approved real source, and the GitHub-backed outbox instance.
+flags, approved real source, and a verified local decision and attempt journal.
 """
 from __future__ import annotations
 
@@ -14,6 +14,7 @@ import re
 from .stage05_contracts import (
     ContractError, canonical, digest, ensure_event, make_document, parse_utc, utc_now,
 )
+from .stage05_custody import LocalOutbox, VerifiedUpstream
 from .stage05_telegram_http import (
     BotSecrets, RuntimeFlags, TelegramHTTP, require_live_permission,
 )
@@ -231,6 +232,20 @@ class DeliveryCoordinator:
                 "C": self.config.analytics_chat}[destination]
 
     def step(self, event, destination):
+        if not self.simulation:
+            ensure_event(event)
+            if event["source_scope"] != "APPROVED_REAL_SOURCE":
+                raise ContractError("SYNTHETIC_EVENT_LIVE_DISPATCH_FORBIDDEN")
+            raise ContractError("VERIFIED_UPSTREAM_READBACK_REQUIRED")
+        return self._step(event, destination)
+
+    def step_verified(self, upstream, identity, expected_sha, destination):
+        if type(self.store) is not LocalOutbox or type(upstream) is not VerifiedUpstream:
+            raise ContractError("LOCAL_VERIFIED_CUSTODY_REQUIRED")
+        event = upstream.read(identity, expected_sha)
+        return self._step(event, destination)
+
+    def _step(self, event, destination):
         ensure_event(event)
         jobs = {job.destination: job for job in plan(event)}
         if destination not in jobs:
@@ -239,10 +254,8 @@ class DeliveryCoordinator:
         if not self.simulation:
             if event["source_scope"] != "APPROVED_REAL_SOURCE":
                 raise ContractError("SYNTHETIC_EVENT_LIVE_DISPATCH_FORBIDDEN")
-            # Syntactically valid event hashes and caller flags do not prove a
-            # real upstream qualification/source readback. No approved verifier
-            # exists at this stage: hard-block real dispatch until one is reviewed.
-            raise ContractError("VERIFIED_UPSTREAM_READBACK_NOT_IMPLEMENTED")
+            require_live_permission(flags=self.flags, permit=self.permit,
+                                    head_sha=self.head_sha, action=self._action(job.bot_id))
         # Reuse the readback-verified outbox and stable per-event identities.
         event_key = _key("event", digest(event["detection_event_key"].encode("utf-8")))
         _claim(self.store, event_key, {
@@ -296,13 +309,16 @@ class DeliveryCoordinator:
                 return {"status": "LOCAL_RATE_LIMITED", "delivery_id": job.delivery_id}
         attempt_id = digest((job.delivery_id + ":" + str(count)).encode("ascii"))
         attempt_key = _key("attempt", attempt_id)
-        _claim(self.store, attempt_key, {
+        won = _claim(self.store, attempt_key, {
             "schema": "zs05.attempt-start.v1",
             "delivery_attempt_id": attempt_id, "delivery_id": job.delivery_id,
             "candidate_id": job.candidate_id, "bot_id": job.bot_id,
             "destination_label": job.destination, "attempt_no": count,
             "dispatch_attempt_at": now, "payload_sha256": job.payload_sha256,
         })
+        if not won:
+            return {"status": "UNKNOWN_DELIVERY", "reason": "ATTEMPT_ALREADY_RESERVED",
+                    "delivery_id": job.delivery_id}
         for identity in ("BOT:" + job.bot_id, "DEST:" + job.destination):
             self._last_attempt[identity] = moment
         try:

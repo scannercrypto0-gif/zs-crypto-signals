@@ -146,7 +146,7 @@ class Stage05RealTransportTargeted(unittest.TestCase):
                                     head_sha="f" * 40, action="SIGNALS")
         http = TelegramHTTP(DUMMY_SIGNAL_TOKEN)
         self.assertNotIn(DUMMY_SIGNAL_TOKEN, repr(http))
-        with patch("zs_smart_gate.stage05_telegram_http.urlopen") as actual:
+        with patch("zs_smart_gate.stage05_telegram_http.build_opener") as actual:
             with self.assertRaisesRegex(ContractError, "OWNER_ACTIVATION"):
                 http.send_text("1001", "not sent", flags=all_on,
                                permit=None, head_sha="f" * 40)
@@ -219,7 +219,7 @@ class Stage05RealTransportTargeted(unittest.TestCase):
                       candle_window_sha256="c" * 64,
                       scan_cycle_id="FAKE.SCAN", quality_policy_version="TEST")
         forged["clock"]["source"] = "MEASURED_CLOCK"
-        with self.assertRaisesRegex(ContractError, "VERIFIED_UPSTREAM_READBACK_NOT_IMPLEMENTED"):
+        with self.assertRaisesRegex(ContractError, "VERIFIED_UPSTREAM_READBACK_REQUIRED"):
             coord.step(forged, "A")
 
     def test_independent_per_chat_receipts_and_duplicate_suppression(self):
@@ -311,7 +311,8 @@ class Stage05RealTransportTargeted(unittest.TestCase):
                              request.get_header("Content-type"), request.data,
                              timeout))
             return FakeResponse(200, {"ok": True, "result": {
-                "message_id": 71, "date": 1794214800}})
+                "message_id": 71, "date": 1794214800,
+                "chat": {"id": 1001, "type": "private"}}})
         http = TelegramHTTP(DUMMY_SIGNAL_TOKEN, test_opener=good_opener)
         result = http.send_text("1001", "SYNTHETIC TEST")
         self.assertEqual(result.status, "ACCEPTED")
