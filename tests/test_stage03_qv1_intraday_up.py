@@ -68,3 +68,19 @@ class IntradayUpTests(unittest.TestCase):
             result=persist_up(data,LocalOutbox(p),policy_sha256=POLICY_SHA256)
             self.assertEqual(result,persist_up(data,LocalOutbox(p),policy_sha256=POLICY_SHA256))
             self.assertIsNone(result["signal_id"])
+
+    def test_research_market_fail_unknown_and_pass_cannot_qualify(self):
+        from test_stage51_material import bind
+        for bid, volume, gate in (("100.99", "10000000", "PASS"),
+                                  ("100.99", "9999999", "FAIL"),
+                                  ("100.00", "300000000", "FAIL"),
+                                  ("0", "300000000", "UNKNOWN")):
+            with self.subTest(bid=bid, volume=volume):
+                data = sample()
+                data = replace(data, market=replace(data.market, bid=bid, quote_volume_24h=volume))
+                data.evidence["source"]["joined_inputs_sha256"] = inputs_sha256(data)
+                bind(data.evidence)
+                result = evaluate_up(data, policy_sha256=POLICY_SHA256)
+                self.assertEqual(result["research_market_gate"], gate)
+                self.assertEqual(result["qualification_state"], "UNKNOWN")
+                self.assertIsNone(result["signal_id"])

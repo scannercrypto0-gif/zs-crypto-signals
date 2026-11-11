@@ -1,25 +1,28 @@
 """Intraday UP qualification preparation using the existing Setup detector."""
 from dataclasses import asdict, dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 from decimal import Decimal
 from pathlib import Path
 from types import MappingProxyType
 
 from . import setup021
 from .binance_live import to_candles
-from .core import MarketSnapshot
+from .core import MAX_SPREAD_BPS, MIN_QUOTE_VOLUME, MarketSnapshot, check_eligibility
 from .mtf_contracts import CandleWindow, ReconciliationTolerance, reconcile
 from .stage03_qv1_boundary import evaluate_boundary
 from .stage05_contracts import ContractError, canonical, digest, parse_utc
 from .stage05_custody import LocalOutbox
 
-VERSION = "QV1-B-INTRADAY-UP-POLICY-DRAFT-v1"
+VERSION = "QV1-B-INTRADAY-UP-RESEARCH-v2"
 RULES = MappingProxyType({"SETUP_UP": setup021.evaluate})
 RULE_SHA256 = digest(canonical({"SETUP_UP": setup021.VERSION, "parameters": setup021.CONFIG_SHA256,
                                "implementation_sha256": digest(Path(setup021.__file__).read_bytes().replace(b"\r\n", b"\n"))}))
 POLICY_SHA256 = digest(canonical({"version": VERSION, "rule_sha256": RULE_SHA256,
                                   "scope_authority": "ISSUE51#6792337804",
-                                  "qualification_authority": None}))
+                                  "qualification_authority": None,
+                                  "research_market_screen": {"minimum_quote_volume": str(MIN_QUOTE_VOLUME),
+                                                             "maximum_spread_bps": str(MAX_SPREAD_BPS),
+                                                             "maximum_age_seconds": setup021.MAX_MARKET_SNAPSHOT_AGE_SECONDS}}))
 
 
 @dataclass(frozen=True)
@@ -77,6 +80,16 @@ def evaluate_up(data: Inputs, *, policy_sha256: str):
                                 for key in ("open_at", "close_at", "received_at", "available_at")):
             raise ContractError("QV1_UP_FRAME_METADATA_MISMATCH")
     context_complete = sorted(bar.timeframe for bar in data.context) == ["1h", "4h"]
+    if data.market.symbol != row["symbol"]:
+        raise ContractError("QV1_UP_MARKET_SYMBOL_MISMATCH")
+    if decision - data.market.observed_at > timedelta(seconds=setup021.MAX_MARKET_SNAPSHOT_AGE_SECONDS):
+        market_gate, market_reasons = "UNKNOWN", ("MARKET_SNAPSHOT_STALE",)
+    else:
+        market_reasons = check_eligibility(data.market, decision)
+        if any(reason in ("INVALID_BID_ASK", "NOT_USDT_PAIR") for reason in market_reasons):
+            market_gate = "UNKNOWN"
+        else:
+            market_gate = "FAIL" if market_reasons else "PASS"
     result = RULES["SETUP_UP"](symbol=row["symbol"], klines=data.klines, market=data.market,
                                received_at=data.received_at, decision_at=decision, partition="DEV")
     reason = result["reason_codes"][0]
@@ -101,7 +114,11 @@ def evaluate_up(data: Inputs, *, policy_sha256: str):
             "setup_input_sha256": result["input_sha256"],
             "qualification_state": "UNKNOWN", "signal_id": None,
             "clock_qualification": "INDEPENDENT_WITNESS_POLICY_PENDING",
-            "liquidity_qualification": "QUALIFICATION_CUTOFFS_PENDING"}
+            "research_market_gate": market_gate, "research_market_reasons": list(market_reasons),
+            "research_disposition": ("REJECTED" if market_gate == "FAIL"
+                                     else "UNKNOWN" if market_gate == "UNKNOWN"
+                                     else "RESEARCH_ONLY"),
+            "liquidity_qualification": "INDEPENDENT_QUALIFICATION_POLICY_PENDING"}
 
 
 def persist_up(data: Inputs, store: LocalOutbox, *, policy_sha256: str):
@@ -109,7 +126,7 @@ def persist_up(data: Inputs, store: LocalOutbox, *, policy_sha256: str):
         raise ContractError("QV1_UP_LOCAL_CUSTODY_REQUIRED")
     result = evaluate_up(data, policy_sha256=policy_sha256)
     payload = canonical(result)
-    key = "qualification-up/" + result["event_id"]
+    key = "qualification-up/" + digest(canonical([policy_sha256, result["event_id"]]))
     store.create_if_absent(key, payload)
     if store.read(key) != payload:
         raise ContractError("QV1_UP_READBACK_CONFLICT")
