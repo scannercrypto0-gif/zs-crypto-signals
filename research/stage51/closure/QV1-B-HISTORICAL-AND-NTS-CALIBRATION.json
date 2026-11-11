@@ -1,0 +1,224 @@
+{
+  "tested_script_blob": "a30967355033f885a1dc2d1ac36518fe422ded78",
+  "base_executable_head": "a2bca5496e0cd3a4015e2b5a620e9da6e615a05c",
+  "command": "py -3.12 -B scripts/calibrate-qv1-up-history.py --archives D:\\ZS-SMART-GATE\\evidence\\science-012\\frozen-replay\\batch-B --checksums D:\\ZS-SMART-GATE\\evidence\\science-012\\provider-checksums",
+  "windows_exit": 0,
+  "history": {
+    "archive_sha256": {
+      "BTCUSDT-30m-2025-01.zip": "ef59f5e0e0f4a10b555bfe56a4c44b00e4817cdabc442d88e02b6a99ad71a6fb",
+      "BTCUSDT-30m-2025-02.zip": "2514d48be49adce440191b9eff9d8bb0805fb5d9286b2f628c107692bd003e43",
+      "BTCUSDT-30m-2025-03.zip": "37578459034c3abdc5d4a416bc3461a09005023de72069f683e2e7ce8e058f18",
+      "BTCUSDT-30m-2025-04.zip": "fe534d682d1e647a85dcbc8be6bfbb77a90b20286268dfb166ebc9c9c2ce11f4",
+      "BTCUSDT-30m-2025-05.zip": "794a150bffd2551f264a93fb4534724437598dac7916f5c2fd7f47dda8159551",
+      "BTCUSDT-30m-2025-06.zip": "8b552bde079a2985d929f71800d0c54d25e9c94a4ca4a11316cd66410003432d",
+      "BTCUSDT-5m-2025-01.zip": "4ed2edba26630a98b6ac6102b41dad00e1542640336f0d571c5a7394b39df983",
+      "BTCUSDT-5m-2025-02.zip": "a4859a5b4ad31f41f3ffad1d9a044154ff529c41983b76432ef3f10981b32415",
+      "BTCUSDT-5m-2025-03.zip": "1eb1fb0c76a0e8302abdec42d54b844bd3c3d6d7e6e69ae434aaa1dea445d54d",
+      "BTCUSDT-5m-2025-04.zip": "3ba9f1fd519bad5f190dfe0acda0dd57f904ad5eb848378be329b43cf69b5041",
+      "BTCUSDT-5m-2025-05.zip": "a1f4381240c422cda18464a054b34f75bb32bc5bb9137306e6c9d412e1b160aa",
+      "BTCUSDT-5m-2025-06.zip": "7c005bb32458cc9c797244c49d2be734f626561fb40031fba4b86831e95f06d9"
+    },
+    "exploratory_cutoff": "0.45",
+    "grid": [
+      "0.4",
+      "0.45",
+      "0.5",
+      "0.55",
+      "0.6",
+      "0.65",
+      "0.7",
+      "0.75",
+      "0.8",
+      "0.85",
+      "0.9",
+      "0.95"
+    ],
+    "months": {
+      "2025-01": {
+        "aligned_breakouts": 36,
+        "parent_rows": 1488,
+        "reconciliation_mismatches": 0
+      },
+      "2025-02": {
+        "aligned_breakouts": 28,
+        "parent_rows": 1344,
+        "reconciliation_mismatches": 0
+      },
+      "2025-03": {
+        "aligned_breakouts": 31,
+        "parent_rows": 1488,
+        "reconciliation_mismatches": 0
+      },
+      "2025-04": {
+        "aligned_breakouts": 39,
+        "parent_rows": 1440,
+        "reconciliation_mismatches": 0
+      },
+      "2025-05": {
+        "aligned_breakouts": 45,
+        "parent_rows": 1488,
+        "reconciliation_mismatches": 0
+      },
+      "2025-06": {
+        "aligned_breakouts": 46,
+        "parent_rows": 1440,
+        "reconciliation_mismatches": 0
+      }
+    },
+    "reference": "next adjacent 30m close strictly higher; retrospective continuation proxy",
+    "scope": "HISTORICAL_RESEARCH_NOT_PIT_OR_QUALIFICATION",
+    "train": {
+      "balanced_accuracy": 0.508475,
+      "negative": 59,
+      "positive": 36,
+      "tn": 1,
+      "tp": 36
+    },
+    "training": "2025-01 through 2025-03",
+    "validation": "2025-04 through 2025-06",
+    "validation_metrics": {
+      "balanced_accuracy": 0.507463,
+      "negative": 67,
+      "positive": 63,
+      "tn": 1,
+      "tp": 63
+    }
+  },
+  "clock": {
+    "authority": "time.cloudflare.com",
+    "probe": "science-014 bounded authenticated NTS probe reused",
+    "samples": [
+      {
+        "status": "NTS_AUTHENTICATED_CLOCK_PARTIAL",
+        "TCP_connections": 1,
+        "UDP_datagrams": 1,
+        "system_changes": false,
+        "publication_proved": false,
+        "forward_armed": false,
+        "absolute_UTC_certified": false,
+        "TLS": "TLSv1.3",
+        "ALPN": "ntske/1",
+        "certificate_chain_verified": true,
+        "hostname_verified": true,
+        "leaf_certificate_sha256": "563333c6fbbfcfb8b1dbb1878f5571ab9ade3d253c60311490c693d8ca99da8f",
+        "ke_records_sha256": "88c302c3ff0fad3eb5ed496a254b013910feb3088c3af0d92ef0961d2525900d",
+        "cookie_count": 8,
+        "AEAD": "AES_SIV_CMAC_256",
+        "key_material_persisted": false,
+        "sample": {
+          "offset_seconds": 0.09697365760803223,
+          "network_delay_seconds": 0.05907869338989258,
+          "server_root_delay": 0.074066162109375,
+          "server_root_dispersion": 0.0002288818359375,
+          "conditional_radius_seconds": 0.06780130958557129,
+          "conditional_local_error_bound_seconds": 0.16477496719360352,
+          "conditional_below_one_second": true,
+          "stratum": 3,
+          "sample_local_received": 1794395554.0102234,
+          "authentication": "TLS13_NTSKE_AND_AES_SIV_CMAC_256",
+          "status": "CLOCK_AUTHENTICATED_CONDITIONAL_BOUND_ONLY",
+          "absolute_UTC_certified": false,
+          "caveat": "Assumes truthful server/root metadata, valid local timestamps and nonnegative network delays; not independent reviewer attestation.",
+          "publication_proved": false
+        },
+        "request_bytes": 324,
+        "response_bytes": 324,
+        "request_sha256": "9c3ba3c33d8a80f536ecd3b8998b4074bc9abb2f4f74ede014b3bca4d3097660",
+        "response_sha256": "5fcdaff761801cd15d52118d095e50e7e0d495b2b64280ceabb62a0432687826",
+        "limitation": "Identity and AEAD verified in executor process. Exporter secrets deliberately not saved; independent reviewer repeats fresh protocol rather than offline re-verifying this tag. Authority absolute error/drift not attested."
+      },
+      {
+        "status": "NTS_AUTHENTICATED_CLOCK_PARTIAL",
+        "TCP_connections": 1,
+        "UDP_datagrams": 1,
+        "system_changes": false,
+        "publication_proved": false,
+        "forward_armed": false,
+        "absolute_UTC_certified": false,
+        "TLS": "TLSv1.3",
+        "ALPN": "ntske/1",
+        "certificate_chain_verified": true,
+        "hostname_verified": true,
+        "leaf_certificate_sha256": "563333c6fbbfcfb8b1dbb1878f5571ab9ade3d253c60311490c693d8ca99da8f",
+        "ke_records_sha256": "5859ca5da2ef1f9ea4e53ee29c152ea041679ed619f9aa35599cc5d09baa0bc5",
+        "cookie_count": 8,
+        "AEAD": "AES_SIV_CMAC_256",
+        "key_material_persisted": false,
+        "sample": {
+          "offset_seconds": 0.08401453495025635,
+          "network_delay_seconds": 0.03426623344421387,
+          "server_root_delay": 0.0740966796875,
+          "server_root_dispersion": 0.000091552734375,
+          "conditional_radius_seconds": 0.055273009300231934,
+          "conditional_local_error_bound_seconds": 0.13928754425048828,
+          "conditional_below_one_second": true,
+          "stratum": 3,
+          "sample_local_received": 1794395574.8494673,
+          "authentication": "TLS13_NTSKE_AND_AES_SIV_CMAC_256",
+          "status": "CLOCK_AUTHENTICATED_CONDITIONAL_BOUND_ONLY",
+          "absolute_UTC_certified": false,
+          "caveat": "Assumes truthful server/root metadata, valid local timestamps and nonnegative network delays; not independent reviewer attestation.",
+          "publication_proved": false
+        },
+        "request_bytes": 324,
+        "response_bytes": 324,
+        "request_sha256": "a01535139172c4e728201fc17704df6a282633b2049a81475251c1a3627efcf0",
+        "response_sha256": "cc37bb1234698ecbe769c9102b2593cd70d4c4a297c3162644d0e6cf5813f312",
+        "limitation": "Identity and AEAD verified in executor process. Exporter secrets deliberately not saved; independent reviewer repeats fresh protocol rather than offline re-verifying this tag. Authority absolute error/drift not attested."
+      },
+      {
+        "status": "NTS_AUTHENTICATED_CLOCK_PARTIAL",
+        "TCP_connections": 1,
+        "UDP_datagrams": 1,
+        "system_changes": false,
+        "publication_proved": false,
+        "forward_armed": false,
+        "absolute_UTC_certified": false,
+        "TLS": "TLSv1.3",
+        "ALPN": "ntske/1",
+        "certificate_chain_verified": true,
+        "hostname_verified": true,
+        "leaf_certificate_sha256": "563333c6fbbfcfb8b1dbb1878f5571ab9ade3d253c60311490c693d8ca99da8f",
+        "ke_records_sha256": "fecd2434c916c52e2b36f266a04a23e516ff8ac68fb061907ac5af4b836f45be",
+        "cookie_count": 8,
+        "AEAD": "AES_SIV_CMAC_256",
+        "key_material_persisted": false,
+        "sample": {
+          "offset_seconds": 0.08966290950775146,
+          "network_delay_seconds": 0.04803776741027832,
+          "server_root_delay": 0.0739898681640625,
+          "server_root_dispersion": 0.0001373291015625,
+          "conditional_radius_seconds": 0.06215114688873291,
+          "conditional_local_error_bound_seconds": 0.15181405639648438,
+          "conditional_below_one_second": true,
+          "stratum": 3,
+          "sample_local_received": 1794395595.9822435,
+          "authentication": "TLS13_NTSKE_AND_AES_SIV_CMAC_256",
+          "status": "CLOCK_AUTHENTICATED_CONDITIONAL_BOUND_ONLY",
+          "absolute_UTC_certified": false,
+          "caveat": "Assumes truthful server/root metadata, valid local timestamps and nonnegative network delays; not independent reviewer attestation.",
+          "publication_proved": false
+        },
+        "request_bytes": 324,
+        "response_bytes": 324,
+        "request_sha256": "99fc9490eea76cb052e6d3941cf38a645d4fd136b7cf5a4af98ed5b3f02f7cb6",
+        "response_sha256": "e0b1aa70d53564d1d14d73e9ad5ebc1875d5a90da777b0f86c8f8611d31199c8",
+        "limitation": "Identity and AEAD verified in executor process. Exporter secrets deliberately not saved; independent reviewer repeats fresh protocol rather than offline re-verifying this tag. Authority absolute error/drift not attested."
+      }
+    ],
+    "sample_span_s": 41.97202014923096,
+    "max_sample_conditional_error_s": 0.16477496719360352,
+    "measured_drift_bound": null,
+    "certified_witness_age": null
+  },
+  "decision": {
+    "n01": "DIAGNOSTIC_RECOMMENDED_NO_HARD_CUTOFF",
+    "qualification": "UNKNOWN_PENDING_MEASURED_WITNESS_AND_APPROVED_POLICY"
+  },
+  "network": {
+    "binance": 0,
+    "telegram": 0,
+    "nts_tcp": 3,
+    "nts_udp": 3
+  }
+}
