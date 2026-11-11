@@ -1,0 +1,63 @@
+{
+  "code_sha": "a2bca5496e0cd3a4015e2b5a620e9da6e615a05c",
+  "tree": "0af065ea1de459d82412faadaab1a5de5f1bdc36",
+  "windows_run": "a2bca5496e0cd3a4015e2b5a620e9da6e615a05c\nPYTHON=Python 3.12.10 POWERSHELL=7.6.9 UTC=2026-11-11T11:06:39.6568303Z\r\n{\"distinct_n01_windows\": 3, \"independently_labeled_vectors\": 0, \"observations\": [{\"independent_strong_close_label\": null, \"n01\": \"0.3820319518768798093824459982\", \"n01_window_close\": \"2026-11-09T14:00:00Z\", \"repository_path\": \"research/stage51\", \"setup\": [\"NO_BREAKOUT\"], \"source_sha256\": \"21b9e5556bb726d94939c5c997b9b92f44047deb6eefa62c505edc31ca55d19d\"}, {\"independent_strong_close_label\": null, \"n01\": \"0.2531213592233009708737864078\", \"n01_window_close\": \"2026-11-10T08:00:00Z\", \"repository_path\": \"research/stage51/live-followup-6761924797\", \"setup\": [\"NO_BREAKOUT\"], \"source_sha256\": \"8f82fe655fe230692d7cf30adc25ec1048a4494fc6614fb13bb906a6eb08bdac\"}, {\"independent_strong_close_label\": null, \"n01\": \"0.8256041699573527088927499605\", \"n01_window_close\": \"2026-11-10T13:00:00Z\", \"repository_path\": \"research/stage51/closure/final-003-owner-override\", \"setup\": [\"NO_BREAKOUT\"], \"source_sha256\": \"66d8fd2eb27eb7967cfb4962d9f4642efb3a0a236a2a0ae058778466d396763f\"}, {\"independent_strong_close_label\": null, \"n01\": \"0.8256041699573527088927499605\", \"n01_window_close\": \"2026-11-10T13:00:00Z\", \"repository_path\": \"research/stage51/closure/final-003-account-a-retry1\", \"setup\": [\"NO_BREAKOUT\"], \"source_sha256\": \"c7bf0d1d45d3689da01dd0bce869031ceff59b5885301bcb4dfcdf5fb61f12ee\"}], \"selected_n01_threshold\": null}\r\n",
+  "command": "py -3.12 -B scripts/calibrate-qv1-up-offline.py",
+  "exit": 0,
+  "n01": {
+    "distinct_n01_windows": 3,
+    "independently_labeled_vectors": 0,
+    "observations": [
+      {
+        "independent_strong_close_label": null,
+        "n01": "0.3820319518768798093824459982",
+        "n01_window_close": "2026-11-09T14:00:00Z",
+        "repository_path": "research/stage51",
+        "setup": [
+          "NO_BREAKOUT"
+        ],
+        "source_sha256": "21b9e5556bb726d94939c5c997b9b92f44047deb6eefa62c505edc31ca55d19d"
+      },
+      {
+        "independent_strong_close_label": null,
+        "n01": "0.2531213592233009708737864078",
+        "n01_window_close": "2026-11-10T08:00:00Z",
+        "repository_path": "research/stage51/live-followup-6761924797",
+        "setup": [
+          "NO_BREAKOUT"
+        ],
+        "source_sha256": "8f82fe655fe230692d7cf30adc25ec1048a4494fc6614fb13bb906a6eb08bdac"
+      },
+      {
+        "independent_strong_close_label": null,
+        "n01": "0.8256041699573527088927499605",
+        "n01_window_close": "2026-11-10T13:00:00Z",
+        "repository_path": "research/stage51/closure/final-003-owner-override",
+        "setup": [
+          "NO_BREAKOUT"
+        ],
+        "source_sha256": "66d8fd2eb27eb7967cfb4962d9f4642efb3a0a236a2a0ae058778466d396763f"
+      },
+      {
+        "independent_strong_close_label": null,
+        "n01": "0.8256041699573527088927499605",
+        "n01_window_close": "2026-11-10T13:00:00Z",
+        "repository_path": "research/stage51/closure/final-003-account-a-retry1",
+        "setup": [
+          "NO_BREAKOUT"
+        ],
+        "source_sha256": "c7bf0d1d45d3689da01dd0bce869031ceff59b5885301bcb4dfcdf5fb61f12ee"
+      }
+    ],
+    "selected_n01_threshold": null
+  },
+  "clock": {
+    "local_evidence": "science-014/clock-admission.json",
+    "measured_drift": "UNKNOWN",
+    "independent_authority_error_attestation": null,
+    "qualified_forward": 0,
+    "selected_witness_max_age": null
+  },
+  "decision": "KEEP_QUALIFICATION_UNKNOWN_PENDING_INDEPENDENT_CALIBRATION",
+  "network_calls": 0
+}
