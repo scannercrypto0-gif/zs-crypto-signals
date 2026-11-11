@@ -46,12 +46,16 @@ def _json_value(value):
     return value
 
 
-def inputs_sha256(data):
-    return digest(canonical(_json_value({
+def inputs_payload(data):
+    return _json_value({
         "klines": data.klines, "market": asdict(data.market), "parent": asdict(data.parent),
         "context": [asdict(bar) for bar in data.context], "tolerance": asdict(data.tolerance),
         "received_at": data.received_at,
-    })))
+    })
+
+
+def inputs_sha256(data):
+    return digest(canonical(inputs_payload(data)))
 
 
 def evaluate_up(data: Inputs, *, policy_sha256: str):
