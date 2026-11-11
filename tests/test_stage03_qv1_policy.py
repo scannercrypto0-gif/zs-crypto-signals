@@ -107,3 +107,33 @@ class PolicyTests(unittest.TestCase):
         result=self.run_case(data,policy=real,name="real")
         self.assertEqual(result["qualification_state"],"UNKNOWN")
         self.assertIsNone(result["signal_id"])
+
+    def test_diagnostic_n01_does_not_rescue_unknown_clock(self):
+        policy=replace(self.policy,n01_min=None)
+        result=self.run_case(sample(),policy=policy)
+        self.assertNotIn("N01",result["gates"])
+        self.assertEqual(result["qualification_state"],"QUALIFIED")
+        result=self.run_case(sample(),policy=policy,witness=False,name="no-witness")
+        self.assertNotIn("N01",result["gates"])
+        self.assertEqual(result["qualification_state"],"UNKNOWN")
+        self.assertIsNone(result["signal_id"])
+
+    def test_clock_event_bracket_does_not_extrapolate_and_fails_on_overlap(self):
+        data=sample()
+        w=evidence(data)
+        decision=parse_utc(data.evidence["decision_at"])
+        def interval(at, marker):
+            return dict(monotonic_domain="FIXTURE_BOOT",host_at=stamp(at),utc_lower=stamp(at-timedelta(microseconds=10)),
+                        utc_upper=stamp(at+timedelta(microseconds=10)),
+                        before_mono_ns=marker-1,event_mono_ns=marker,after_mono_ns=marker+1)
+        w.update(method="AUTHENTICATED_EVENT_BRACKET_V1",monotonic_domain="FIXTURE_BOOT",availability=interval(data.received_at,2),
+                 decision=interval(decision,5))
+        def evaluate():
+            return verify_clock(w,digest(canonical(w)),data.evidence["source_sha256"],
+                                decision,data.received_at,self.policy)
+        self.assertEqual(evaluate(),"PASS")
+        w["decision"]["utc_lower"]=w["availability"]["utc_lower"]
+        self.assertEqual(evaluate(),"UNKNOWN")
+        w["availability"]["event_mono_ns"]=w["availability"]["after_mono_ns"]
+        with self.assertRaisesRegex(ContractError,"BRACKET_ORDER"):
+            evaluate()

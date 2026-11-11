@@ -20,7 +20,7 @@ CONTRACT = "QV1-B-UP-QUALIFICATION-v2"
 class Policy:
     authority: str
     scope: str
-    n01_min: str
+    n01_min: str | None
     max_uncertainty_us: int
     max_witness_age_us: int
 
@@ -37,6 +37,32 @@ def _micros(interval):
     return (interval.days * 86400 + interval.seconds) * 1000000 + interval.microseconds
 
 
+def verify_event_bracket(witness, decision, available, policy):
+    """Use event-local UTC intervals and a single monotonic acquisition domain."""
+    domain = witness.get("monotonic_domain")
+    if not isinstance(domain, str) or not domain:
+        raise ContractError("QV1_BRACKET_DOMAIN_REQUIRED")
+    intervals = []
+    for name, expected in (("availability", available), ("decision", decision)):
+        item = witness[name]
+        if item.get("monotonic_domain") != domain:
+            raise ContractError("QV1_BRACKET_DOMAIN_MISMATCH")
+        if parse_utc(item["host_at"]) != expected:
+            raise ContractError("QV1_BRACKET_EVENT_TIME_MISMATCH")
+        lower, upper = parse_utc(item["utc_lower"]), parse_utc(item["utc_upper"])
+        before, marker, after = (item[k] for k in ("before_mono_ns", "event_mono_ns", "after_mono_ns"))
+        if (any(type(v) is not int for v in (before, marker, after))
+                or not 0 <= before < marker < after or upper < lower):
+            raise ContractError("QV1_BRACKET_ORDER_INVALID")
+        intervals.append((lower, upper, marker))
+    first, last = intervals
+    if first[2] > last[2] or available > decision:
+        raise ContractError("QV1_BRACKET_FUTURE_AVAILABILITY")
+    if any(_micros(hi-lo) > policy.max_uncertainty_us for lo,hi,_ in intervals):
+        return "UNKNOWN"
+    return "PASS" if first[1] <= last[0] else "UNKNOWN"
+
+
 def verify_clock(witness, pin, source_sha, decision, available, policy):
     if witness is None or pin is None:
         return "UNKNOWN"
@@ -48,6 +74,8 @@ def verify_clock(witness, pin, source_sha, decision, available, policy):
             or witness.get("identity") in (None, "", "BINANCE_SPOT", "LOCAL_CLOCK")
             or not witness.get("calibration_ref") or not witness.get("method")):
         raise ContractError("QV1_CLOCK_BINDING_INVALID")
+    if witness["method"] == "AUTHENTICATED_EVENT_BRACKET_V1":
+        return verify_event_bracket(witness, decision, available, policy)
     measured = parse_utc(witness["measured_at"])
     received = parse_utc(witness["received_at"])
     ready = parse_utc(witness["available_at"])
@@ -114,8 +142,8 @@ def evaluate_and_store(data, store, *, policy=None, expected_sha=None, witness=N
 
 
 def _gates(data, result, policy, witness, witness_pin):
-    threshold = Decimal(policy.n01_min)
-    if (not threshold.is_finite() or not 0 <= threshold <= 1
+    threshold = None if policy.n01_min is None else Decimal(policy.n01_min)
+    if ((threshold is not None and (not threshold.is_finite() or not 0 <= threshold <= 1))
             or type(policy.max_uncertainty_us) is not int or type(policy.max_witness_age_us) is not int
             or min(policy.max_uncertainty_us, policy.max_witness_age_us) < 0):
         raise ContractError("QV1_POLICY_LIMITS_INVALID")
@@ -128,7 +156,7 @@ def _gates(data, result, policy, witness, witness_pin):
     available = max(data.received_at, data.parent.available_at, data.market.observed_at,
                     *(bar.available_at for bar in data.context))
     n01 = "UNKNOWN"
-    if joined:
+    if joined and threshold is not None:
         parent = data.parent
         try:
             k,b,w = close_parts(SimpleNamespace(o=parent.open,h=parent.high,l=parent.low,c=parent.close),
@@ -161,10 +189,11 @@ def _gates(data, result, policy, witness, witness_pin):
             available = max(available, ready)
         if max(seen) != data.market.observed_at:
             raise ContractError("QV1_LIQUIDITY_MARKET_TIMESTAMP_MISMATCH")
-    return {"SETUP": ("PASS" if result["setup_state"] == "DETECTED_SIGNAL" else
+    return {**({"N01": n01} if threshold is not None else {}),
+            "SETUP": ("PASS" if result["setup_state"] == "DETECTED_SIGNAL" else
                       "FAIL" if result["setup_state"] == "RESEARCH_CANDIDATE" else "UNKNOWN"),
             "EXACT_RECONCILIATION": "PASS" if joined else "UNKNOWN",
-            "CONTEXT": "PASS" if latest_context else "UNKNOWN", "N01": n01,
+            "CONTEXT": "PASS" if latest_context else "UNKNOWN",
             "LIQUIDITY": market,
             "UTC_WITNESS": verify_clock(witness, witness_pin, result["source_sha256"],
                                         decision, available, policy)}
