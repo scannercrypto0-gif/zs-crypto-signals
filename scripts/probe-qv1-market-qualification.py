@@ -32,7 +32,7 @@ def stamp(dt):
     return dt.isoformat().replace("+00:00", "Z")
 
 
-def netnod_probe(archive):
+def netnod_session(archive, session_root):
     # Use the existing audited NTS packet verifier with Netnod's documented
     # Stockholm key exchange and a narrowly pinned timestamp server.
     zs_smart_gate.__path__.append(str(archive / "src" / "zs_smart_gate"))
@@ -50,13 +50,40 @@ def netnod_probe(archive):
         "            sock.connect((negotiated['host'], negotiated['port']))")
     if code == original or "NETNOD_ENDPOINT_MISMATCH" not in code:
         raise ValueError("NTS_PROBE_SOURCE_MISMATCH")
+    # Keep the TLS exchange outside both timed intervals. Each datagram
+    # uses a different one-use cookie from the same authenticated exchange.
+    code = code.replace("def run(root):", "def establish(root):")
+    marker = "        with socket.socket(socket.AF_INET,socket.SOCK_DGRAM) as sock:"
+    first = code.index(marker)
+    last = code.index("    except Exception as exc:", first)
+    sample_body = code[first:last].replace("negotiated['cookies'][0]", "cookie")
+    sample_body = "\n".join("    " + line if line else line for line in sample_body.splitlines())
+    replacement = (
+        "        if len(negotiated['cookies']) < 4:\n"
+        "            raise ValueError('NETNOD_FOUR_DISTINCT_COOKIES_REQUIRED')\n"
+        "        cookies = iter(negotiated['cookies'][:4])\n"
+        "        def take_sample(root):\n"
+        "            root.mkdir(exist_ok=False)\n"
+        "            result = {**session_metadata, 'TCP_connections': 0, 'UDP_datagrams': 0}\n"
+        "            cookie = next(cookies)\n"
+        + sample_body + "\n"
+        "            (root/'report.json').write_text(json.dumps(result,indent=2),encoding='utf8')\n"
+        "            return result\n"
+        "        session_metadata = dict(result)\n"
+        "        result['status'] = 'NTS_KE_READY'\n"
+        "        return take_sample\n"
+    )
     namespace = {"__name__": "bounded_netnod"}
+    code = code[:first] + replacement + code[last:]
     exec(compile(code, str(probe), "exec"), namespace)
-    return namespace["run"]
+    take_sample = namespace["establish"](session_root)
+    if not callable(take_sample):
+        raise ValueError("NTS_KEY_ESTABLISHMENT_FAILED")
+    return take_sample
 
 
 def observe(root, archive, anchor):
-    probe = netnod_probe(archive)
+    probe = netnod_session(archive, root / "clock-session")
     receipts = []
     samples = []
 
@@ -88,6 +115,7 @@ def observe(root, archive, anchor):
     get("ticker/24hr")
     available_marker = time.monotonic_ns()
     clock_sample("after-availability")
+    time.sleep(0.25)
     clock_sample("before-decision")
     decision = datetime.now(timezone.utc)
     decision_marker = time.monotonic_ns()
