@@ -12,7 +12,7 @@ from .stage03_r2_raw_features import VERSION as R2_VERSION
 from .stage05_contracts import ContractError, canonical, digest, parse_utc
 
 SCHEMA = "zs.stage05c.readonly-30m-research.v1"
-FEATURE_NAME = re.compile(r"[A-Za-z][A-Za-z0-9_]{0,90}\Z")
+FEATURE_NAME = re.compile(r"[A-Za-z0-9][A-Za-z0-9_]{0,90}\Z")
 ALLOWED = frozenset(("PRESENT", "UNKNOWN", "NOT_IMPLEMENTED", "INSUFFICIENT_HISTORY"))
 
 
@@ -39,6 +39,8 @@ def snapshot_from_r2(row: dict) -> dict:
     decision = parse_utc(row.get("decision_at"), "DECISION_AT")
     if closed > decision or closed.second or closed.minute % 30:
         raise ContractError("INTERACTIVE30_PARENT_WINDOW_INVALID")
+    if not isinstance(row.get("source_manifest_sha256"), str) or not re.fullmatch(r"[a-f0-9]{64}", row["source_manifest_sha256"]):
+        raise ContractError("INTERACTIVE30_SOURCE_SHA_INVALID")
     features = row.get("raw_features")
     if not isinstance(features, dict) or not features:
         raise ContractError("INTERACTIVE30_FEATURES_REQUIRED")

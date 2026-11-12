@@ -176,6 +176,10 @@ class WindowsOperationalJournal:
                 or not target.parent.is_dir() or target.is_symlink()
                 or target.resolve() == self.path.resolve()):
             raise ContractError("WINDOWS_BACKUP_TARGET_EXISTS_OR_INVALID")
+        # Do not claim external recovery merely because a different path exists.
+        cross_volume = os.stat(self.path.parent).st_dev != os.stat(target.parent).st_dev
+        if expected_external_volume and not cross_volume:
+            raise ContractError("WINDOWS_BACKUP_EXTERNAL_VOLUME_NOT_PROVEN")
         before = self.verify_all()
         tmp = target.with_name(target.name + ".unfinished")
         if tmp.exists():
@@ -192,7 +196,6 @@ class WindowsOperationalJournal:
             if records != before:
                 raise ContractError("WINDOWS_BACKUP_SNAPSHOT_MISMATCH")
             # Cross-volume detection is best-effort only. No encryption proof.
-            cross_volume = os.stat(self.path.parent).st_dev != os.stat(target.parent).st_dev
             with Path(str(target) + ".manifest.json").open("x", encoding="utf-8") as f:
                 f.write(json.dumps({
                     "schema": BACKUP_SCHEMA, "sha256": backup_sha,
