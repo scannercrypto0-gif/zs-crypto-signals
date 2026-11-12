@@ -118,7 +118,8 @@ class InteractiveService:
             return {**request, "status": "NO_APPROVED_SNAPSHOT",
                     "reason_codes": ["NO_IMPLEMENTED_DATA_AVAILABLE"],
                     "indicators": [], "score": None}
-        if not isinstance(data, dict) or data.get("symbol") != request["symbol"]:
+        if (not isinstance(data, dict) or data.get("symbol") != request["symbol"]
+                or data.get("signal_id") is not None):
             return {**request, "status": "INVALID_SNAPSHOT",
                     "reason_codes": ["SOURCE_IDENTITY_MISMATCH"],
                     "indicators": [], "score": None}
@@ -144,8 +145,20 @@ class InteractiveService:
                 return {**request, "status": "INVALID_SNAPSHOT",
                         "reason_codes": ["INDICATOR_METADATA_INCOMPLETE"],
                         "indicators": [], "score": None}
+            # Non-implemented or unavailable features legitimately have
+            # null as_of and null value. Do not fabricate a timestamp.
+            status = row.get("availability")
+            if (status not in ("PRESENT", "MISSING", "INVALID",
+                               "NOT_IMPLEMENTED", "INSUFFICIENT_HISTORY", "UNKNOWN")
+                    or (status == "PRESENT"
+                        and (row.get("as_of") is None or row.get("raw_value") is None))
+                    or (status != "PRESENT"
+                        and (row.get("raw_value") is not None or row.get("value") is not None))):
+                return {**request, "status": "INVALID_SNAPSHOT",
+                        "reason_codes": ["INDICATOR_AVAILABILITY_CONTRACT_INVALID"],
+                        "indicators": [], "score": None}
             try:
-                if parse_utc(row["as_of"]) > as_of:
+                if row.get("as_of") is not None and parse_utc(row["as_of"]) > as_of:
                     raise ContractError("FUTURE_INDICATOR")
             except ContractError:
                 return {**request, "status": "INVALID_SNAPSHOT",
@@ -155,7 +168,11 @@ class InteractiveService:
         if "source_sha256" in data:
             try:
                 closed = parse_utc(data.get("closed_at"), "SOURCE_CLOSE")
-                if closed > as_of or data.get("source_frame") != "5m":
+                frame = data.get("source_frame")
+                if (closed > as_of or frame not in ("5m", "30m")
+                        or closed.second or closed.microsecond
+                        or (frame == "5m" and closed.minute % 5)
+                        or (frame == "30m" and closed.minute % 30)):
                     raise ContractError("INVALID_SOURCE_TIMELINE")
                 for key in ("source_sha256", "decision_sha256"):
                     if not isinstance(data.get(key), str) or not re.fullmatch(r"[0-9a-f]{64}", data[key]):
