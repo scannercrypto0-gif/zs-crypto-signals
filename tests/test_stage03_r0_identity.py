@@ -39,6 +39,23 @@ class TestR0Identity(unittest.TestCase):
         with self.assertRaises(ContractError):
             DiscoveryReference("QUALIFIED_SIGNAL")
 
+    def test_legacy_stage05_v1_archive_stays_separate_and_byte_stable(self):
+        # Import a fixture function only; no accepted test case is re-run.
+        from test_stage05_real_telegram import event
+        from zs_smart_gate.stage05_contracts import (
+            canonical, digest, ensure_event, make_document,
+        )
+        legacy = event(rejected=True)
+        before = digest(canonical(legacy))
+        ensure_event(legacy)
+        document = make_document(legacy)
+        self.assertIsNotNone(document["manifest"]["sha256"])
+        EvaluationIdentity("BTCUSDT", CLOSE).as_dict()
+        self.assertEqual(digest(canonical(legacy)), before)
+        self.assertEqual(legacy["schema"], "zs.stage05.event.v1")
+        with self.assertRaises(ContractError):
+            ensure_event(EvaluationIdentity("BTCUSDT", CLOSE).as_dict())
+
     def test_identity_is_immutable_and_aligned(self):
         identity = EvaluationIdentity("BTCUSDT", CLOSE)
         with self.assertRaises(FrozenInstanceError):

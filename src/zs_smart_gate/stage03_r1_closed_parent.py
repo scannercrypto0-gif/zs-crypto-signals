@@ -197,6 +197,7 @@ def persist_local_research(store: LocalOutbox, row: dict) -> dict:
     """Append-only local research custody; never an authorized Stage05 delivery."""
     if (type(store) is not LocalOutbox or row.get("schema") != VERSION
             or row.get("source_scope") != "SYNTHETIC_TEST_ONLY"
+            or "raw_feature_schema" in row
             or row.get("signal_id") is not None or row.get("publishable") is not False
             or row.get("qualification_state") != "UNKNOWN"):
         raise ContractError("R1_RESEARCH_ONLY_CUSTODY_REQUIRED")
