@@ -88,6 +88,13 @@ class WindowsOperationalCustodyTests(unittest.TestCase):
         with self.assertRaises(ContractError):
             self.store.make_backup(backup)
 
+    def test_external_volume_claim_requires_different_volume(self):
+        self.store.create_if_absent(self.key,self._payload())
+        backup=self.backups/"not-external.sqlite"
+        with self.assertRaisesRegex(ContractError,"EXTERNAL_VOLUME_NOT_PROVEN"):
+            self.store.make_backup(backup,expected_external_volume=True)
+        self.assertFalse(backup.exists())
+
     def test_tampered_backup_bytes_detected_by_independent_pin(self):
         self.store.create_if_absent(self.key,self._payload())
         backup=self.backups/"pinned.sqlite"
