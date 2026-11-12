@@ -1,5 +1,6 @@
 """R1 independent closed-30m local input tests (Windows only; no network)."""
 import unittest
+from unittest.mock import patch
 from dataclasses import replace
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -91,6 +92,29 @@ class TestR1ClosedParent(unittest.TestCase):
                 row = self.evaluate(damaged)[0]
                 self.assertEqual(row["evaluation_status"], "INVALID")
                 self.assertFalse(row["raw_30m_evaluation_eligible"])
+
+    def test_independent_path_never_calls_setup_or_network(self):
+        with patch("zs_smart_gate.setup021.evaluate",
+                   side_effect=AssertionError("SETUP_PATH_USED")), \
+             patch("socket.create_connection",
+                   side_effect=AssertionError("NETWORK_CALLED")), \
+             patch("urllib.request.urlopen",
+                   side_effect=AssertionError("NETWORK_CALLED")):
+            row = self.evaluate(fixture())[0]
+        self.assertTrue(row["raw_30m_evaluation_eligible"])
+        self.assertIsNone(row["signal_id"])
+
+    def test_late_market_and_mixed_context_fail_closed(self):
+        good = fixture()
+        late = replace(good.market_receipt,
+                       available_at=DECISION+timedelta(seconds=1))
+        self.assertEqual(
+            self.evaluate(replace(good,market_receipt=late))[0]["evaluation_status"],
+            "INVALID")
+        mixed = replace(good.context[0],source_id="SYNTHETIC:OTHER")
+        self.assertEqual(
+            self.evaluate(replace(good,context=(mixed,good.context[1])))[0]["evaluation_status"],
+            "INVALID")
 
     def test_parent_base_quote_exact_and_unapproved_tolerance(self):
         good = fixture()
