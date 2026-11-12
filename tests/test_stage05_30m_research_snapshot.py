@@ -56,6 +56,11 @@ class Stage05ThirtyMinuteResearchTests(unittest.TestCase):
         self.assertIsNone(result["signal_id"])
         self.assertTrue(any(x["availability"]=="NOT_IMPLEMENTED"
                             for x in result["indicators"]))
+        rendered=service.format_reply(result)
+        self.assertLessEqual(len(rendered),3900)
+        self.assertIn("RESEARCH_ONLY_POLICY_HOLD",rendered)
+        self.assertIn("Displayed ",rendered)
+        self.assertIn("omitted ",rendered)
 
     def test_wrong_user_and_future_data_rejected(self):
         snap=snapshot_from_r2(r2())

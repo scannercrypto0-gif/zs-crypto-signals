@@ -262,6 +262,42 @@ class InteractiveService:
             text += "\nDecision reasons: " + (",".join(map(str, response.get("reason_codes") or [])) or "NONE")
         else:
             text += "\nReasons: " + ",".join(map(str, response.get("reason_codes") or []))
+        if (len(text) > 3900 and response["status"] == "READ_ONLY_ANALYSIS"
+                and response.get("source_frame") == "30m"
+                and response.get("decision") == "RESEARCH_30M_POLICY_HOLD"):
+            # A single Telegram reply cannot carry every raw R2 field verbatim.
+            # Prioritize measured fields, state exactly how many were omitted,
+            # and retain the content-addressed source binding. Never silently
+            # truncate mid-field or present this as a complete feature dump.
+            prefix = ("ZS05 INTERACTIVE RESEARCH SUMMARY\nRequest: " +
+                      response["analysis_request_id"][:16] +
+                      "\nSymbol: " + response["symbol"] +
+                      "\nAs-of UTC: " + response["as_of"] +
+                      "\nClosed 30m UTC: " + response["closed_at"] +
+                      "\nSource SHA256: " + response["source_sha256"] +
+                      "\nDecision SHA256: " + response["decision_sha256"] +
+                      "\nStatus: RESEARCH_ONLY_POLICY_HOLD; no signal; score unavailable")
+            rows = sorted(response["indicators"],
+                          key=lambda x: (x["availability"] != "PRESENT",
+                                         str(x["indicator_id"])))
+            shown = []
+            for feature in rows:
+                value = str(feature.get("raw_value"))
+                reasons = ",".join(map(str, feature.get("reason_codes") or []))
+                line = ("\n" + str(feature["indicator_id"]) +
+                        " raw=" + value[:96] +
+                        " availability=" + str(feature["availability"]) +
+                        " frame=" + str(feature["timeframe"]) +
+                        " reason=" + reasons[:96])
+                # Reserve ample room for final counts and explicit partial marker.
+                if len(prefix) + sum(len(s) for s in shown) + len(line) + 180 > 3900:
+                    break
+                shown.append(line)
+            omitted = len(rows) - len(shown)
+            text = (prefix + "".join(shown) +
+                    "\nDisplayed " + str(len(shown)) + "/" + str(len(rows)) +
+                    " raw features; omitted " + str(omitted) +
+                    "; retrieve full versioned research snapshot from verified custody.")
         if len(text) > 3900:
             raise ContractError("INTERACTIVE_REPLY_TOO_LONG")
         return text
