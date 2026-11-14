@@ -1,0 +1,8 @@
+test_restart_offline_resume_and_ambiguous_send (test_stage04_windows_continuity.ContinuityTests.test_restart_offline_resume_and_ambiguous_send) ... ok
+test_upstream_source_replay_and_policy_veto (test_stage05_operational.OperationalTests.test_upstream_source_replay_and_policy_veto) ... ok
+test_429_bounded_retry_and_unknown_outcome_never_replayed (test_stage05_real_telegram.Stage05RealTransportTargeted.test_429_bounded_retry_and_unknown_outcome_never_replayed) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 3.994s
+
+OK
