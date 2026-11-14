@@ -12,6 +12,8 @@ on:
       - 'pyproject.toml'
       - 'docs/**'
       - '.github/workflows/**'
+      - 'requirements-ci-crypto.lock'
+      - 'research/**'
 jobs:
   offline:
     strategy:
@@ -25,10 +27,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Install pinned cryptographic dependencies with SHA-256 verification
+        run: >-
+          python -m pip install --disable-pip-version-check --no-cache-dir --only-binary=:all: --require-hashes -r requirements-ci-crypto.lock
       - name: Run all offline unit and integration tests (network not required)
         env:
           PYTHONPATH: src
-        run: python -m unittest discover -s tests -v
+        run: python scripts/run-offline-ci.py
       - name: Validate offline Windows TaskScheduler definition and lifecycle
         if: runner.os == 'Windows'
         shell: pwsh

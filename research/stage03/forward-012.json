@@ -1,0 +1,21 @@
+{
+  "version": "012-FORWARD-OFFLINE-1",
+  "state": "NOT_ARMED",
+  "transport": "NOT_IMPLEMENTED_NO_HTTP_CLIENT",
+  "windows_task": "NONE",
+  "code_sha": "PIN_EXACT_ACCEPTED_SHA_BEFORE_ANY_REAL_OBSERVATION",
+  "candidate_scope": {
+    "assets": ["BTCUSDT", "ETHUSDT"],
+    "duration": "one UTC day, date UNSET until independent timing and owner scoped approval",
+    "event_groups_UTC": ["30m 00:30", "30m 01:00", "4h 04:00", "4h 08:00"],
+    "maximum_asset_events": 8,
+    "maximum_HTTP_requests": 0,
+    "purpose": "offline component smoke only; not sufficient scientific Forward validation"
+  },
+  "real_capture_preconditions": ["independently reviewed publisher evidence", "independently reviewed source availability evidence", "independent UTC bound <1s and sample age<=30s", "pinned accepted code and immutable future manifest", "specific owner scope/date/rights/storage approval", "new preregistered finite request/weight/byte budget before any transport exists"],
+  "admission": {"after_close_seconds": [60, 600], "catchup": false, "uncertain_prior_claim": "DENY", "missing_proof": "ZERO_HTTP"},
+  "storage": "D:/ZS-SMART-GATE/evidence/science-012; raw private; review retention30days",
+  "actual_future_observations": 0,
+  "scientific_forward_sample_requirement": "UNDETERMINED_ACTUAL_PAIRED_POWER_AND_REGIME_COVERAGE; no finite smoke used as proof",
+  "activation_authorized": false
+}
