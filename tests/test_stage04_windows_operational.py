@@ -1,4 +1,5 @@
 """Stage04 Windows-journal scoped tests. No network, bots or production writes."""
+from contextlib import closing
 from copy import deepcopy
 import hashlib
 import json
@@ -11,7 +12,7 @@ from test_stage03_research_handoff import synthetic_handoff
 from zs_smart_gate.stage04_windows_operational import (
     WindowsOperationalJournal, verify_backup, BACKUP_SCHEMA,
 )
-from zs_smart_gate.stage05_contracts import ContractError, canonical
+from zs_smart_gate.stage05_contracts import ContractError, canonical, digest
 
 
 def handoff_row():
@@ -43,14 +44,16 @@ class WindowsOperationalCustodyTests(unittest.TestCase):
         self.assertEqual(self.store.read(self.key),p)
         self.assertEqual(self.store.verify_all(),(1,len(p)))
         modified=deepcopy(handoff_row())
-        modified["source_manifest_sha256"]="a"*64
-        # Tampered payload is never accepted even if submitted under existing ID.
-        with self.assertRaises(ContractError):
+        modified["source_manifest_sha256"]="b"*64
+        modified.pop("payload_sha256")
+        modified["payload_sha256"] = digest(canonical(modified))
+        # A valid but different payload under the same key conflicts.
+        with self.assertRaisesRegex(ContractError, "WINDOWS_JOURNAL_IDENTITY_CONFLICT"):
             self.store.create_if_absent(self.key, canonical(modified))
 
     def test_existing_rows_prohibit_sql_update_and_delete(self):
         self.store.create_if_absent(self.key,self._payload())
-        with sqlite3.connect(self.db_path) as db:
+        with closing(sqlite3.connect(self.db_path)) as db, db:
             with self.assertRaises(sqlite3.IntegrityError):
                 db.execute("UPDATE custody SET sha256='0' WHERE record_key=?",(self.key,))
             with self.assertRaises(sqlite3.IntegrityError):
