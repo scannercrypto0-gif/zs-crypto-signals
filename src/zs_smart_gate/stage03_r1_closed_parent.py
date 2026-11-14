@@ -61,7 +61,7 @@ class Closed30mItem:
     source_scope: str = "SYNTHETIC_TEST_ONLY"
 
     def __post_init__(self) -> None:
-        if (self.source_scope != "SYNTHETIC_TEST_ONLY"
+        if (self.source_scope not in ("SYNTHETIC_TEST_ONLY", "RECORDED_PUBLIC_SPOT")
                 or not isinstance(self.source_manifest_sha256, str)
                 or not SHA.fullmatch(self.source_manifest_sha256)
                 or not isinstance(self.children, tuple)
@@ -92,7 +92,14 @@ def evidence_digest(item: Closed30mItem) -> str:
 
 def evaluate_closed_30m(item: Closed30mItem, *, closed_at: datetime,
                         decision_at: datetime) -> dict:
-    """A real policy NEVER runs here. No call to Setup.evaluate or network code."""
+    """Evaluate local fixtures through the default entry point."""
+    return _evaluate_closed_30m(item, closed_at=closed_at, decision_at=decision_at,
+                               source_scope="SYNTHETIC_TEST_ONLY")
+
+
+def _evaluate_closed_30m(item, *, closed_at, decision_at, source_scope, expected_feed=None):
+    if item.source_scope != source_scope:
+        raise ContractError("R1_SCOPE_MISMATCH")
     closed_at, decision_at = utc(closed_at), utc(decision_at)
     identity = EvaluationIdentity(item.market.symbol, closed_at,
                                   discriminator=item.discriminator)
@@ -103,7 +110,7 @@ def evaluate_closed_30m(item: Closed30mItem, *, closed_at: datetime,
     row = {
         "schema": VERSION, "identity": identity_row,
         "event_id": identity_row["event_id"], "candidate_id": identity_row["candidate_id"],
-        "source_scope": "SYNTHETIC_TEST_ONLY",
+        "source_scope": source_scope,
         "source_manifest_sha256": item.source_manifest_sha256,
         "input_sha256": source_sha, "trigger": "ELIGIBLE_UNIVERSE_CLOSED_30M",
         "discovery": item.discovery.as_dict() if item.discovery else None,
@@ -129,7 +136,7 @@ def evaluate_closed_30m(item: Closed30mItem, *, closed_at: datetime,
 
     if (item.candle_symbol != item.market.symbol
             or item.market_receipt.source_id != item.parent.source_id
-            or not item.parent.source_id.startswith("SYNTHETIC:")
+            or (item.parent.source_id != expected_feed if expected_feed else not item.parent.source_id.startswith("SYNTHETIC:"))
             or any(c.source_id != item.parent.source_id for c in item.context)):
         return finish("INVALID", "R1_MIXED_SOURCE_OR_SYMBOL")
     receipt = item.market_receipt

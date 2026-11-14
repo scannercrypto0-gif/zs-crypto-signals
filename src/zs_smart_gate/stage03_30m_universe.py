@@ -77,3 +77,75 @@ def run_closed_30m_research_universe(
         "real_source_verified": False, "complete_exchange_universe_verified": False,
         "signal_id": None, "dispatch_authorized": False,
     }
+
+def replay_spot_capture(raw: bytes, expected_sha256: str) -> dict:
+    """Replay a pinned capture; recorded timing is conditional research evidence."""
+    import json
+    from .binance_live import to_candles
+    from .core import MarketSnapshot
+    from .mtf_contracts import CandleWindow
+    from .stage03_r1_closed_parent import MarketReceipt, Closed30mItem, _evaluate_closed_30m
+    from .stage03_r2_raw_features import _attach_raw_features
+    from .stage05_contracts import parse_utc
+
+    if digest(raw) != expected_sha256:
+        raise ContractError("SPOT_CAPTURE_PIN_MISMATCH")
+    record = json.loads(raw)
+    source = record["source"]["source"]
+    joined = record["joined_inputs"]
+    witness = record["witness"]
+    if (record["scope"] != "READ_ONLY_MARKET_QUALIFICATION_RESEARCH"
+            or source["venue"] != "BINANCE_SPOT" or source["feed"] != "BINANCE_SPOT_PUBLIC_REST"
+            or digest(canonical(joined)) != source["joined_inputs_sha256"]
+            or digest(canonical(source)) != record["source"]["source_sha256"]
+            or digest(canonical(witness)) != record["witness_sha256"]
+            or witness["source_sha256"] != record["source"]["source_sha256"]
+            or witness["decision_at"] != source["decision_at"]):
+        raise ContractError("SPOT_CAPTURE_BINDING_MISMATCH")
+    closed = parse_utc(source["event_close_at"])
+    decision = parse_utc(source["decision_at"])
+    feed = source["feed"]
+
+    def stamp(value):
+        return parse_utc(value.replace(" ", "T").replace("+00:00", "Z"))
+
+    def window(raw_window):
+        return CandleWindow(**{**raw_window, "validity_reasons": tuple(raw_window["validity_reasons"]),
+                              **{k: stamp(raw_window[k]) for k in
+                                 ("open_at", "close_at", "received_at", "available_at")}})
+
+    market_row = joined["market"]
+    market = MarketSnapshot(**{**market_row, "observed_at": stamp(market_row["observed_at"])})
+    quote = source["liquidity"]
+    if (source["symbol"] != market.symbol or quote["book_symbol"] != market.symbol
+            or quote["ticker_symbol"] != market.symbol or quote["window"] != "ROLLING_24H"
+            or (quote["bid"], quote["ask"], quote["quote_volume"]) !=
+            (str(market.bid), str(market.ask), str(market.quote_volume_24h))):
+        raise ContractError("SPOT_CAPTURE_MARKET_BINDING_MISMATCH")
+    ready = max(parse_utc(quote[kind + "_available_at"]) for kind in ("book", "ticker"))
+    for kind in ("book", "ticker"):
+        observed, received, available = (parse_utc(quote[kind + "_" + key])
+                                         for key in ("observed_at", "received_at", "available_at"))
+        if not closed <= observed <= received <= available <= decision:
+            raise ContractError("SPOT_CAPTURE_LIQUIDITY_NOT_CAUSAL")
+    children = tuple(CandleWindow.from_five_minute(bar, source_id=feed)
+                     for bar in to_candles(joined["klines"], stamp(joined["received_at"]))[-6:])
+    parent = window(joined["parent"])
+    context = tuple(window(bar) for bar in joined["context"])
+    if max(ready, parent.available_at, *(bar.available_at for bar in (*children, *context))) != ready:
+        raise ContractError("SPOT_CAPTURE_WITNESS_NOT_BOUND_TO_LATEST_INPUT")
+    from .stage03_qv1_policy import Policy, verify_event_bracket
+    clock = verify_event_bracket(witness, decision, ready,
+                                 Policy("RESEARCH_REPLAY", "RECORDED_PUBLIC_SPOT", None, 1499999, 0))
+    if clock != "PASS":
+        raise ContractError("SPOT_CAPTURE_CLOCK_NOT_ADMISSIBLE")
+    item = Closed30mItem(market, MarketReceipt(feed, market.observed_at,
+                        parse_utc(quote["ticker_received_at"]), ready), market.symbol,
+                        parent, children, context, record["source"]["source_sha256"],
+                        source_scope="RECORDED_PUBLIC_SPOT")
+    row = _evaluate_closed_30m(item, closed_at=closed, decision_at=decision,
+                              source_scope="RECORDED_PUBLIC_SPOT", expected_feed=feed)
+    _attach_raw_features(item, row, decision)
+    return {"scope": "RECORDED_PUBLIC_SPOT", "symbol_count": 1,
+            "complete_exchange_universe_verified": False, "capture_sha256": expected_sha256,
+            "clock": "RECORDED_CONDITIONAL_BRACKET_PASS", "row": row}

@@ -172,23 +172,28 @@ def evaluate_raw_research_batch(items: tuple[Closed30mItem, ...], *, closed_at: 
     rows = evaluate_local_universe(items, closed_at=closed_at, decision_at=decision_at)
     ordered = sorted(items, key=lambda item: (item.market.symbol, item.discriminator))
     for item, row in zip(ordered, rows):
-        row["raw_feature_schema"] = VERSION
-        row["raw_features"] = (raw_features(item, decision_at=decision_at)
-                               if row["raw_30m_evaluation_eligible"] else {})
-        row["raw_features_status"] = ("RESEARCH_MEASURED" if row["raw_features"]
-                                      else "NOT_ADMISSIBLE")
-        row["raw_features_sha256"] = digest(canonical({
-            "feature_version": VERSION, "evaluation_version": EVALUATION_VERSION,
-            "event_id": row["event_id"], "input_sha256": row["input_sha256"],
-            "features": row["raw_features"],
-        }))
-        # Never convert the R1 research output to a Stage05 v1 event.
-        row["qualification_state"] = "UNKNOWN"
-        row["signal_id"] = None
-        row["score"] = None
-        row["publishable"] = False
-        row["stage05_event_v1_compatible"] = False
+        _attach_raw_features(item, row, decision_at)
     return rows
+
+
+def _attach_raw_features(item, row, decision_at):
+    row["raw_feature_schema"] = VERSION
+    row["raw_features"] = (raw_features(item, decision_at=decision_at)
+                           if row["raw_30m_evaluation_eligible"] else {})
+    row["raw_features_status"] = ("RESEARCH_MEASURED" if row["raw_features"]
+                                  else "NOT_ADMISSIBLE")
+    row["raw_features_sha256"] = digest(canonical({
+        "feature_version": VERSION, "evaluation_version": EVALUATION_VERSION,
+        "event_id": row["event_id"], "input_sha256": row["input_sha256"],
+        "features": row["raw_features"],
+    }))
+    # Never convert the R1 research output to a Stage05 v1 event.
+    row["qualification_state"] = "UNKNOWN"
+    row["signal_id"] = None
+    row["score"] = None
+    row["publishable"] = False
+    row["stage05_event_v1_compatible"] = False
+
 
 
 def persist_raw_feature_snapshot(store: LocalOutbox, row: dict) -> dict:
