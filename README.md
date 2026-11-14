@@ -2,9 +2,13 @@
 
 ## Pre-Stage06 engineering acceptance — owner directive 6873534849
 
+### Stage04 local continuity — owner decision 6875213132
+
+**SUPERSEDED:** Earlier requirements for an external encrypted device or off-device recovery are optional under the [owner-approved simplified design](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/51#issuecomment-6875213132). Windows durable local storage holds committed records and pending delivery state. Local backup/restore, fresh-process readback, SHA-256 integrity and duplicate protection remain required. Telegram 05B is the human-facing archive. Known offline delivery can wait locally; ambiguous sends require reconciliation before any retry. GitHub may hold bounded sanitized research evidence and is optional for runtime continuity.
+
 **SUPERSEDED FOR PRE-STAGE06.** Any earlier requirement to observe or send a real qualified signal, prove prediction accuracy or profitability, or establish an out-of-sample or forward edge is deferred until the complete system is built and separately authorized. This clarification follows the [owner directive](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/51#issuecomment-6873534849).
 
-Engineering acceptance requires evidence for the implemented and authorized Stage00–Stage05 workflow, including source integrity and timing, journal readback and independent encrypted recovery, and routing and duplicate prevention. A bounded live workflow may observe zero qualified signals. In that case 05A stays silent. Validate its qualified routing offline. 05B archives only authorized research/rejections. 05C requires actual authorized human A/B for live proof. Existing one-shot budgets and consumed-session guards apply. Scientific records, signal integrity rules and the independent recovery requirement remain in force. This clarification does not start Stage06 or authorize production, trading, or another live session.
+Engineering acceptance requires evidence for the implemented and authorized Stage00–Stage05 workflow, including source integrity and timing, journal readback and local recovery, and routing and duplicate prevention. A bounded live workflow may observe zero qualified signals. In that case 05A stays silent. Validate its qualified routing offline. 05B archives only authorized research/rejections. 05C requires actual authorized human A/B for live proof. Existing one-shot budgets and consumed-session guards apply. Scientific records, signal integrity rules and the independent recovery requirement remain in force. This clarification does not start Stage06 or authorize production, trading, or another live session.
 
 ---
 
