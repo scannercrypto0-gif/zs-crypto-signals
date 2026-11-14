@@ -28,10 +28,21 @@ def _feature_digest(row: dict) -> str:
 
 
 def make_handoff(row: dict) -> dict:
-    """Convert only a verified *synthetic* R2 research row; fail closed."""
+    """Convert a synthetic R2 research row; fail closed."""
+    return _make_handoff(row, "SYNTHETIC_TEST_ONLY")
+
+
+def make_recorded_spot_handoff(raw: bytes, expected_sha256: str) -> dict:
+    """Verify the pinned public capture before admitting its research result."""
+    from .stage03_30m_universe import replay_spot_capture
+
+    return _make_handoff(replay_spot_capture(raw, expected_sha256)["row"], "RECORDED_PUBLIC_SPOT")
+
+
+def _make_handoff(row: dict, scope: str) -> dict:
     if not isinstance(row, dict) or row.get("schema") != R1_VERSION:
         raise ContractError("STAGE03_HANDOFF_R1_SCHEMA_REQUIRED")
-    if (row.get("source_scope") != "SYNTHETIC_TEST_ONLY"
+    if (row.get("source_scope") != scope
             or row.get("raw_feature_schema") != R2_VERSION
             or row.get("qualification_state") != "UNKNOWN"
             or row.get("signal_id") is not None
@@ -67,7 +78,7 @@ def make_handoff(row: dict) -> dict:
             raise
         raise ContractError("STAGE03_HANDOFF_INVALID_INPUT") from None
     out = {
-        "schema": VERSION, "source_scope": "SYNTHETIC_TEST_ONLY",
+        "schema": VERSION, "source_scope": scope,
         "event_id": row["event_id"], "candidate_id": row["candidate_id"],
         "parent_close_at": row["identity"]["parent_close_at"],
         "input_sha256": row["input_sha256"],
@@ -88,7 +99,7 @@ def verify_handoff(value: dict) -> bool:
     if not isinstance(value, dict) or set(value) != REQUIRED:
         raise ContractError("STAGE03_HANDOFF_FIELDS_INVALID")
     if (value.get("schema") != VERSION
-            or value.get("source_scope") != "SYNTHETIC_TEST_ONLY"
+            or value.get("source_scope") not in ("SYNTHETIC_TEST_ONLY", "RECORDED_PUBLIC_SPOT")
             or value.get("evaluation_status") != "POLICY_HOLD"
             or value.get("qualification_state") != "UNKNOWN"
             or value.get("signal_id") is not None
