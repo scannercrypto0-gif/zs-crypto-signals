@@ -1,0 +1,2 @@
+{"backup_sha256": "eb2948aa2c0e7f9deb2133ea1f19ebdc63a3c4562f4ea762179d07869c858ba1", "record_count": 1, "byte_count": 8917, "integrity": "SQLITE_AND_SHA_READBACK_PASS", "external_volume_verified": false, "encrypted_volume_verified": false, "production_recovery_approved": false}
+{"operation": "backup", "readback": "PASS", "payload_sha256": "4429b1fce70b4ad27591599eb4e1e2ffaa03c38f16b88913b60ec62b7dbd4018"}
