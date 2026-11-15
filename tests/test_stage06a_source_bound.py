@@ -1,6 +1,6 @@
 """Stage06A *new adapter* tests only. Offline fixtures; no 00–05 test suites run."""
 from copy import deepcopy
-from datetime import timedelta
+from datetime import timedelta, datetime, timezone
 from unittest import TestCase
 from decimal import Decimal as D
 
@@ -8,8 +8,11 @@ from test_stage03_research_handoff import synthetic_handoff
 from test_stage03_r1_closed_parent import CLOSE, DECISION
 from zs_smart_gate.stage05_contracts import ContractError, canonical, digest
 from zs_smart_gate.stage06a_source_bound import (
-    BAR_SCHEMA, RESEARCH_RECEIPT, evaluate_source_bound,
+    BAR_SCHEMA, RESEARCH_RECEIPT, DELIVERY_RECEIPT, evaluate_source_bound,
 )
+from test_e2e51 import fixture as source_fixture
+from zs_smart_gate.e2e51 import analyze
+from zs_smart_gate.stage05_contracts import ensure_event
 
 
 def signed(row):
@@ -116,3 +119,65 @@ class Stage06ABoundTests(TestCase):
     def test_unverified_qualified_event_never_inferred(self):
         with self.assertRaises(ContractError):
             evaluate_source_bound(**dict(self.kw, record_kind="STAGE05_EVENT"))
+
+    def synthetic_qualified_event(self):
+        # Artificial authority shape for validating the adapter boundary only.
+        # Never published as a real qualification or Signal ID.
+        source, measured = source_fixture()
+        event = analyze(source, measured, synthetic=False)
+        event["event_type"] = "QUALIFIED_SIGNAL"
+        event["qualification_status"] = "QUALIFIED"
+        event["qualification_authority"] = "EXPLICIT_APPROVED_UPSTREAM"
+        event["qualification_evidence_sha256"] = "a"*64
+        event["signal_id"] = "SYNTHETIC_TEST_SIGNAL_NOT_FOR_DELIVERY"
+        event["gates"] = [{**g, "state": "PASS", "reason_codes": []} for g in event["gates"]]
+        event["reject_reason_codes"] = []
+        event["trade_plan"] = {"approved": True, "entry_zone": "100",
+                               "stop_loss": "95", "tp1": "110",
+                               "tp2": "115", "tp3": "120"}
+        ensure_event(event)
+        return event
+
+    def test_synthetic_qualified_event_needs_bound_delivery_and_makes_no_fill_claim(self):
+        event = self.synthetic_qualified_event()
+        t = datetime.fromisoformat(event["timestamps"]["available_at"].replace("Z","+00:00"))
+        accepted = t + timedelta(seconds=1)
+        receipt_row = signed({
+            "schema": DELIVERY_RECEIPT, "candidate_id": event["candidate_id"],
+            "signal_id": event["signal_id"], "event_sha256": digest(canonical(event)),
+            "available_at": accepted.isoformat(timespec="microseconds").replace("+00:00","Z")})
+        def stamp(value):
+            return value.isoformat(timespec="microseconds").replace("+00:00","Z")
+        a = accepted + timedelta(minutes=1)
+        b = a + timedelta(minutes=5)
+        c = b + timedelta(minutes=5)
+        raw = canonical({
+            "schema": BAR_SCHEMA, "venue": "BINANCE_SPOT",
+            "symbol": event["symbol"],
+            "source_manifest_sha256": event["source_manifest_sha256"],
+            "timeframe": "5m",
+            "candles": [
+                {"open_at": stamp(a), "close_at": stamp(b), "available_at": stamp(b+timedelta(seconds=1)),
+                 "open":"100","high":"102","low":"99","close":"101","closed":True},
+                {"open_at": stamp(b), "close_at": stamp(c), "available_at": stamp(c+timedelta(seconds=1)),
+                 "open":"100","high":"111","low":"99","close":"101","closed":True}
+            ]})
+        common = dict(record=event, record_kind="STAGE05_EVENT",
+                      bars_raw=raw, bars_sha256=digest(raw),
+                      as_of=stamp(c+timedelta(seconds=2)))
+        with self.assertRaises(ContractError):
+            evaluate_source_bound(**common)
+        value = evaluate_source_bound(**common, receipt=receipt_row)
+        self.assertEqual(value["status"], "TARGET_TOUCHED")
+        self.assertEqual(value["signal_id"], event["signal_id"])
+        self.assertFalse(value["is_executed_trade"])
+        self.assertEqual(value["interpretation"], "LEVEL_TOUCH_NOT_EXECUTED_FILL")
+
+    def test_rejected_real_source_cannot_become_a_signal(self):
+        source, measured = source_fixture()
+        event = analyze(source, measured, synthetic=False)
+        self.assertEqual(event["qualification_status"], "REJECTED")
+        with self.assertRaises(ContractError):
+            evaluate_source_bound(**dict(self.kw, record=event, record_kind="STAGE05_EVENT",
+                                         research_plan={"scenario_only": True}))
+
