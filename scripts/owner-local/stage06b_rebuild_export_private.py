@@ -37,10 +37,19 @@ class Hold(Exception):
     """Fail closed; expose only a fixed reason code on stdout."""
 
 
+def ensure_no_reparse(path: Path):
+    for component in (path, *path.parents):
+        if not component.exists():
+            continue
+        if component.is_symlink() or (
+            hasattr(component, "is_junction") and component.is_junction()
+        ):
+            raise Hold("FILESYSTEM_REPARSE_PATH_FORBIDDEN")
+
+
 def sha(path: Path, limit: int) -> tuple[str, int]:
-    if not path.is_file() or path.is_symlink() or (
-        hasattr(path, "is_junction") and path.is_junction()
-    ):
+    ensure_no_reparse(path)
+    if not path.is_file():
         raise Hold("SOURCE_NOT_PLAIN_FILE")
     size = path.stat().st_size
     if not 0 < size <= limit:
@@ -238,6 +247,7 @@ def stage(base: Path, verified: bool = True):
         got, length = sha(source, MAX_EXPORT if target.name == "result.json" else MAX_FILE)
         if got != expected or length != size:
             raise Hold("SOURCE_CHANGED_BEFORE_STAGING")
+        ensure_no_reparse(target)
         if target.exists():
             old_hash, old_size = sha(target, MAX_EXPORT if target.name == "result.json" else MAX_FILE)
             if old_hash != expected or old_size != size:
@@ -261,6 +271,7 @@ def stage(base: Path, verified: bool = True):
         "media_references": len(refs),
         "caption_sha_matched": matched,
         "other_media_identical_bytes_not_independently_attested": untrusted,
+        "independent_telegram_origin_authentication": False,
         "coherent_source_roots": len(roots),
         "new_files_copied": staged,
         "sql_attempts": 0,
