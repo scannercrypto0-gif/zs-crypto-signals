@@ -6,8 +6,8 @@ $ErrorActionPreference = 'Stop'
 $repo = 'scannercrypto0-gif/zs-crypto-signals'
 $url = 'https://github.com/scannercrypto0-gif/zs-crypto-signals.git'
 $branch = 'stage06b-telegram-bot-chat-export-20261115'
-$head = '938fe078bb996e0ebdc4664c074f24fb6e3a7cf8'
-$tree = 'e476b73f7f7d4cbdf4317936201849cf9a52a30b'
+$head = '2e2601df29240173590fa19e4ff323b408886124'
+$tree = 'b7048a485864c9316baa823206a785019d953c50'
 $run = $null
 $result = [ordered]@{
     PR = 62; Head = $head; Tree = $tree
@@ -57,6 +57,7 @@ try {
         '-3.12', '-B', '-m', 'unittest', '-v',
         'test_stage06b_desktop_sql.DesktopSQLTests.test_real_desktop_bot_chat_type_analytics_and_signals',
         'test_stage06b_desktop_sql.DesktopSQLTests.test_bot_chat_still_requires_matching_export_identity',
+        'test_stage06b_desktop_sql.DesktopSQLTests.test_bot_chat_missing_media_still_fails_closed',
         'test_stage06b_desktop_sql.DesktopSQLTests.test_export_must_be_a_personal_chat'
     )
     Write-Host ('TEST_PR62 : py ' + ($args -join ' '))
@@ -73,12 +74,12 @@ try {
     $statusLines = @(& git -C $checkout status --porcelain)
     if ($LASTEXITCODE -ne 0) { throw 'WORKTREE_CHECK_FAILED' }
     $result.WorktreeClean = ($statusLines.Count -eq 0)
-    if ($result.ExitCode -eq 0 -and $result.TestsObserved -eq 3 -and
-        $result.PassedTests -eq 3 -and $result.WorktreeClean -and
+    if ($result.ExitCode -eq 0 -and $result.TestsObserved -eq 4 -and
+        $result.PassedTests -eq 4 -and $result.WorktreeClean -and
         [regex]::IsMatch($log,'(?m)^OK\s*$')) {
         $result.Status = 'PASS'
     } else { $result.Status = 'FAIL' }
-    $result.Message = 'Three Stage06B bot_chat regressions only'
+    $result.Message = 'Four Stage06B bot_chat regressions only'
 }
 catch {
     $result.Status = 'BLOCKED_OR_ERROR'
