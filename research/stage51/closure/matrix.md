@@ -1,3 +1,22 @@
+# CURRENT OWNER DISPOSITION — 15 November 2026 (Issue #51 #6890458361)
+
+**Decision: STAGE00–05 ENGINEERING CLOSED IN THE OWNER-APPROVED, TESTED BOUNDED SCOPE ONLY.** This status supersedes older pre-Stage06 engineering blockers in the historical matrix below without deleting those observations. It does **not** claim market-wide coverage, successful A/B reception in every live session, production, profitable prediction, a genuine qualified signal, OOS/forward edge, or scientific certification. Keep all runtime authorizations and false-signal prohibitions unchanged. **Stage06 development is now authorized; merging still depends on actual repository checks.**
+
+| Stage | Pinned evidence / governing decision | Bounded engineering disposition | Explicit limits retained |
+|---|---|---|---|
+| 00 | #54 verified owner bounded source receipt; existing merged foundation | **CLOSED — bounded engineering** | No unattended live scanner deployment |
+| 01 | [Multi-asset receipt](stage01-stage03-multi-20261114/README.md), 11 public GET; BNBUSDT + BTCUSDT independently processed from four-symbol pool; 4 affected tests PASS | **CLOSED — tested two-symbol scope** | Not all exchange symbols scanned |
+| 02 | #54 Scanner/Setup frozen 5m NO_BREAKOUT and prior accepted tests | **CLOSED — bounded engineering** | NO_BREAKOUT was not a 30m verdict |
+| 03 | [Multi-asset R0/R1/R2](stage01-stage03-multi-20261114/README.md), exact closed 30m + 6×5m with 1h/4h context; both POLICY_HOLD | **CLOSED — tested research-engineering scope** | Real signal/scoring/prediction science deferred; no fabricated `signal_id` |
+| 04 | [Local Windows continuity](stage04-6875213132/PRE_STAGE06_00_05_ENGINEERING_ACCEPTANCE.md), three targeted tests, restart, hash, local recovery; [owner simplified design](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/51#issuecomment-6875213132) | **CLOSED — tested local continuity scope** | Encrypted external/off-device recovery explicitly OPTIONAL/OUT_OF_SCOPE; uncommitted data and physical power-loss not claimed |
+| 05 | #54 routing fixtures and previous bounded live evidence; owner confirms A/B routes previously passed in [#6882666898](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/51#issuecomment-6882666898); 05B research archive and 05C read-only separate bots | **CLOSED — agreed bounded routing-engineering scope** | No new live-human-B claim for FINAL-003; no unqualified 05A dispatch or production |
+
+**Evidence hierarchy:** accepted Windows 21/21, owner-reported 18/18, latest targeted Windows 23/23 under [pre-Stage06 report](pre-stage06-6873534849/PRE_STAGE06_00_05_ENGINEERING_ACCEPTANCE.md) and multi-asset / local continuity receipts above. These are tested-at-head receipts, not fresh results for a different head. The former blanket external encrypted recovery prerequisite is superseded by owner #6875213132; scientific outcomes deferred by #6873534849. Old QV1 and 05C session findings below are preserved as historical/evidentiary limits, **not automatic blockers to Stage06 coding**.
+
+**Repository release status at this decision:** PR #55 remains DRAFT until relevant CI/review and safe stacked integration; do not confuse owner engineering acceptance with a passing GitHub check. Stage06 development may proceed on a separately pinned approved base without falsely claiming these unmerged dependencies are on main.
+
+---
+
 # 00_05_FINAL_CLOSURE_MATRIX
 
 | Slice | Accepted evidence | New executable gap and test | Status |
