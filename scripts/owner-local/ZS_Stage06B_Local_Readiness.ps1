@@ -93,6 +93,19 @@ foreach ($root in $roots) {
     }
 }
 
+
+# Recognize two existing owner-renamed exports as well as standard result.json.
+# No movement or copying of private source bytes.
+foreach ($special in @(
+    'D:\ZS-LOCAL-CI\bot data and archive.json',
+    'D:\ZS-LOCAL-CI\bot signals main.json'
+)) {
+    if (Test-FilePresent $special) {
+        $full = [IO.Path]::GetFullPath($special)
+        $scanned[$full.ToLowerInvariant()] = $full
+    }
+}
+
 $findings.export_candidate_count = $scanned.Count
 foreach ($resultFile in @($scanned.Values)) {
     try {
@@ -103,7 +116,7 @@ foreach ($resultFile in @($scanned.Values)) {
         }
         $raw = [IO.File]::ReadAllText($resultFile, [Text.Encoding]::UTF8)
         $export = ConvertFrom-Json -InputObject $raw -ErrorAction Stop
-        if ($null -eq $export -or $export.type -ne 'personal_chat' -or
+        if ($null -eq $export -or @('personal_chat','bot_chat') -notcontains $export.type -or
             $null -eq $export.id -or $null -eq $export.messages -or
             [string]::IsNullOrWhiteSpace([string]$export.name)) {
             $findings.export_shape_rejected_count++
