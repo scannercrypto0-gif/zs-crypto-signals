@@ -1,0 +1,9 @@
+test_bad_symbol_candle_binding_is_explicit_not_silently_dropped (test_stage03_30m_universe.Stage03ThirtyMinuteUniverseTests.test_bad_symbol_candle_binding_is_explicit_not_silently_dropped) ... ok
+test_duplicate_or_wrong_boundary_is_fail_closed (test_stage03_30m_universe.Stage03ThirtyMinuteUniverseTests.test_duplicate_or_wrong_boundary_is_fail_closed) ... ok
+test_no_breakout_is_not_a_precondition (test_stage03_30m_universe.Stage03ThirtyMinuteUniverseTests.test_no_breakout_is_not_a_precondition) ... ok
+test_twelve_symbols_are_all_evaluated_without_eight_asset_loss (test_stage03_30m_universe.Stage03ThirtyMinuteUniverseTests.test_twelve_symbols_are_all_evaluated_without_eight_asset_loss) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.040s
+
+OK

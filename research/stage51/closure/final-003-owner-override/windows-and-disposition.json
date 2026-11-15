@@ -1,0 +1,20 @@
+{
+  "status": "PARTIAL_05B_API_ACCEPTED_05C_ENTRYPOINT_WIRING_DEFECT",
+  "executed_code_sha": "f38604c4aeac72e52cc821a5f60e28b4918d3647",
+  "executed_tree": "ba7bfd36df6d4d86904092d234fc95aa8202aac0",
+  "executed_preflight": "f38604c4aeac72e52cc821a5f60e28b4918d3647\ntest_one_fixture_chain_and_unknown_delivery_stop (test_stage51_final_chain.FinalChainTests.test_one_fixture_chain_and_unknown_delivery_stop) ... ok\ntest_owner_scope_rejects_changed_contract (test_stage51_final_chain.FinalChainTests.test_owner_scope_rejects_changed_contract) ... ok\n\n----------------------------------------------------------------------\nRan 2 tests in 0.301s\n\nOK\nOFFLINE_PREFLIGHT_PASS HEAD=f38604c4aeac72e52cc821a5f60e28b4918d3647 TREE=ba7bfd36df6d4d86904092d234fc95aa8202aac0 CONTRACT_SHA256=99b8428f61d77a922bd5be6cc7272b0bf701ae7fec1d8260121fe1b90ef53456 NETWORK=0\nEXIT=0 UTC=2026-11-10T13:13:38.9797021Z\n",
+  "fixed_code_sha": "6d2d8bed65eec9a0306e627a39a2153468cbf6e5",
+  "fixed_tree": "a0fc744a490e6cbe14905682e43b6b922699607e",
+  "fixed_windows_tests": "6d2d8bed65eec9a0306e627a39a2153468cbf6e5\ntest_live_entrypoint_passes_account_a_only (test_stage51_final_chain.FinalChainTests.test_live_entrypoint_passes_account_a_only) ... ok\ntest_one_fixture_chain_and_unknown_delivery_stop (test_stage51_final_chain.FinalChainTests.test_one_fixture_chain_and_unknown_delivery_stop) ... ok\ntest_owner_scope_rejects_changed_contract (test_stage51_final_chain.FinalChainTests.test_owner_scope_rejects_changed_contract) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.281s\n\nOK\nEXIT=0 UTC=2026-11-10T13:18:35.0283273Z\n",
+  "binance_calls": 6,
+  "telegram_api_calls": 12,
+  "outbound_attempts": 1,
+  "owner_reported_A_send": true,
+  "owner_visual": "NOT_ATTESTED",
+  "five_c_replies": 0,
+  "stage05a": "NO_QUALIFIED_SIGNAL_OBSERVED",
+  "offline_source_replay": "SOURCE_REPLAY_AND_ARCHIVE_HASH_PASS af2acfaed573c28710edab8d871bcf5c14b9da8d83a1502b51e2706bf088d080",
+  "authorization_consumed": true,
+  "automatic_retry": false,
+  "root_cause": "The executable did not pass account_a_only=True to bounded_interactive. The live receipt shows the two-human criterion. The exact patched entrypoint and single-account fixtures now pass offline. No claim that a new run would necessarily receive Telegram's inbound update."
+}

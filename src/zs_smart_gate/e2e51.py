@@ -210,8 +210,7 @@ def analyze(receipts, decision_ms, *, synthetic):
     return event
 
 
-def persist(folder, receipts, event):
-    journal = LocalChainJournal(folder / "journal.sqlite")
+def persist(folder, receipts, event, *, expected_sha=None):
     source_sha = digest(canonical(receipts))
     if source_sha != event["source_manifest_sha256"]:
         raise Stop("SOURCE_HASH_MISMATCH")
@@ -222,6 +221,9 @@ def persist(folder, receipts, event):
                    score=None, qualified=False, publishable=False, delivery_authorized=False,
                    source_sha256=source_sha, source_receipts=receipts, stage05_event=event,
                    sql_projection=sql_projection(event), archive_sha256=document["manifest"]["sha256"])
+    if expected_sha is not None and digest(canonical(payload)) != expected_sha:
+        raise Stop("INTEGRATION_READBACK_PIN_MISMATCH")
+    journal = LocalChainJournal(folder / "journal.sqlite")
     identity, outcome = journal.append_readback(payload)
     readback = journal.read_verified(identity)
     if make_document(readback["stage05_event"]) != document:

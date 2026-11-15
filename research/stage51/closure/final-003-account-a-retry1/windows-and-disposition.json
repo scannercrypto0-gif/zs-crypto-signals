@@ -1,0 +1,19 @@
+{
+  "status": "BOUNDED_REJECTED_SOURCE_CHAIN_PASS_ACCOUNT_A",
+  "code_sha": "4e969148efb84d42f1a61f630305f2db972964da",
+  "tree": "dce3ebb6dbdd78dbb8838f374b378b53761aa453",
+  "windows_preflight": "4e969148efb84d42f1a61f630305f2db972964da\ntest_live_entrypoint_passes_account_a_only (test_stage51_final_chain.FinalChainTests.test_live_entrypoint_passes_account_a_only) ... ok\ntest_one_fixture_chain_and_unknown_delivery_stop (test_stage51_final_chain.FinalChainTests.test_one_fixture_chain_and_unknown_delivery_stop) ... ok\ntest_owner_scope_rejects_changed_contract (test_stage51_final_chain.FinalChainTests.test_owner_scope_rejects_changed_contract) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.374s\n\nOK\nOFFLINE_PREFLIGHT_PASS HEAD=4e969148efb84d42f1a61f630305f2db972964da TREE=dce3ebb6dbdd78dbb8838f374b378b53761aa453 CONTRACT_SHA256=6ba993f742f79af4f3e9bae6d3b11e105df35bdee4bb32db5b92f743f5d23120 NETWORK=0\nEXIT=0 UTC=2026-11-10T13:22:36.7247733Z\n",
+  "tests": 3,
+  "live_exit": 0,
+  "binance_calls": 6,
+  "telegram_calls": 7,
+  "outbound": 2,
+  "stage05a": "NO_QUALIFIED_SIGNAL_OBSERVED",
+  "stage05b": "API_ACCEPTED",
+  "stage05c": "ACCOUNT_A_API_ACCEPTED_REPLY",
+  "owner_visual": "NOT_ATTESTED_AT_RUN_TIME",
+  "authorization": "One explicit owner-requested retry; previous claim and receipts preserved",
+  "production": false,
+  "trading": false,
+  "merged": false
+}

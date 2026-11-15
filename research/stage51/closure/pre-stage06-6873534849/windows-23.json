@@ -1,0 +1,18 @@
+{
+  "head": "61804de9e907c9592094adedfd196289dc6a58c3",
+  "tree": "68d43228b6288c4a2b9ebc0d445fb1b23a1d90fa",
+  "python": "Python 3.12.10",
+  "powershell": "7.6.9",
+  "start_utc": "2026-11-14T07:09:27.6360078Z",
+  "cases": [
+    "test_stage03_30m_universe",
+    "test_stage04_windows_operational",
+    "test_stage05_30m_research_snapshot",
+    "test_stage05_convergence_offline",
+    "test_stage05_real_telegram.Stage05RealTransportTargeted.test_interactive_lowercase_auth_no_new_signal_separate_bot"
+  ],
+  "exit_code": 1,
+  "end_utc": "2026-11-14T07:09:29.8881623Z",
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "c0c616be869e9beb956c25a1e49d0a583ffa9e5d4ef9ec6a8e5f828aa8cb8a68"
+}

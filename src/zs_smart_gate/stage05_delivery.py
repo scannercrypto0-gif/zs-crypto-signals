@@ -231,21 +231,21 @@ class DeliveryCoordinator:
                 "B": self.config.signals_chat_b,
                 "C": self.config.analytics_chat}[destination]
 
-    def step(self, event, destination):
+    def step(self, event, destination, *, network_available=True):
         if not self.simulation:
             ensure_event(event)
             if event["source_scope"] != "APPROVED_REAL_SOURCE":
                 raise ContractError("SYNTHETIC_EVENT_LIVE_DISPATCH_FORBIDDEN")
             raise ContractError("VERIFIED_UPSTREAM_READBACK_REQUIRED")
-        return self._step(event, destination)
+        return self._step(event, destination, network_available=network_available)
 
-    def step_verified(self, upstream, identity, expected_sha, destination):
+    def step_verified(self, upstream, identity, expected_sha, destination, *, network_available=True):
         if type(self.store) is not LocalOutbox or type(upstream) is not VerifiedUpstream:
             raise ContractError("LOCAL_VERIFIED_CUSTODY_REQUIRED")
         event = upstream.read(identity, expected_sha)
-        return self._step(event, destination)
+        return self._step(event, destination, network_available=network_available)
 
-    def _step(self, event, destination):
+    def _step(self, event, destination, *, network_available):
         ensure_event(event)
         jobs = {job.destination: job for job in plan(event)}
         if destination not in jobs:
@@ -301,6 +301,10 @@ class DeliveryCoordinator:
                         "retry_after_at": retry_after}
         if count == 0:
             return {"status": "MAX_ATTEMPTS_EXCEEDED", "delivery_id": job.delivery_id}
+        # An offline scheduler can defer before any attempt is reserved. An
+        # error after reservation remains ambiguous and must not be replayed.
+        if network_available is not True:
+            return {"status": "PENDING_OFFLINE", "delivery_id": job.delivery_id}
         # Throttle independently per bot AND per destination; no sleeping/spin.
         moment = parse_utc(now, "DISPATCH_ATTEMPT")
         for identity in ("BOT:" + job.bot_id, "DEST:" + job.destination):

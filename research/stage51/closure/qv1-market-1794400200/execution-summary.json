@@ -1,0 +1,247 @@
+{
+  "executor": "Windows",
+  "code_sha": "01b534a5f8082c13c721de2680650cb66a906790",
+  "clock_dependency_commit": "84578fce1e0a3efc25cc4ae6f0b642d4fe9167e7",
+  "clock_dependency_git_blobs": [
+    {
+      "path": "scripts/stage03-nts-probe.py",
+      "sha": "568e9192010eecf25503534a326bcd7bfdd0480c"
+    },
+    {
+      "path": "src/zs_smart_gate/stage03_nts_authority.py",
+      "sha": "5e34b34795488c6e4467ef72ab1af912baa265d0"
+    },
+    {
+      "path": "src/zs_smart_gate/stage03_source_clock.py",
+      "sha": "b9102d334beeae91c2ca2ddb22e0074a102603c3"
+    }
+  ],
+  "research_only": true,
+  "score_v2_required": false,
+  "production_armed": false,
+  "decision_time_semantics": "Timestamp marks the frozen input snapshot; the evaluator and custody run offline afterward.",
+  "outcome": {
+    "outcome": "REJECTED",
+    "gates": {
+      "SETUP": "FAIL",
+      "EXACT_RECONCILIATION": "PASS",
+      "CONTEXT": "PASS",
+      "LIQUIDITY": "PASS",
+      "UTC_WITNESS": "PASS"
+    },
+    "readback_sha256": "0c98af8c56d405a54e9ed44530bcc1dc228122be5696e8389114b0e9b11618fa",
+    "setup_reason": "NO_BREAKOUT",
+    "market_requests": 7,
+    "time_samples": 4
+  },
+  "timing": {
+    "source_sha256": "61c1bdff63b7f49497f66246c1baa1d379f3bf7778373b288e49d9b63c497efb",
+    "policy_sha256": "890eb3bc2de16b403006d0a145979581641ffbb8df03e8e63c49621c95090e19",
+    "decision_width_seconds": 0.238596,
+    "availability_width_seconds": 1.22052,
+    "witness_sha256": "1f27499758036fa8836419cb14e870ddf6cf0a023b8898750a7d3116ec68edf1",
+    "causal_gap_seconds": 0.262346
+  },
+  "previous_observation": {
+    "state": "UNKNOWN",
+    "reason": "TLS key exchange inside clock brackets",
+    "availability_width_seconds": 6.177885,
+    "decision_width_seconds": 5.285784
+  },
+  "windows_checks": {
+    "netnod_preflight": [
+      {
+        "status": "NTS_AUTHENTICATED_CLOCK_PARTIAL",
+        "TCP_connections": 0,
+        "UDP_datagrams": 1,
+        "system_changes": false,
+        "publication_proved": false,
+        "forward_armed": false,
+        "absolute_UTC_certified": false,
+        "TLS": "TLSv1.3",
+        "ALPN": "ntske/1",
+        "certificate_chain_verified": true,
+        "hostname_verified": true,
+        "leaf_certificate_sha256": "94e7f39d802fe24414e376b820b1c5d94c2c89c3956f694112756f4d35d22038",
+        "ke_records_sha256": "241dcd318c3358a9642e9c9be48f5d9820c36d16e671403d68ee03e69bffbdfc",
+        "cookie_count": 8,
+        "AEAD": "AES_SIV_CMAC_256",
+        "key_material_persisted": false,
+        "sample": {
+          "offset_seconds": -0.05261218547821045,
+          "network_delay_seconds": 0.12462830543518066,
+          "server_root_delay": 0,
+          "server_root_dispersion": 0,
+          "conditional_radius_seconds": 0.06331415271759033,
+          "conditional_local_error_bound_seconds": 0.11592633819580078,
+          "conditional_below_one_second": true,
+          "stratum": 1,
+          "sample_local_received": 1794398512.8341947,
+          "authentication": "TLS13_NTSKE_AND_AES_SIV_CMAC_256",
+          "status": "CLOCK_AUTHENTICATED_CONDITIONAL_BOUND_ONLY",
+          "absolute_UTC_certified": false,
+          "caveat": "Assumes truthful server/root metadata, valid local timestamps and nonnegative network delays; not independent reviewer attestation.",
+          "publication_proved": false
+        },
+        "request_bytes": 332,
+        "response_bytes": 332,
+        "request_sha256": "290c1dc3c0305d92d44af5191ab217abc4be5712025a648c87bd1312bd66e0a3",
+        "response_sha256": "0ed70b45d1b522f0be97d3ac91050eafd459b54ceac479ee0ab500803770d265",
+        "limitation": "Identity and AEAD verified in executor process. Exporter secrets deliberately not saved; independent reviewer repeats fresh protocol rather than offline re-verifying this tag. Authority absolute error/drift not attested."
+      },
+      {
+        "status": "NTS_AUTHENTICATED_CLOCK_PARTIAL",
+        "TCP_connections": 0,
+        "UDP_datagrams": 1,
+        "system_changes": false,
+        "publication_proved": false,
+        "forward_armed": false,
+        "absolute_UTC_certified": false,
+        "TLS": "TLSv1.3",
+        "ALPN": "ntske/1",
+        "certificate_chain_verified": true,
+        "hostname_verified": true,
+        "leaf_certificate_sha256": "94e7f39d802fe24414e376b820b1c5d94c2c89c3956f694112756f4d35d22038",
+        "ke_records_sha256": "241dcd318c3358a9642e9c9be48f5d9820c36d16e671403d68ee03e69bffbdfc",
+        "cookie_count": 8,
+        "AEAD": "AES_SIV_CMAC_256",
+        "key_material_persisted": false,
+        "sample": {
+          "offset_seconds": -0.059924960136413574,
+          "network_delay_seconds": 0.11165356636047363,
+          "server_root_delay": 0,
+          "server_root_dispersion": 0,
+          "conditional_radius_seconds": 0.05682678318023682,
+          "conditional_local_error_bound_seconds": 0.11675174331665039,
+          "conditional_below_one_second": true,
+          "stratum": 1,
+          "sample_local_received": 1794398512.9573133,
+          "authentication": "TLS13_NTSKE_AND_AES_SIV_CMAC_256",
+          "status": "CLOCK_AUTHENTICATED_CONDITIONAL_BOUND_ONLY",
+          "absolute_UTC_certified": false,
+          "caveat": "Assumes truthful server/root metadata, valid local timestamps and nonnegative network delays; not independent reviewer attestation.",
+          "publication_proved": false
+        },
+        "request_bytes": 332,
+        "response_bytes": 332,
+        "request_sha256": "64cb6b85b43a088bf2bd76d6a1579a09256599dc8b4263040a95e30c363f8d45",
+        "response_sha256": "a6d65f8ae32698f26c9248b64d62c78675709845b1870e18df0963811d97bbe6",
+        "limitation": "Identity and AEAD verified in executor process. Exporter secrets deliberately not saved; independent reviewer repeats fresh protocol rather than offline re-verifying this tag. Authority absolute error/drift not attested."
+      },
+      {
+        "status": "NTS_AUTHENTICATED_CLOCK_PARTIAL",
+        "TCP_connections": 0,
+        "UDP_datagrams": 1,
+        "system_changes": false,
+        "publication_proved": false,
+        "forward_armed": false,
+        "absolute_UTC_certified": false,
+        "TLS": "TLSv1.3",
+        "ALPN": "ntske/1",
+        "certificate_chain_verified": true,
+        "hostname_verified": true,
+        "leaf_certificate_sha256": "94e7f39d802fe24414e376b820b1c5d94c2c89c3956f694112756f4d35d22038",
+        "ke_records_sha256": "241dcd318c3358a9642e9c9be48f5d9820c36d16e671403d68ee03e69bffbdfc",
+        "cookie_count": 8,
+        "AEAD": "AES_SIV_CMAC_256",
+        "key_material_persisted": false,
+        "sample": {
+          "offset_seconds": -0.06202900409698486,
+          "network_delay_seconds": 0.10778307914733887,
+          "server_root_delay": 0,
+          "server_root_dispersion": 0,
+          "conditional_radius_seconds": 0.054891539573669434,
+          "conditional_local_error_bound_seconds": 0.1169205436706543,
+          "conditional_below_one_second": true,
+          "stratum": 1,
+          "sample_local_received": 1794398513.0705874,
+          "authentication": "TLS13_NTSKE_AND_AES_SIV_CMAC_256",
+          "status": "CLOCK_AUTHENTICATED_CONDITIONAL_BOUND_ONLY",
+          "absolute_UTC_certified": false,
+          "caveat": "Assumes truthful server/root metadata, valid local timestamps and nonnegative network delays; not independent reviewer attestation.",
+          "publication_proved": false
+        },
+        "request_bytes": 332,
+        "response_bytes": 332,
+        "request_sha256": "a5ef43e52a6ca83c12fda5d9a375354325c1fd7b1ba93e2ef842eef74b7cf723",
+        "response_sha256": "6305af0ceda20d6bc821cd09da03c3ed4cc59518a72859637e47702104fcca39",
+        "limitation": "Identity and AEAD verified in executor process. Exporter secrets deliberately not saved; independent reviewer repeats fresh protocol rather than offline re-verifying this tag. Authority absolute error/drift not attested."
+      },
+      {
+        "status": "NTS_AUTHENTICATED_CLOCK_PARTIAL",
+        "TCP_connections": 0,
+        "UDP_datagrams": 1,
+        "system_changes": false,
+        "publication_proved": false,
+        "forward_armed": false,
+        "absolute_UTC_certified": false,
+        "TLS": "TLSv1.3",
+        "ALPN": "ntske/1",
+        "certificate_chain_verified": true,
+        "hostname_verified": true,
+        "leaf_certificate_sha256": "94e7f39d802fe24414e376b820b1c5d94c2c89c3956f694112756f4d35d22038",
+        "ke_records_sha256": "241dcd318c3358a9642e9c9be48f5d9820c36d16e671403d68ee03e69bffbdfc",
+        "cookie_count": 8,
+        "AEAD": "AES_SIV_CMAC_256",
+        "key_material_persisted": false,
+        "sample": {
+          "offset_seconds": -0.06263291835784912,
+          "network_delay_seconds": 0.10364603996276855,
+          "server_root_delay": 0,
+          "server_root_dispersion": 0,
+          "conditional_radius_seconds": 0.05282301998138428,
+          "conditional_local_error_bound_seconds": 0.1154559383392334,
+          "conditional_below_one_second": true,
+          "stratum": 1,
+          "sample_local_received": 1794398513.1871533,
+          "authentication": "TLS13_NTSKE_AND_AES_SIV_CMAC_256",
+          "status": "CLOCK_AUTHENTICATED_CONDITIONAL_BOUND_ONLY",
+          "absolute_UTC_certified": false,
+          "caveat": "Assumes truthful server/root metadata, valid local timestamps and nonnegative network delays; not independent reviewer attestation.",
+          "publication_proved": false
+        },
+        "request_bytes": 332,
+        "response_bytes": 332,
+        "request_sha256": "81c65c79de715d3fb30268bcda1d305aa328a05a902433bd84ae3e5e1da8485d",
+        "response_sha256": "132cc25c3c11f39e535a7487ab5709a1ec898bc72dbd39f57c4b6c9d88a98285",
+        "limitation": "Identity and AEAD verified in executor process. Exporter secrets deliberately not saved; independent reviewer repeats fresh protocol rather than offline re-verifying this tag. Authority absolute error/drift not attested."
+      }
+    ],
+    "tests": [
+      {
+        "sha256": "2280c5a484814a84d3608e57a193704e5c99e0278a7db6a2cc4c1f9a63b8c224",
+        "summary": [
+          "ERROR: test_live_baseline_gate_claim_and_nonacknowledging_poll (test_stage05_operational.OperationalTests.test_live_baseline_gate_claim_and_nonacknowledging_poll)",
+          "Ran 527 tests in 19.850s",
+          "FAILED (errors=1)"
+        ],
+        "name": "qv1-market-windows-tests.txt"
+      },
+      {
+        "sha256": "a310c13b0ef7003e830e4b74cd6613d93328940567486b3bf1a607723f2d88f8",
+        "summary": [
+          "Ran 527 tests in 21.231s",
+          "OK"
+        ],
+        "name": "qv1-market-windows-tests-recheck.txt"
+      },
+      {
+        "sha256": "5816d36c64736f39534533f745ca665b40124f8f91c2e3b12d302e53049742c6",
+        "summary": [
+          "Ran 527 tests in 18.051s",
+          "OK"
+        ],
+        "name": "qv1-market-windows-312.txt"
+      }
+    ]
+  },
+  "ci": {
+    "status": "NOT_STARTED_BILLING_OR_SPENDING_LIMIT",
+    "run": "https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/43014827291"
+  },
+  "sources": {
+    "market": "https://developers.binance.com/en/docs/products/spot/rest-api",
+    "time": "https://www.netnod.se/netnod-time/how-to-use-nts"
+  },
+  "limits": "Authenticated NTS bounds depend on provider error metadata. No scientific closure, production registry activation, Telegram delivery or trading."
+}

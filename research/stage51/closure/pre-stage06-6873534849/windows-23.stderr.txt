@@ -1,0 +1,61 @@
+test_bad_symbol_candle_binding_is_explicit_not_silently_dropped (test_stage03_30m_universe.Stage03ThirtyMinuteUniverseTests.test_bad_symbol_candle_binding_is_explicit_not_silently_dropped) ... ok
+test_duplicate_or_wrong_boundary_is_fail_closed (test_stage03_30m_universe.Stage03ThirtyMinuteUniverseTests.test_duplicate_or_wrong_boundary_is_fail_closed) ... ok
+test_no_breakout_is_not_a_precondition (test_stage03_30m_universe.Stage03ThirtyMinuteUniverseTests.test_no_breakout_is_not_a_precondition) ... ok
+test_twelve_symbols_are_all_evaluated_without_eight_asset_loss (test_stage03_30m_universe.Stage03ThirtyMinuteUniverseTests.test_twelve_symbols_are_all_evaluated_without_eight_asset_loss) ... ok
+test_atomic_append_idempotence_and_conflict (test_stage04_windows_operational.WindowsOperationalCustodyTests.test_atomic_append_idempotence_and_conflict) ... FAIL
+test_bad_namespace_and_secret_field_fail_closed (test_stage04_windows_operational.WindowsOperationalCustodyTests.test_bad_namespace_and_secret_field_fail_closed) ... ok
+test_existing_rows_prohibit_sql_update_and_delete (test_stage04_windows_operational.WindowsOperationalCustodyTests.test_existing_rows_prohibit_sql_update_and_delete) ... ERROR
+test_external_volume_claim_requires_different_volume (test_stage04_windows_operational.WindowsOperationalCustodyTests.test_external_volume_claim_requires_different_volume) ... ok
+test_online_snapshot_exact_backup_then_new_path_restore (test_stage04_windows_operational.WindowsOperationalCustodyTests.test_online_snapshot_exact_backup_then_new_path_restore) ... ok
+test_restore_never_overwrites_existing_or_bad_pin (test_stage04_windows_operational.WindowsOperationalCustodyTests.test_restore_never_overwrites_existing_or_bad_pin) ... ok
+test_tampered_backup_bytes_detected_by_independent_pin (test_stage04_windows_operational.WindowsOperationalCustodyTests.test_tampered_backup_bytes_detected_by_independent_pin) ... ok
+test_30m_converter_never_creates_signal_or_numeric_gate (test_stage05_30m_research_snapshot.Stage05ThirtyMinuteResearchTests.test_30m_converter_never_creates_signal_or_numeric_gate) ... ok
+test_authorized_05c_reads_30m_and_accepts_null_as_of_when_unimplemented (test_stage05_30m_research_snapshot.Stage05ThirtyMinuteResearchTests.test_authorized_05c_reads_30m_and_accepts_null_as_of_when_unimplemented) ... ok
+test_changed_feature_or_parent_identity_cannot_pass (test_stage05_30m_research_snapshot.Stage05ThirtyMinuteResearchTests.test_changed_feature_or_parent_identity_cannot_pass) ... ok
+test_legacy_5m_snapshot_is_still_readable (test_stage05_30m_research_snapshot.Stage05ThirtyMinuteResearchTests.test_legacy_5m_snapshot_is_still_readable) ... ok
+test_wrong_user_and_future_data_rejected (test_stage05_30m_research_snapshot.Stage05ThirtyMinuteResearchTests.test_wrong_user_and_future_data_rejected) ... ok
+test_05c_cannot_claim_future_snapshot_or_wrong_actor (test_stage05_convergence_offline.Stage05ConvergenceOfflineTests.test_05c_cannot_claim_future_snapshot_or_wrong_actor) ... ok
+test_05c_read_only_two_authorized_accounts_without_network (test_stage05_convergence_offline.Stage05ConvergenceOfflineTests.test_05c_read_only_two_authorized_accounts_without_network) ... ok
+test_no_qualification_from_unknown_or_new_r2_research (test_stage05_convergence_offline.Stage05ConvergenceOfflineTests.test_no_qualification_from_unknown_or_new_r2_research) ... ok
+test_one_synthetic_qualified_signal_three_separate_deliveries (test_stage05_convergence_offline.Stage05ConvergenceOfflineTests.test_one_synthetic_qualified_signal_three_separate_deliveries) ... ok
+test_synthetic_rejected_candidate_c_only_no_signal (test_stage05_convergence_offline.Stage05ConvergenceOfflineTests.test_synthetic_rejected_candidate_c_only_no_signal) ... ok
+test_three_distinct_bot_tokens_owner_a_b_and_c_equals_a (test_stage05_convergence_offline.Stage05ConvergenceOfflineTests.test_three_distinct_bot_tokens_owner_a_b_and_c_equals_a) ... ok
+test_interactive_lowercase_auth_no_new_signal_separate_bot (test_stage05_real_telegram.Stage05RealTransportTargeted.test_interactive_lowercase_auth_no_new_signal_separate_bot) ... ok
+
+======================================================================
+ERROR: test_existing_rows_prohibit_sql_update_and_delete (test_stage04_windows_operational.WindowsOperationalCustodyTests.test_existing_rows_prohibit_sql_update_and_delete)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python312\Lib\shutil.py", line 633, in _rmtree_unsafe
+    os.unlink(fullname)
+PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'D:\\ZS-SMART-GATE\\evidence\\pre06-6873534849\\tmp2pzh4dqq\\runtime\\custody.db'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python312\Lib\tempfile.py", line 954, in cleanup
+    self._rmtree(self.name, ignore_errors=self._ignore_cleanup_errors)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python312\Lib\tempfile.py", line 934, in _rmtree
+    _shutil.rmtree(name, onexc=onexc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python312\Lib\shutil.py", line 781, in rmtree
+    return _rmtree_unsafe(path, onexc)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python312\Lib\shutil.py", line 635, in _rmtree_unsafe
+    onexc(os.unlink, fullname, err)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python312\Lib\tempfile.py", line 909, in onexc
+    _os.unlink(path)
+PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'D:\\ZS-SMART-GATE\\evidence\\pre06-6873534849\\tmp2pzh4dqq\\runtime\\custody.db'
+
+======================================================================
+FAIL: test_atomic_append_idempotence_and_conflict (test_stage04_windows_operational.WindowsOperationalCustodyTests.test_atomic_append_idempotence_and_conflict)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\ZS-SMART-GATE\pre06-6873534849\tests\test_stage04_windows_operational.py", line 48, in test_atomic_append_idempotence_and_conflict
+    with self.assertRaises(ContractError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ContractError not raised
+
+----------------------------------------------------------------------
+Ran 23 tests in 0.617s
+
+FAILED (failures=1, errors=1)

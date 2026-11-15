@@ -1,0 +1,46 @@
+{
+  "code_sha": "59bd73920488de6e3f150dcac3b43ba2d108f9e1",
+  "tree": "52b290d14f3b580a2c55b50fc7b415ddac3239fe",
+  "command": "py -3.12 -B -m unittest discover -s tests -p test_stage03_qv1_policy.py -v",
+  "tests": 4,
+  "exit": 0,
+  "log": "59bd73920488de6e3f150dcac3b43ba2d108f9e1\nPYTHON=Python 3.12.10 POWERSHELL=7.6.9\ntest_absent_unapproved_and_mismatched_policy (test_stage03_qv1_policy.PolicyTests.test_absent_unapproved_and_mismatched_policy) ... ok\ntest_clock_bounds_tampering_and_future (test_stage03_qv1_policy.PolicyTests.test_clock_bounds_tampering_and_future) ... ok\ntest_fixture_pass_reopen_scoreless_and_fail (test_stage03_qv1_policy.PolicyTests.test_fixture_pass_reopen_scoreless_and_fail) ... ok\ntest_market_and_context_boundary_and_absence (test_stage03_qv1_policy.PolicyTests.test_market_and_context_boundary_and_absence) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.444s\n\nOK\nEXIT=0 UTC=2026-11-11T10:34:34.7968217Z\n",
+  "log_sha256": "4ccd0306a2a90c14efef1909f7019bbaa2906afb8f2646049d309fc595bbe3ff",
+  "files": [
+    {
+      "path": "src/zs_smart_gate/stage03_qv1_intraday_up.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1a42e1c4a1ad003de1d3a5d09c0aeb4697eefe32"
+    },
+    {
+      "path": "src/zs_smart_gate/stage03_qv1_policy.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f90439bbd16ed8e363d26cc164079cef5a5ed247"
+    },
+    {
+      "path": "tests/test_stage03_qv1_policy.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "934a9c25cb2590573d7cc9e0153e56d1335ce3f9"
+    },
+    {
+      "path": "research/stage51/closure/QV1-B-INTRADAY-UP-QUALIFICATION-POLICY-v2-PROPOSED.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9d35feb90e44cdbfffc150de706b6e4cbaff3b64"
+    }
+  ],
+  "status": {
+    "G1": "DONE_HOOK_AND_PROPOSED_PENDING_OWNER",
+    "G2": "DONE_AND_PROPOSED_PENDING_OWNER",
+    "G3": "DONE_NEEDS_EXTERNAL_MEASUREMENT",
+    "G4": "DONE_OFFLINE_REAL_POLICY_DISABLED"
+  },
+  "network": {
+    "binance": 0,
+    "telegram": 0,
+    "clock": 0
+  }
+}

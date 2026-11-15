@@ -1,4 +1,5 @@
 """Bounded 05C TEST ONLY orchestration over actual private Telegram updates."""
+from collections import Counter
 from datetime import datetime, timezone
 import time
 
@@ -11,7 +12,7 @@ from .stage05c_inbound_forensics import InboundDiagnostics
 
 def bounded_interactive(*, config, transport, store, upstream, source_ref, started_at,
                         session_id, flags=None, permit=None, head_sha=None,
-                        clock=None, simulation=False, ready=None, guard=lambda: None, on_attempt=None):
+                        clock=None, simulation=False, ready=None, guard=lambda: None, on_attempt=None, account_a_only=False):
     """At most 12 Bot API calls and two replies; never acknowledges updates."""
     config.validate()
     if type(store) is not LocalOutbox or type(upstream) is not VerifiedUpstream:
@@ -38,9 +39,13 @@ def bounded_interactive(*, config, transport, store, upstream, source_ref, start
     if store.read(key) is not None:
         raise ContractError("INTERACTIVE_SESSION_ALREADY_CONSUMED")
     calls = []
-    pair = {"A": config.signals_chat_a, "B": config.signals_chat_b}
+    pair = {"A": config.signals_chat_a}
+    if not account_a_only:
+        pair["B"] = config.signals_chat_b
     pending = {}
-    diagnostics = InboundDiagnostics()
+    diagnostics = Counter()  # Existing owner-accepted Stage05C counters.
+    inbound_diagnostics = InboundDiagnostics()  # Additional privacy-safe forensic view.
+    diagnostic_pending = {}  # Separate from the accepted matching/dispatch state.
     baseline_update_count = None
 
     def call(label, method, **kwargs):
@@ -50,12 +55,11 @@ def bounded_interactive(*, config, transport, store, upstream, source_ref, start
 
     def result(status, replies=None):
         return {"status": status, "replies": replies or {}, "calls": calls,
-                "claimed": store.read(key) is not None,
-                "inbound_diagnostics": dict(diagnostics.summary(),
+                "claimed": store.read(key) is not None, "ingress_counts": dict(diagnostics),
+                "inbound_diagnostics": dict(inbound_diagnostics.summary(),
                                             baseline_update_count=baseline_update_count)}
 
     def poll():
-        # offset 0 intentionally avoids acknowledging/discarding queued updates.
         return call("getUpdates", transport.get_updates, offset=0)
 
     high_water = -1
@@ -87,17 +91,57 @@ def bounded_interactive(*, config, transport, store, upstream, source_ref, start
         updates = poll()
         if updates.status != "ACCEPTED" or len(updates.updates) > 20:
             return result("INTERACTIVE_POLL_FAILED_OR_UNKNOWN")
-        diagnostics.record(updates.updates, baseline=high_water, accounts=pair,
-                           started_at=started_at, observed_at=int(clock().timestamp()), pending=pending,
-                           simulation=simulation)
+        # Diagnostic observation is additive: preserve the already accepted
+        # account_a_only routing, ingress_counts and reply state unchanged.
+        inbound_diagnostics.record(updates.updates, baseline=high_water, accounts=pair,
+                                   started_at=started_at,
+                                   observed_at=int(clock().timestamp()),
+                                   pending=diagnostic_pending, simulation=simulation)
+        for update in updates.updates:
+            diagnostics["updates_examined"] += 1
+            if not isinstance(update, dict):
+                diagnostics["invalid_update"] += 1
+                continue
+            if not simulation and (type(update.get("update_id")) is not int
+                                   or update["update_id"] <= high_water):
+                diagnostics["baseline_or_invalid_update_id"] += 1
+                continue
+            msg = update.get("message")
+            if not isinstance(msg, dict):
+                diagnostics["no_message"] += 1
+                continue
+            sender, chat = msg.get("from"), msg.get("chat")
+            if not isinstance(sender, dict) or not isinstance(chat, dict):
+                diagnostics["invalid_sender_or_chat"] += 1
+                continue
+            uid, cid = sender.get("id"), chat.get("id")
+            if (type(uid) is not int or type(cid) is not int or uid != cid
+                    or sender.get("is_bot") is not False or chat.get("type") != "private"):
+                diagnostics["not_private_human"] += 1
+                continue
+            if str(uid) not in pair.values():
+                diagnostics["account_not_allowed"] += 1
+                continue
+            if not isinstance(msg.get("text"), str) or msg["text"].strip().upper() != "BTCUSDT":
+                diagnostics["symbol_mismatch"] += 1
+                continue
+            if type(msg.get("date")) is not int or not started_at <= msg["date"] <= int(clock().timestamp()):
+                diagnostics["outside_session_time"] += 1
+                continue
+            if type(msg.get("message_id")) is not int or msg["message_id"] <= 0:
+                diagnostics["invalid_message_id"] += 1
+                continue
+            for role, account in pair.items():
+                if str(uid) == account:
+                    pending.setdefault(role, msg["message_id"])
+                    diagnostics["matched_" + role] += 1
         if set(pending) == set(pair):
             break
-        # getUpdates(offset=0) reads the oldest 20 without acknowledgement.
-        # A full batch may hide newer human messages: STOP, never advance offset.
+        # Zero cursor advancement: a full page may hide newer messages.
         if not simulation and len(updates.updates) >= 20:
             return result("INTERACTIVE_BACKLOG_FULL_NO_CURSOR_ADVANCE")
     if set(pending) != set(pair):
-        return result("TWO_HUMAN_REQUESTS_NOT_OBSERVED")
+        return result("ACCOUNT_A_REQUEST_NOT_OBSERVED" if account_a_only else "TWO_HUMAN_REQUESTS_NOT_OBSERVED")
     results = {}
     for role, account in pair.items():
         if not 0 <= int(clock().timestamp())-started_at <= 180:
@@ -120,4 +164,4 @@ def bounded_interactive(*, config, transport, store, upstream, source_ref, start
         if receipt["status"] != "ACCEPTED":
             return result("INTERACTIVE_PARTIAL_STOP", results)
         results[role]["reply_binding_verified"] = not simulation
-    return result("TWO_API_ACCEPTED_REPLIES", results)
+    return result("ACCOUNT_A_API_ACCEPTED_REPLY" if account_a_only else "TWO_API_ACCEPTED_REPLIES", results)

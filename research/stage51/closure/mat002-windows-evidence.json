@@ -1,0 +1,65 @@
+{
+  "order": "ZS-00-05-MATERIAL-GAPS-CLOSURE-20261110-002",
+  "code_sha": "fb9855c38ea1e5423b23db159bf40f2b9b2eca81",
+  "tree": "a1514da91cae53b0636b15ab16463b7375c0fbdf",
+  "windows_tests_passed": 6,
+  "exit_code": 0,
+  "windows_output": "fb9855c38ea1e5423b23db159bf40f2b9b2eca81\nSTART_UTC=2026-11-10T12:05:46.1436913Z\nPYTHON=Python 3.12.10 POWERSHELL=7.6.9 SHA=fb9855c38ea1e5423b23db159bf40f2b9b2eca81\ntest_four_research_paths_never_promote (test_stage51_material.MaterialGapTests.test_four_research_paths_never_promote) ... ok\ntest_missing_future_tampered_and_n03 (test_stage51_material.MaterialGapTests.test_missing_future_tampered_and_n03) ... ok\ntest_missing_source_and_unknown_reply (test_stage51_material.MaterialGapTests.test_missing_source_and_unknown_reply) ... ok\ntest_recorded_market_to_both_replies_with_durable_bindings (test_stage51_material.MaterialGapTests.test_recorded_market_to_both_replies_with_durable_bindings) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.548s\n\nOK\nMATERIAL_EXIT=0\ntest_interactive_lowercase_auth_no_new_signal_separate_bot (test_stage05_real_telegram.Stage05RealTransportTargeted.test_interactive_lowercase_auth_no_new_signal_separate_bot) ... ok\n\n----------------------------------------------------------------------\nRan 1 test in 0.001s\n\nOK\nINTERACTIVE_REGRESSION_EXIT=0\ntest_offline_full_path (test_e2e51.ChainTests.test_offline_full_path) ... ok\n\n----------------------------------------------------------------------\nRan 1 test in 0.131s\n\nOK\nCHAIN_REGRESSION_EXIT=0\nEND_UTC=2026-11-10T12:05:49.5826108Z\n",
+  "log_sha256": "a5652845c05b5bb9071bd377f27617edca883b2d1e5701fd66c61c2cb11e5925",
+  "manifest_sha256": "96d135661cc654e3f357a394f927f336ff5728846cf28b0d79d775febd0cf04a",
+  "code_files": [
+    {
+      "path": "research/stage51/closure/material-002.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e8cc8a656124beff98e0812f68f136a5925d74dc",
+      "sha256": "6a84b9ff68e1943b7fd79c9db24518af1bca5e137e6a67bc03eea3da83eba32b"
+    },
+    {
+      "path": "src/zs_smart_gate/e2e51.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b6851fbefbc2a3c5ee044a4de0bb7df3d3c93153",
+      "sha256": "86cd802dc8051edfcc4d1f9057bbf2d853f13fc9b34bec593c8d28a25e9238c4"
+    },
+    {
+      "path": "src/zs_smart_gate/stage03_qv1.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ae624702b735cc189e23090f8499844b668ff1fa",
+      "sha256": "421f9122a9c98eb3447e784e4096e0e1fa0fb604d40f70d00617f450c52aa08c"
+    },
+    {
+      "path": "src/zs_smart_gate/stage05_custody.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c9175b9d31ace4063df0a69bd9e4992a33b3b940",
+      "sha256": "ef9b1e90b415c606994c9f2e6c709d2e5a1eafa395889b810dc0df6c2cbb9179"
+    },
+    {
+      "path": "src/zs_smart_gate/stage05_interactive.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9bc9d8d1ca3a3f3b231ff7ab83808e7f65086b61",
+      "sha256": "c21f30b57131587953a00914592f7479d819ce0d8fe4a6f3c9001c8a2349917c"
+    },
+    {
+      "path": "src/zs_smart_gate/stage51_integration.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d31672dea3446de15c975ce4e166876d6505d738",
+      "sha256": "4227e4d4f0b4e4b08584445475b3594a389122790555634c39c2b608afb7be11"
+    },
+    {
+      "path": "tests/test_stage51_material.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "afd9fd6271c0b3361588ea10814b834947ce0c30",
+      "sha256": "ac935af7122c3ce07e95c6127f2b93810867052c4459e68f5ff6cdb0c264e157"
+    }
+  ],
+  "binance_calls": 0,
+  "telegram_calls": 0,
+  "live": "NO_GO",
+  "historical_receipts_preserved": true
+}

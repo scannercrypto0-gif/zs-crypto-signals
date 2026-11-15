@@ -1,0 +1,17 @@
+test_any_mutation_fails_exact_sha_and_legacy_unchanged (test_stage03_research_handoff.TestStage03ResearchHandoff.test_any_mutation_fails_exact_sha_and_legacy_unchanged) ... ok
+test_disallowed_policy_or_missing_feature_rejected (test_stage03_research_handoff.TestStage03ResearchHandoff.test_disallowed_policy_or_missing_feature_rejected) ... ok
+test_invalid_window_does_not_create_admitted_handoff (test_stage03_research_handoff.TestStage03ResearchHandoff.test_invalid_window_does_not_create_admitted_handoff) ... ok
+test_no_stage05_promotion_or_delivery_from_research (test_stage03_research_handoff.TestStage03ResearchHandoff.test_no_stage05_promotion_or_delivery_from_research) ... ok
+test_r0_r2_to_stage04_research_only_with_stable_digest (test_stage03_research_handoff.TestStage03ResearchHandoff.test_r0_r2_to_stage04_research_only_with_stable_digest) ... ok
+test_atomic_append_idempotence_and_conflict (test_stage04_windows_operational.WindowsOperationalCustodyTests.test_atomic_append_idempotence_and_conflict) ... ok
+test_bad_namespace_and_secret_field_fail_closed (test_stage04_windows_operational.WindowsOperationalCustodyTests.test_bad_namespace_and_secret_field_fail_closed) ... ok
+test_existing_rows_prohibit_sql_update_and_delete (test_stage04_windows_operational.WindowsOperationalCustodyTests.test_existing_rows_prohibit_sql_update_and_delete) ... ok
+test_external_volume_claim_requires_different_volume (test_stage04_windows_operational.WindowsOperationalCustodyTests.test_external_volume_claim_requires_different_volume) ... ok
+test_online_snapshot_exact_backup_then_new_path_restore (test_stage04_windows_operational.WindowsOperationalCustodyTests.test_online_snapshot_exact_backup_then_new_path_restore) ... ok
+test_restore_never_overwrites_existing_or_bad_pin (test_stage04_windows_operational.WindowsOperationalCustodyTests.test_restore_never_overwrites_existing_or_bad_pin) ... ok
+test_tampered_backup_bytes_detected_by_independent_pin (test_stage04_windows_operational.WindowsOperationalCustodyTests.test_tampered_backup_bytes_detected_by_independent_pin) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.555s
+
+OK
