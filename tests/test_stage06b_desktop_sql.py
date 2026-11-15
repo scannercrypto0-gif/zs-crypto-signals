@@ -7,7 +7,7 @@ import unittest
 
 from test_e2e51 import fixture
 from zs_smart_gate.e2e51 import analyze
-from zs_smart_gate.stage05_contracts import canonical, digest, make_document, ContractError
+from zs_smart_gate.stage05_contracts import canonical, digest, make_document, ContractError, ensure_event
 from zs_smart_gate.stage06b_desktop_sql import (
     MANIFEST, build_sql_staging, apply_sql_server
 )
@@ -216,6 +216,66 @@ class DesktopSQLTests(unittest.TestCase):
         with self.assertRaises(ContractError):
             apply_sql_server(conn, packet)
         self.assertEqual(conn.rollbacks, 1)
+
+    def test_archive_cannot_precede_its_decision_time(self):
+        s = self.source()
+        decision = datetime.fromisoformat(self.event["timestamps"]["decision_at"].replace("Z","+00:00"))
+        export = __import__("json").loads(s["raw_export"])
+        export["messages"][0]["date_unixtime"] = str(int(decision.timestamp()) - 120)
+        s["raw_export"] = canonical(export)
+        s["manifest"]["export_sha256"] = digest(s["raw_export"])
+        s["manifest"]["manifest_sha256"] = digest(canonical(
+            {k:v for k,v in s["manifest"].items() if k!="manifest_sha256"}))
+        with self.assertRaisesRegex(ContractError, "ARCHIVE_BEFORE_DECISION"):
+            build_sql_staging([s])
+
+    def test_export_must_be_a_personal_chat(self):
+        s = self.source()
+        export = __import__("json").loads(s["raw_export"])
+        export["type"] = "public_channel"
+        s["raw_export"] = canonical(export)
+        s["manifest"]["export_sha256"] = digest(s["raw_export"])
+        s["manifest"]["manifest_sha256"] = digest(canonical(
+            {k:v for k,v in s["manifest"].items() if k!="manifest_sha256"}))
+        with self.assertRaises(ContractError):
+            build_sql_staging([s])
+
+    def test_qualified_cross_chat_signal_id_must_match_verified_archive(self):
+        event = deepcopy(self.event)
+        event["event_type"] = "QUALIFIED_SIGNAL"
+        event["qualification_status"] = "QUALIFIED"
+        event["qualification_authority"] = "EXPLICIT_APPROVED_UPSTREAM"
+        event["qualification_evidence_sha256"] = "a"*64
+        event["signal_id"] = "SYNTHETIC_LINK_FIXTURE_NOT_A_SIGNAL"
+        event["gates"] = [{**g, "state":"PASS", "reason_codes":[]} for g in event["gates"]]
+        event["reject_reason_codes"] = []
+        event["quality_metadata"]["qualification"] = "SYNTHETIC_TEST_ONLY"
+        ensure_event(event)
+        self.archive = make_document(event)
+        analytics = self.source()
+        primary = self.source("SIGNALS_A", 1001, 101, 701, 21, with_attachment=False)
+        text = ("ZS05 SIGNAL | " + event["signal_id"] + "\nCandidate: " +
+                event["candidate_id"] + "\nSource scope: APPROVED_REAL_SOURCE\nSymbol: " +
+                event["symbol"] + "\n")
+        exp = __import__("json").loads(primary["raw_export"])
+        exp["messages"][0]["text"] = text
+        primary["raw_export"] = canonical(exp)
+        primary["manifest"]["export_sha256"] = digest(primary["raw_export"])
+        primary["manifest"]["manifest_sha256"] = digest(canonical(
+            {k:v for k,v in primary["manifest"].items() if k!="manifest_sha256"}))
+        packet = build_sql_staging([primary, analytics])
+        msgs = [m for m in packet["messages"] if m["role"] == "SIGNALS_A"]
+        self.assertEqual(msgs[0]["signal_id"], event["signal_id"])
+        self.assertEqual(msgs[0]["candidate_id"], event["candidate_id"])
+        bad = deepcopy(primary)
+        exp["messages"][0]["text"] = text.replace("Symbol: BTCUSDT", "Symbol: ETHUSDT")
+        bad["raw_export"] = canonical(exp)
+        bad["manifest"]["export_sha256"] = digest(bad["raw_export"])
+        bad["manifest"]["manifest_sha256"] = digest(canonical(
+            {k:v for k,v in bad["manifest"].items() if k!="manifest_sha256"}))
+        with self.assertRaisesRegex(ContractError, "UNVERIFIED_SIGNAL_CROSS_CHAT"):
+            build_sql_staging([bad, analytics])
+
 
 
 if __name__ == "__main__":
