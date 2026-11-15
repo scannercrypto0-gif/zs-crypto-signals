@@ -9,6 +9,7 @@ IF OBJECT_ID(N'dbo.zs06b_candidates', N'U') IS NULL
 CREATE TABLE dbo.zs06b_candidates (
     candidate_id varchar(128) NOT NULL CONSTRAINT pk_zs06b_candidates PRIMARY KEY,
     event_sha256 char(64) COLLATE Latin1_General_100_BIN2 NOT NULL,
+    asset_symbol varchar(32) NOT NULL,
     source_manifest_sha256 char(64) COLLATE Latin1_General_100_BIN2 NOT NULL,
     qualification_status varchar(16) NOT NULL,
     CONSTRAINT ck_zs06b_qualification CHECK (qualification_status IN ('QUALIFIED','REJECTED'))
