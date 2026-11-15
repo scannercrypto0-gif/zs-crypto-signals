@@ -22,6 +22,30 @@ CREATE TABLE dbo.zs06b_signals (
         REFERENCES dbo.zs06b_candidates(candidate_id)
 );
 
+IF OBJECT_ID(N'dbo.zs06b_candidate_decisions', N'U') IS NULL
+CREATE TABLE dbo.zs06b_candidate_decisions (
+    candidate_id varchar(128) NOT NULL,
+    gate_id varchar(128) NOT NULL,
+    payload_sha256 char(64) COLLATE Latin1_General_100_BIN2 NOT NULL,
+    payload_json nvarchar(max) NOT NULL,
+    CONSTRAINT pk_zs06b_decisions PRIMARY KEY (candidate_id, gate_id),
+    CONSTRAINT fk_zs06b_decisions_candidate FOREIGN KEY (candidate_id)
+        REFERENCES dbo.zs06b_candidates(candidate_id),
+    CONSTRAINT ck_zs06b_decision_json CHECK (ISJSON(payload_json) = 1)
+);
+
+IF OBJECT_ID(N'dbo.zs06b_indicator_values', N'U') IS NULL
+CREATE TABLE dbo.zs06b_indicator_values (
+    candidate_id varchar(128) NOT NULL,
+    indicator_id varchar(128) NOT NULL,
+    payload_sha256 char(64) COLLATE Latin1_General_100_BIN2 NOT NULL,
+    payload_json nvarchar(max) NOT NULL,
+    CONSTRAINT pk_zs06b_indicators PRIMARY KEY (candidate_id, indicator_id),
+    CONSTRAINT fk_zs06b_indicators_candidate FOREIGN KEY (candidate_id)
+        REFERENCES dbo.zs06b_candidates(candidate_id),
+    CONSTRAINT ck_zs06b_indicator_json CHECK (ISJSON(payload_json) = 1)
+);
+
 IF OBJECT_ID(N'dbo.zs06b_messages', N'U') IS NULL
 CREATE TABLE dbo.zs06b_messages (
     bot_id bigint NOT NULL,
