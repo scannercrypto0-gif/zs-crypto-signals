@@ -1,5 +1,6 @@
 """Scoped Stage07 offline tests; no source, Telegram, SQL or market access."""
 from dataclasses import replace
+from copy import deepcopy
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal as D
 from unittest import TestCase
@@ -103,3 +104,21 @@ class Stage07Tests(TestCase):
         with self.assertRaises(ContractError):
             retrospective_labels(record, (replace(b, open_at=start-timedelta(seconds=1)),),
                                  as_of=b.available_at, move_fraction=D("0.01"))
+
+    def test_label_rejects_record_tampering_and_foreign_source(self):
+        w = bars()
+        record = run(w)
+        a = w.parent.available_at
+        begin = datetime.fromtimestamp((int(a.timestamp()) // 300+1)*300, timezone.utc)
+        b = replace(w.children[0], open_at=begin, close_at=begin+timedelta(minutes=5),
+                    received_at=begin+timedelta(minutes=5, seconds=1),
+                    available_at=begin+timedelta(minutes=5, seconds=2))
+        tampered = deepcopy(record)
+        tampered["direction"] = "DOWN"
+        with self.assertRaises(ContractError):
+            retrospective_labels(tampered, (b,), as_of=b.available_at, move_fraction=D("0.01"))
+        with self.assertRaises(ContractError):
+            retrospective_labels(record, (replace(b, source_id="SYNTHETIC:OTHER"),),
+                                 as_of=b.available_at, move_fraction=D("0.01"))
+        with self.assertRaises(ContractError):
+            retrospective_labels(record, (b,), as_of=b.available_at, move_fraction=D("1"))

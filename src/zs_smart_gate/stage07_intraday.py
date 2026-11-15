@@ -201,7 +201,7 @@ def evaluate_window(window: ResearchWindow, *, decision_at: datetime) -> dict:
     payload = dict(schema=VERSION, status="RESEARCH_MEASURED", reasons=[],
         event_id=key, candidate_id="s07cand-" + key[4:],
         source_scope=window.source_scope, symbol=window.symbol, direction=window.direction,
-        source_manifest_sha256=window.source_manifest_sha256,
+        source_manifest_sha256=window.source_manifest_sha256, source_id=source,
         event_close_at=stamp(parent.close_at), decision_at=stamp(decision),
         available_at=stamp(max([parent.available_at] +
                               [b.available_at for b in (*history, *children, *window.comparison_15m)])),
@@ -226,9 +226,11 @@ def retrospective_labels(research: dict, future: Sequence[CandleWindow], *,
     OHLC may cross both opposing boundaries in one bar: report ambiguity.
     """
     if (research.get("schema") != VERSION or research.get("status") != "RESEARCH_MEASURED"
-            or research.get("signal_id") is not None or research.get("publishable") is not False):
+            or research.get("signal_id") is not None or research.get("publishable") is not False
+            or research.get("result_sha256") != digest(canonical({
+                k: v for k, v in research.items() if k != "result_sha256"}))):
         raise ContractError("S07_RESEARCH_RECORD_REQUIRED")
-    if not isinstance(move_fraction, Decimal) or not move_fraction.is_finite() or move_fraction <= 0:
+    if not isinstance(move_fraction, Decimal) or not move_fraction.is_finite() or move_fraction <= 0 or move_fraction >= 1:
         raise ContractError("S07_RESEARCH_THRESHOLD_REQUIRED")
     now = utc(as_of)
     decision = datetime.fromisoformat(research["decision_at"].replace("Z", "+00:00"))
@@ -238,10 +240,12 @@ def retrospective_labels(research: dict, future: Sequence[CandleWindow], *,
         return {"schema": LABEL_VERSION, "status": "CENSORED_NO_BARS", "lead_hours": None}
     source = future[0].source_id
     invalid = _aligned(future, "5m", source, now)
-    if invalid or source not in research["event_id"] and not source.startswith("SYNTHETIC:"):
+    if invalid or source != research.get("source_id") or not source.startswith("SYNTHETIC:"):
         raise ContractError("S07_LABEL_BAR_INVALID:" + str(invalid or "SOURCE"))
     if future[0].open_at < decision:
         raise ContractError("S07_LABEL_STRADDLES_DECISION")
+    if now < decision or future[-1].close_at > now:
+        raise ContractError("S07_LABEL_RETROSPECTIVE_TIME_INVALID")
     if future[-1].close_at > decision + timedelta(hours=24):
         raise ContractError("S07_LABEL_MAX_24H")
     # A price threshold must be supplied independently; the research row intentionally
