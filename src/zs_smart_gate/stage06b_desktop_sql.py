@@ -323,6 +323,8 @@ def apply_sql_server(connection, packet: dict):
             ("zs06b_messages", ("bot_id", "chat_id", "message_id"),
              ("role", "telegram_date_utc", "message_type", "text_sha256",
               "attachment_sha256", "archive_sha256", "candidate_id", "signal_id"), packet["messages"]),
+            ("zs06b_attachments", ("bot_id", "chat_id", "path_sha256"),
+             ("attachment_sha256",), packet["attachments"]),
         ]
         count = 0
         for table, pk, fields, rows in tables:
@@ -345,7 +347,9 @@ def apply_sql_server(connection, packet: dict):
                 else:
                     stmt = ("INSERT INTO dbo." + table + " (" + ",".join(columns) +
                             ") VALUES (" + ",".join("?" for _ in columns) + ")")
-                    cursor.execute(stmt, *(row[k] for k in columns))
+                    values = [datetime.fromisoformat(row[k].replace("Z", "+00:00")).replace(tzinfo=None)
+                              if k == "telegram_date_utc" else row[k] for k in columns]
+                    cursor.execute(stmt, *values)
                 reread = cursor.execute(
                     "SELECT " + ",".join(fields) + " FROM dbo." + table +
                     " WHERE " + where, *keys).fetchone()
