@@ -72,6 +72,8 @@ def _read(root: Path, name: str, size: int, expected: str):
     _sha(expected)
     if type(size) is not int or not 0 <= size <= MAX_ATTACH:
         raise ContractError("STAGE06B_ATTACHMENT_SIZE_INVALID")
+    if root.is_symlink():
+        raise ContractError("STAGE06B_ATTACHMENT_REPARSE_FORBIDDEN")
     base = root.resolve(strict=True)
     path = base.joinpath(*name.split("/"))
     # Forbid symlinks/junctions on every component, including the root.
@@ -166,6 +168,7 @@ def build_sql_staging(sources: list[dict]) -> dict:
     if not isinstance(sources, list) or not 1 <= len(sources) <= 5:
         raise ContractError("STAGE06B_EXPORT_COUNT_INVALID")
     seen_sources, messages, candidates, signals = set(), {}, {}, {}
+    decisions, indicators = {}, {}
     attachments = {}
     family_ids = {}
     for src in sources:
@@ -266,6 +269,20 @@ def build_sql_staging(sources: list[dict]) -> dict:
                     srow = {"signal_id": skey, "candidate_id": _id(s["candidate_id"])}
                     if signals.setdefault(skey, srow) != srow:
                         raise ContractError("STAGE06B_SIGNAL_CONFLICT")
+                for gate in projection["candidate_decisions"]:
+                    gkey = (_id(gate["candidate_id"]), _id(gate["gate_id"]))
+                    packed = canonical(gate)
+                    grow = {"candidate_id": gkey[0], "gate_id": gkey[1],
+                            "payload_sha256": digest(packed), "payload_json": packed.decode("utf-8")}
+                    if decisions.setdefault(gkey, grow) != grow:
+                        raise ContractError("STAGE06B_GATE_CONFLICT")
+                for feature in projection["indicator_values"]:
+                    fkey = (_id(feature["candidate_id"]), _id(feature["indicator_id"]))
+                    packed = canonical(feature)
+                    frow = {"candidate_id": fkey[0], "indicator_id": fkey[1],
+                            "payload_sha256": digest(packed), "payload_json": packed.decode("utf-8")}
+                    if indicators.setdefault(fkey, frow) != frow:
+                        raise ContractError("STAGE06B_INDICATOR_CONFLICT")
             msgkey = (bot, chat, number)
             row = {"bot_id": bot, "chat_id": chat, "message_id": number,
                    "role": m["role"], "telegram_date_utc": date,
@@ -292,6 +309,8 @@ def build_sql_staging(sources: list[dict]) -> dict:
         "sources_count": len(sources),
         "candidates": sorted(candidates.values(), key=lambda x: x["candidate_id"]),
         "signals": sorted(signals.values(), key=lambda x: x["signal_id"]),
+        "candidate_decisions": [decisions[k] for k in sorted(decisions)],
+        "indicator_values": [indicators[k] for k in sorted(indicators)],
         "messages": [messages[k] for k in sorted(messages)],
         "attachments": [
             {"bot_id": k[0], "chat_id": k[1], "path_sha256": digest(k[2].encode()),
@@ -320,6 +339,10 @@ def apply_sql_server(connection, packet: dict):
         tables = [
             ("zs06b_candidates", ("candidate_id",), ("event_sha256", "source_manifest_sha256", "qualification_status"), packet["candidates"]),
             ("zs06b_signals", ("signal_id",), ("candidate_id",), packet["signals"]),
+            ("zs06b_candidate_decisions", ("candidate_id", "gate_id"),
+             ("payload_sha256", "payload_json"), packet["candidate_decisions"]),
+            ("zs06b_indicator_values", ("candidate_id", "indicator_id"),
+             ("payload_sha256", "payload_json"), packet["indicator_values"]),
             ("zs06b_messages", ("bot_id", "chat_id", "message_id"),
              ("role", "telegram_date_utc", "message_type", "text_sha256",
               "attachment_sha256", "archive_sha256", "candidate_id", "signal_id"), packet["messages"]),
