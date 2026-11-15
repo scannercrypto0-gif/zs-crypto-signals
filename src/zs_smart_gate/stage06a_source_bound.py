@@ -152,6 +152,8 @@ def evaluate_source_bound(*, record: dict, record_kind: str,
         manifest_sha = _sha(record["source_manifest_sha256"])
         record_sha = digest(canonical(record))
         if record.get("qualification_status") == "QUALIFIED":
+            if record.get("quality_metadata", {}).get("qualification") == "RESEARCH_ONLY":
+                raise ContractError("STAGE06A_RESEARCH_METADATA_NOT_QUALIFIED")
             if record.get("source_scope") != "APPROVED_REAL_SOURCE":
                 raise ContractError("STAGE06A_REAL_SOURCE_REQUIRED")
             if receipt is None:
