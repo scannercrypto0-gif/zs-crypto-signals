@@ -1,0 +1,34 @@
+# Stage06A + Stage06B engineering integration — owner order 6892206107
+
+**Authority:** [Issue #51 decision](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/51#issuecomment-6892206107). Build begins at merged main `60ebe79fe85ffdeab2980fd16ca13bbbefd81329`. All existing Stage00–05 code/contracts and the accepted Stage06A evaluator remain unchanged.
+
+## 06A — source-bound outcome assessment
+
+New: `src/zs_smart_gate/stage06a_source_bound.py` (schema `zs.stage06a.evidence-bound-outcome.v1`), layered on existing `stage06a_outcomes.evaluate_outcome`.
+
+- Accept **either** existing verified Stage03 R0/R2 handoff (`verify_handoff`, exact reconstructed `EvaluationIdentity`) or an existing Stage05 event (`ensure_event`). Reject cross-symbol and source-manifest mismatches and any modified SHA envelopes. Stage03 `POLICY_HOLD` remains research only, with `signal_id=null` and **no** implicit trade plan. A hand-built scenario requires `scenario_only=true` and a separately hash-bound research `available_at` receipt; it can never authorize Telegram or a real signal.
+- A **QUALIFIED** Stage05 event requires its existing approved numeric plan (scalar `entry_zone`, `stop_loss`, `tp1`) **and** an independently recorded hash-bound **delivery availability receipt** tied to the exact event SHA/candidate/signal. Missing delivery stops with a contract error. Accepted Bot API time is *not* user read time; no read time is inferred. Rejected events are never promoted.
+- Caller supplies raw canonical JSON of `zs.stage06a.closed-bars.v1`: exactly `schema,venue,symbol,source_manifest_sha256,timeframe,candles`. Each candle has `open_at,close_at,available_at,open,high,low,close,closed`. Strict UTC-Z, final/available candles, monotonic gap-free intervals, finite decimal prices and SHA-256 of the exact source bytes; no future bars, overlap, mixed symbols or unmeasured milliseconds. The caller must separately retain the original raw bytes and reported SHA. Data cryptographic integrity **does not** prove independent upstream exchange authentication.
+- Result is content-hashed, `LEVEL_TOUCH_NOT_EXECUTED_FILL`, no P&L, no orders, no performance edge, no retrospective qualified signals. `NO_ENTRY`, `OPEN_UNRESOLVED`, `AMBIGUOUS_ENTRY_BAR`, `AMBIGUOUS_EXIT_BAR`, and source failures are distinct. Existing evaluator handles temporal outcome chronology; no old tests need rerunning.
+
+## 06B — verified Telegram Desktop result.json to SQL Server
+
+New `src/zs_smart_gate/stage06b_desktop_sql.py` (staging schema `zs.stage06b.desktop-sql-staging.v1`) reuses `stage05_contracts.extract_desktop_export`, `ensure_event` and `sql_projection`. No bot secrets or private exports in Git.
+
+- Each source is `{"manifest": owner-local JSON, "raw_export": exact result.json bytes, "root": local attachment directory}`. Manifest schema `zs.stage06b.owner-local-export-manifest.v1` contains `role` (SIGNALS_A, SIGNALS_B, ANALYTICS_C, INTERACTIVE_A, INTERACTIVE_B), `bot_family` (SIGNALS / ANALYTICS / INTERACTIVE), integer `bot_id`, integer `chat_id`, `export_chat_id` (must equal the export's own `id`), `export_sha256`, attachment entries `{path,sha256,size_bytes}` and `manifest_sha256` (SHA256 canonical JSON excluding that hash field). These bot/chat mappings are **owner-declared**, not proven by Telegram Desktop; actual historical bot identity needs corroborating custody outside the export.
+- Telegram `date_unixtime` gives *seconds* UTC; a local-time `date` string cannot be promoted to independently measured UTC milliseconds. Every declared attachment must be read from a bounded safe relative path, match size/SHA-256, and be referenced; missing/malformed/orphaned media stops. Original message text and attachment bytes are **not included** in SQL staging rows; only digests/metadata.
+- A `ZS05_ARCHIVE_V1` message is accepted **only** from 05B `ANALYTICS_C` with matching canonical attached Stage05 document, candidate ID, qualification state and digest. Each 05A signal ID extracted from exact `ZS05 SIGNAL` text (when present) must match the archived 05B verified signal, candidate and asset symbol before linking; no inferred IDs. Replayed import of identical identities is idempotent; same key with different content/identity stops and rolls back.
+- `sql/migrations/006b_telegram_desktop_staging.sql`: additive `zs06b_candidates`, `zs06b_signals`, `zs06b_candidate_decisions`, `zs06b_indicator_values`, `zs06b_messages`, `zs06b_attachments` (PK/FK/checks, UTC `datetime2(0)` for Telegram second precision). `apply_sql_server(connection, packet)` is **explicit opt-in**, parameterized, transaction-bound with lock, conflict detection and row readback. It **does not create a DB connection** or execute a migration itself.
+- `scripts/stage06b-import-offline.py` provides manual/offline local staging, repeats `--manifest`, `--export`, `--root` for each source; prints only counters and the batch SHA. Real SQL import requires BOTH `--apply-sql` and `--authorize-local-sql-write`, a privately configured `ZS_STAGE06B_SQL_ODBC` environment variable, `pyodbc` and the approved local database with migration already applied. Never put credentials, chat IDs, raw exports or customer content in issues/PRs. No database execution is claimed until an authorized Windows run with real owner-local sources.
+
+## Targeted test commands / evidence boundary
+
+Run on Windows PowerShell 5.1 / Python 3.12, exact pinned PR HEAD/TREE, `PYTHONPATH=src;tests`:
+
+```powershell
+py -3.12 -B -m unittest -v test_stage06a_source_bound test_stage06b_desktop_sql
+```
+
+Test files use only synthetic/local source receipts, mock DB-API connection, and no network. Existing accepted Stage00–05 and Stage06A foundation tests are NOT part of this command. The `FakeConnection` tests exercise query contract/idempotence, **not a real SQL Server**. A real Telegram Desktop export with all its attachments, Windows filesystem ACL checks and an authorized SQL Server transactional roundtrip remain separately evidenced integration steps. **Do not report full Stage06 completion or Windows PASS until actual evidence**.
+
+**Safety:** `NO_TRADE / NO_PRODUCTION / NO_NEW_BOT_API / NO_MARKET_REQUESTS / NO_POLLING / NO_REAL_SIGNAL_INFERENCE`. Public GitHub remains source/governance only.
