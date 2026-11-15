@@ -260,6 +260,7 @@ def build_sql_staging(sources: list[dict]) -> dict:
                     c_row = {
                         "candidate_id": _id(c["candidate_id"]),
                         "event_sha256": digest(canonical(ev)),
+                        "asset_symbol": ev["symbol"],
                         "source_manifest_sha256": _sha(ev["source_manifest_sha256"]),
                         "qualification_status": ev["qualification_status"],
                     }
@@ -320,7 +321,8 @@ def build_sql_staging(sources: list[dict]) -> dict:
         verified = signals.get(signal_id)
         documented = candidates.get(candidate_id)
         if (verified is None or documented is None
-                or verified["candidate_id"] != candidate_id):
+                or verified["candidate_id"] != candidate_id
+                or documented["asset_symbol"] != symbol):
             raise ContractError("STAGE06B_UNVERIFIED_SIGNAL_CROSS_CHAT")
         row = messages[msgkey]
         row["signal_id"] = signal_id
@@ -360,7 +362,7 @@ def apply_sql_server(connection, packet: dict):
         cursor.execute("SET XACT_ABORT ON")
         # Strict idempotence: existing identical rows are fine, divergent rows STOP.
         tables = [
-            ("zs06b_candidates", ("candidate_id",), ("event_sha256", "source_manifest_sha256", "qualification_status"), packet["candidates"]),
+            ("zs06b_candidates", ("candidate_id",), ("event_sha256", "asset_symbol", "source_manifest_sha256", "qualification_status"), packet["candidates"]),
             ("zs06b_signals", ("signal_id",), ("candidate_id",), packet["signals"]),
             ("zs06b_candidate_decisions", ("candidate_id", "gate_id"),
              ("payload_sha256", "payload_json"), packet["candidate_decisions"]),
