@@ -132,6 +132,7 @@ class Stage06ABoundTests(TestCase):
         event["signal_id"] = "SYNTHETIC_TEST_SIGNAL_NOT_FOR_DELIVERY"
         event["gates"] = [{**g, "state": "PASS", "reason_codes": []} for g in event["gates"]]
         event["reject_reason_codes"] = []
+        event["quality_metadata"]["qualification"] = "SYNTHETIC_APPROVED_FIXTURE_ONLY"
         event["trade_plan"] = {"approved": True, "entry_zone": "100",
                                "stop_loss": "95", "tp1": "110",
                                "tp2": "115", "tp3": "120"}
