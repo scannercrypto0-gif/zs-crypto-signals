@@ -35,7 +35,6 @@ class FakeCursor:
             self.row = tuple(entry[f] for f in fields) if entry else None
         elif statement.startswith("INSERT"):
             fields = statement.split("(", 1)[1].split(")", 1)[0].split(",")
-            count = len(params) - len(fields) + len(fields)
             self.conn.rows[(table, tuple(params[:self.conn.pk_lengths[table]]))] = dict(zip(fields, params))
             self.row = None
         else:
@@ -52,6 +51,7 @@ class FakeCursor:
 class FakeConnection:
     autocommit = False
     pk_lengths = {"zs06b_candidates": 1, "zs06b_signals": 1,
+                  "zs06b_candidate_decisions": 2, "zs06b_indicator_values": 2,
                   "zs06b_messages": 3, "zs06b_attachments": 3}
 
     def __init__(self):
@@ -140,7 +140,8 @@ class DesktopSQLTests(unittest.TestCase):
     def test_path_traversal_rejected_even_if_manifest_hash_recomputed(self):
         s = self.source()
         s["manifest"]["attachments"][0]["path"] = "../outside.json"
-        bound({k:v for k,v in s["manifest"].items() if k!="manifest_sha256"})
+        s["manifest"]["manifest_sha256"] = digest(canonical(
+            {k:v for k,v in s["manifest"].items() if k!="manifest_sha256"}))
         with self.assertRaises(ContractError):
             build_sql_staging([s])
 
@@ -196,7 +197,10 @@ class DesktopSQLTests(unittest.TestCase):
         conn = FakeConnection()
         a = apply_sql_server(conn, packet)
         b = apply_sql_server(conn, packet)
-        self.assertEqual(a["rows_verified"], 3)  # candidate + message + attachment
+        self.assertEqual(a["rows_verified"], (
+            len(packet["candidates"]) + len(packet["signals"]) +
+            len(packet["candidate_decisions"]) + len(packet["indicator_values"]) +
+            len(packet["messages"]) + len(packet["attachments"])))
         self.assertEqual(a["batch_sha256"], b["batch_sha256"])
         self.assertEqual(conn.commits, 2)
         self.assertEqual(conn.rollbacks, 0)
