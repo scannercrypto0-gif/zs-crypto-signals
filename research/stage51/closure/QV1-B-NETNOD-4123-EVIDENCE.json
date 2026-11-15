@@ -1,0 +1,57 @@
+{
+  "provider": "Netnod",
+  "nts_ke": "sth1.nts.netnod.se:4460",
+  "nts_udp": [
+    "194.58.207.79",
+    4123
+  ],
+  "provider_docs": [
+    "https://www.netnod.se/netnod-time/how-to-use-nts",
+    "https://tech.netnod.se/en/time-services/NTS"
+  ],
+  "method": "Windows NTS probe with a single allowlisted negotiated host and UDP/4123. TLS hostname and packet authentication remain required.",
+  "scope": "CLOCK_SAMPLE_ONLY",
+  "qualification_state": "UNKNOWN",
+  "market_calls": 0,
+  "status": "NTS_AUTHENTICATED_CLOCK_PARTIAL",
+  "TCP_connections": 1,
+  "UDP_datagrams": 1,
+  "system_changes": false,
+  "publication_proved": false,
+  "forward_armed": false,
+  "absolute_UTC_certified": false,
+  "TLS": "TLSv1.3",
+  "ALPN": "ntske/1",
+  "certificate_chain_verified": true,
+  "hostname_verified": true,
+  "leaf_certificate_sha256": "94e7f39d802fe24414e376b820b1c5d94c2c89c3956f694112756f4d35d22038",
+  "ke_records_sha256": "122e3fcf958a87c26fe35eb6c3b87b4ec78c6cc8322d124fd2bc696d22abaa73",
+  "cookie_count": 8,
+  "AEAD": "AES_SIV_CMAC_256",
+  "key_material_persisted": false,
+  "negotiated_endpoint": [
+    "194.58.207.79",
+    4123
+  ],
+  "sample": {
+    "offset_seconds": 0.005077719688415527,
+    "network_delay_seconds": 0.12357544898986816,
+    "server_root_delay": 0,
+    "server_root_dispersion": 0,
+    "conditional_radius_seconds": 0.06278772449493408,
+    "conditional_local_error_bound_seconds": 0.06786544418334961,
+    "conditional_below_one_second": true,
+    "stratum": 1,
+    "sample_local_received": 1794397127.165124,
+    "authentication": "TLS13_NTSKE_AND_AES_SIV_CMAC_256",
+    "status": "CLOCK_AUTHENTICATED_CONDITIONAL_BOUND_ONLY",
+    "absolute_UTC_certified": false,
+    "caveat": "Assumes truthful server/root metadata, valid local timestamps and nonnegative network delays; not independent reviewer attestation.",
+    "publication_proved": false
+  },
+  "request_bytes": 332,
+  "response_bytes": 332,
+  "request_sha256": "94ce54278572c34e0b7563923601a39d82442813ec235d7a4bb8e82c31d68e71",
+  "response_sha256": "ba7b5b959fb7be64e0e02d6778668326f058262c54162cd0018b12b5e23c92e5",
+  "limitation": "Identity and AEAD verified in executor process. Exporter secrets deliberately not saved; independent reviewer repeats fresh protocol rather than offline re-verifying this tag. Authority absolute error/drift not attested."
+}

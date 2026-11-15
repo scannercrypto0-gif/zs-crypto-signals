@@ -1,0 +1,7 @@
+test_atomic_append_idempotence_and_conflict (test_stage04_windows_operational.WindowsOperationalCustodyTests.test_atomic_append_idempotence_and_conflict) ... ok
+test_existing_rows_prohibit_sql_update_and_delete (test_stage04_windows_operational.WindowsOperationalCustodyTests.test_existing_rows_prohibit_sql_update_and_delete) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.157s
+
+OK

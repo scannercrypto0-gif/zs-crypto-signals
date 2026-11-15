@@ -7,11 +7,13 @@ from __future__ import annotations
 
 from collections import deque
 from datetime import datetime, timezone
+import json
 import hashlib
 import re
 
 from .stage05_contracts import ContractError, canonical, parse_utc, utc_now
-from .stage05_delivery import GithubOutbox, _claim, _key
+from .stage05_custody import LocalOutbox
+from .stage05_delivery import _claim, _key
 from .stage05_telegram_http import (
     RuntimeFlags, TelegramHTTP, require_live_permission,
 )
@@ -49,7 +51,7 @@ def _authorized(config, user_id, chat_id):
 
 
 def analysis_request_id(user_id, chat_id, message_id):
-    if not isinstance(message_id, int) or message_id < 0:
+    if type(message_id) is not int or message_id <= 0:
         raise ContractError("INTERACTIVE_MESSAGE_ID_REQUIRED")
     return hashlib.sha256(canonical({
         "bot": "INTERACTIVE", "user": str(user_id), "chat": str(chat_id),
@@ -116,7 +118,8 @@ class InteractiveService:
             return {**request, "status": "NO_APPROVED_SNAPSHOT",
                     "reason_codes": ["NO_IMPLEMENTED_DATA_AVAILABLE"],
                     "indicators": [], "score": None}
-        if not isinstance(data, dict) or data.get("symbol") != request["symbol"]:
+        if (not isinstance(data, dict) or data.get("symbol") != request["symbol"]
+                or data.get("signal_id") is not None):
             return {**request, "status": "INVALID_SNAPSHOT",
                     "reason_codes": ["SOURCE_IDENTITY_MISMATCH"],
                     "indicators": [], "score": None}
@@ -142,14 +145,43 @@ class InteractiveService:
                 return {**request, "status": "INVALID_SNAPSHOT",
                         "reason_codes": ["INDICATOR_METADATA_INCOMPLETE"],
                         "indicators": [], "score": None}
+            # Non-implemented or unavailable features legitimately have
+            # null as_of and null value. Do not fabricate a timestamp.
+            status = row.get("availability")
+            if (status not in ("PRESENT", "MISSING", "INVALID",
+                               "NOT_IMPLEMENTED", "INSUFFICIENT_HISTORY", "UNKNOWN")
+                    or (status == "PRESENT"
+                        and (row.get("as_of") is None or row.get("raw_value") is None))
+                    or (status != "PRESENT"
+                        and (row.get("raw_value") is not None or row.get("value") is not None))):
+                return {**request, "status": "INVALID_SNAPSHOT",
+                        "reason_codes": ["INDICATOR_AVAILABILITY_CONTRACT_INVALID"],
+                        "indicators": [], "score": None}
             try:
-                if parse_utc(row["as_of"]) > as_of:
+                if row.get("as_of") is not None and parse_utc(row["as_of"]) > as_of:
                     raise ContractError("FUTURE_INDICATOR")
             except ContractError:
                 return {**request, "status": "INVALID_SNAPSHOT",
                         "reason_codes": ["INDICATOR_TIME_INVALID"],
                         "indicators": [], "score": None}
-        return {**request, "status": "READ_ONLY_ANALYSIS",
+        source_fields = {}
+        if "source_sha256" in data:
+            try:
+                closed = parse_utc(data.get("closed_at"), "SOURCE_CLOSE")
+                frame = data.get("source_frame")
+                if (closed > as_of or frame not in ("5m", "30m")
+                        or closed.second or closed.microsecond
+                        or (frame == "5m" and closed.minute % 5)
+                        or (frame == "30m" and closed.minute % 30)):
+                    raise ContractError("INVALID_SOURCE_TIMELINE")
+                for key in ("source_sha256", "decision_sha256"):
+                    if not isinstance(data.get(key), str) or not re.fullmatch(r"[0-9a-f]{64}", data[key]):
+                        raise ContractError("INVALID_SNAPSHOT_SHA")
+                source_fields = {k: data[k] for k in ("closed_at", "source_frame", "source_sha256", "decision_sha256")}
+            except ContractError:
+                return {**request, "status": "INVALID_SNAPSHOT",
+                        "reason_codes": ["SOURCE_BINDING_INVALID"], "indicators": [], "score": None}
+        return {**request, **source_fields, "status": "READ_ONLY_ANALYSIS",
                 "source_scope": data.get("source_scope", "UNKNOWN"),
                 "as_of": data["as_of"], "indicators": data["indicators"],
                 "score": data.get("score"), "decision": data.get("decision"),
@@ -202,8 +234,12 @@ class InteractiveService:
                 raise ContractError("FUTURE_INTERACTIVE_SNAPSHOT")
             text += ("\nAs-of UTC: " + response["as_of"] +
                      "\nSnapshot age seconds: " + str(age_s) +
-                     "\nFreshness: NOT_REALTIME_VERIFIED" +
+                     "\nFreshness: HISTORICAL_SNAPSHOT_ONLY / NOT_REALTIME_VERIFIED" +
                      "\nSource scope: " + str(response.get("source_scope", "UNKNOWN")))
+            if "source_sha256" in response:
+                text += ("\nClosed " + response["source_frame"] + " UTC: " + response["closed_at"]
+                         + "\nSource SHA256: " + response["source_sha256"]
+                         + "\nDecision SHA256: " + response["decision_sha256"])
             for row in response["indicators"]:
                 reasons = ",".join(map(str, row["reason_codes"])) or "NONE"
                 text += ("\n" + str(row["indicator_id"]) + ": value=" +
@@ -226,21 +262,57 @@ class InteractiveService:
             text += "\nDecision reasons: " + (",".join(map(str, response.get("reason_codes") or [])) or "NONE")
         else:
             text += "\nReasons: " + ",".join(map(str, response.get("reason_codes") or []))
+        if (len(text) > 3900 and response["status"] == "READ_ONLY_ANALYSIS"
+                and response.get("source_frame") == "30m"
+                and response.get("decision") == "RESEARCH_30M_POLICY_HOLD"):
+            # A single Telegram reply cannot carry every raw R2 field verbatim.
+            # Prioritize measured fields, state exactly how many were omitted,
+            # and retain the content-addressed source binding. Never silently
+            # truncate mid-field or present this as a complete feature dump.
+            prefix = ("ZS05 INTERACTIVE RESEARCH SUMMARY\nRequest: " +
+                      response["analysis_request_id"][:16] +
+                      "\nSymbol: " + response["symbol"] +
+                      "\nAs-of UTC: " + response["as_of"] +
+                      "\nClosed 30m UTC: " + response["closed_at"] +
+                      "\nSource SHA256: " + response["source_sha256"] +
+                      "\nDecision SHA256: " + response["decision_sha256"] +
+                      "\nStatus: RESEARCH_ONLY_POLICY_HOLD; no signal; score unavailable")
+            rows = sorted(response["indicators"],
+                          key=lambda x: (x["availability"] != "PRESENT",
+                                         str(x["indicator_id"])))
+            shown = []
+            for feature in rows:
+                value = str(feature.get("raw_value"))
+                reasons = ",".join(map(str, feature.get("reason_codes") or []))
+                line = ("\n" + str(feature["indicator_id"]) +
+                        " raw=" + value[:96] +
+                        " availability=" + str(feature["availability"]) +
+                        " frame=" + str(feature["timeframe"]) +
+                        " reason=" + reasons[:96])
+                # Reserve ample room for final counts and explicit partial marker.
+                if len(prefix) + sum(len(s) for s in shown) + len(line) + 180 > 3900:
+                    break
+                shown.append(line)
+            omitted = len(rows) - len(shown)
+            text = (prefix + "".join(shown) +
+                    "\nDisplayed " + str(len(shown)) + "/" + str(len(rows)) +
+                    " raw features; omitted " + str(omitted) +
+                    "; retrieve full versioned research snapshot from verified custody.")
         if len(text) > 3900:
             raise ContractError("INTERACTIVE_REPLY_TOO_LONG")
         return text
 
 def respond_once(*, response, chat_id, user_id, config, store, flags=None,
                  permit=None, head_sha=None, transport=None,
-                 clock=None, simulation=False):
+                 clock=None, simulation=False, reply_to=None):
     """Optional one-reply action with preclaim; no automatic polling or send."""
     if not isinstance(response, dict) or response.get("signal_id") is not None:
         raise ContractError("INTERACTIVE_IS_NOT_A_SCANNER_SIGNAL")
     if not response.get("analysis_request_id"):
         raise ContractError("INTERACTIVE_ID_REQUIRED")
     if not simulation:
-        if not isinstance(store, GithubOutbox) or not store.verified_backend:
-            raise ContractError("APPROVED_GITHUB_OUTBOX_REQUIRED")
+        if type(store) is not LocalOutbox:
+            raise ContractError("APPROVED_LOCAL_OUTBOX_REQUIRED")
         require_live_permission(flags=flags if flags is not None else RuntimeFlags(),
                                 permit=permit, head_sha=head_sha, action="INTERACTIVE_REPLY")
     if (not _authorized(config, user_id, chat_id)
@@ -258,22 +330,31 @@ def respond_once(*, response, chat_id, user_id, config, store, flags=None,
     key = _key("interactive-attempt", delivery_id)
     old = store.read(key)
     if old is not None:
+        receipt = store.read(_key("interactive-outcome", delivery_id))
+        if receipt is not None:
+            return {**json.loads(receipt), "replayed": True}
         return {"status": "UNKNOWN_DELIVERY", "reason": "PRIOR_INTERACTIVE_ATTEMPT",
                 "delivery_id": delivery_id}
-    _claim(store, key, {"schema": "zs05.interactive-attempt.v1",
-                        "delivery_id": delivery_id, "started_at": stamp})
+    reply_sha = hashlib.sha256(reply.encode("utf-8")).hexdigest()
+    if not _claim(store, key, {"schema": "zs05.interactive-attempt.v1",
+                               "delivery_id": delivery_id, "started_at": stamp,
+                               "reply_sha256": reply_sha,
+                               "source_sha256": response.get("source_sha256")}):
+        return {"status": "UNKNOWN_DELIVERY", "reason": "PRIOR_INTERACTIVE_ATTEMPT",
+                "delivery_id": delivery_id}
     http = transport if transport is not None else TelegramHTTP(config.interactive_token)
     # Request identity and chat are validated BEFORE preclaim.
     try:
         outcome = http.send_text(
             chat_id, reply, flags=flags, permit=permit,
-            head_sha=head_sha, action="INTERACTIVE_REPLY")
+            head_sha=head_sha, action="INTERACTIVE_REPLY",
+            **({"reply_to": reply_to} if reply_to is not None else {}))
         state = outcome.status
     except Exception:
         state = "UNKNOWN_DELIVERY"
     receipt = {"schema": "zs05.interactive-receipt.v1",
-               "delivery_id": delivery_id, "status": state,
-               "attempt_at": stamp, "bot_id": "INTERACTIVE",
+               "delivery_id": delivery_id, "status": state, "reply_sha256": reply_sha,
+               "source_sha256": response.get("source_sha256"), "attempt_at": stamp, "bot_id": "INTERACTIVE",
                "destination_label": "INTERACTIVE_REQUEST_CHAT",
                "telegram_accepted_at": utc_now(clock if clock is not None else lambda: datetime.now(timezone.utc))
                    if state == "ACCEPTED" else None,

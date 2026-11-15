@@ -1,0 +1,20 @@
+{
+  "status": "STOPPED_BEFORE_CLAIM_ON_OWNER_05C_ROUTE_CHANGE",
+  "owner_authority": "https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/51#issuecomment-6767851362",
+  "code_sha": "337364508cc793a586b7aa7c81cc754e397c0413",
+  "tree": "19eb71aa7a546ab6a91b847b001665e952683a95",
+  "python": "3.12.10",
+  "powershell": "7.6.9",
+  "tests": 2,
+  "offline_exit": 0,
+  "preflight": "337364508cc793a586b7aa7c81cc754e397c0413\ntest_one_fixture_chain_and_unknown_delivery_stop (test_stage51_final_chain.FinalChainTests.test_one_fixture_chain_and_unknown_delivery_stop) ... ok\ntest_owner_scope_rejects_changed_contract (test_stage51_final_chain.FinalChainTests.test_owner_scope_rejects_changed_contract) ... ok\n\n----------------------------------------------------------------------\nRan 2 tests in 0.324s\n\nOK\nOFFLINE_PREFLIGHT_PASS HEAD=337364508cc793a586b7aa7c81cc754e397c0413 TREE=19eb71aa7a546ab6a91b847b001665e952683a95 CONTRACT_SHA256=99c449bfdc492276e3aafdd4fc9f7de9d27ad6bc97369f2a42dcb827600db374 NETWORK=0\nEXIT=0 UTC=2026-11-10T13:03:50.9185092Z\n",
+  "live_exit": 2,
+  "live_output": "WAITING_FOR_CLOSED_5M_BOUNDARY\nKILL_SWITCH_SET\n",
+  "stop_verified_utc": "2026-11-10T13:09:47.0755387Z",
+  "session_claim": false,
+  "binance_gets": 0,
+  "telegram_api_calls": 0,
+  "outbound_operations": 0,
+  "one_shot_consumed": false,
+  "notes": "Owner clarified one-account change applies to 05C. Existing two-account scope halted before any calls. No change to 05A. Which account to retain remains pending."
+}

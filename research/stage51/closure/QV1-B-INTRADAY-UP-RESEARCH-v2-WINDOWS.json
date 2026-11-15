@@ -1,0 +1,20 @@
+{
+  "code_sha": "f8a1aa6946bb31bc99246ff67f1051e6fdfc0eec",
+  "tree": "1e081a6d65c89684637c481c1d8dbd0c21067628",
+  "command": "py -3.12 -B -m unittest discover -s tests -p test_stage03_qv1_intraday_up.py -v",
+  "tests": 4,
+  "exit": 0,
+  "log": "f8a1aa6946bb31bc99246ff67f1051e6fdfc0eec\nPYTHON=Python 3.12.10 POWERSHELL=7.6.9\ntest_real_detector_threshold_and_closed_join (test_stage03_qv1_intraday_up.IntradayUpTests.test_real_detector_threshold_and_closed_join) ... ok\ntest_research_market_fail_unknown_and_pass_cannot_qualify (test_stage03_qv1_intraday_up.IntradayUpTests.test_research_market_fail_unknown_and_pass_cannot_qualify) ... ok\ntest_stable_sqlite_readback_without_qualification (test_stage03_qv1_intraday_up.IntradayUpTests.test_stable_sqlite_readback_without_qualification) ... ok\ntest_stale_missing_context_wrong_policy_and_tampering (test_stage03_qv1_intraday_up.IntradayUpTests.test_stale_missing_context_wrong_policy_and_tampering) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.097s\n\nOK\nEXIT=0 UTC=2026-11-11T10:15:00.8361634Z\n",
+  "log_sha256": "c7200f5d15182b4a3e3968a2c75f30620df1e655369d07b47eeb04bd5c7ad918",
+  "market_screen": "EXISTING_SCANNER_ELIGIBILITY_RESEARCH_ONLY",
+  "qualification": "UNKNOWN",
+  "remaining": [
+    "independent calibrated UTC witness and permitted uncertainty/age",
+    "mandatory R2 inputs and numerical predicates",
+    "accepted liquidity provenance and qualification-specific policy"
+  ],
+  "network": {
+    "binance": 0,
+    "telegram": 0
+  }
+}

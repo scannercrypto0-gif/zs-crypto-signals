@@ -1,0 +1,79 @@
+{
+  "schema": "ZS_00_05_CLOSURE_WINDOWS_V1",
+  "code_sha": "389d5a6879b9cd29b0b3a04e963349616ef9fa3a",
+  "tree": "f907262da9726282b12fe79673f565b7df915a69",
+  "baseline_pr54": "f918c122ad5703a71df2600ae6643018ff90019c",
+  "windows_only": true,
+  "commands": [
+    "py -3.12 -B -m unittest discover -s tests -p 'test_stage05*.py' -v",
+    "offline restore of PR54 pinned public receipts through VerifiedUpstream"
+  ],
+  "passed": 14,
+  "failed": 0,
+  "skipped": 0,
+  "exit_code": 0,
+  "windows_output": "389d5a6879b9cd29b0b3a04e963349616ef9fa3a\nSTART_UTC=2026-11-10T08:50:02.0624899Z\nPYTHON=Python 3.12.10 POWERSHELL=7.6.9 SHA=389d5a6879b9cd29b0b3a04e963349616ef9fa3a\ntest_crash_attempt_reopen_no_send (test_stage05_operational.OperationalTests.test_crash_attempt_reopen_no_send) ... ok\ntest_local_atomic_claim_and_append_only (test_stage05_operational.OperationalTests.test_local_atomic_claim_and_append_only) ... ok\ntest_missing_human_and_unknown_first_reply_stop (test_stage05_operational.OperationalTests.test_missing_human_and_unknown_first_reply_stop) ... ok\ntest_two_real_shaped_humans_readback_and_restart (test_stage05_operational.OperationalTests.test_two_real_shaped_humans_readback_and_restart) ... ok\ntest_upstream_source_replay_and_policy_veto (test_stage05_operational.OperationalTests.test_upstream_source_replay_and_policy_veto) ... ok\ntest_429_bounded_retry_and_unknown_outcome_never_replayed (test_stage05_real_telegram.Stage05RealTransportTargeted.test_429_bounded_retry_and_unknown_outcome_never_replayed) ... ok\ntest_independent_per_chat_receipts_and_duplicate_suppression (test_stage05_real_telegram.Stage05RealTransportTargeted.test_independent_per_chat_receipts_and_duplicate_suppression) ... ok\ntest_interactive_lowercase_auth_no_new_signal_separate_bot (test_stage05_real_telegram.Stage05RealTransportTargeted.test_interactive_lowercase_auth_no_new_signal_separate_bot) ... ok\ntest_owner_two_account_contract_rejects_cross_account_and_third_chat (test_stage05_real_telegram.Stage05RealTransportTargeted.test_owner_two_account_contract_rejects_cross_account_and_third_chat) ... ok\ntest_qualified_abc_same_signal_rejected_only_c (test_stage05_real_telegram.Stage05RealTransportTargeted.test_qualified_abc_same_signal_rejected_only_c) ... ok\ntest_real_http_request_shapes_429_5xx_network_and_seconds (test_stage05_real_telegram.Stage05RealTransportTargeted.test_real_http_request_shapes_429_5xx_network_and_seconds) ... ok\ntest_sql_server_ddl_primary_foreign_unique_and_no_runtime_connection (test_stage05_real_telegram.Stage05RealTransportTargeted.test_sql_server_ddl_primary_foreign_unique_and_no_runtime_connection) ... ok\ntest_three_distinct_bot_config_and_live_switches_fail_closed (test_stage05_real_telegram.Stage05RealTransportTargeted.test_three_distinct_bot_config_and_live_switches_fail_closed) ... ok\ntest_utc_sha_archive_desktop_and_sql_normalization_conflicts (test_stage05_real_telegram.Stage05RealTransportTargeted.test_utc_sha_archive_desktop_and_sql_normalization_conflicts) ... ok\n\n----------------------------------------------------------------------\nRan 14 tests in 1.298s\n\nOK\nUNIT_EXIT=0\nACCEPTED_REAL_SOURCE_TO_VERIFIED_UPSTREAM_REPLAY_PASS a580da9fe08cf44e36d775cfc239704a50014b5d4edc86412f33bf4dcee5da11\nREPLAY_EXIT=0\nEND_UTC=2026-11-10T08:50:05.2617077Z\n",
+  "market_calls": 0,
+  "telegram_calls": 0,
+  "stage05c": "05C_LIVE_BLOCKED_HUMAN_SESSIONS",
+  "live_claim_created": false,
+  "source_and_code_remote_bytes_verified": true,
+  "files": [
+    {
+      "path": "research/stage51/closure/matrix.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1d0879cd97a9e9783f1104e4cfcb5edf4ffc5bea",
+      "sha256": "6f5c1c1f143bc961fc47947bd3997de0a97b36ac3f201bea093db5387089501d"
+    },
+    {
+      "path": "src/zs_smart_gate/stage05_bounded_interactive.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fec37482dceb7b4c73f0eddad06ab038ac88924b",
+      "sha256": "7f775fbab67459ec0b7d6dd3abd9038aa77af6af39136f432229325bbd58a508"
+    },
+    {
+      "path": "src/zs_smart_gate/stage05_custody.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b8a6fe4bddc037679675e66cd988c3a4d57e3820",
+      "sha256": "f50f743e85db170d38b88253c896c3b145a1436a840383ad89cde040ca8e5d50"
+    },
+    {
+      "path": "src/zs_smart_gate/stage05_delivery.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4c8d222dd46f83caefa2cee18d0e8463a6c3763e",
+      "sha256": "9024c9b6ac29a1ea6e1178859dbfaa97e01b19687ff6139d4ac399e5f1c831e6"
+    },
+    {
+      "path": "src/zs_smart_gate/stage05_interactive.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f53d8cbd39cf933ca02d82ac3b4d915ff01e4ff6",
+      "sha256": "43435f176c35786400a3815e10ef2a2fc3db25c9d33e859d0c4d5e24004d58f8"
+    },
+    {
+      "path": "src/zs_smart_gate/stage05_telegram_http.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "339fc951a0d08e79e855ce6b39fbd6ddb790cbb5",
+      "sha256": "f9bc343e83aac77149c51c009dd7998442d1c7b21f809e03fff3ee864a17f9ad"
+    },
+    {
+      "path": "tests/test_stage05_operational.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f865f15f515aa586d555b2416b2d5f95957982ec",
+      "sha256": "89c9e1720455cb64e786d628960c7040bde063c6810e3c1bfb05bee2d39f0f62"
+    },
+    {
+      "path": "tests/test_stage05_real_telegram.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1c8fce871af68608aa3533b747bdec9cbb48477b",
+      "sha256": "ab683311456dc91d2ca37c24e62fe4d97d491c34620166fc3e68304cd7e2f7f8"
+    }
+  ]
+}
