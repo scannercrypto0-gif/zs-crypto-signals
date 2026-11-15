@@ -167,8 +167,9 @@ def build_sql_staging(sources: list[dict]) -> dict:
     """
     if not isinstance(sources, list) or not 1 <= len(sources) <= 5:
         raise ContractError("STAGE06B_EXPORT_COUNT_INVALID")
-    seen_sources, messages, candidates, signals = set(), {}, {}, {}
+    seen_sources, seen_roles, messages, candidates, signals = set(), set(), {}, {}, {}
     decisions, indicators = {}, {}
+    pending_signals = {}
     attachments = {}
     family_ids = {}
     for src in sources:
@@ -196,9 +197,10 @@ def build_sql_staging(sources: list[dict]) -> dict:
             raise ContractError("STAGE06B_BOT_ID_REUSED_ACROSS_FAMILIES")
         family_ids[family] = bot
         key = (m["role"], bot, chat)
-        if key in seen_sources:
+        if key in seen_sources or m["role"] in seen_roles:
             raise ContractError("STAGE06B_SOURCE_DUPLICATE")
         seen_sources.add(key)
+        seen_roles.add(m["role"])
         declared = {a["path"]: a for a in m["attachments"]}
         documents = {name: _read(Path(root), name, a["size_bytes"], a["sha256"])
                      for name, a in declared.items()}
@@ -284,6 +286,16 @@ def build_sql_staging(sources: list[dict]) -> dict:
                     if indicators.setdefault(fkey, frow) != frow:
                         raise ContractError("STAGE06B_INDICATOR_CONFLICT")
             msgkey = (bot, chat, number)
+            if m["role"] in ("SIGNALS_A", "SIGNALS_B") and content.startswith("ZS05 SIGNAL | "):
+                signal_match = re.match(
+                    r"\AZS05 SIGNAL \| ([A-Za-z0-9._:-]{1,128})\n"
+                    r"Candidate: ([A-Za-z0-9._:-]{1,128})\n"
+                    r"Source scope: [^\n]+\nSymbol: ([A-Z0-9]+USDT)\n",
+                    content)
+                if not signal_match:
+                    raise ContractError("STAGE06B_SIGNAL_TEXT_INVALID")
+                pending_signals[msgkey] = (_id(signal_match[1]), _id(signal_match[2]),
+                                           signal_match[3])
             row = {"bot_id": bot, "chat_id": chat, "message_id": number,
                    "role": m["role"], "telegram_date_utc": date,
                    "message_type": msg["type"],
@@ -302,6 +314,17 @@ def build_sql_staging(sources: list[dict]) -> dict:
             if keya in attachments and attachments[keya] != sha:
                 raise ContractError("STAGE06B_ATTACHMENT_CONFLICT")
             attachments[keya] = sha
+    # Cross-check A/B text identities against independently verified 05B
+    # canonical documents before attaching any signal/candidate key.
+    for msgkey, (signal_id, candidate_id, symbol) in pending_signals.items():
+        verified = signals.get(signal_id)
+        documented = candidates.get(candidate_id)
+        if (verified is None or documented is None
+                or verified["candidate_id"] != candidate_id):
+            raise ContractError("STAGE06B_UNVERIFIED_SIGNAL_CROSS_CHAT")
+        row = messages[msgkey]
+        row["signal_id"] = signal_id
+        row["candidate_id"] = candidate_id
     result = {
         "schema": SCHEMA,
         "trust": "OFFLINE_EXPORT_SHA_AND_LOCAL_MANIFEST_ONLY_BOT_MAPPING_DECLARED",
