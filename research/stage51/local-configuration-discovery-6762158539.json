@@ -1,0 +1,38 @@
+{
+  "status": "CONFIGURATION_OWNER_INPUT_REQUIRED",
+  "pm_instruction": "6762158539",
+  "checked_at": "2026-11-10T11:01:21+03:00",
+  "host": {
+    "platform": "Windows",
+    "current_sid_matches_profile": true,
+    "localappdata_matches_profile": true,
+    "interactive_shell_same_sid": true
+  },
+  "stores": {
+    "documented_current_user_dpapi": "0/8",
+    "same_dpapi_layout_other_profiles_matches": 0,
+    "profile_paths_not_inspectable": 0,
+    "project_directories_expected_dpapi_file_matches": 0,
+    "environment": {
+      "process": "0/8",
+      "user": "0/8",
+      "machine": "0/8"
+    },
+    "credential_manager_project_target_matches": 0
+  },
+  "credential_contents_read": false,
+  "same_user_decryptability": "NOT_APPLICABLE_NO_ARTIFACT",
+  "unambiguous_complete_mapping": false,
+  "metadata_only": true,
+  "local_followup_claims": {
+    "session": false,
+    "market": false,
+    "telegram": false
+  },
+  "accepted_tests_rerun": false,
+  "binance_requests": 0,
+  "telegram_requests": 0,
+  "authorization_consumed": false,
+  "live_e2e": "NOT_EXECUTED",
+  "provisioning": "Owner-only hidden entry using research/stage05/save-stage05-secret-dpapi.ps1 once per required field. Current-user DPAPI, no overwrite. A distinct from B; C=A; both interactive allowlists contain A and B."
+}

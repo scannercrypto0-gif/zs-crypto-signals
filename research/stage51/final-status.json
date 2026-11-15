@@ -1,0 +1,24 @@
+{
+  "status": "E2E_00_05_PARTIAL_WITH_EXPLICIT_BLOCKERS",
+  "telegram": "BLOCKED_OWNER_WINDOWS_GATE_NOT_EXECUTED_WITHIN_CAPTURE_WINDOW",
+  "market_attempts": 6,
+  "websocket_connections": 0,
+  "telegram_api_attempts": 0,
+  "telegram_outputs": 0,
+  "owner_visual_confirmation": "NOT_RECORDED",
+  "market_snapshot_expired_at_utc": "2026-11-09T14:40:10.797Z",
+  "checked_at_utc": "2026-11-09T14:40:34.0958595Z",
+  "telegram_claim_present": false,
+  "telegram_receipt_present": false,
+  "repeat_market_authorized": false,
+  "signal_id": null,
+  "absolute_utc_pit": "HOLD",
+  "production": false,
+  "trading": false,
+  "stage06b_verified": false,
+  "notes": [
+    "Three-bot route exercised offline only in this order.",
+    "The previously accepted three-bot smoke remains separate.",
+    "A fresh bounded market test requires a separate authorization after expiry."
+  ]
+}
