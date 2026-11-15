@@ -1,5 +1,32 @@
 # ZS Crypto Signals "GITHUB Version" — SMART GATE
 
+## OWNER GOVERNING DECISION — 15 November 2026 — bounded engineering closure and Stage06 development
+
+**Authority:** [Issue #51 owner order #6890458361](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/51#issuecomment-6890458361), [simplified Stage04 #6875213132](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/51#issuecomment-6875213132), and [pre-Stage06 scope #6873534849](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/51#issuecomment-6873534849). **This is the current governing interpretation for Stage00–05 engineering acceptance and Stage06 development**; older inconsistent clauses below remain as historical records, not active gates.
+
+- **Stage00–05:** engineering acceptance is **CLOSED only for the owner-authorized, tested bounded scope**, with source/clock/integrity, scanner/setup, multi-symbol Stage01/03 R0–R2 research with truthful `POLICY_HOLD`, Stage04 Windows continuity, and the accepted scoped Stage02/05 routes. It is **not** a declaration of full-universe/live-human-B-in-this-session/production/24x7/scientific qualification. Distinct evidence is indexed at [PR #55](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/55) and [Issue #51](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/51). Owner's prior human A/B routing confirmation is preserved without falsely asserting a new live demonstration.
+- **Stage04:** Windows durable local committed-record journal/outbox is operational canonical; restart, integrity, local backup/fresh-path restore, idempotency and unknown-delivery reconciliation stay mandatory. Telegram **05B** is human-facing analytics, not a pending-queue substitute. GitHub stores code/governance and optional bounded sanitized research evidence. **Independent encrypted external media/off-device recovery is OPTIONAL / OUT_OF_SCOPE**, not a prerequisite for engineering closure, Stage06 development or automatic production gating. No claim of physical disaster recovery is implied.
+- **Science deferred:** genuine qualified signals, profitability/prediction, OOS/forward edge and numerical score policy are **NOT engineering prerequisites** for Stage06 development. No invented `signal_id`/`score`, no unqualified 05A send, no retrospective relabeling of `NO_BREAKOUT`.
+- **Stage06 engineering coding is AUTHORIZED NOW** on pinned approved sources. Stage06A outcome chronology starts from provable post-delivery availability with `NO_ENTRY` and same-candle ambiguity reported conservatively; Stage06B is verified Telegram Desktop export/attachment to normalized SQL dedup/import, subject to actual files and separately checked database execution. No new Binance/Telegram calls or consumed-session replay. **Production and trading remain disabled.**
+- **Release discipline:** PRs must satisfy actual required checks and review before merge; failed/unknown CI is not deemed passing. The specific accepted Windows receipts remain valid for their tested SHAs; changes require only impacted tests. Engineering code acceptance, live operations and scientific claims are separate.
+- **Source control vs local verification (owner clarification 2026-11-15):** The eventual operational target and primary engineering test environment is the owner's **local Windows** machine. **GitHub is the source/governance repository**, not the production runner or mandatory hosted-test service. Scoped, pinned HEAD/TREE, raw-log SHA-256 Windows tests and accepted offline evidence are the authoritative engineering verification; **GitHub Actions is optional/advisory and a hosted-runner failure alone is not a new engineering gate or reason to retest accepted evidence**. Actual repository branch protection/review rules, where configured, still must be respected or changed through normal owner-controlled settings; do not force a bypass. Production/trading/live Telegram authorizations remain separate.
+
+
+---
+
+## Pre-Stage06 engineering acceptance — owner directive 6873534849
+
+### Stage04 local continuity — owner decision 6875213132
+
+**SUPERSEDED:** Earlier requirements for an external encrypted device or off-device recovery are optional under the [owner-approved simplified design](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/51#issuecomment-6875213132). Windows durable local storage holds committed records and pending delivery state. Local backup/restore, fresh-process readback, SHA-256 integrity and duplicate protection remain required. Telegram 05B is the human-facing archive. Known offline delivery can wait locally; ambiguous sends require reconciliation before any retry. GitHub may hold bounded sanitized research evidence and is optional for runtime continuity.
+
+**SUPERSEDED FOR PRE-STAGE06.** Any earlier requirement to observe or send a real qualified signal, prove prediction accuracy or profitability, or establish an out-of-sample or forward edge is deferred until the complete system is built and separately authorized. This clarification follows the [owner directive](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/51#issuecomment-6873534849).
+
+Engineering acceptance requires evidence for the implemented and authorized Stage00–Stage05 workflow, including source integrity and timing, journal readback and local recovery, and routing and duplicate prevention. A bounded live workflow may observe zero qualified signals. In that case 05A stays silent. Validate its qualified routing offline. 05B archives only authorized research/rejections. 05C requires actual authorized human A/B for live proof. Existing one-shot budgets and consumed-session guards apply. Scientific records, signal integrity rules and the independent recovery requirement remain in force. This clarification does not start Stage06 or authorize production, trading, or another live session.
+
+---
+
+
 ## قرار موحد للمراحل 03–05 — 12 نوفمبر 2026 — صلاحية المالك المفوضة للتصحيح
 
 **المرجعية الحديثة:** قرار المالك المباشر باستكمال مطابقة المراحل 03–05، مع الحفاظ على صحة البحث والأدلة. هذا الملحق **توضيح سياسة حاكم** ويعلو على العبارات التاريخية المتعارضة في هذا الملف، دون حذف سجلاتها. **لا يعني اعتماد التشغيل الحي أو تحقق اختبارات جديدة لم تقدم نتائجها بعد.**
