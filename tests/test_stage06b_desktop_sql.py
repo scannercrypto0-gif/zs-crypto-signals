@@ -229,6 +229,39 @@ class DesktopSQLTests(unittest.TestCase):
         with self.assertRaisesRegex(ContractError, "ARCHIVE_BEFORE_DECISION"):
             build_sql_staging([s])
 
+    def test_real_desktop_bot_chat_type_analytics_and_signals(self):
+        # Telegram Desktop exports of direct bot conversations use bot_chat.
+        # Preserve the separate role/source/dedup checks, not merely the type.
+        analytics = self.source()
+        signals = self.source("SIGNALS_A", 1001, 101, 701, 21,
+                              with_attachment=False)
+        for src in (analytics, signals):
+            export = __import__("json").loads(src["raw_export"])
+            export["type"] = "bot_chat"
+            src["raw_export"] = canonical(export)
+            src["manifest"]["export_sha256"] = digest(src["raw_export"])
+            src["manifest"]["manifest_sha256"] = digest(canonical(
+                {k: v for k, v in src["manifest"].items()
+                 if k != "manifest_sha256"}))
+        result = build_sql_staging([analytics, signals])
+        self.assertEqual(result["sources_count"], 2)
+        self.assertEqual(len(result["messages"]), 2)
+        self.assertEqual(len(result["candidates"]), 1)
+        self.assertEqual(result["signals"], [])
+
+    def test_bot_chat_still_requires_matching_export_identity(self):
+        src = self.source()
+        export = __import__("json").loads(src["raw_export"])
+        export["type"] = "bot_chat"
+        export["id"] += 1
+        src["raw_export"] = canonical(export)
+        src["manifest"]["export_sha256"] = digest(src["raw_export"])
+        src["manifest"]["manifest_sha256"] = digest(canonical(
+            {k: v for k, v in src["manifest"].items()
+             if k != "manifest_sha256"}))
+        with self.assertRaises(ContractError):
+            build_sql_staging([src])
+
     def test_export_must_be_a_personal_chat(self):
         s = self.source()
         export = __import__("json").loads(s["raw_export"])
