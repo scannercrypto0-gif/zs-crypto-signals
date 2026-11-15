@@ -144,6 +144,7 @@ def _manifest(row):
             or len(row["attachments"]) > 10000):
         raise ContractError("STAGE06B_ATTACHMENT_MANIFEST_INVALID")
     names = set()
+    total_attachment_size = 0
     for a in row["attachments"]:
         if not isinstance(a, dict) or set(a) != {"path", "sha256", "size_bytes"}:
             raise ContractError("STAGE06B_ATTACHMENT_ROW_INVALID")
@@ -154,6 +155,9 @@ def _manifest(row):
         _sha(a["sha256"])
         if type(a["size_bytes"]) is not int or not 0 <= a["size_bytes"] <= MAX_ATTACH:
             raise ContractError("STAGE06B_ATTACHMENT_SIZE_INVALID")
+        total_attachment_size += a["size_bytes"]
+        if total_attachment_size > MAX_EXPORT:
+            raise ContractError("STAGE06B_TOTAL_ATTACHMENTS_TOO_LARGE")
     unsigned = {k: v for k, v in row.items() if k != "manifest_sha256"}
     if digest(canonical(unsigned)) != row["manifest_sha256"]:
         raise ContractError("STAGE06B_MANIFEST_SHA_MISMATCH")
@@ -255,6 +259,14 @@ def build_sql_staging(sources: list[dict]) -> dict:
                 if archive_raw != documents[filepaths[0]] or ev["qualification_status"] != match[3]:
                     raise ContractError("STAGE06B_ARCHIVE_IDENTITY_CONFLICT")
                 signal_id = ev["signal_id"]
+                decision_at = datetime.fromisoformat(
+                    ev["timestamps"]["decision_at"].replace("Z", "+00:00"))
+                message_at = datetime.fromisoformat(date.replace("Z", "+00:00"))
+                if message_at < decision_at:
+                    raise ContractError("STAGE06B_ARCHIVE_BEFORE_DECISION")
+                if (signal_id is not None and
+                        ev.get("quality_metadata", {}).get("qualification") == "RESEARCH_ONLY"):
+                    raise ContractError("STAGE06B_RESEARCH_CANNOT_BECOME_SIGNAL")
                 projection = sql_projection(ev)
                 for c in projection["candidates"]:
                     c_row = {
