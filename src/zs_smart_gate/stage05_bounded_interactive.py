@@ -7,6 +7,7 @@ from .stage05_contracts import ContractError, canonical, digest
 from .stage05_custody import LocalOutbox, VerifiedUpstream
 from .stage05_interactive import InteractiveService, respond_once
 from .stage05_telegram_http import TelegramHTTP, require_live_permission
+from .stage05c_inbound_forensics import InboundDiagnostics
 
 
 def bounded_interactive(*, config, transport, store, upstream, source_ref, started_at,
@@ -42,7 +43,10 @@ def bounded_interactive(*, config, transport, store, upstream, source_ref, start
     if not account_a_only:
         pair["B"] = config.signals_chat_b
     pending = {}
-    diagnostics = Counter()
+    diagnostics = Counter()  # Existing owner-accepted Stage05C counters.
+    inbound_diagnostics = InboundDiagnostics()  # Additional privacy-safe forensic view.
+    diagnostic_pending = {}  # Separate from the accepted matching/dispatch state.
+    baseline_update_count = None
 
     def call(label, method, **kwargs):
         guard()
@@ -51,7 +55,9 @@ def bounded_interactive(*, config, transport, store, upstream, source_ref, start
 
     def result(status, replies=None):
         return {"status": status, "replies": replies or {}, "calls": calls,
-                "claimed": store.read(key) is not None, "ingress_counts": dict(diagnostics)}
+                "claimed": store.read(key) is not None, "ingress_counts": dict(diagnostics),
+                "inbound_diagnostics": dict(inbound_diagnostics.summary(),
+                                            baseline_update_count=baseline_update_count)}
 
     def poll():
         return call("getUpdates", transport.get_updates, offset=0)
@@ -67,6 +73,7 @@ def bounded_interactive(*, config, transport, store, upstream, source_ref, start
                 or any(not isinstance(row, dict) or type(row.get("update_id")) is not int
                        for row in baseline.updates)):
             return result("INTERACTIVE_BASELINE_OR_BACKLOG_BLOCKED")
+        baseline_update_count = len(baseline.updates)
         high_water = max((row["update_id"] for row in baseline.updates), default=-1)
         started_at = int(clock().timestamp())
     if not store.create_if_absent(key, canonical({"started_at": started_at, "head_sha": head_sha,
@@ -84,6 +91,12 @@ def bounded_interactive(*, config, transport, store, upstream, source_ref, start
         updates = poll()
         if updates.status != "ACCEPTED" or len(updates.updates) > 20:
             return result("INTERACTIVE_POLL_FAILED_OR_UNKNOWN")
+        # Diagnostic observation is additive: preserve the already accepted
+        # account_a_only routing, ingress_counts and reply state unchanged.
+        inbound_diagnostics.record(updates.updates, baseline=high_water, accounts=pair,
+                                   started_at=started_at,
+                                   observed_at=int(clock().timestamp()),
+                                   pending=diagnostic_pending, simulation=simulation)
         for update in updates.updates:
             diagnostics["updates_examined"] += 1
             if not isinstance(update, dict):
@@ -124,6 +137,9 @@ def bounded_interactive(*, config, transport, store, upstream, source_ref, start
                     diagnostics["matched_" + role] += 1
         if set(pending) == set(pair):
             break
+        # Zero cursor advancement: a full page may hide newer messages.
+        if not simulation and len(updates.updates) >= 20:
+            return result("INTERACTIVE_BACKLOG_FULL_NO_CURSOR_ADVANCE")
     if set(pending) != set(pair):
         return result("ACCOUNT_A_REQUEST_NOT_OBSERVED" if account_a_only else "TWO_HUMAN_REQUESTS_NOT_OBSERVED")
     results = {}
