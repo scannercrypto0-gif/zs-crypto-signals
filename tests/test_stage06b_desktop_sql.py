@@ -1,5 +1,6 @@
 """Stage06B new offline import/staging tests; no network or real SQL execution."""
 from copy import deepcopy
+from datetime import datetime
 from pathlib import Path
 import tempfile
 import unittest
@@ -11,7 +12,6 @@ from zs_smart_gate.stage06b_desktop_sql import (
     MANIFEST, build_sql_staging, apply_sql_server
 )
 
-TIME = "1794736800"
 
 
 def bound(manifest):
@@ -76,6 +76,8 @@ class DesktopSQLTests(unittest.TestCase):
         self.root = Path(self.temp.name)
         source, clock = fixture()
         self.event = analyze(source, clock, synthetic=False)
+        decision = datetime.fromisoformat(self.event["timestamps"]["decision_at"].replace("Z", "+00:00"))
+        self.export_timestamp = str(int(decision.timestamp()) + 120)
         self.archive = make_document(self.event)
 
     def source(self, role="ANALYTICS_C", bot=2002, chat=101, exportid=700,
@@ -91,7 +93,7 @@ class DesktopSQLTests(unittest.TestCase):
             files.append({"path": name, "sha256": digest(self.archive["document"]),
                           "size_bytes": len(self.archive["document"])})
         message = {
-            "id": msgid, "type": "message", "date_unixtime": TIME,
+            "id": msgid, "type": "message", "date_unixtime": self.export_timestamp,
             "text": self.archive["caption"] if role == "ANALYTICS_C" else "BOT SIGNAL STATUS",
         }
         if with_attachment:
