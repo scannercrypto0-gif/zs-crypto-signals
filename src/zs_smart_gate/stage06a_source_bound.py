@@ -5,7 +5,7 @@ No signals, orders, network activity, or outcome-derived qualification.
 """
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from decimal import Decimal, InvalidOperation
 import json
 import re
@@ -105,6 +105,11 @@ def _bars(raw: bytes, expected_sha: str, *, symbol: str, source_manifest_sha: st
             bar.validate()
         except ValueError:
             raise ContractError("STAGE06A_BAR_NOT_FINALIZED") from None
+        frame_seconds = {"5m": 300, "15m": 900, "30m": 1800,
+                         "1h": 3600, "4h": 14400}[record["timeframe"]]
+        if (int(bar.open_at.timestamp()) % frame_seconds != 0
+                or bar.close_at - bar.open_at != timedelta(seconds=frame_seconds)):
+            raise ContractError("STAGE06A_BAR_TIMEFRAME_ALIGNMENT_INVALID")
         if bar.close_at > as_of or bar.available_at > as_of:
             raise ContractError("STAGE06A_FUTURE_BAR_FORBIDDEN")
         if checked and bar.open_at != checked[-1].close_at:
