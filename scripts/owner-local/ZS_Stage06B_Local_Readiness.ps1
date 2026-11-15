@@ -202,7 +202,7 @@ try {
     $report = Join-Path $ReportRoot ('READINESS-' + $timestamp + '.json')
     if (Test-Path -LiteralPath $report) { throw 'REPORT_EXISTS' }
     $json = ConvertTo-Json -InputObject ([pscustomobject]$findings) -Depth 8
-    [IO.File]::WriteAllText($report, $json, (New-Object Text.UTF8Encoding($false)))
+    [IO.File]::WriteAllText($report, $json, ([System.Text.UTF8Encoding]::new($false)))
     Write-Host 'STAGE06B_PREFLIGHT=COMPLETE_READ_ONLY'
     Write-Host ("EXPORTS_FOUND=" + $findings.export_shape_accepted_count)
     Write-Host ("MESSAGES_OBSERVED=" + $findings.messages_count)
