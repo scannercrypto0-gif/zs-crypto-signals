@@ -21,7 +21,7 @@ def signed(row):
 
 
 def bars(symbol="BTCUSDT", sha="a"*64, *, gap=False, target=False):
-    start = DECISION + timedelta(minutes=5)
+    start = CLOSE + timedelta(minutes=5)
     def stamp(t):
         return t.isoformat(timespec="seconds").replace("+00:00", "Z")
     items = []
@@ -149,7 +149,7 @@ class Stage06ABoundTests(TestCase):
             "available_at": accepted.isoformat(timespec="microseconds").replace("+00:00","Z")})
         def stamp(value):
             return value.isoformat(timespec="microseconds").replace("+00:00","Z")
-        a = accepted + timedelta(minutes=1)
+        a = datetime.fromtimestamp((int(accepted.timestamp()) // 300 + 1) * 300, timezone.utc)
         b = a + timedelta(minutes=5)
         c = b + timedelta(minutes=5)
         raw = canonical({
