@@ -180,7 +180,7 @@ try {
         references=$refs.Count
         directories_checked=$directories
         directory_limit_hit=$limitHit
-        independently_sha_verified=$verified
+        archive_caption_sha_matched=$verified
         multiple_paths_identical_content_unattested=$same
         differing_content_ambiguous=$different
         name_only_unique_candidate=$alone
@@ -200,7 +200,7 @@ try {
     [IO.File]::WriteAllText($privatePath, ($private | ConvertTo-Json -Depth 7), (New-Object System.Text.UTF8Encoding($false)))
     Write-Host 'MEDIA_DISAMBIGUATION=COMPLETE_READ_ONLY'
     Write-Host ("REFS="+$status.references)
-    Write-Host ("VERIFIED_SHA="+$status.independently_sha_verified)
+    Write-Host ("CAPTION_SHA_MATCHED="+$status.archive_caption_sha_matched)
     Write-Host ("DUPLICATE_PATHS_IDENTICAL_BYTES_UNATTESTED="+$status.multiple_paths_identical_content_unattested)
     Write-Host ("DIFFERENT_CONTENT_AMBIGUOUS="+$status.differing_content_ambiguous)
     Write-Host ("ONE_NAME_MATCH_UNATTESTED="+$status.name_only_unique_candidate)
