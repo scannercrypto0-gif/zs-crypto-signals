@@ -1,0 +1,35 @@
+{
+  "status": "INTRADAY_UP_ENGINEERING_READY",
+  "qualification": "NUMERIC_POLICY_OWNER_APPROVAL_PENDING",
+  "head": "d49f2a4010026079d7cc72e9550154f5c31d960a",
+  "tree": "394138f9b514f5b9a8f51605bb6c17161beaa3a0",
+  "files": [
+    {
+      "path": "research/stage51/closure/QV1-B-INTRADAY-UP-POLICY-DRAFT-v1.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "994147e6594976c53563405dfbbab24a24922143"
+    },
+    {
+      "path": "src/zs_smart_gate/stage03_qv1_intraday_up.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8dc8a43625162e455e082300dbd84d5cc6413c59"
+    },
+    {
+      "path": "tests/test_stage03_qv1_intraday_up.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0e3346b74a8bd8705b4d804bf7a22e43f33fe1d5"
+    }
+  ],
+  "command": "py -3.12 -B -m unittest discover -s tests -p test_stage03_qv1_intraday_up.py -v",
+  "tests_passed": 3,
+  "failed": 0,
+  "skipped": 0,
+  "exit": 0,
+  "log_sha256": "2843baba49a6470596f46ae09311f16c4b145fcec31a5687aaa5f4a2e353372d",
+  "log": "d49f2a4010026079d7cc72e9550154f5c31d960a\nPYTHON=Python 3.12.10 POWERSHELL=7.6.9\ntest_real_detector_threshold_and_closed_join (test_stage03_qv1_intraday_up.IntradayUpTests.test_real_detector_threshold_and_closed_join) ... ok\ntest_stable_sqlite_readback_without_qualification (test_stage03_qv1_intraday_up.IntradayUpTests.test_stable_sqlite_readback_without_qualification) ... ok\ntest_stale_missing_context_wrong_policy_and_tampering (test_stage03_qv1_intraday_up.IntradayUpTests.test_stale_missing_context_wrong_policy_and_tampering) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.084s\n\nOK\nEXIT=0 UTC=2026-11-11T09:43:45.7052740Z\n",
+  "binance": 0,
+  "telegram": 0
+}

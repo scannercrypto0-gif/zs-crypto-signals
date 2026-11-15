@@ -66,10 +66,11 @@ class Stage05CBoundedForensicIntegration(unittest.TestCase):
                                             interactive_reply=True),
                          clock=self.clock, ready=lambda: None)
 
-    def invoke(self, fake):
+    def invoke(self, fake, **overrides):
+        opts = dict(self.opts, **overrides)
         with patch("zs_smart_gate.stage05_bounded_interactive.TelegramHTTP", return_value=fake), patch(
                 "zs_smart_gate.stage05_bounded_interactive.time.sleep"):
-            return bounded_interactive(**self.opts)
+            return bounded_interactive(**opts)
 
     def test_two_humans_split_polls_normalized_and_reply_bound(self):
         old = row(101, 5, 10)
@@ -102,6 +103,18 @@ class Stage05CBoundedForensicIntegration(unittest.TestCase):
                          {"EMPTY_BATCH": 6, "UNAUTHORIZED_ACCOUNT": 1})
         self.assertEqual(fake.offsets, [0] * 8)
         self.assertEqual(fake.sent, [])
+
+    def test_account_a_only_keeps_accepted_counts_and_new_forensics(self):
+        # Regression for merging owner-accepted PR55 A-only mode with PR57 telemetry.
+        fake = SequenceTelegram(((), (row(303, 1, 11),
+                                       row(101, 31, 12, text=" btcusdt "))))
+        result = self.invoke(fake, account_a_only=True)
+        self.assertEqual(result["status"], "ACCOUNT_A_API_ACCEPTED_REPLY")
+        self.assertEqual(fake.sent, [("101", 31)])
+        self.assertEqual(result["ingress_counts"]["account_not_allowed"], 1)
+        self.assertEqual(result["ingress_counts"]["matched_A"], 1)
+        self.assertEqual(result["inbound_diagnostics"]["seen"], {"A": True, "B": False})
+        self.assertEqual(result["inbound_diagnostics"]["reason_totals"]["UNAUTHORIZED_ACCOUNT"], 1)
 
 
 if __name__ == "__main__":

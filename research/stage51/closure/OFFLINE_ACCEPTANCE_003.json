@@ -1,0 +1,63 @@
+{
+  "status": "OFFLINE_ACCEPTANCE_PASS",
+  "code_sha": "00bb15320cf471c68818e362800b6de31353eb6f",
+  "tree": "00f46d6e86985f5702cd29162648187613903630",
+  "contract_sha256": "1455cfbd12bdc93601a795feb8be96434a8a6fdc8981580e80d445df22d4d511",
+  "tests_passed": 2,
+  "tests_failed": 0,
+  "skipped": 0,
+  "exit_code": 0,
+  "windows_output": "00bb15320cf471c68818e362800b6de31353eb6f\nSTART_UTC=2026-11-10T12:46:45.3408449Z\nPYTHON=Python 3.12.10 POWERSHELL=7.6.9 SHA=00bb15320cf471c68818e362800b6de31353eb6f\ntest_approval_rejects_wrong_pin_and_same_reference (test_stage51_final_chain.FinalChainTests.test_approval_rejects_wrong_pin_and_same_reference) ... ok\ntest_one_fixture_chain_and_unknown_delivery_stop (test_stage51_final_chain.FinalChainTests.test_one_fixture_chain_and_unknown_delivery_stop) ... ok\n\n----------------------------------------------------------------------\nRan 2 tests in 0.359s\n\nOK\nUNIT_EXIT=0\nOFFLINE_PREFLIGHT_PASS HEAD=00bb15320cf471c68818e362800b6de31353eb6f TREE=00f46d6e86985f5702cd29162648187613903630 CONTRACT_SHA256=1455cfbd12bdc93601a795feb8be96434a8a6fdc8981580e80d445df22d4d511 NETWORK=0\nPREFLIGHT_EXIT=0\nEND_UTC=2026-11-10T12:46:49.4302210Z\n",
+  "log_sha256": "06afddb1b90d699d360a3a32c7ce181a7361080479ff0434c0a72feb6cca8555",
+  "commands": [
+    "py -3.12 -B -m unittest discover -s tests -p test_stage51_final_chain.py -v",
+    "pwsh -NoProfile -File scripts/launch-stage51-final-once.ps1 -Head 00bb15320cf471c68818e362800b6de31353eb6f"
+  ],
+  "binance_calls": 0,
+  "telegram_calls": 0,
+  "review": "CODEX_EXECUTED_PM_INDEPENDENT_REVIEW_PENDING",
+  "files": [
+    {
+      "path": "research/stage51/closure/LIVE_SESSION_CONTRACT.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "98d6aadb131a677061672b70a8c557ba393dd18b",
+      "sha256": "1455cfbd12bdc93601a795feb8be96434a8a6fdc8981580e80d445df22d4d511"
+    },
+    {
+      "path": "research/stage51/closure/QV1-B-FINAL-DECISION-PACKET.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "00363d22cc8d1245ff96042770d642aecf06ba96",
+      "sha256": "18bd002bec7f7629a2d87752f1c190bd6ee16b02564913a284066f218890a4cb"
+    },
+    {
+      "path": "scripts/launch-stage51-final-once.ps1",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4e0e4aad41ab700a3c2e45256f14cc0c2850b0d1",
+      "sha256": "b0986fb1bc1cb33b2c6caa6170d02540204ae44cdf9a1571f9737e85ad8304aa"
+    },
+    {
+      "path": "scripts/stage51-final-once.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4415fff9a74b0f73287197a49eaa9dce3aa58d40",
+      "sha256": "2563659c6132d04b1d521355e3faa5269cb44b74e575d2a0e4024c4d6c07e62c"
+    },
+    {
+      "path": "src/zs_smart_gate/stage51_live_chain.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b368f0110fabb6daa0bdea60b8184278cfa3becf",
+      "sha256": "9da7e7ea39690ce23b0fcf1a6fb4dbc08f62c7087b5678086f4b11ae7cd163e8"
+    },
+    {
+      "path": "tests/test_stage51_final_chain.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bd488e4b25b5d5fd003601c8a376b4e2b9967b2b",
+      "sha256": "e054882550d1b33b77c29c434fd3ccfe8a6a6c48b40c2d9e21d271b095d93aa5"
+    }
+  ]
+}

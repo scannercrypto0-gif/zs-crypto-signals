@@ -1,0 +1,11 @@
+{
+  "end_utc": "2026-11-14T10:27:36.0443140Z",
+  "stderr_sha256": "d1f18b063b50eed8b962f946f151d8d09bb8689cc3d4e197ba42401f991dda26",
+  "powershell": "7.6.9",
+  "head": "9a55b0bc0f787f5137e51abcb8926bf67ff61fa6",
+  "exit_code": 0,
+  "start_utc": "2026-11-14T10:27:30.6922647Z",
+  "stdout_sha256": "67c47ea5c0f05224f6f52f22e5d311f15d4c31b35c38b981caf136464f2e337e",
+  "python": "Python 3.12.10",
+  "tree": "4d1774903617f62e6be04a3811d7a69d011e6f3f"
+}

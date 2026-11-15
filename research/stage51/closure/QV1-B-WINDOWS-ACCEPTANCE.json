@@ -1,0 +1,57 @@
+{
+  "order": "ZS-QV1-B-REAL-QUALIFICATION-20261110-001",
+  "code_sha": "97520b4dfd8c2fd4b34454c090d118b25051790e",
+  "tree": "d59d09fe5f610a1f40946b95ff590971d666bab9",
+  "tests_passed": 7,
+  "failures": 0,
+  "skipped": 0,
+  "exit_code": 0,
+  "commands": [
+    "py -3.12 -B -m unittest discover -s tests -p 'test_stage03_qv1_boundary.py' -v",
+    "py -3.12 -B -m unittest discover -s tests -p 'test_stage51_final_chain.py' -k one_fixture_chain -v"
+  ],
+  "windows_log": "97520b4dfd8c2fd4b34454c090d118b25051790e\nSTART_UTC=2026-11-10T14:11:05.4381716Z\nPYTHON=Python 3.12.10 POWERSHELL=7.6.9\ntest_approved_fixture_branch_with_no_score_and_reopen (test_stage03_qv1_boundary.Qv1BoundaryTests.test_approved_fixture_branch_with_no_score_and_reopen) ... ok\ntest_failure_and_missing_gate_never_signal (test_stage03_qv1_boundary.Qv1BoundaryTests.test_failure_and_missing_gate_never_signal) ... ok\ntest_future_partial_mixed_sem_and_n03_fail_closed (test_stage03_qv1_boundary.Qv1BoundaryTests.test_future_partial_mixed_sem_and_n03_fail_closed) ... ok\ntest_real_holds_and_fixture_relabel_blocked (test_stage03_qv1_boundary.Qv1BoundaryTests.test_real_holds_and_fixture_relabel_blocked) ... ok\ntest_real_rejection_replays_existing_archive_without_dispatch (test_stage03_qv1_boundary.Qv1BoundaryTests.test_real_rejection_replays_existing_archive_without_dispatch) ... ok\ntest_same_event_cannot_replace_gate_evidence (test_stage03_qv1_boundary.Qv1BoundaryTests.test_same_event_cannot_replace_gate_evidence) ... ok\n\n----------------------------------------------------------------------\nRan 6 tests in 0.307s\n\nOK\nQV1_EXIT=0\ntest_one_fixture_chain_and_unknown_delivery_stop (test_stage51_final_chain.FinalChainTests.test_one_fixture_chain_and_unknown_delivery_stop) ... ok\n\n----------------------------------------------------------------------\nRan 1 test in 0.269s\n\nOK\nCHAIN_EXIT=0 END_UTC=2026-11-10T14:11:07.6823273Z\n",
+  "log_sha256": "bb5a66595f1bb079ded8561e4429fadf7c7ad2ac65ffe556542e4d3725e5d70f",
+  "files": [
+    {
+      "path": "research/stage51/closure/QV1-B-OWNER-DECISION-PACKET.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8c4fa9104387b9de4f00c2513cc22af3f1fbc477",
+      "sha256": "5d107255c6bbf2ba4ad787e91834526afcb7ae09ebc7f15ed16ff01de50a7584"
+    },
+    {
+      "path": "src/zs_smart_gate/stage03_qv1_boundary.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "01884b0115ecb2ffb20b9183819db5f7e4dd1245",
+      "sha256": "6a9674dcecd901baf691bf8d869351a894d6635fdbce19ad88e7f42b1c3f9cb4"
+    },
+    {
+      "path": "src/zs_smart_gate/stage51_live_chain.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "baaa6be84e4168b5b2e543dbe443d206f3751d63",
+      "sha256": "7b66e4423c1fe247b96d3bb447cb35fdc4d8c6d0d53aa47abe97e779d32a6177"
+    },
+    {
+      "path": "tests/test_stage03_qv1_boundary.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0aa4da7932c90100d33fc03ce440d639df3f9356",
+      "sha256": "c9f587444fefada40cfcb16b32321aa39b14303ec986dbe3d5ccb00b70872ae0"
+    }
+  ],
+  "network": {
+    "binance": 0,
+    "telegram": 0
+  },
+  "acceptance": {
+    "provenance_and_identity": "IMPLEMENTED_VERIFIED",
+    "synthetic_gate_routes_and_custody": "IMPLEMENTED_VERIFIED",
+    "recorded_rejection_archive": "IMPLEMENTED_VERIFIED",
+    "real_qualification": "OWNER_POLICY_PENDING",
+    "real_qualified_delivery": "NOT_TESTED",
+    "numeric_n03_sem_score_trade_plan": "OWNER_POLICY_PENDING"
+  }
+}
