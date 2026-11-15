@@ -57,9 +57,14 @@ def sha(path: Path, limit: int) -> tuple[str, int]:
 def safe_rel(value: str) -> Path:
     if not isinstance(value, str) or not VALID_PATH.fullmatch(value):
         raise Hold("MEDIA_RELATIVE_PATH_UNSUPPORTED")
-    pure = PurePosixPath(value.replace("\\", "/"))
-    if (pure.is_absolute() or not pure.parts or
-            any(part in (".", "..") for part in pure.parts)):
+    if (value.startswith(("/", ".")) or "\\" in value or
+            ":" in value or "//" in value):
+        raise Hold("MEDIA_RELATIVE_PATH_UNSAFE")
+    components = value.split("/")
+    if any(p in ("", ".", "..") or p.endswith((".", " ")) for p in components):
+        raise Hold("MEDIA_RELATIVE_PATH_UNSAFE")
+    pure = PurePosixPath(value)
+    if pure.is_absolute():
         raise Hold("MEDIA_RELATIVE_PATH_UNSAFE")
     return Path(*pure.parts)
 
@@ -267,11 +272,33 @@ def stage(base: Path, verified: bool = True):
     stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     safe = evidence_dir / f"STAGING-{stamp}.json"
     safe.write_text(json.dumps(output, indent=2), encoding="utf-8")
+    # Local-private custody mapping contains paths and per-file hashes; never
+    # display it or publish it to GitHub. No Telegram chat/bot IDs are inferred.
+    private = base / "stage06b-private" / f"PRIVATE-STAGING-CUSTODY-{stamp}.json"
+    private_data = {
+        "schema": "zs.stage06b.local-private-custody.v1",
+        "source_main_sha": "8e323aa95871405f6227650753828f8781ed71d2",
+        "role_assignment": "SIGNALS_MAIN_UNASSIGNED_A_OR_B",
+        "export_inputs": [
+            {"role": role, "original_path": str(e["path"]),
+             "staged_path": str(target_root / STAGED_ROLES[role] / "result.json"),
+             "sha256": e["sha256"], "size_bytes": e["size"]}
+            for role, e in exports.items()],
+        "media": [
+            {"role": row["role"], "relative_path": row["relative"].as_posix(),
+             "source_root": str(roots[row["role"]]),
+             "sha256": row["sha256"], "size_bytes": row["size"],
+             "trust": "CAPTION_HASH_MATCH" if row["expected"] else "MULTIPLE_COPIES_SAME_BYTES_NO_CAPTION_HASH"}
+            for row in refs],
+        "sql_imported": False, "network_calls": 0,
+    }
+    private.write_text(json.dumps(private_data, indent=2), encoding="utf-8")
     for key, value in output.items():
         if key not in ("schema", "mode"):
             print(f"{key.upper()}={str(value).upper() if isinstance(value, bool) else value}")
     print("STAGING=COMPLETED_LOCAL_ONLY")
     print(f"SAFE_REPORT={safe}")
+    print("PRIVATE_CUSTODY_REPORT=LOCAL_ONLY_DO_NOT_UPLOAD")
     print("PRIVATE_PATHS_AND_EXPORT_BYTES_REMAIN_ON_D")
     return output
 
