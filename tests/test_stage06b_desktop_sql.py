@@ -262,6 +262,20 @@ class DesktopSQLTests(unittest.TestCase):
         with self.assertRaises(ContractError):
             build_sql_staging([src])
 
+    def test_bot_chat_missing_media_still_fails_closed(self):
+        src = self.source()
+        export = __import__("json").loads(src["raw_export"])
+        export["type"] = "bot_chat"
+        src["raw_export"] = canonical(export)
+        src["manifest"]["export_sha256"] = digest(src["raw_export"])
+        src["manifest"]["manifest_sha256"] = digest(canonical(
+            {k: v for k, v in src["manifest"].items()
+             if k != "manifest_sha256"}))
+        attachment = src["manifest"]["attachments"][0]["path"]
+        (src["root"] / attachment).unlink()
+        with self.assertRaises(ContractError):
+            build_sql_staging([src])
+
     def test_export_must_be_a_personal_chat(self):
         s = self.source()
         export = __import__("json").loads(s["raw_export"])
