@@ -1,5 +1,17 @@
 # ZS Crypto Signals — SMART GATE
 
+## OWNER GOVERNING DECISION — 15 November 2026 — bounded engineering closure and Stage06 development
+
+**Authority:** [Issue #51 owner order #6890458361](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/51#issuecomment-6890458361), [simplified Stage04 #6875213132](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/51#issuecomment-6875213132), and [pre-Stage06 scope #6873534849](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/51#issuecomment-6873534849). **This is the current governing interpretation for Stage00–05 engineering acceptance and Stage06 development**; older inconsistent clauses below remain as historical records, not active gates.
+
+- **Stage00–05:** engineering acceptance is **CLOSED only for the owner-authorized, tested bounded scope**, with source/clock/integrity, scanner/setup, multi-symbol Stage01/03 R0–R2 research with truthful `POLICY_HOLD`, Stage04 Windows continuity, and the accepted scoped Stage02/05 routes. It is **not** a declaration of full-universe/live-human-B-in-this-session/production/24x7/scientific qualification. Distinct evidence is indexed at [PR #55](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/55) and [Issue #51](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/51). Owner's prior human A/B routing confirmation is preserved without falsely asserting a new live demonstration.
+- **Stage04:** Windows durable local committed-record journal/outbox is operational canonical; restart, integrity, local backup/fresh-path restore, idempotency and unknown-delivery reconciliation stay mandatory. Telegram **05B** is human-facing analytics, not a pending-queue substitute. GitHub stores code/governance and optional bounded sanitized research evidence. **Independent encrypted external media/off-device recovery is OPTIONAL / OUT_OF_SCOPE**, not a prerequisite for engineering closure, Stage06 development or automatic production gating. No claim of physical disaster recovery is implied.
+- **Science deferred:** genuine qualified signals, profitability/prediction, OOS/forward edge and numerical score policy are **NOT engineering prerequisites** for Stage06 development. No invented `signal_id`/`score`, no unqualified 05A send, no retrospective relabeling of `NO_BREAKOUT`.
+- **Stage06 engineering coding is AUTHORIZED NOW** on pinned approved sources. Stage06A outcome chronology starts from provable post-delivery availability with `NO_ENTRY` and same-candle ambiguity reported conservatively; Stage06B is verified Telegram Desktop export/attachment to normalized SQL dedup/import, subject to actual files and separately checked database execution. No new Binance/Telegram calls or consumed-session replay. **Production and trading remain disabled.**
+- **Release discipline:** PRs must satisfy actual required checks and review before merge; failed/unknown CI is not deemed passing. The specific accepted Windows receipts remain valid for their tested SHAs; changes require only impacted tests. Engineering code acceptance, live operations and scientific claims are separate.
+
+---
+
 ## Pre-Stage06 engineering acceptance — owner directive 6873534849
 
 ### Stage04 local continuity — owner decision 6875213132
