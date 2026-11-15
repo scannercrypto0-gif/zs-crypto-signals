@@ -191,6 +191,8 @@ def build_sql_staging(sources: list[dict]) -> dict:
             raise ContractError("STAGE06B_EXPORT_JSON_INVALID") from None
         if (not isinstance(export, dict) or not isinstance(export.get("messages"), list)
                 or len(export["messages"]) > MAX_MESSAGES
+                or export.get("type") != "personal_chat"
+                or not isinstance(export.get("name"), str) or not export["name"]
                 or _int(export.get("id")) != _int(m["export_chat_id"])):
             raise ContractError("STAGE06B_EXPORT_CHAT_IDENTITY_MISMATCH")
         bot, chat = _int(m["bot_id"]), _int(m["chat_id"])
@@ -233,7 +235,8 @@ def build_sql_staging(sources: list[dict]) -> dict:
             if msg.get("type") not in ("message", "service"):
                 raise ContractError("STAGE06B_MESSAGE_TYPE_INVALID")
             filepaths = []
-            for field in ("file", "photo"):
+            for field in ("file", "photo", "thumbnail", "video_file",
+                          "audio_file", "voice_file", "sticker_file"):
                 value = msg.get(field)
                 if value not in (None, ""):
                     name = _relative(value)
