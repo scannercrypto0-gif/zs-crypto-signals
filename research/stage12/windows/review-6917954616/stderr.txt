@@ -1,0 +1,17 @@
+test_all_negative_fixture_is_explicit (test_stage12_predictive_research.Stage12Tests.test_all_negative_fixture_is_explicit) ... ok
+test_distinct_research_questions_can_have_different_truth (test_stage12_predictive_research.Stage12Tests.test_distinct_research_questions_can_have_different_truth) ... ok
+test_known_fixture_metrics_and_quiet_candidate (test_stage12_predictive_research.Stage12Tests.test_known_fixture_metrics_and_quiet_candidate) ... ok
+test_paired_versions_and_event_origin_conflicts (test_stage12_predictive_research.Stage12Tests.test_paired_versions_and_event_origin_conflicts) ... ok
+test_paired_versions_reject_conflicting_outcome_or_baseline (test_stage12_predictive_research.Stage12Tests.test_paired_versions_reject_conflicting_outcome_or_baseline) ... ok
+test_paired_versions_reject_inconsistent_label_end (test_stage12_predictive_research.Stage12Tests.test_paired_versions_reject_inconsistent_label_end) ... ok
+test_partition_overlap_and_invalid_cost (test_stage12_predictive_research.Stage12Tests.test_partition_overlap_and_invalid_cost) ... ok
+test_pins_and_duplicate_events (test_stage12_predictive_research.Stage12Tests.test_pins_and_duplicate_events) ... ok
+test_pit_and_label_maturity (test_stage12_predictive_research.Stage12Tests.test_pit_and_label_maturity) ... ok
+test_plan_is_hypothetical_and_preserves_candidate (test_stage12_predictive_research.Stage12Tests.test_plan_is_hypothetical_and_preserves_candidate) ... ok
+test_real_and_missing_stay_blocked (test_stage12_predictive_research.Stage12Tests.test_real_and_missing_stay_blocked) ... ok
+test_swing_and_intraday_cohorts_never_pool (test_stage12_predictive_research.Stage12Tests.test_swing_and_intraday_cohorts_never_pool) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.007s
+
+OK

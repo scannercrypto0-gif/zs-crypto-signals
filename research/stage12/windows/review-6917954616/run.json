@@ -1,0 +1,19 @@
+{
+  "start_utc": "2026-11-16T13:41:30.3552065Z",
+  "powershell": "7.6.9",
+  "tree": "fb671a632b05781421a7891b334dc7d11b2e5a35",
+  "exit": 0,
+  "python": "Python 3.12.10",
+  "command": "PYTHONPATH=src; py -3.12 -m unittest discover -s tests -p test_stage12_predictive_research.py -v",
+  "end_utc": "2026-11-16T13:41:30.8369692Z",
+  "stdout_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+  "head": "02da62a6baf55d8fcbed471e296166b727a006c0",
+  "counts": {
+    "fail": 0,
+    "pass": 12,
+    "errors": 0,
+    "skips": 0,
+    "run": 12
+  },
+  "stderr_sha256": "9AF4F4652F089CF819F6A64EA89C5B14EBD610B8E91949DBB2E1135622CA0473"
+}
