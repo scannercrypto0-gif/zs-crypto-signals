@@ -85,7 +85,9 @@ def _div(n: Decimal, d: Decimal) -> Decimal | None:
 def evaluate_window(window: ResearchWindow, *, decision_at: datetime) -> dict:
     """No future bars in inputs; conservative fail-closed source/clock validation."""
     decision = utc(decision_at)
-    if (not SYMBOL.fullmatch(window.symbol) or window.direction not in ("UP", "DOWN")
+    if not isinstance(window, ResearchWindow):
+        return _failed("RESEARCH_WINDOW_TYPE_REQUIRED")
+    if (not isinstance(window.symbol, str) or not SYMBOL.fullmatch(window.symbol) or window.direction not in ("UP", "DOWN")
             or window.source_scope != "SYNTHETIC_TEST_ONLY"
             or not isinstance(window.source_manifest_sha256, str)
             or len(window.source_manifest_sha256) != 64
@@ -238,6 +240,8 @@ def evaluate_partial_window(window: ResearchWindow, observed_5m: tuple[CandleWin
     volumes and full-period high/low are intentionally inaccessible here.
     """
     decision = utc(decision_at)
+    if not isinstance(window, ResearchWindow):
+        return _failed("RESEARCH_WINDOW_TYPE_REQUIRED")
     p = window.parent
     if (not isinstance(p, CandleWindow) or p.timeframe != "30m"
             or not isinstance(window.symbol, str) or not SYMBOL.fullmatch(window.symbol)
@@ -373,6 +377,8 @@ def retrospective_labels(research: dict, future: Sequence[CandleWindow], *,
     first_expected = _first_full_start(decision)
     source = research["source_id"]
     if future:
+        if not isinstance(future[0], CandleWindow):
+            raise ContractError("S07_FUTURE_BAR_TYPE_REQUIRED")
         if future[0].open_at < decision:
             raise ContractError("S07_LABEL_STRADDLES_DECISION")
         invalid = _aligned(future, "5m", source, now)
