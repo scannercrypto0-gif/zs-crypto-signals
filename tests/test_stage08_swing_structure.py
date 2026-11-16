@@ -300,3 +300,14 @@ class Stage08SwingTests(TestCase):
         damaged = dict(up, signal_id="FAKE")
         with self.assertRaises(ContractError):
             compare_synthetic_structure([damaged])
+
+    def test_late_pivot_source_receipt_never_backdates_confirmation(self):
+        bars = series_of_extrema([101,102,106,103,101], [99,98,95,98,99])
+        delayed_source = replace(
+            bars[2], available_at=bars[4].available_at+timedelta(minutes=7))
+        observed = _pivots_and_breaks((*bars[:2], delayed_source, *bars[3:]))
+        high = next(p for p in observed["confirmed_pivots"] if p["kind"]=="HIGH")
+        self.assertEqual(
+            high["first_available_at"],
+            delayed_source.available_at.isoformat().replace("+00:00","Z"))
+        self.assertNotEqual(high["first_available_at"], high["confirmation_close_at"])
