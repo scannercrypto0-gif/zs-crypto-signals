@@ -1,5 +1,16 @@
 # ZS Crypto Signals "GITHUB Version" — SMART GATE
 
+## OWNER APPROVAL — 16 November 2026 — «Stage07» merged and «Stage08» authorized
+
+**Owner instruction:** approve, merge, document and close «Stage07», then start «Stage08». «PR #64» merged to «main» at merge commit `32e61d2cf4b4105791c3b57e727ab97372ac265c`, exact approved source «HEAD» `12fce8678eab79409dba6172858604d803a6fc92`, source «TREE» `64e3b90d959d8caada098d656ebcfec55894272e`. «PM» bounded engineering acceptance: [PR #64 comment 6908260903](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/64#issuecomment-6908260903). Owner-local «Windows» verification was reported as 16/16 on original and final heads, «EXIT=0» with separate «SHA-256» log digests; raw private logs on «D:» were not independently inspected by «PM». Hosted «GitHub Actions» remained «FAILURE», reported as not started due to billing/spending restrictions, **not reclassified as passing**.
+
+**Stage accounting:** «00–07» = 8/14 stages accepted for their *bounded engineering scopes only*; not 8/14 of production readiness, scientific edge or profitability. «Stage07» is now **CLOSED_BOUNDED_ENGINEERING / MERGED**, with synthetic-only offline research, not real-source validation, «OOS/Forward» qualification, live alerts or trading authority.
+
+**Next authorized stage:** «Stage08 — Swing Trend / Structure», research-only and offline, focused on «4h» with four source-available «1h» constituents and optional «8h» comparison; non-repainting confirmed «BOS/CHoCH» and swing high/low structure; «EMA/RSI/MACD/50-week MA» and daily/weekly context only when adequate verifiable historical coverage exists. Missing coverage must remain «INSUFFICIENT_HISTORY». No unapproved indicator definitions, weights, thresholds or qualified signal promotion. A separate consolidated engineering order will be recorded in «Issue #51» and require a new «Draft PR» and targeted «Windows» evidence. No new live «Binance/Telegram», «SQL» setup, production or trading.
+
+---
+
+
 ## OWNER DECISION — 15 November 2026 — Stage06B future database import, NO SQL setup now
 
 **Binding owner clarification; supersedes any earlier statement making live SQL Server setup/import/roundtrip a present Stage06B engineering gate.** Authority: [Issue #51 — owner SQL-deferral clarification](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/51#issuecomment-6894360616) and this decision. Historical prior instructions below are preserved for audit but do not re-impose current SQL infrastructure work.
