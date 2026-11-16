@@ -1,5 +1,18 @@
 # ZS Crypto Signals "GITHUB Version" — SMART GATE
 
+## OWNER APPROVAL — 16 November 2026 — «Stage08» merged and «Stage09» authorized
+
+**Owner decision:** «يتم اعتمد الدمج و توثيق الاغلاق للمرحله 08 و البدء في المرحله 09». «PR #65» merged into `main` at `4ada9c5f90fa13a91c1b88ae0c8495d8a88b414c` from exact approved «HEAD» `a65fd1cd67de1938a07b42af02b2e4d50359dde5`, «TREE» `29ffcdca95ce5cf5f66af2971fbc22d62726bd22`. «PM» bounded engineering acceptance: [PR #65 comment 6910611991](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/65#issuecomment-6910611991). «Codex» owner-local «Windows» report: final 25/25 targeted tests, zero failures/skips, `EXIT=0`; separate «SHA-256» stdout/stderr receipts held on private `D:`. «PM» reviewed the code diff and published hashes but did not independently open/replay raw logs. Hosted «GitHub Actions» remain `FAILURE` and must not be represented as passing; executor reported billing/spending-limit notices for baseline Windows jobs.
+
+**Status:** «Stage08» `CLOSED_BOUNDED_ENGINEERING / MERGED`. Stages «00–08» = **9/14** engineering stages accepted within limited scopes, not scientific validation or production readiness. «Stage09» `OWNER_AUTHORIZED / ENGINEERING_PENDING`.
+
+**Stage09 canonical scope from this document's v2.1 blueprint:** «Fixed Range Volume Profile / POC / VWAP + Trade Plan Levels Research». Offline, synthetic-first, source/time-bound «1h/4h/Daily/Previous Completed Week» anchored windows; versioned objective price levels; deterministic binning/tie-breaks; «Spot Trades/AggTrades» exact when verifiably available, otherwise explicitly tagged «OHLCV APPROX» with provenance and completeness; «POC», optional «VAH/VAL», «VWAP» and signed/absolute distances, cross/retest/hold/rejection and time since cross. No conflation of developing with completed week; no automatic bullish interpretation of proximity to «POC». «Entry/SL/TP» are research-only hypotheses subject to price structure, costs/slippage, validation and comparative ablations, **never TRADE_READY** absent separate science and policy gates.
+
+**Governance:** «SD Coding» executes a single new «Draft PR» based on fresh `main`, tests and research docs, leaving `ZS_SMART_GATE_MASTER.md` and root `README.md` «PM»-owned. Exact «HEAD/TREE», targeted owner «Windows» receipt and independent «PM» review before separate owner merge authorization. No live «Binance/Telegram», «SQL», production, trading, secrets, or unapproved source activation.
+
+---
+
+
 ## OWNER APPROVAL — 16 November 2026 — «Stage07» merged and «Stage08» authorized
 
 **Owner instruction:** approve, merge, document and close «Stage07», then start «Stage08». «PR #64» merged to «main» at merge commit `32e61d2cf4b4105791c3b57e727ab97372ac265c`, exact approved source «HEAD» `12fce8678eab79409dba6172858604d803a6fc92`, source «TREE» `64e3b90d959d8caada098d656ebcfec55894272e`. «PM» bounded engineering acceptance: [PR #64 comment 6908260903](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/64#issuecomment-6908260903). Owner-local «Windows» verification was reported as 16/16 on original and final heads, «EXIT=0» with separate «SHA-256» log digests; raw private logs on «D:» were not independently inspected by «PM». Hosted «GitHub Actions» remained «FAILURE», reported as not started due to billing/spending restrictions, **not reclassified as passing**.
