@@ -1,5 +1,18 @@
 # ZS Crypto Signals — SMART GATE
 
+## OWNER APPROVAL — 16 November 2026 — «Stage10» merged and «Stage11» authorized
+
+**Owner decision:** «موافق» على دمج «PR #67» بالبصمة الحالية، توثيق إغلاق المرحلة «10»، والبدء في «11». «PR #67» merged to `main` at `b6a16e0f1d0f2d698bba41a5f47d5e72302fc64e` from exact approved «HEAD» `c30f12942fee58460f9fea649d2fb947ec35615e` (evidence commit) containing tested code `ae621ec262e1935602dbfedeadd69481a6becb7f`, code «TREE» `683c25719698fb993d607f80d47aa2a8ced887ee`. «PM» acceptance: [PR #67 comment 6915503827](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/67#issuecomment-6915503827). «Windows» raw logs and SHA-256 receipts are **published on GitHub** for final targeted 15/15, zero failures/skips, `EXIT=0`, Python 3.12.10; original 12/12 evidence retained. «PM» read published logs and code but did not independently replay local execution. Hosted «GitHub Actions» runs on evidence head `43860273306`/`43860273297` remain `FAILURE`, not passing.
+
+**Status:** «Stage10» `CLOSED_BOUNDED_ENGINEERING / MERGED`. Stages «00–10» = **11/14** accepted engineering stages within bounded scopes, **not** scientific OOS/forward validation, market-source coverage, production readiness or trading authority. «Stage11» `OWNER_AUTHORIZED / ENGINEERING_PENDING`.
+
+**Stage11 canonical scope from v2.1 blueprint:** «BTC Regime, Market Breadth, Relative Strength, optional News». Synthetic/offline first; «BTC» trend/volatility across MTF, market breadth over eligible universe, relative strength vs BTC, cross-asset correlations, optional ETH/BTC/dominance/event features **only with independently grounded, available-at and published-at timestamps**. «UP/DOWN» and Intraday/Swing context is research-only; missing regime/news must not silently reject a Spot candidate. Event/news discovery is a separate scope requiring approval. Validate PIT alignment, source coverage, no hindsight event tagging, descriptive ablation and hypothetical API cost/latency, with no predictive or trading claim.
+
+**Governance:** single new «Draft PR» from fresh `main`, deterministic targeted tests, published non-sensitive Windows logs and SHA-256 receipts when access exists, exact «HEAD/TREE», independent «PM» review and separate owner merge approval. `ZS_SMART_GATE_MASTER.md` and root `README.md` are «PM»-owned. No live «Binance/Telegram/SQL», trading, secret disclosure, or unapproved data collection.
+
+---
+
+
 ## OWNER APPROVAL — 16 November 2026 — «Stage09» merged and «Stage10» authorized
 
 **Owner decision:** «يتم اعتماد الدمج و توثيق اغلاق المرحله 09 و البدء في المرحله 10». «PR #66» merged into `main` at `7aa03e3254172fad27be489e59d0126684b74a9d` from exact approved «HEAD» `b4ed1ba79b92632d21fc223d20360de8446640c0`, «TREE» `903a7abbe350c5050e4242c76fbd040ac90b3b96`. «PM» bounded engineering acceptance: [PR #66 comment 6912757739](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/66#issuecomment-6912757739). «Codex» reported owner-local «Windows» targeted tests 31/31 pass, zero failures/skips, `EXIT=0`; separate «SHA-256» stdout/stderr receipts stored privately on `D:`. «PM» reviewed source and final diff, but did not independently replay raw logs. Hosted «GitHub Actions» remain `FAILURE`, with executor-reported billing/spending restrictions on Windows jobs; never reclassify as passing.
