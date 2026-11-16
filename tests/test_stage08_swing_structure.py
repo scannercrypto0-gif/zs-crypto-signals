@@ -7,7 +7,7 @@ from unittest import TestCase
 from zs_smart_gate.mtf_contracts import CandleWindow
 from zs_smart_gate.stage08_swing_structure import (
     EightHourObservation, SwingWindow, analyze_swing,
-    retrospective_swing_observation, _pivots_and_breaks,
+    retrospective_swing_observation, compare_synthetic_structure, _pivots_and_breaks,
 )
 from zs_smart_gate.stage05_contracts import ContractError
 
@@ -288,3 +288,15 @@ class Stage08SwingTests(TestCase):
             row, (later,), as_of=later.available_at)
         self.assertEqual(label["status"], "CENSORED_GAP")
         self.assertIsNone(label["signed_close_return"])
+
+    def test_synthetic_baseline_agreement_is_not_predictive_claim(self):
+        up, down = run(fixture("UP")), run(fixture("DOWN"))
+        report = compare_synthetic_structure([up, down])
+        self.assertEqual(report["summary"]["count"], 2)
+        self.assertEqual(report["summary"]["known_pairs"] +
+                         report["summary"]["unknown_pairs"], 2)
+        self.assertIsNone(report["prediction_accuracy"])
+        self.assertIsNone(report["false_positive_rate"])
+        damaged = dict(up, signal_id="FAKE")
+        with self.assertRaises(ContractError):
+            compare_synthetic_structure([damaged])
