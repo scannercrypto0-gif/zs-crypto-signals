@@ -67,6 +67,7 @@ def validate_dataset(dataset, registration, registration_pin, dataset_pin):
         raise ContractError("S12_ROW_COUNT_MISMATCH")
     seen = set()
     event_origins = {}
+    paired_truth = {}
     scopes = {field: set() for field in ("asset", "year", "regime")}
     for row in rows:
         scope, frame = row["horizon"], row["frame"]
@@ -102,8 +103,12 @@ def validate_dataset(dataset, registration, registration_pin, dataset_pin):
             require_id(row[field])
         for field in scopes:
             scopes[field].add(row[field])
-        for field in ("baseline_probability_fixture","model_probability_fixture"):
-            decimal(row[field], 0, 1)
+        baseline = decimal(row["baseline_probability_fixture"], 0, 1)
+        decimal(row["model_probability_fixture"], 0, 1)
+        comparison = (event, origin, scope, frame, period, row["setup"], row["direction"])
+        truth = (row["label"], label_end, finalized, baseline)
+        if paired_truth.setdefault(comparison, truth) != truth:
+            raise ContractError("S12_PAIRED_OUTCOME_OR_BASELINE_CONFLICT")
         for field in ("mae", "mfe"):
             decimal(row[field], 0)
         for field in ("lead_seconds","persistence_seconds"):

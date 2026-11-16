@@ -10,7 +10,13 @@
 | Metrics | Step-integrated PR area with grouped ties, Brier, fixture-threshold precision/recall, five equal-width calibration bins and descriptive lead/persistence/MAE/MFE. Wilson 95% intervals are illustrative IID fixture intervals; they do not estimate real uncertainty. Fixture probabilities are declared inputs and are distinct from a score. |
 | Plan | Hypothetical entry zone, stop and three targets require ordered side-specific levels and PIT-valid synthetic references for structure, volatility, execution risk and costs. Missing evidence yields UNVERIFIED_PLAN while retaining the candidate ID. No route qualifies a plan or signal. |
 
+## Paired comparison integrity
+
+Matching V1/V2 rows share the same event, partition, asset, decision time, horizon, frame, duration, setup and direction. The outcome label, label end, final adjudication time and fixed baseline probability must agree. Comparisons use parsed UTC instants and decimal values, so equivalent representations are accepted. Model fixture probabilities may differ. Contradictions raise S12_PAIRED_OUTCOME_OR_BASELINE_CONFLICT. An end time inconsistent with the declared horizon is rejected by the label-maturity gate before pairing. Distinct research questions may have different outcomes. The gate does not require a counterpart for every row, so version metrics are descriptive and must not be interpreted as a matched-sample superiority test.
+
 ## Pre-registration protocol for a later authorized study
+
+Registered embargo and walk-forward purging are **NOT_IMPLEMENTED** and reserved for a future validated study. The implementation enforces chronological non-overlap and label finalization within each partition.
 
 1. Freeze hypotheses, cohorts, label definitions (including quiet and censoring), horizons, primary metric, multiplicity family, fees/slippage, source and coverage rules, and baseline before inspecting holdouts. Use a price/volume baseline as the initial comparator and freeze its exact implementation and parameters. The module accepts paired fixture predictions; it does not train this baseline or a model.
 2. Plan contiguous chronological DEV, OOS and FORWARD windows with an embargo based on the longest label horizon. Set the actual embargo and fold schedule in the registration before data access. The engineering gate rejects overlapping windows and labels maturing or finalizing beyond their own partition. Tune only inside DEV via walk-forward folds, purge overlapping label windows, and freeze the selected specification before OOS. Keep forward truly prospective.

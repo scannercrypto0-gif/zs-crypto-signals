@@ -69,12 +69,33 @@ class Stage12Tests(TestCase):
             evaluate([row(),row()])
 
     def test_paired_versions_and_event_origin_conflicts(self):
-        report = evaluate([row(), row(version="V2")])
+        report = evaluate([row(), row(version="V2", p="0.95", baseline_probability_fixture="0.50")])
         self.assertEqual(len(report["fixture_metrics"]), 2)
         self.assertEqual(report["fixture_metrics"][0]["scope_counts"]["asset"],
                          [{"value":"BTCUSDT","count":1}])
         with self.assertRaisesRegex(ContractError, "EVENT_ORIGIN_CONFLICT"):
             evaluate([row(), row(version="V2", asset="ETHUSDT")])
+
+    def test_paired_versions_reject_conflicting_outcome_or_baseline(self):
+        for fields in (dict(label="FAILURE"), dict(baseline_probability_fixture="0.9"),
+                       dict(label_final_at="2026-02-02T01:03:00Z")):
+            v2 = row(version="V2", **fields)
+            for pair in ([row(), v2], [v2, row()]):
+                with self.subTest(fields=fields), self.assertRaisesRegex(
+                        ContractError, "^S12_PAIRED_OUTCOME_OR_BASELINE_CONFLICT$"):
+                    evaluate(pair)
+
+    def test_paired_versions_reject_inconsistent_label_end(self):
+        v2 = row(version="V2", label_end_at="2026-02-02T01:00:30Z")
+        with self.assertRaisesRegex(ContractError, "^S12_LABEL_IMMATURE_OR_CROSSES_PARTITION$"):
+            evaluate([row(), v2])
+
+    def test_distinct_research_questions_can_have_different_truth(self):
+        for fields in (dict(setup="REVERSAL"), dict(horizon_length=2,
+                       label_end_at="2026-02-02T02:00:00Z", label_final_at="2026-02-02T02:01:00Z")):
+            with self.subTest(fields=fields):
+                result = evaluate([row(), row(version="V2", label="FAILURE", **fields)])
+                self.assertEqual(len(result["fixture_metrics"]), 2)
 
     def test_pit_and_label_maturity(self):
         for fields in (dict(available_at="2026-02-03T00:00:00Z"),
