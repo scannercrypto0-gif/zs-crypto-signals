@@ -1,5 +1,18 @@
 # ZS Crypto Signals — SMART GATE
 
+## OWNER APPROVAL — 16 November 2026 — «Stage09» merged and «Stage10» authorized
+
+**Owner decision:** «يتم اعتماد الدمج و توثيق اغلاق المرحله 09 و البدء في المرحله 10». «PR #66» merged into `main` at `7aa03e3254172fad27be489e59d0126684b74a9d` from exact approved «HEAD» `b4ed1ba79b92632d21fc223d20360de8446640c0`, «TREE» `903a7abbe350c5050e4242c76fbd040ac90b3b96`. «PM» bounded engineering acceptance: [PR #66 comment 6912757739](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/66#issuecomment-6912757739). «Codex» reported owner-local «Windows» targeted tests 31/31 pass, zero failures/skips, `EXIT=0`; separate «SHA-256» stdout/stderr receipts stored privately on `D:`. «PM» reviewed source and final diff, but did not independently replay raw logs. Hosted «GitHub Actions» remain `FAILURE`, with executor-reported billing/spending restrictions on Windows jobs; never reclassify as passing.
+
+**Status:** «Stage09» `CLOSED_BOUNDED_ENGINEERING / MERGED`. Stages «00–09» = **10/14** engineering stages accepted within limited scopes, not scientific validation, profitability or production readiness. «Stage10» `OWNER_AUTHORIZED / ENGINEERING_PENDING`.
+
+**Stage10 canonical scope from this document's v2.1 blueprint:** «Futures Context, Order Flow and Liquidity». Offline, synthetic-first research of source/availability-bound «OI» current/history and changes, funding rate and timing, long/short ratios, «AggTrades» «CVD» with buyer-is-maker semantics, depth/book imbalance and liquidity zones, and **actual liquidation events only if available**. Data gaps, API weights/costs and provenance are first-class. «OI» increase must not be equated to longs; missing values must not become zero; Futures context may support «UP/DOWN» research but must **never** be mandatory for Spot eligibility. Validate pagination, trade ID gaps/duplicates, source completeness, PIT windows and heavy-source isolation; report descriptive ablation and latency/cost without scientific predictive claims.
+
+**Governance:** one new «Draft PR» from fresh `main`; targeted deterministic tests and research documentation; `ZS_SMART_GATE_MASTER.md` and root `README.md` are «PM»-owned. No live «Binance/Telegram», «SQL», production, trading, secrets or unapproved collection. Require exact «HEAD/TREE», owner-«Windows» evidence when access exists, «PM» review and separate owner authorization before merge.
+
+---
+
+
 ## OWNER APPROVAL — 16 November 2026 — «Stage08» merged and «Stage09» authorized
 
 **Owner decision:** «يتم اعتمد الدمج و توثيق الاغلاق للمرحله 08 و البدء في المرحله 09». «PR #65» merged into `main` at `4ada9c5f90fa13a91c1b88ae0c8495d8a88b414c` from exact approved «HEAD» `a65fd1cd67de1938a07b42af02b2e4d50359dde5`, «TREE» `29ffcdca95ce5cf5f66af2971fbc22d62726bd22`. «PM» bounded engineering acceptance: [PR #65 comment 6910611991](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/65#issuecomment-6910611991). «Codex» owner-local «Windows» report: final 25/25 targeted tests, zero failures/skips, `EXIT=0`; separate «SHA-256» stdout/stderr receipts held on private `D:`. «PM» reviewed the code diff and published hashes but did not independently open/replay raw logs. Hosted «GitHub Actions» remain `FAILURE` and must not be represented as passing; executor reported billing/spending-limit notices for baseline Windows jobs.
