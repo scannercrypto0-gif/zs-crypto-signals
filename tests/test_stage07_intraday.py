@@ -234,7 +234,15 @@ class Stage07Tests(TestCase):
             future.append(b)
         out = retrospective_labels(rec, tuple(future), as_of=future[-1].available_at,
                                    move_fraction=D("0.05"))
-        self.assertEqual(out["horizons"]["1"]["status"], "CENSORED_HORIZON")
+        one_hour = out["horizons"]["1"]
+        self.assertNotEqual(w.parent.available_at.second, 0)
+        self.assertGreaterEqual(future[-1].available_at,
+                                w.parent.available_at + timedelta(hours=1))
+        self.assertEqual(one_hour["status"], "CENSORED_HORIZON")
+        self.assertEqual(one_hour["bars_examined"], 11)
+        self.assertEqual(one_hour["observed_until"], "2026-11-15T12:00:00Z")
+        self.assertEqual(one_hour["horizon_end_at"], "2026-11-15T12:00:02Z")
+        self.assertEqual(out["horizons"]["2"]["bars_examined"], 12)
         self.assertEqual(out["horizons"]["24"]["status"], "CENSORED_HORIZON")
         self.assertNotEqual(out["horizons"]["1"]["horizon_end_at"],
                             out["horizons"]["24"]["horizon_end_at"])
