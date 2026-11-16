@@ -14,3 +14,7 @@ Synthetic-only context contract `zs.stage11.market-context.v1`. This module has 
 Hypothetical workload only: for three series and two frames at one request per series/frame, six GET-equivalents at an assumed two weight units and 150 ms each amount to 12 hypothetical weight units and 0.9 seconds serially. These are sizing assumptions, not current exchange weights or measured latency.
 
 Windows test command: set PYTHONPATH=src and run `py -3.12 -m unittest discover -s tests -p test_stage11_market_context.py -v`.
+
+## Inventory freshness boundary
+
+Age is measured from observed_at, the snapshot time. received_at and available_at establish when the snapshot was known and must satisfy observed_at <= received_at <= available_at <= decision. Recent availability never refreshes an old snapshot. A snapshot is stale at or beyond the shortest selected frame. Two contiguous equal-length series shifted by a whole frame cannot both be fresh at the same decision. The earlier series is stale, so it cannot supply breadth, relative strength or correlation.

@@ -107,3 +107,66 @@ class Stage11Tests(unittest.TestCase):
                 self.assertIsNone(report["predictive_accuracy"])
         with self.assertRaises(ContractError):
             synthetic_ablation(dict(evaluate(), direction="DOWN"))
+
+    def test_missing_stale_or_foreign_btc_preserves_asset_and_ablation(self):
+        values = bars(("1", "2", "1", "3"))
+        for btc, status in ((None, "MISSING"), (values[:-1], "STALE"),
+                            ((replace(values[0], source_id="FOREIGN"),), "UNVERIFIED_SOURCE")):
+            with self.subTest(status=status):
+                data = {"BTCUSDT": {"1h": btc}, "ETHUSDT": {"1h": values}}
+                context = evaluate(data)
+                frame = context["frames"]["1h"]
+                self.assertEqual(frame["series_status"]["ETHUSDT"], "PRESENT")
+                self.assertEqual(frame["btc_regime"]["status"], status)
+                self.assertEqual(frame["relative_strength"]["status"], "INSUFFICIENT_COVERAGE")
+                self.assertEqual(frame["breadth"]["status"], "INSUFFICIENT_COVERAGE")
+                self.assertIsNone(synthetic_ablation(context)["spot_plus_context"]["btc_trend_agreement"]["1h"])
+                self.assertEqual(context["frames"]["4h"]["btc_regime"]["status"], "MISSING")
+                self.assertEqual(evaluate(data, horizon="Swing")["frames"]["1d"]["btc_regime"]["status"],
+                                 "MISSING")
+
+    def test_inventory_age_uses_observation_not_recent_availability(self):
+        for horizon, duration in (("Intraday", timedelta(hours=1)),
+                                  ("Swing", timedelta(hours=4))):
+            for extra in (-1, 0, 1):
+                with self.subTest(horizon=horizon, extra=extra):
+                    observed = DECISION - duration - timedelta(microseconds=extra)
+                    inventory = dict(INVENTORY, observed_at=observed.isoformat().replace("+00:00", "Z"))
+                    if extra < 0:
+                        self.assertEqual(evaluate(inventory=inventory, horizon=horizon)["horizon"], horizon)
+                    else:
+                        with self.assertRaisesRegex(ContractError, "STAGE11_INVENTORY_STALE"):
+                            evaluate(inventory=inventory, horizon=horizon)
+        with self.assertRaisesRegex(ContractError, "STAGE11_INVENTORY_INVALID"):
+            evaluate(inventory=dict(INVENTORY, available_at="2026-11-16T00:00:05.000001Z"))
+
+    def test_equal_length_shifted_series_are_not_aligned(self):
+        btc = bars(("100", "110", "100", "115"))
+        asset = bars(("100", "110", "100", "115"))
+        shift = timedelta(hours=1)
+        shifted = tuple(replace(b, **{key: getattr(b, key)-shift for key in
+                        ("open_at", "close_at", "received_at", "available_at")}) for b in asset)
+        # A shifted contiguous hourly series is stale when both have closed.
+        frame = evaluate({"BTCUSDT": {"1h": btc}, "ETHUSDT": {"1h": shifted}},
+)["frames"]["1h"]
+        self.assertEqual(len(btc), len(shifted))
+        self.assertEqual(frame["series_status"]["ETHUSDT"], "STALE")
+        self.assertEqual(frame["relative_strength"]["status"], "INSUFFICIENT_COVERAGE")
+        self.assertEqual(frame["breadth"]["status"], "INSUFFICIENT_COVERAGE")
+
+    def test_btc_in_eligible_universe_and_malformed_member(self):
+        inventory = dict(INVENTORY, symbols=["BTCUSDT", "ETHUSDT", "SOLUSDT"])
+        frame = evaluate(inventory=inventory)["frames"]["1h"]
+        self.assertEqual(frame["breadth"]["eligible_count"], 3)
+        self.assertEqual(frame["breadth"]["counts"]["UP"], 2)
+        prices = bars(("1", "2", "1", "3"))
+        frame = evaluate({"BTCUSDT": {"1h": prices}, "ETHUSDT": {"1h": prices},
+                          "SOLUSDT": {"1h": ("not-a-candle",)}}, inventory=inventory)["frames"]["1h"]
+        self.assertEqual(frame["series_status"]["SOLUSDT"], "INVALID_DATA")
+        self.assertEqual(frame["breadth"]["eligible_count"], 3)
+        self.assertEqual(frame["breadth"]["aligned_count"], 2)
+        self.assertIsNone(frame["breadth"]["value"])
+        self.assertEqual(frame["correlations"]["BTCUSDT"]["status"], "PRESENT")
+        for symbols in (None, ["ETHUSDT", "ETHUSDT"], ["ETHUSDT", []]):
+            with self.assertRaisesRegex(ContractError, "STAGE11_INVENTORY_INVALID"):
+                evaluate(inventory=dict(INVENTORY, symbols=symbols))
