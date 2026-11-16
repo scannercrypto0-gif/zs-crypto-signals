@@ -1,0 +1,19 @@
+{
+  "python": "Python 3.12.10",
+  "end_utc": "2026-11-16T17:15:26.6771686Z",
+  "stdout_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+  "stderr_sha256": "DA5F1408184664F421CD4898248962B2851EB458A4F81CA23DFE4BBDF641D819",
+  "head": "55f2d898f487d95dda8791083f842aa4a87c7a0c",
+  "counts": {
+    "skips": 0,
+    "pass": 9,
+    "errors": 0,
+    "fail": 0,
+    "run": 9
+  },
+  "start_utc": "2026-11-16T17:15:23.4971245Z",
+  "powershell": "7.6.9",
+  "command": "PYTHONPATH=src; py -3.12 -m unittest discover -s tests -p test_stage13_operational_harness.py -v",
+  "exit": 0,
+  "tree": "ed75ffa7c7877e48344de7950a8befe3a4804226"
+}

@@ -1,0 +1,11 @@
+test_github_failure_corruption_and_restore_with_pin (test_stage13_operational_harness.Stage13Tests.test_github_failure_corruption_and_restore_with_pin) ... ok
+test_invalid_ack_stops_before_later_integrations (test_stage13_operational_harness.Stage13Tests.test_invalid_ack_stops_before_later_integrations) ... ok
+test_invalid_observations_never_deliver (test_stage13_operational_harness.Stage13Tests.test_invalid_observations_never_deliver) ... ok
+test_outage_and_restart_after_mock_send_commit (test_stage13_operational_harness.Stage13Tests.test_outage_and_restart_after_mock_send_commit) ... ok
+test_quota_latency_and_health (test_stage13_operational_harness.Stage13Tests.test_quota_latency_and_health) ... ok
+test_stable_signal_readback_and_three_destinations (test_stage13_operational_harness.Stage13Tests.test_stable_signal_readback_and_three_destinations) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 1.512s
+
+OK
