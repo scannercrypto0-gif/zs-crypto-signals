@@ -247,7 +247,9 @@ def _bin_profile(w: ProfileWindow, source: str, first: datetime,
             typical = (bar.high+bar.low+bar.close)/Decimal(3)
             vwap_numerator += typical * bar.base_volume
             base_sum += bar.base_volume
-    if len(allocations) > MAX_BINS or not base_sum:
+    if (not allocations or len(allocations) > MAX_BINS or not base_sum
+            or max(allocations)-min(allocations)+1 > MAX_BINS):
+        # Prevent sparse exact-print bins from causing unbounded value-area scans.
         raise ContractError("PROFILE_EMPTY_VOLUME_OR_BIN_LIMIT")
     return allocations, vwap_numerator/base_sum, base_sum
 
