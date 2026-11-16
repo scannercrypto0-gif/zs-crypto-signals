@@ -1,0 +1,16 @@
+test_btc_in_eligible_universe_and_malformed_member (test_stage11_market_context.Stage11Tests.test_btc_in_eligible_universe_and_malformed_member) ... ok
+test_btc_trend_volatility_and_breadth_denominator (test_stage11_market_context.Stage11Tests.test_btc_trend_volatility_and_breadth_denominator) ... ok
+test_constant_sample_and_misalignment (test_stage11_market_context.Stage11Tests.test_constant_sample_and_misalignment) ... ok
+test_equal_length_shifted_series_are_not_aligned (test_stage11_market_context.Stage11Tests.test_equal_length_shifted_series_are_not_aligned) ... ok
+test_gap_duplicate_future_and_foreign_source (test_stage11_market_context.Stage11Tests.test_gap_duplicate_future_and_foreign_source) ... ok
+test_horizons_and_directions_preserve_baseline_and_no_trading (test_stage11_market_context.Stage11Tests.test_horizons_and_directions_preserve_baseline_and_no_trading) ... ok
+test_inventory_age_uses_observation_not_recent_availability (test_stage11_market_context.Stage11Tests.test_inventory_age_uses_observation_not_recent_availability) ... ok
+test_inventory_pin_and_pit (test_stage11_market_context.Stage11Tests.test_inventory_pin_and_pit) ... ok
+test_missing_asset_not_removed_from_denominator (test_stage11_market_context.Stage11Tests.test_missing_asset_not_removed_from_denominator) ... ok
+test_missing_stale_or_foreign_btc_preserves_asset_and_ablation (test_stage11_market_context.Stage11Tests.test_missing_stale_or_foreign_btc_preserves_asset_and_ablation) ... ok
+test_news_late_publication_unverified_and_missing (test_stage11_market_context.Stage11Tests.test_news_late_publication_unverified_and_missing) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.013s
+
+OK
