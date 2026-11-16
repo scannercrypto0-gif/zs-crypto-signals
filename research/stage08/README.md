@@ -135,7 +135,7 @@ return, not a forecast, stop/target hit, executed fill or trade.
 | UP/DOWN and bounded research-only outputs | `test_full_bundle_up_down_no_authority` |
 | Source/time/chronology/strict 4x1h | `test_source_mismatch_and_future_receipt_fail_closed`, `test_gap_duplicates_order_and_reconciliation`, `test_utc_alignment_and_missing_history` |
 | Complete source-reconciled optional 8h | `test_8h_optional_absent_and_reconciliation`, `test_8h_non_aligned_parent_rejected` |
-| Confirmed pivots, ties, delay and nonrepaint | `test_strict_pivot_confirmation_right_two_and_delayed_availability`, `test_tie_rejects_equal_high_low`, `test_nonrepainting_confirmation_and_future_mutation` |
+| Confirmed pivots, ties, delay and nonrepaint | `test_strict_pivot_confirmation_right_two_and_delayed_availability`, `test_tie_rejects_equal_high_low`, `test_nonrepainting_confirmation_and_future_mutation`, `test_late_pivot_source_receipt_never_backdates_confirmation` |
 | Close vs wick, BOS and CHoCH | `test_wick_only_then_close_initial_then_choch_down`, `test_bos_after_previous_confirmed_uptrend`, `test_directional_initial_down_break` |
 | Indicator warm-up, 50w and 1d/1w | `test_indicator_minimum_history_and_ema_rsi_macd`, `test_weekly_50_not_reconstructed_from_4h`, `test_daily_and_weekly_context_not_inferred` |
 | UTC offsets, retrospective separation and censoring | `test_timezone_utc_offset_normalizes_without_changing_snapshot`, `test_outcome_separate_future_source_and_no_trade`, `test_future_initial_gap_censored_not_observed`, `test_tamper_research_receipt_outcome_rejected` |
