@@ -1,5 +1,16 @@
 # ZS Crypto Signals "GITHUB Version" — SMART GATE
 
+## OWNER APPROVAL — 16 November 2026 — Stage13 mock engineering merged; 14/14 bounded engineering stages complete; real operational acceptance OPEN
+
+Owner expressly approved exact-head merge of PR #70, documenting completion of 14/14 bounded engineering stages and opening a separate actual operational acceptance track **without authorizing LIVE operations**. PR #70 merged on GitHub at `f0256229c9bbe3baef8ff7311b7d5c7a6b924c26` from evidence HEAD `4ba1de47abea423d13bcecfa74f1ad35d9d8c0ed`; tested code `55f2d898f487d95dda8791083f842aa4a87c7a0c`, tested TREE `ed75ffa7c7877e48344de7950a8befe3a4804226`. PM acceptance comment: [PR #70 comment 6923642503](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/70#issuecomment-6923642503). Owner Windows published targeted tests 9/9 PASS, 0 fail/error/skip, EXIT 0; original 6/6 retained. PM reviewed published GitHub evidence but did not rerun owner Windows or inspect local bytes. Hosted Actions on final evidence HEAD `43916548183` and `43916548161` remain `FAILURE`.
+
+**Stage13 engineering:** `CLOSED_BOUNDED_MOCK_ENGINEERING / MERGED`. **Engineering roadmap:** `14/14 BOUNDED_ENGINEERING_STAGES_ACCEPTED`. This is not real E2E or scientific market validation. **Operational readiness:** `NOT_READY / NOT_PROVEN_LIVE / NO_TRADING_AUTHORITY`. The 24h/288-cycle soak remains **PROPOSED_ONLY / NOT_APPROVED / NOT_RUN**. No genuine Binance receipt, Telegram A/B/C delivery, GitHub production archive/recovery, SQL import, real outcome adjudication, 24/7 Windows health, real API quota, latency or sustained soak has been independently accepted.
+
+**Next governance track:** `OPS_ACCEPTANCE_TRACK_OPEN / EVIDENCE_AND_PREFLIGHT_ONLY`. PM and SD Coding may inventory gaps, propose risk-owned gates and non-live runbooks, and prepare a separate owner approval package for each specific LIVE capability. **No Binance GET, real Telegram send, SQL write, real GitHub archival side effect, persistent Windows scheduler, 24h soak, deployment, credentials exposure or real-money trading authorized by this approval.** Live access and any sustained Windows operation require separate exact-scope owner approval, controls, rollback and review; trading authorization is entirely separate.
+
+---
+
+
 ## OWNER APPROVAL — 16 November 2026 — Stage12 merged / Stage13 engineering authorized
 
 Owner explicitly approved merge of PR #69 at exact evidence HEAD `8f4d5694c15583b28eb1877114bb40b67d8000ca`, closure of Stage12 and start of Stage13. GitHub confirmed merge commit `c7929081f335ead6e607fea56ae08fbadd72b429`. Tested code `02da62a6baf55d8fcbed471e296166b727a006c0`, Git TREE `fb671a632b05781421a7891b334dc7d11b2e5a35`. PM acceptance: [PR #69 comment 6918151222](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/69#issuecomment-6918151222). Published Windows 12/12 PASS, zero failures/errors/skips, EXIT 0, Python 3.12.10; prior 9/9 evidence retained. PM reviewed published GitHub records, did not independently rerun owner-local Windows. Hosted GitHub Actions `43878298025` and `43878297933` remain FAILURE, not PASS.
