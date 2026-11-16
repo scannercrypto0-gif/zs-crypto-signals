@@ -248,7 +248,8 @@ def evaluate_partial_window(window: ResearchWindow, observed_5m: tuple[CandleWin
             or any(ch not in "0123456789abcdef" for ch in window.source_manifest_sha256)
             or not p.source_id.startswith("SYNTHETIC:")):
         return _failed("PARTIAL_IDENTITY_SOURCE_INVALID")
-    if p.close_at - p.open_at != timedelta(minutes=30):
+    if (p.close_at - p.open_at != timedelta(minutes=30)
+            or p.open_at.microsecond or int(p.open_at.timestamp()) % 1800):
         return _failed("PARTIAL_PARENT_DURATION_INVALID")
     if not p.open_at < decision < p.close_at:
         return _failed("PARTIAL_DECISION_MUST_PRECEDE_PARENT_CLOSE")
@@ -324,6 +325,7 @@ def _verify_research(research: dict) -> datetime:
             or research.get("publishable") is not False
             or research.get("dispatch_allowed") is not False
             or research.get("source_scope") != "SYNTHETIC_TEST_ONLY"
+            or research.get("direction") not in ("UP", "DOWN")
             or not isinstance(research.get("source_id"), str)
             or not research["source_id"].startswith("SYNTHETIC:")
             or research.get("observation_status") not in ("CLOSED_30M", "PARTIAL_PARENT_30M")
@@ -426,7 +428,7 @@ def retrospective_labels(research: dict, future: Sequence[CandleWindow], *,
         }
     row = {"schema": LABEL_VERSION, "record_sha256": research["result_sha256"],
            "decision_at": stamp(decision), "reference_price": str(ref),
-           "reference_policy": "FROZEN_DECISION_SNAPSHOT_CLOSE",
+           "reference_policy": "FROZEN_LAST_AVAILABLE_CLOSE_AT_DECISION",
            "expected_first_full_bar_at": stamp(first_expected),
            "as_of": stamp(now), "source_id": source,
            "threshold_fraction": str(move_fraction), "horizons": result,
@@ -449,6 +451,8 @@ def compare_research_candidates(rows: Sequence[tuple[dict, dict]], *,
     ordered = []
     for research, labels in rows:
         decision = _verify_research(research)
+        if not isinstance(labels, dict):
+            raise ContractError("S07_COMPARISON_LABEL_MISMATCH")
         if (labels.get("schema") != LABEL_VERSION
                 or labels.get("record_sha256") != research["result_sha256"]
                 or labels.get("result_sha256") != digest(canonical({
