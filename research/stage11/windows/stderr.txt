@@ -1,0 +1,12 @@
+test_btc_trend_volatility_and_breadth_denominator (test_stage11_market_context.Stage11Tests.test_btc_trend_volatility_and_breadth_denominator) ... ok
+test_constant_sample_and_misalignment (test_stage11_market_context.Stage11Tests.test_constant_sample_and_misalignment) ... ok
+test_gap_duplicate_future_and_foreign_source (test_stage11_market_context.Stage11Tests.test_gap_duplicate_future_and_foreign_source) ... ok
+test_horizons_and_directions_preserve_baseline_and_no_trading (test_stage11_market_context.Stage11Tests.test_horizons_and_directions_preserve_baseline_and_no_trading) ... ok
+test_inventory_pin_and_pit (test_stage11_market_context.Stage11Tests.test_inventory_pin_and_pit) ... ok
+test_missing_asset_not_removed_from_denominator (test_stage11_market_context.Stage11Tests.test_missing_asset_not_removed_from_denominator) ... ok
+test_news_late_publication_unverified_and_missing (test_stage11_market_context.Stage11Tests.test_news_late_publication_unverified_and_missing) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.007s
+
+OK
