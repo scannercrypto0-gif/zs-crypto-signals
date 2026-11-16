@@ -100,7 +100,7 @@ class Stage07Tests(TestCase):
                     available_at=begin+timedelta(minutes=5, seconds=2))
         out = retrospective_labels(record, (b,), as_of=b.available_at, move_fraction=D("0.01"))
         self.assertEqual(set(out["horizons"]), {"1", "2", "4", "8", "12", "24"})
-        self.assertEqual(out["horizons"]["1"]["status"], "CENSORED_HORIZON")
+        self.assertEqual(out["horizons"]["1"]["status"], "OPPOSITE_MOVE_TOUCHED")
         self.assertEqual(out["reference_price"], record["decision_reference_price"])
         self.assertIsNone(record["signal_id"])
         with self.assertRaises(ContractError):
@@ -161,7 +161,7 @@ class Stage07Tests(TestCase):
         b = replace(w.children[0], open_at=begin, close_at=begin+timedelta(minutes=5),
                     received_at=begin+timedelta(minutes=5, seconds=1),
                     available_at=begin+timedelta(minutes=5, seconds=2))
-        low = replace(b, high=b.open+D("0.2"), low=b.open-D("0.2"))
+        low = replace(b, high=max(b.open,b.close)+D("0.2"), low=b.open-D("0.2"))
         high = replace(low, high=low.open+D("10"))
         a = retrospective_labels(rec, (low,), as_of=low.available_at, move_fraction=D("0.01"))
         z = retrospective_labels(rec, (high,), as_of=high.available_at, move_fraction=D("0.01"))
@@ -217,3 +217,54 @@ class Stage07Tests(TestCase):
         with self.assertRaises((ValueError, ArithmeticError)):
             replace(w.parent, high=D("NaN"))
         self.assertEqual(run(replace(w, source_manifest_sha256="NOT_A_SHA"))["status"], "UNAVAILABLE")
+
+    def test_independent_horizon_censoring_after_first_hour(self):
+        w = bars()
+        rec = run(w)
+        begin = datetime.fromtimestamp((int(w.parent.available_at.timestamp()) // 300+1)*300,
+                                        timezone.utc)
+        future = []
+        for i in range(12):
+            at = begin + timedelta(minutes=5*i)
+            b = replace(w.children[0], open_at=at, close_at=at+timedelta(minutes=5),
+                        received_at=at+timedelta(minutes=5, seconds=1),
+                        available_at=at+timedelta(minutes=5, seconds=2),
+                        open=D("101.8"), close=D("101.8"),
+                        high=D("102"), low=D("101.6"))
+            future.append(b)
+        out = retrospective_labels(rec, tuple(future), as_of=future[-1].available_at,
+                                   move_fraction=D("0.05"))
+        self.assertEqual(out["horizons"]["1"]["status"], "CENSORED_HORIZON")
+        self.assertEqual(out["horizons"]["24"]["status"], "CENSORED_HORIZON")
+        self.assertNotEqual(out["horizons"]["1"]["horizon_end_at"],
+                            out["horizons"]["24"]["horizon_end_at"])
+
+    def test_comparison_observed_true_false_positive_and_censor(self):
+        w = bars()
+        rec = run(w)
+        begin = datetime.fromtimestamp((int(w.parent.available_at.timestamp()) // 300+1)*300,
+                                        timezone.utc)
+        base = replace(w.children[0], open_at=begin,
+                       close_at=begin+timedelta(minutes=5),
+                       received_at=begin+timedelta(minutes=5, seconds=1),
+                       available_at=begin+timedelta(minutes=5, seconds=2),
+                       open=D("101.8"), close=D("101.8"),
+                       low=D("101.7"), high=D("104"))
+        positive = retrospective_labels(rec, (base,), as_of=base.available_at,
+                                        move_fraction=D("0.01"))
+        bad = replace(base, high=D("101.9"), low=D("99"))
+        negative = retrospective_labels(rec, (bad,), as_of=bad.available_at,
+                                        move_fraction=D("0.01"))
+        alt = deepcopy(rec)
+        alt["symbol"] = "ETHUSDT"
+        from zs_smart_gate.stage05_contracts import canonical, digest
+        alt["result_sha256"] = digest(canonical({
+            k:v for k,v in alt.items() if k!="result_sha256"}))
+        alternative = retrospective_labels(alt, (bad,), as_of=bad.available_at,
+                                           move_fraction=D("0.01"))
+        report = compare_research_candidates([(rec,positive),(alt,alternative)],horizon_hours=1)
+        baseline = report["baseline_and_ablation"]["baseline_directional_sign"]
+        self.assertEqual(baseline["selected"], 2)
+        self.assertEqual(baseline["true_positive"], 1)
+        self.assertEqual(baseline["false_positive"], 1)
+        self.assertEqual(baseline["false_positive_rate"], "0.5")
