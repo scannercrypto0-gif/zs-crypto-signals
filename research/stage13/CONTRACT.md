@@ -4,6 +4,12 @@ Version `zs.stage13.synthetic-operations.v1`. Use a local append-only LocalOutbo
 
 The scanner only admits fully closed, fresh, complete synthetic observations within the fixture clock drift bound. Qualified fixtures derive a stable identity from source, candle close, symbol, direction and rule. Every downstream action receives the same canonical JSON and stable per-destination idempotency key. The mock archive is written and checked byte-for-byte before mock A/B/C, then mock SQL and outcome. Local acknowledgements bind the identity and payload SHA-256. Restart resumes explicitly by ID; restore also requires a separately retained checksum pin. Replay assumes the injected endpoints retain their idempotency ledgers. A real transport without that property must reconcile unknown sends before retrying. No automatic pending-job discovery or real endpoint adapters are implemented.
 
+## Receipt corruption and reconciliation
+
+An unavailable read after an acknowledged archive write leaves the mock delivery pending with no downstream calls. A lost put acknowledgement may mean the write committed; a definite no-write failure can be distinguished only with authoritative evidence. This harness uses the same archive key on retry and requires byte-exact readback first. Its retry guarantee relies on mock endpoint ledgers. No real Telegram or archive reconciliation has been verified.
+
+Before downstream operations, validate the stored signal and every cached acknowledgement. Invalid stored evidence blocks replay (INVALID_STORED_SIGNAL or INVALID_STORED_ACK), even if a restore pin is available. Missing local signal data requires an independent checksum pin and verified archive readback. No corrupt local record is rewritten or silently ignored.
+
 ## MODULE_ACCEPTANCE_MATRIX
 
 | Component | Mock evidence | Operational gate and missing evidence | Owner |

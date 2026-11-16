@@ -1,8 +1,11 @@
 from pathlib import Path
+import sqlite3
 import tempfile
+from contextlib import closing
 from unittest import TestCase
+from unittest.mock import patch
 
-from zs_smart_gate.stage05_contracts import ContractError, digest
+from zs_smart_gate.stage05_contracts import ContractError, canonical, digest
 from zs_smart_gate.stage05_custody import LocalOutbox
 from zs_smart_gate.stage13_operational_harness import CycleController, MockUnavailable, Ports, STAGES
 
@@ -146,6 +149,65 @@ class Stage13Tests(TestCase):
         self.assertEqual(replay["status"], "MOCK_PASS")
         self.assertEqual(replay["receipts"], done["receipts"])
         self.assertEqual(len(self.services.deliveries), 6)
+
+    def test_committed_archive_with_unavailable_readback_blocks_all_delivery(self):
+        self.services.failure = "read"
+        stalled = self.controller().scan_once()
+        self.assertEqual(stalled["status"], "PENDING_MOCK_RETRY")
+        self.assertEqual(stalled["stage"], "github")
+        self.assertIn(stalled["signal_id"], self.services.objects)
+        self.assertEqual(stalled["receipts"], {})
+        self.assertEqual(self.services.calls, ["github"])
+        self.services.failure = None
+        recovered = self.controller().resume(stalled["signal_id"])
+        self.assertEqual(recovered["status"], "MOCK_PASS")
+        self.assertEqual(self.services.calls, ["github", *STAGES])
+        self.assertEqual(len(self.services.deliveries), len(STAGES))
+
+    def test_local_signal_corruption_blocks_reopen_even_with_pin(self):
+        self.services.failure = "github"
+        saved = self.controller().scan_once()
+        identity = saved["signal_id"]
+        key = "signal/" + identity.removeprefix("fixture-")
+        self.services.calls.clear()
+        ctl = self.controller()
+        with patch.object(ctl.journal, "read", return_value="not bytes"):
+            self.assertEqual(ctl.resume(identity)["status"], "INVALID_STORED_SIGNAL")
+        with patch.object(ctl.journal, "read", return_value=None):
+            self.assertEqual(ctl.resume(identity)["status"], "RESTORE_PIN_REQUIRED")
+        self.assertEqual(self.services.calls, [])
+        with closing(sqlite3.connect(ctl.journal.path)) as db, db:
+            db.execute("DROP TRIGGER no_UPDATE")
+            db.execute("UPDATE records SET payload=? WHERE key=?", (b"broken", key))
+        self.services.failure = None
+        self.assertEqual(self.controller().resume(identity, expected_sha256=saved["sha256"])["status"],
+                         "INVALID_STORED_SIGNAL")
+        self.assertEqual(self.services.calls, [])
+        with closing(sqlite3.connect(ctl.journal.path)) as db, db:
+            db.execute("DROP TRIGGER no_UPDATE")
+            db.execute("UPDATE records SET sha=? WHERE key=?", (digest(b"broken"), key))
+        self.assertEqual(self.controller().resume(identity)["status"], "INVALID_STORED_SIGNAL")
+        self.assertEqual(self.services.calls, [])
+
+    def test_corrupt_ack_on_reopen_blocks_pending_transport(self):
+        self.services.failure = "telegram_a"
+        saved = self.controller().scan_once()
+        identity = saved["signal_id"]
+        key = "ack/" + digest(canonical(["outcome", identity]))
+        ctl = self.controller()
+        wrong = canonical({"stage": "outcome", "signal_id": identity, "sha256": "wrong"})
+        ctl.journal.create_if_absent(key, wrong)
+        self.services.failure = None
+        self.services.calls.clear()
+        report = self.controller().resume(identity)
+        self.assertEqual(report["status"], "INVALID_STORED_ACK")
+        self.assertEqual(report["stage"], "outcome")
+        self.assertEqual(self.services.calls, [])
+        with closing(sqlite3.connect(ctl.journal.path)) as db, db:
+            db.execute("DROP TRIGGER no_UPDATE")
+            db.execute("UPDATE records SET sha=? WHERE key=?", ("wrong", key))
+        self.assertEqual(self.controller().resume(identity)["status"], "INVALID_STORED_ACK")
+        self.assertEqual(self.services.calls, [])
 
     def test_invalid_ack_stops_before_later_integrations(self):
         self.services.bad_ack = "sql"

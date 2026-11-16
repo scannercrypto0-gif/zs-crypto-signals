@@ -88,16 +88,26 @@ class CycleController:
             return self._report("NO_QUALIFIED_FIXTURE")
         raw = canonical(signal)
         signal_id = signal["signal_id"]
-        self._put("signal/" + signal_id.removeprefix("fixture-"), raw)
+        try:
+            self._put("signal/" + signal_id.removeprefix("fixture-"), raw)
+        except (ContractError, TypeError):
+            return self._report("INVALID_STORED_SIGNAL", signal_id=signal_id)
         return self.resume(signal_id)
 
     def resume(self, signal_id, *, expected_sha256=None):
         """Resume a stored fixture or restore only with an independent checksum pin."""
+        if not isinstance(signal_id, str):
+            raise ContractError("S13_FIXTURE_ID_REQUIRED")
         stem = signal_id.removeprefix("fixture-")
         if not signal_id.startswith("fixture-") or len(stem) != 64 or any(c not in "0123456789abcdef" for c in stem):
             raise ContractError("S13_FIXTURE_ID_REQUIRED")
         key = "signal/" + stem
-        raw = self.journal.read(key)
+        try:
+            raw = self.journal.read(key)
+        except (ContractError, TypeError):
+            return self._report("INVALID_STORED_SIGNAL", signal_id=signal_id)
+        if raw is not None and not isinstance(raw, bytes):
+            return self._report("INVALID_STORED_SIGNAL", signal_id=signal_id)
         if raw is None:
             if expected_sha256 is None:
                 return self._report("RESTORE_PIN_REQUIRED", signal_id=signal_id)
@@ -118,19 +128,27 @@ class CycleController:
                 raise ValueError
         except (AttributeError, TypeError, ValueError):
             return self._report("INVALID_STORED_SIGNAL", signal_id=signal_id)
-        self._put(key, raw)
-        receipts = {}
+        receipts, pending = {}, []
         for stage in STAGES:
             stage_key = digest(canonical([stage,signal_id]))
             local_key = "ack/" + stage_key
             expected_ack = canonical({"mock":True, "key":stage_key, "signal_id":signal_id,
                                       "stage":stage, "sha256":sha})
-            cached = self.journal.read(local_key)
-            if cached is not None:
-                if cached != expected_ack:
-                    raise ContractError("S13_ACK_CONFLICT")
+            try:
+                cached = self.journal.read(local_key)
+            except (ContractError, TypeError):
+                return self._report("INVALID_STORED_ACK", stage=stage, signal_id=signal_id)
+            if cached is None:
+                pending.append((stage, stage_key, local_key, expected_ack))
+            elif type(cached) is not bytes or cached != expected_ack:
+                return self._report("INVALID_STORED_ACK", stage=stage, signal_id=signal_id)
+            else:
                 receipts[stage] = json.loads(cached)
-                continue
+        try:
+            self._put(key, raw)
+        except (ContractError, TypeError):
+            return self._report("INVALID_STORED_SIGNAL", signal_id=signal_id)
+        for stage, stage_key, local_key, expected_ack in pending:
             try:
                 if stage == "github":
                     ack = self.ports.github.put(stage_key, signal_id, raw)
@@ -149,7 +167,10 @@ class CycleController:
             if ack != stage_key:
                 return self._report("INVALID_MOCK_ACK", stage=stage, signal_id=signal_id,
                                     sha256=sha, receipts=receipts)
-            self._put(local_key, expected_ack)
+            try:
+                self._put(local_key, expected_ack)
+            except (ContractError, TypeError):
+                return self._report("INVALID_STORED_ACK", stage=stage, signal_id=signal_id)
             receipts[stage] = json.loads(expected_ack)
         return self._report("MOCK_PASS", signal_id=signal_id, sha256=sha, receipts=receipts)
 
