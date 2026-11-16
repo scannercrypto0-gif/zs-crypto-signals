@@ -113,8 +113,10 @@ return, not a forecast, stop/target hit, executed fill or trade.
 
 - Baseline: candle open-to-close directional sign of the current 4h parent.
   Research alternative: confirmed non-repainting structural state after
-  close-breaks. The module reports both independently (no unapproved
-  selection rule or weight).
+  close-breaks. The `compare_synthetic_structure` function counts agreement,
+  disagreement and unavailable pairings across at most 128 verified, synthetic
+  receipts; it emits **no** prediction accuracy or false-positive rate.
+  No unapproved selection rule or weight is implied.
 - Counterexample: a locally highest historical bar with only **one**
   subsequent right bar is not a confirmed high at that time. Another
   high that ties it within the two-right confirmation span invalidates
@@ -138,6 +140,7 @@ return, not a forecast, stop/target hit, executed fill or trade.
 | Indicator warm-up, 50w and 1d/1w | `test_indicator_minimum_history_and_ema_rsi_macd`, `test_weekly_50_not_reconstructed_from_4h`, `test_daily_and_weekly_context_not_inferred` |
 | UTC offsets, retrospective separation and censoring | `test_timezone_utc_offset_normalizes_without_changing_snapshot`, `test_outcome_separate_future_source_and_no_trade`, `test_future_initial_gap_censored_not_observed`, `test_tamper_research_receipt_outcome_rejected` |
 | Non-finite/invalid inputs | `test_nonfinite_and_bad_manifest_fail` |
+| Baseline vs structural state | `test_synthetic_baseline_agreement_is_not_predictive_claim` |
 
 ## Owner Windows PowerShell 5.1 proof (not run by SD Coding)
 
