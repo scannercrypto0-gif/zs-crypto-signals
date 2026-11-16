@@ -1,5 +1,18 @@
 # ZS Crypto Signals — SMART GATE
 
+## OWNER APPROVAL — 16 November 2026 — Stage12 merged / Stage13 engineering authorized
+
+Owner explicitly approved merge of PR #69 at exact evidence HEAD `8f4d5694c15583b28eb1877114bb40b67d8000ca`, closure of Stage12 and start of Stage13. GitHub confirmed merge commit `c7929081f335ead6e607fea56ae08fbadd72b429`. Tested code `02da62a6baf55d8fcbed471e296166b727a006c0`, Git TREE `fb671a632b05781421a7891b334dc7d11b2e5a35`. PM acceptance: [PR #69 comment 6918151222](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/69#issuecomment-6918151222). Published Windows 12/12 PASS, zero failures/errors/skips, EXIT 0, Python 3.12.10; prior 9/9 evidence retained. PM reviewed published GitHub records, did not independently rerun owner-local Windows. Hosted GitHub Actions `43878298025` and `43878297933` remain FAILURE, not PASS.
+
+**Stage12 status:** `CLOSED_BOUNDED_ENGINEERING / MERGED / SCIENTIFIC_NOT_EVALUATED`. Engineering stages 00–12: **13/14** bounded accepted; this is not scientific validation or production/trading readiness. Authentic historical+prospective OOS/forward results remain `BLOCKED_REAL_DATA_NOT_VERIFIED / NOT_EVALUATED`. Registered embargo and walk-forward purging remain `NOT_IMPLEMENTED`.
+
+**Stage13 status:** `OWNER_AUTHORIZED_FOR_ENGINEERING_ONLY / OPERATIONAL_ACCEPTANCE_PENDING`. Canonical blueprint: “Full Operational Acceptance on Windows / Recovery / Stability”: scanner→verified Binance data→qualified signal→same ID to Telegram A/B/C+JSON→GitHub readback/recovery→later SQL import with no duplication→outcome evaluator; Windows 24/7 stability, API weights/latency, storage ack/checksum, delivery receipts, source coverage/time drift, stale/future/incomplete candle and duplicate/recovery gates, soak, failure injection, resource health and p50/p95. **Those LIVE endpoints and real E2E are future acceptance requirements, not authorized by this merge approval.** Separate owner permissions and secret/credential handling, source verification, quotas, delivery routing, deployment, and all relevant gates are required before any real Binance GET, Telegram send, SQL write, persistent task or 24/7 run. No real-money trading authorization under any circumstance.
+
+Stage13 immediate permitted deliverable: **offline/synthetic Windows operational harness, mock transport and receipts, restart/recovery/restore, dedup/idempotency, time/coverage/latency/quota/health instrumentation, failure injection, explicit `NOT_PROVEN_LIVE` module matrix and acceptance protocol.** No silent upgrade to operational readiness; fail-closed if any required LIVE evidence is absent. One Draft PR, deterministic tests, raw non-sensitive Windows evidence, PM review and separate owner merge approval. PM owns MASTER/README.
+
+---
+
+
 ## OWNER APPROVAL — 16 November 2026 — «Stage11» merged and «Stage12» authorized
 
 **Owner decision:** «موافق» على دمج «PR #68» بالبصمة المعتمدة، توثيق إغلاق «Stage11» والبدء في «Stage12». «PR #68» merged into `main` at `e1729dd9eaba8955c892908f796a83167ca6f9c9` from exact approved «HEAD» `9953f63ac943a884d3a0c0ac0da404d0ed148a56` (evidence commit), with tested code `1acef001b7b978d75f7d672bc50061a94bf9159a`, tested «TREE» `25ee004a1d1c041aeb0cd25f56be1817c6bab0b9`. «PM» bounded acceptance: [PR #68 comment 6916588246](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/68#issuecomment-6916588246). Published owner-Windows targeted test evidence: 11/11 pass, 0 fail/error/skip, `EXIT=0`, Python 3.12.10; original 7/7 evidence preserved. «PM» inspected GitHub code, test diff and published logs but did not replay the owner Windows run. Hosted «GitHub Actions» on final head `43865737602` and `43865737612` remain `FAILURE`, not passing.
