@@ -255,11 +255,7 @@ class Stage07Tests(TestCase):
         bad = replace(base, high=D("101.9"), low=D("99"))
         negative = retrospective_labels(rec, (bad,), as_of=bad.available_at,
                                         move_fraction=D("0.01"))
-        alt = deepcopy(rec)
-        alt["symbol"] = "ETHUSDT"
-        from zs_smart_gate.stage05_contracts import canonical, digest
-        alt["result_sha256"] = digest(canonical({
-            k:v for k,v in alt.items() if k!="result_sha256"}))
+        alt = run(replace(w, symbol="ETHUSDT"))
         alternative = retrospective_labels(alt, (bad,), as_of=bad.available_at,
                                            move_fraction=D("0.01"))
         report = compare_research_candidates([(rec,positive),(alt,alternative)],horizon_hours=1)
