@@ -125,8 +125,8 @@ class Stage09Tests(TestCase):
     def test_invalid_ohlcv_and_nan_construction(self):
         with self.assertRaises(ValueError):
             bar(hi="NaN")
-        with self.assertRaises(ValueError):
-            bar(lo="104", hi="102")
+        bad = bar(lo="104", hi="102")
+        self.assertEqual(run(sample(bars=(bad,)))["status"], "UNAVAILABLE")
         self.assertEqual(run(sample(bars=(bar(base="0"),)))["status"], "UNAVAILABLE")
         self.assertEqual(run(sample(source_manifest_sha256="invalid"))["status"], "UNAVAILABLE")
         self.assertEqual(run(sample(bin_size=D("0")))["status"], "UNAVAILABLE")
