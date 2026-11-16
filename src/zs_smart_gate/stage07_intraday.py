@@ -427,7 +427,9 @@ def retrospective_labels(research: dict, future: Sequence[CandleWindow], *,
             "horizon_end_at": stamp(end),
             "observed_until": stamp(min(covered_end, end)),
             "lead_hours": (str(Decimal(str((touch_close - decision).total_seconds()))
-                               / Decimal("3600")) if touch_close is not None else None),
+                               / Decimal("3600")) if touch_close is not None
+                               and state in ("DIRECTIONAL_MOVE_TOUCHED", "OPPOSITE_MOVE_TOUCHED")
+                               else None),
             "event_available_at": (stamp(next(b.available_at for b in eligible
                 if b.close_at == touch_close)) if touch_close is not None else None),
             "bars_examined": len(eligible),
