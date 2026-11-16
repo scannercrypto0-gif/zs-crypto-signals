@@ -11,6 +11,8 @@ Standalone offline contract `zs.stage10.futures-context.v1`. Use `evaluate_conte
 | PIT and missingness | Event ≤ receipt ≤ availability ≤ decision, matching source and symbol, declared coverage watermark ≤ decision. Missing, stale, unverified, incomplete and invalid are distinct; an attested empty stream may measure zero events. |
 | Isolation and ablation | Separate module, import isolation test, descriptive baseline-vs-CVD sign agreement with immutable baseline and no predictive accuracy. |
 
+Every feed must start exactly at the requested window start. A fresh latest sample can end before the decision and remains PRESENT with AS_OF_SAMPLE and coverage_to_decision=false. AggTrades and liquidations require a complete interval ending at the decision; earlier cutoffs yield INSUFFICIENT_COVERAGE (or STALE for an expired watermark). Invalid feed payloads are isolated. A non-JSON input has no canonical input hash.
+
 Each feed declares `coverage` (`start`, `end`, `available_at`, `complete`, `row_count`), source/symbol and pages (`cursor`, `next_cursor`, `rows`). The cursor is a normalized row offset rather than an exchange token. Every row carries source, symbol, identity and three UTC stamps. Completeness in this contract is a synthetic attestation, never an exchange authority claim. A raw Binance adapter, independent coverage verification and measured latency require separate work and authority. Binance liquidation snapshot feeds must not be assumed complete.
 
 ## Illustrative API cost and latency

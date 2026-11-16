@@ -35,7 +35,7 @@ def bounded_rows(feed, source, symbol, start, decision, max_age_seconds):
     expected_cursor = 0
     interval = feed["coverage"]
     coverage_start, coverage_end = (parse_utc(interval[key]) for key in ("start", "end"))
-    if coverage_start > start or coverage_end > decision or coverage_start > coverage_end:
+    if coverage_start != start or coverage_end > decision or coverage_start > coverage_end:
         return result("INSUFFICIENT_COVERAGE")
     for index, page in enumerate(pages):
         batch = page["rows"]
@@ -165,17 +165,30 @@ def evaluate_context(feeds, *, source_id, symbol, window_start, decision_at, max
             or type(max_age_seconds) is not int or max_age_seconds <= 0
             or not isinstance(feeds,dict) or set(feeds)-set(FEEDS)):
         raise ContractError("STAGE10_CONTEXT_CONTRACT_INVALID")
+    try:
+        input_hash = digest(canonical(feeds))
+    except ContractError:
+        input_hash = None
     metrics = {}
     for kind in FEEDS:
         try:
             feed = feeds.get(kind)
+            # Reject non-JSON feed values independently of unrelated feeds.
+            if input_hash is None:
+                canonical(feed)
             rows = bounded_rows(feed, source_id, symbol, start, decision, max_age_seconds)
             metrics[kind] = (rows if isinstance(rows, dict) else
                              measure(kind, rows, parse_utc(feed["coverage"]["end"]), decision, max_age_seconds))
             if metrics[kind]["status"] == "PRESENT":
-                metrics[kind]["coverage"] = feed["coverage"].copy()
+                interval = feed["coverage"]
+                metrics[kind]["coverage"] = {
+                    **{key: interval[key] for key in ("start", "end", "available_at", "complete", "row_count")},
+                    "coverage_to_decision": parse_utc(interval["end"]) == decision,
+                    "kind": ("COMPLETE_INTERVAL" if kind in ("aggtrades", "liquidations")
+                             else "AS_OF_SAMPLE"),
+                }
         except (ValueError, TypeError, KeyError, AttributeError, DecimalException) as exc:
-            metrics[kind] = result("INVALID_DATA", reason=str(exc) if type(exc) is ValueError else "MALFORMED_FEED")
+            metrics[kind] = result("INVALID_DATA", reason=str(exc) if type(exc) in (ValueError, ContractError) else "MALFORMED_FEED")
     price, oi = metrics["price"], metrics["oi"]
     relationship = result("INSUFFICIENT_COVERAGE")
     if price["status"] == oi["status"] == "PRESENT":
@@ -197,7 +210,7 @@ def evaluate_context(feeds, *, source_id, symbol, window_start, decision_at, max
                                  "OPPOSITE_SIGNS" if (delta > 0) != (flow > 0) else "SAME_SIGN")})
     out = dict(schema=VERSION, scope="SYNTHETIC_RESEARCH_ONLY", symbol=symbol, source_id=source_id,
                window_start=window_start, decision_at=decision_at, max_age_seconds=max_age_seconds,
-               input_sha256=digest(canonical(feeds)), metrics=metrics, oi_price=relationship, price_cvd=divergence,
+               input_sha256=input_hash, metrics=metrics, oi_price=relationship, price_cvd=divergence,
                spot_eligibility_effect=None, score=None, signal_id=None, trading_authorized=False)
     out["result_sha256"] = digest(canonical(out))
     return out

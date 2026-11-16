@@ -131,6 +131,42 @@ class FuturesContextTests(unittest.TestCase):
         self.assertEqual(evaluate(aggtrades=flow, price=price)["price_cvd"]["status"],
                          "INSUFFICIENT_COVERAGE")
 
+    def test_snapshot_coverage_and_exact_window(self):
+        payload = feed(row(1, contracts="12"))
+        payload["coverage"]["end"] = LATE
+        metric = evaluate(oi=payload)["metrics"]["oi"]
+        self.assertEqual(metric["status"], "PRESENT")
+        self.assertEqual(metric["coverage"]["kind"], "AS_OF_SAMPLE")
+        self.assertFalse(metric["coverage"]["coverage_to_decision"])
+        for kind in ("aggtrades", "liquidations"):
+            stream = feed()
+            stream["coverage"]["end"] = LATE
+            self.check(kind, stream, "INSUFFICIENT_COVERAGE")
+            stream["coverage"]["end"] = END
+            metric = evaluate(**{kind: stream})["metrics"][kind]
+            self.assertEqual(metric["coverage"]["kind"], "COMPLETE_INTERVAL")
+            self.assertTrue(metric["coverage"]["coverage_to_decision"])
+            stream["coverage"]["start"] = "2026-11-16T08:59:59Z"
+            self.check(kind, stream, "INSUFFICIENT_COVERAGE")
+        payload["coverage"]["start"] = "2026-11-16T08:59:59Z"
+        self.check("oi", payload, "INSUFFICIENT_COVERAGE")
+
+    def test_malformed_shapes_and_timestamps_are_isolated(self):
+        for payload in ([], dict(feed(), coverage=[]), dict(feed(), pages={}),
+                        dict(feed(), pages=[None]), feed("row"),
+                        feed(dict(trade(0), event_at="2026-11-31T09:00:20Z")),
+                        feed(dict(trade(0), id=[]))):
+            with self.subTest(payload=payload):
+                context = evaluate(aggtrades=payload, oi=feed(row(1, contracts="12")))
+                self.assertEqual(context["metrics"]["aggtrades"]["status"], "INVALID_DATA")
+                self.assertEqual(context["metrics"]["oi"]["status"], "PRESENT")
+
+    def test_invalid_decimals_and_zero_depth_fail_closed(self):
+        for value in ("not-a-number", "Infinity", "NaN", "1E+9999999", float("inf")):
+            with self.subTest(value=value):
+                self.check("aggtrades", feed(trade(1, qty=value)), "INVALID_DATA")
+        self.check("depth", feed(row(1, bids=[["99", "0"]], asks=[["101", "0"]])), "INVALID_DATA")
+
     def test_spot_import_does_not_initialize_futures_context(self):
         code = ("import sys; import zs_smart_gate.scanner;"
                 "assert 'zs_smart_gate.stage10_futures_context' not in sys.modules")
