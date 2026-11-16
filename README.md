@@ -1,5 +1,18 @@
 # ZS Crypto Signals — SMART GATE
 
+## OWNER APPROVAL — 16 November 2026 — «Stage11» merged and «Stage12» authorized
+
+**Owner decision:** «موافق» على دمج «PR #68» بالبصمة المعتمدة، توثيق إغلاق «Stage11» والبدء في «Stage12». «PR #68» merged into `main` at `e1729dd9eaba8955c892908f796a83167ca6f9c9` from exact approved «HEAD» `9953f63ac943a884d3a0c0ac0da404d0ed148a56` (evidence commit), with tested code `1acef001b7b978d75f7d672bc50061a94bf9159a`, tested «TREE» `25ee004a1d1c041aeb0cd25f56be1817c6bab0b9`. «PM» bounded acceptance: [PR #68 comment 6916588246](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/68#issuecomment-6916588246). Published owner-Windows targeted test evidence: 11/11 pass, 0 fail/error/skip, `EXIT=0`, Python 3.12.10; original 7/7 evidence preserved. «PM» inspected GitHub code, test diff and published logs but did not replay the owner Windows run. Hosted «GitHub Actions» on final head `43865737602` and `43865737612` remain `FAILURE`, not passing.
+
+**Status:** «Stage11» `CLOSED_BOUNDED_ENGINEERING / MERGED`. Stages «00–11» = **12/14** engineering stages accepted within explicitly bounded scopes, **not** scientific OOS/forward validation, production readiness or trading authority. «Stage12» `OWNER_AUTHORIZED / ENGINEERING_PENDING / SCIENTIFIC_VALIDATION_BLOCKED_UNTIL_GENUINE_DATA`.
+
+**Stage12 canonical scope from v2.1 blueprint:** «Predictive Research, Intraday/Swing Models, Trading Levels». Compare «V1 vs V2», «15m/30m, 1h/4h/8h» and «CONTINUATION/REVERSAL» cohorts; keep «Score» distinct from calibrated «Probability»; horizons «Intraday 1–24h» and «Swing 1–30d»; onset/lead time/persistence/MAE/MFE; trade-plan levels only when price structure, volatility and execution risk validated. Real scientific claims require independently verified historical+forward labeled datasets, frozen hypotheses, walk-forward/OOS/forward studies, realistic fees/slippage, PR-AUC/Brier/calibration/precision/recall, uncertainty and asset/year/regime splits. **Until genuine eligible data is supplied and independently validated, implement only synthetic/offline reproducible research scaffolding, fail-closed availability/label provenance gates, deterministic tests and explicit `NOT_EVALUATED` metrics; do not fabricate results or assert profitability.** Scientific ML is not authorized as predictive evidence absent baselines and validation.
+
+**Governance:** one «Draft PR» from fresh `main`, deterministic targeted tests and non-sensitive Windows receipts when authorized, exact «HEAD/TREE», «PM» review and separate owner merge approval. «MASTER» and root «README» are «PM»-owned. No live «Binance/Telegram/SQL», real-money trading, secrets, production or unapproved data collection.
+
+---
+
+
 ## OWNER APPROVAL — 16 November 2026 — «Stage10» merged and «Stage11» authorized
 
 **Owner decision:** «موافق» على دمج «PR #67» بالبصمة الحالية، توثيق إغلاق المرحلة «10»، والبدء في «11». «PR #67» merged to `main` at `b6a16e0f1d0f2d698bba41a5f47d5e72302fc64e` from exact approved «HEAD» `c30f12942fee58460f9fea649d2fb947ec35615e` (evidence commit) containing tested code `ae621ec262e1935602dbfedeadd69481a6becb7f`, code «TREE» `683c25719698fb993d607f80d47aa2a8ced887ee`. «PM» acceptance: [PR #67 comment 6915503827](https://github.com/scannercrypto0-gif/zs-crypto-signals/pull/67#issuecomment-6915503827). «Windows» raw logs and SHA-256 receipts are **published on GitHub** for final targeted 15/15, zero failures/skips, `EXIT=0`, Python 3.12.10; original 12/12 evidence retained. «PM» read published logs and code but did not independently replay local execution. Hosted «GitHub Actions» runs on evidence head `43860273306`/`43860273297` remain `FAILURE`, not passing.
