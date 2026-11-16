@@ -6,7 +6,8 @@ from decimal import Decimal as D
 from unittest import TestCase
 
 from zs_smart_gate.mtf_contracts import CandleWindow
-from zs_smart_gate.stage07_intraday import ResearchWindow, evaluate_window, retrospective_labels
+from zs_smart_gate.stage07_intraday import (ResearchWindow, evaluate_window,
+    evaluate_partial_window, retrospective_labels, compare_research_candidates)
 from zs_smart_gate.stage05_contracts import ContractError
 
 
@@ -98,8 +99,9 @@ class Stage07Tests(TestCase):
                     received_at=begin+timedelta(minutes=5, seconds=1),
                     available_at=begin+timedelta(minutes=5, seconds=2))
         out = retrospective_labels(record, (b,), as_of=b.available_at, move_fraction=D("0.01"))
-        self.assertIn(out["status"], ("CENSORED", "DIRECTIONAL_MOVE_TOUCHED",
-                                      "OPPOSITE_MOVE_TOUCHED", "AMBIGUOUS_OHLC_ORDER"))
+        self.assertEqual(set(out["horizons"]), {"1", "2", "4", "8", "12", "24"})
+        self.assertEqual(out["horizons"]["1"]["status"], "CENSORED_HORIZON")
+        self.assertEqual(out["reference_price"], record["decision_reference_price"])
         self.assertIsNone(record["signal_id"])
         with self.assertRaises(ContractError):
             retrospective_labels(record, (replace(b, open_at=start-timedelta(seconds=1)),),
@@ -122,3 +124,96 @@ class Stage07Tests(TestCase):
                                  as_of=b.available_at, move_fraction=D("0.01"))
         with self.assertRaises(ContractError):
             retrospective_labels(record, (b,), as_of=b.available_at, move_fraction=D("1"))
+
+    def test_partial_prefix_uses_no_parent_future_ohlc(self):
+        w = bars()
+        prefix = w.children[:3]
+        decision = prefix[-1].available_at
+        a = evaluate_partial_window(w, prefix, decision_at=decision)
+        self.assertEqual(a["status"], "RESEARCH_MEASURED")
+        self.assertEqual(a["observation_status"], "PARTIAL_PARENT_30M")
+        self.assertEqual(a["observed_closed_5m_count"], 3)
+        full_mutated = replace(w.parent, high=w.parent.high+D("900"), close=D("500"))
+        after = tuple(replace(x, high=x.high+D("50")) for x in w.children[3:])
+        newer = evaluate_partial_window(replace(w, parent=full_mutated, children=(*prefix,*after)),
+                                        prefix, decision_at=decision)
+        self.assertEqual(a, newer)
+        self.assertIsNone(a["signal_id"])
+        self.assertFalse(a["publishable"])
+        self.assertEqual(evaluate_partial_window(w, w.children, decision_at=decision)["status"], "UNAVAILABLE")
+
+    def test_partial_rejects_future_closed_bar_and_history_gap(self):
+        w = bars("DOWN")
+        prefix = w.children[:3]
+        now = prefix[-1].available_at
+        self.assertEqual(evaluate_partial_window(w, prefix, decision_at=now)["status"], "RESEARCH_MEASURED")
+        late = replace(prefix[-1], received_at=now+timedelta(seconds=1),
+                       available_at=now+timedelta(seconds=2))
+        self.assertEqual(evaluate_partial_window(w, (*prefix[:2], late), decision_at=now)["status"], "UNAVAILABLE")
+        self.assertEqual(evaluate_partial_window(replace(w, history_5m=w.history_5m[:-1]),
+                         prefix, decision_at=now)["status"], "UNAVAILABLE")
+
+    def test_real_future_mutation_changes_labels_not_features(self):
+        w = bars()
+        rec = run(w)
+        begin = datetime.fromtimestamp((int(w.parent.available_at.timestamp()) // 300+1)*300,
+                                        timezone.utc)
+        b = replace(w.children[0], open_at=begin, close_at=begin+timedelta(minutes=5),
+                    received_at=begin+timedelta(minutes=5, seconds=1),
+                    available_at=begin+timedelta(minutes=5, seconds=2))
+        low = replace(b, high=b.open+D("0.2"), low=b.open-D("0.2"))
+        high = replace(low, high=low.open+D("10"))
+        a = retrospective_labels(rec, (low,), as_of=low.available_at, move_fraction=D("0.01"))
+        z = retrospective_labels(rec, (high,), as_of=high.available_at, move_fraction=D("0.01"))
+        self.assertNotEqual(a["horizons"]["1"]["status"], z["horizons"]["1"]["status"])
+        self.assertEqual(rec, run(w))
+        self.assertEqual(a["reference_price"], z["reference_price"])
+
+    def test_double_touch_ambiguity_and_six_horizons(self):
+        w = bars()
+        rec = run(w)
+        begin = datetime.fromtimestamp((int(w.parent.available_at.timestamp()) // 300+1)*300,
+                                        timezone.utc)
+        b = replace(w.children[0], open_at=begin, close_at=begin+timedelta(minutes=5),
+                    received_at=begin+timedelta(minutes=5, seconds=1),
+                    available_at=begin+timedelta(minutes=5, seconds=2),
+                    high=D("120"), low=D("80"))
+        x = retrospective_labels(rec, (b,), as_of=b.available_at, move_fraction=D("0.01"))
+        for h in ("1","2","4","8","12","24"):
+            self.assertEqual(x["horizons"][h]["status"], "AMBIGUOUS_OHLC_ORDER")
+            self.assertIsNone(x["horizons"][h]["lead_hours"])
+        self.assertEqual(x["reference_price"], rec["decision_reference_price"])
+
+    def test_label_censoring_gap_and_timezone(self):
+        w = bars()
+        rec = run(w)
+        begin = datetime.fromtimestamp((int(w.parent.available_at.timestamp()) // 300+2)*300,
+                                        timezone.utc)
+        b = replace(w.children[0], open_at=begin, close_at=begin+timedelta(minutes=5),
+                    received_at=begin+timedelta(minutes=5, seconds=1),
+                    available_at=begin+timedelta(minutes=5, seconds=2))
+        label = retrospective_labels(rec, (b,), as_of=b.available_at.astimezone(
+            timezone(timedelta(hours=3))), move_fraction=D("0.01"))
+        self.assertEqual(label["horizons"]["1"]["status"], "CENSORED_GAP")
+        self.assertEqual(label["horizons"]["1"]["censor_reason"], "UNOBSERVED_INTERVAL")
+
+    def test_synthetic_baseline_ablation_and_overlap_exclusion(self):
+        w = bars()
+        rec = run(w)
+        begin = datetime.fromtimestamp((int(w.parent.available_at.timestamp()) // 300+1)*300,
+                                        timezone.utc)
+        b = replace(w.children[0], open_at=begin, close_at=begin+timedelta(minutes=5),
+                    received_at=begin+timedelta(minutes=5, seconds=1),
+                    available_at=begin+timedelta(minutes=5, seconds=2))
+        label = retrospective_labels(rec, (b,), as_of=b.available_at, move_fraction=D("0.01"))
+        sample = compare_research_candidates([(rec,label),(rec,label)], horizon_hours=4)
+        self.assertEqual(sample["input_count"], 2)
+        self.assertEqual(sample["nonoverlapping_count"], 1)
+        self.assertEqual(sample["excluded_overlap"], 1)
+        self.assertEqual(sample["scientific_validity"], "DEMONSTRATION_ONLY_NOT_OOS")
+
+    def test_nonfinite_scalar_fail_closed(self):
+        w = bars()
+        with self.assertRaises((ValueError, ArithmeticError)):
+            replace(w.parent, high=D("NaN"))
+        self.assertEqual(run(replace(w, source_manifest_sha256="NOT_A_SHA"))["status"], "UNAVAILABLE")
