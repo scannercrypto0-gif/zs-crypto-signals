@@ -423,3 +423,38 @@ def retrospective_swing_observation(research: dict, future: Sequence[CandleWindo
     }
     result["result_sha256"] = digest(canonical(result))
     return result
+
+
+def compare_synthetic_structure(records: Sequence[dict]) -> dict:
+    """Descriptive same-window baseline vs confirmed structure, not predictive edge.
+
+    Baseline is the parent 4h candle close-open direction; alternative is
+    last structurally confirmed breakout state, or UNKNOWN. No future labels.
+    """
+    if not isinstance(records, (tuple, list)) or len(records) > 128:
+        raise ContractError("STAGE08_COMPARISON_BOUNDED_RECORDS_REQUIRED")
+    out = {"count": len(records), "known_pairs": 0, "agreements": 0,
+           "disagreements": 0, "unknown_pairs": 0}
+    for row in records:
+        if (not isinstance(row, dict) or row.get("schema") != VERSION
+                or row.get("status") != "RESEARCH_MEASURED"
+                or row.get("source_scope") != "SYNTHETIC_TEST_ONLY"
+                or row.get("signal_id") is not None
+                or row.get("publishable") is not False
+                or row.get("result_sha256") != digest(canonical({
+                    k: v for k, v in row.items() if k != "result_sha256"}))):
+            raise ContractError("STAGE08_COMPARISON_RESEARCH_RECEIPT_REQUIRED")
+        base = row["timeframe_context"]["4h_close_open_direction"]
+        alt = row["structure"]["structure_state"]
+        if base not in ("UP", "DOWN") or alt not in ("UP", "DOWN"):
+            out["unknown_pairs"] += 1
+        else:
+            out["known_pairs"] += 1
+            out["agreements" if base == alt else "disagreements"] += 1
+    return {"schema": "zs.stage08.synthetic-baseline.v1",
+            "baseline": "CURRENT_4H_CLOSE_MINUS_OPEN_SIGN",
+            "alternative": "LAST_CONFIRMED_CLOSE_BREAK_STRUCTURE_STATE",
+            "summary": out, "source_scope": "SYNTHETIC_TEST_ONLY",
+            "scientific_validity": "CONTEMPORANEOUS_DESCRIPTIVE_ONLY_NOT_OOS",
+            "false_positive_rate": None, "prediction_accuracy": None,
+            "qualification_authority": None}
