@@ -550,7 +550,9 @@ def retrospective_profile_observation(research: dict, future: Sequence[CandleWin
             raise ContractError("STAGE09_RETROSPECTIVE_FRAME_INVALID")
         duration = int(DURATIONS[frame].total_seconds())
         expected = datetime.fromtimestamp(
-            (int(decision.timestamp()) // duration + 1)*duration, timezone.utc)
+            (int(decision.timestamp()) // duration)*duration, timezone.utc)
+        if expected < decision:
+            expected += DURATIONS[frame]
         error = _validate_bars(future, frame, research["source_id"], now)
         if error:
             raise ContractError("STAGE09_RETROSPECTIVE_" + error)

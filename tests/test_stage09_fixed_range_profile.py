@@ -282,6 +282,37 @@ class Stage09Tests(TestCase):
         with self.assertRaises(ContractError):
             retrospective_profile_observation(record,(early,),as_of=early.available_at)
 
+    def test_retro_aligned_decision_accepts_full_bar_and_rejects_gaps_and_late_data(self):
+        decision = T + timedelta(hours=2)
+        record = evaluate_profile(sample(), decision_at=decision)
+        first = bar(start=decision)
+        second = bar(start=first.close_at)
+        third = bar(start=second.close_at)
+        result = retrospective_profile_observation(record, (first, second), as_of=second.available_at)
+        self.assertEqual(result["status"], "OBSERVED")
+        self.assertEqual(result["closed_bars"], 2)
+        self.assertEqual(result["first_expected_full_bar_at"], "2026-11-16T02:00:00Z")
+        with self.assertRaisesRegex(ContractError, "BAR_GAP_DUPLICATE_OUT_OF_ORDER"):
+            retrospective_profile_observation(record, (first, third), as_of=third.available_at)
+        with self.assertRaises(ContractError):
+            retrospective_profile_observation(record, (first, second), as_of=second.received_at)
+        unaligned = evaluate_profile(sample(), decision_at=decision + timedelta(seconds=2))
+        result = retrospective_profile_observation(unaligned, (second,), as_of=second.available_at)
+        self.assertEqual(result["status"], "OBSERVED")
+        self.assertEqual(result["first_expected_full_bar_at"], "2026-11-16T03:00:00Z")
+
+    def test_zero_volume_vwap_fails_closed(self):
+        result = run(sample(bars=(bar(base="0", quote="0"),)))
+        self.assertEqual(result["status"], "UNAVAILABLE")
+        self.assertIn("PROFILE_EMPTY_VOLUME_OR_BIN_LIMIT", str(result))
+
+    def test_down_hypothesis_assumes_same_roundtrip_cost(self):
+        h = ResearchHypothesis("DOWN", D("101"), D("103"), D("97"), D("5"), D("3"))
+        result = run(sample(direction="DOWN", hypothesis=h))
+        self.assertEqual(result["hypothesis"]["gross_reward_to_risk"], "2")
+        self.assertEqual(result["hypothesis"]["roundtrip_assumed_cost_bps"], "16")
+        self.assertFalse(result["hypothesis"]["trade_ready"])
+
     def test_retro_foreign_source_and_tampered_receipt_rejected(self):
         record = run(sample())
         first = bar(start=T+timedelta(hours=2),source="SYNTHETIC:OTHER")
