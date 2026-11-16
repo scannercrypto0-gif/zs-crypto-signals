@@ -6,7 +6,7 @@ available, contiguous UTC inputs only. No network, database or trade execution.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from typing import Sequence
 
@@ -367,6 +367,7 @@ def analyze_swing(window: SwingWindow, *, decision_at: datetime) -> dict:
         "source_id": source, "source_manifest_sha256": window.source_manifest_sha256,
         "parent_close_at": stamp(p.close_at), "parent_available_at": stamp(p.available_at),
         "decision_at": stamp(decision), "decision_reference_price": str(p.close),
+        "decision_lag_seconds": str(Decimal(str((decision-p.close_at).total_seconds()))),
         "comparison_8h": eight, "structure": structure,
         "timeframe_context": observed, "features": features,
         "input_sha256": digest(canonical([VERSION, key, content])),
@@ -394,18 +395,26 @@ def retrospective_swing_observation(research: dict, future: Sequence[CandleWindo
         raise ContractError("STAGE08_OUTCOME_BEFORE_DECISION")
     if not isinstance(future, (tuple, list)):
         raise ContractError("STAGE08_OUTCOME_SEQUENCE_REQUIRED")
+    # A post-decision FULL 4h bar opens on the next UTC boundary.
+    duration_seconds = 4 * 3600
+    first_start = datetime.fromtimestamp(
+        ((int(decision.timestamp()) // duration_seconds) + 1) * duration_seconds,
+        timezone.utc)
     if future:
         if not isinstance(future[0], CandleWindow) or future[0].open_at < decision:
             raise ContractError("STAGE08_OUTCOME_STRADDLES_DECISION")
-        invalid = _validate_sequence(future, "4h", research["source_id"],
-                                     now, now)
+        invalid = _validate_sequence(future, "4h", research["source_id"], now, now)
         if invalid:
             raise ContractError("STAGE08_OUTCOME_INVALID:" + invalid)
+    initial_gap = bool(future and future[0].open_at != first_start)
     ref = Decimal(research["decision_reference_price"])
-    change = ((future[-1].close-ref)/ref if future else None)
+    change = ((future[-1].close-ref)/ref if future and not initial_gap else None)
+    status = ("CENSORED_NO_BARS" if not future else
+              "CENSORED_GAP" if initial_gap else "OBSERVED")
     result = {
         "schema": OUTCOME_VERSION, "research_sha256": research["result_sha256"],
-        "as_of": stamp(now), "status": "OBSERVED" if future else "CENSORED_NO_BARS",
+        "as_of": stamp(now), "status": status,
+        "expected_first_full_bar_at": stamp(first_start),
         "closed_bar_count": len(future),
         "last_available_at": stamp(future[-1].available_at) if future else None,
         "signed_close_return": str(change) if change is not None else None,
