@@ -89,7 +89,8 @@ class Stage08SwingTests(TestCase):
         self.assertEqual(run(replace(w, children_1h=(
             w.children_1h[0], broken, *w.children_1h[2:])))["status"], "UNAVAILABLE")
         late = replace(w.parent_4h, available_at=w.parent_4h.available_at+timedelta(seconds=5))
-        self.assertEqual(run(replace(w, parent_4h=late))["status"], "UNAVAILABLE")
+        self.assertEqual(analyze_swing(replace(w, parent_4h=late),
+                                      decision_at=w.parent_4h.available_at)["status"], "UNAVAILABLE")
         self.assertEqual(run(replace(w, source_scope="APPROVED_REAL_SOURCE"))["status"],
                          "UNAVAILABLE")
 
@@ -288,6 +289,38 @@ class Stage08SwingTests(TestCase):
             row, (later,), as_of=later.available_at)
         self.assertEqual(label["status"], "CENSORED_GAP")
         self.assertIsNone(label["signed_close_return"])
+
+    def test_future_boundary_availability_and_later_gap(self):
+        w = fixture()
+        row = run(w)
+        expected_start = w.parent_4h.close_at + timedelta(hours=4)
+        first = candle("4h", expected_start, 4, 105, 107)
+        second = candle("4h", first.close_at, 4, 107, 108)
+        result = retrospective_swing_observation(row, (first, second), as_of=second.available_at)
+        self.assertEqual(result["status"], "OBSERVED")
+        self.assertEqual(result["expected_first_full_bar_at"],
+                         expected_start.isoformat().replace("+00:00", "Z"))
+        self.assertEqual(result["closed_bar_count"], 2)
+        with self.assertRaisesRegex(ContractError, "INVALID_OR_UNAVAILABLE_4h"):
+            retrospective_swing_observation(row, (first,), as_of=first.received_at)
+        third = candle("4h", second.close_at, 4, 108, 109)
+        with self.assertRaisesRegex(ContractError, "GAP_DUPLICATE_OR_OUT_OF_ORDER"):
+            retrospective_swing_observation(row, (first, third), as_of=third.available_at)
+
+    def test_aligned_decision_admits_bar_opening_at_decision(self):
+        w = fixture()
+        decision = w.parent_4h.close_at + timedelta(hours=4)
+        row = analyze_swing(w, decision_at=decision)
+        first = candle("4h", decision, 4, 105, 107)
+        result = retrospective_swing_observation(row, (first,), as_of=first.available_at)
+        self.assertEqual(result["status"], "OBSERVED")
+
+    def test_8h_zero_price_and_negative_volume_fail_closed(self):
+        w = fixture(with_eight=True)
+        for fields in ({"open": D("0")}, {"base_volume": D("-1")}):
+            result = run(replace(w, comparison_8h=replace(w.comparison_8h, **fields)))
+            self.assertEqual(result["status"], "UNAVAILABLE")
+            self.assertIn("STAGE08_8H_INVALID_OHLCV", str(result))
 
     def test_synthetic_baseline_agreement_is_not_predictive_claim(self):
         up, down = run(fixture("UP")), run(fixture("DOWN"))

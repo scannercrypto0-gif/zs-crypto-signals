@@ -107,6 +107,10 @@ def _eight_hour(comparison: EightHourObservation | None,
             or not end <= received <= available <= decision
             or end != parent.close_at or c.source_id != parent.source_id):
         raise ContractError("STAGE08_8H_SOURCE_TIME_INVALID")
+    if (min(c.open, c.high, c.low, c.close) <= ZERO
+            or c.low > min(c.open, c.close) or c.high < max(c.open, c.close)
+            or min(c.base_volume, c.quote_volume) < ZERO):
+        raise ContractError("STAGE08_8H_INVALID_OHLCV")
     if not prior:
         raise ContractError("STAGE08_8H_PRIOR_4H_REQUIRED")
     before = prior[-1]
@@ -395,11 +399,11 @@ def retrospective_swing_observation(research: dict, future: Sequence[CandleWindo
         raise ContractError("STAGE08_OUTCOME_BEFORE_DECISION")
     if not isinstance(future, (tuple, list)):
         raise ContractError("STAGE08_OUTCOME_SEQUENCE_REQUIRED")
-    # A post-decision FULL 4h bar opens on the next UTC boundary.
-    duration_seconds = 4 * 3600
-    first_start = datetime.fromtimestamp(
-        ((int(decision.timestamp()) // duration_seconds) + 1) * duration_seconds,
-        timezone.utc)
+    # A full 4h bar can open at the decision when already UTC-aligned.
+    first_start = decision.replace(hour=decision.hour // 4 * 4,
+                                   minute=0, second=0, microsecond=0)
+    if first_start < decision:
+        first_start += timedelta(hours=4)
     if future:
         if not isinstance(future[0], CandleWindow) or future[0].open_at < decision:
             raise ContractError("STAGE08_OUTCOME_STRADDLES_DECISION")
