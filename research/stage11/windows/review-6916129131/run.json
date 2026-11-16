@@ -1,0 +1,18 @@
+{
+  "head": "1acef001b7b978d75f7d672bc50061a94bf9159a",
+  "stdout_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+  "exit": 0,
+  "end_utc": "2026-11-16T12:20:43.2073057Z",
+  "stderr_sha256": "3F3E83A4C627E3AE7FBDDDBA7104E2FAA209DAF8E1D16474FEB9F61711A17429",
+  "start_utc": "2026-11-16T12:20:42.7272968Z",
+  "python": "Python 3.12.10",
+  "powershell": "7.6.9",
+  "counts": {
+    "errors": 0,
+    "run": 11,
+    "pass": 11,
+    "fail": 0,
+    "skips": 0
+  },
+  "tree": "25ee004a1d1c041aeb0cd25f56be1817c6bab0b9"
+}
