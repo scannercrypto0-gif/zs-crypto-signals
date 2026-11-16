@@ -209,6 +209,33 @@ class Stage13Tests(TestCase):
         self.assertEqual(self.controller().resume(identity)["status"], "INVALID_STORED_ACK")
         self.assertEqual(self.services.calls, [])
 
+    def test_recovery_discovers_pending_records_across_restart(self):
+        self.services.failure = "telegram_b"
+        controller = self.controller()
+        stalled = controller.scan_once()
+        self.assertEqual(stalled["status"], "PENDING_MOCK_RETRY")
+        self.services.row = dict(MARKET, symbol="ETHUSDT")
+        self.assertEqual(controller.scan_once()["status"], "PENDING_MOCK_RETRY")
+        blocked = self.controller().recover_page(limit=1)
+        self.assertEqual(blocked["status"], "RECOVERY_BLOCKED")
+        self.assertIsNone(blocked["next_after"])
+        self.services.failure = "scanner"
+        restarted = self.controller()
+        page = restarted.recover_page(limit=1)
+        self.assertEqual(page["status"], "RECOVERY_PAGE_PASS")
+        self.assertIsNotNone(page["next_after"])
+        remainder = restarted.recover_page(after=page["next_after"], limit=1)
+        self.assertEqual(remainder["status"], "RECOVERY_PAGE_PASS")
+        self.assertIsNone(remainder["next_after"])
+        self.assertEqual(remainder["hypothetical_weight_used"], 0)
+        self.assertNotEqual(page["reports"][0]["signal_id"], remainder["reports"][0]["signal_id"])
+        self.assertEqual(len(self.services.deliveries), 2 * len(STAGES))
+        before = list(self.services.calls)
+        self.assertEqual(len(self.controller().recover_page()["reports"]), 2)
+        self.assertEqual(self.services.calls, before)
+        with self.assertRaisesRegex(ContractError, "OUTBOX_PAGE_INVALID"):
+            restarted.recover_page(after="ack/" + "a"*64)
+
     def test_invalid_ack_stops_before_later_integrations(self):
         self.services.bad_ack = "sql"
         result = self.controller().scan_once()

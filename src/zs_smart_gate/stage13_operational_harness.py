@@ -174,6 +174,22 @@ class CycleController:
             receipts[stage] = json.loads(expected_ack)
         return self._report("MOCK_PASS", signal_id=signal_id, sha256=sha, receipts=receipts)
 
+    def recover_page(self, *, after=None, limit=20):
+        """Recover a bounded page of local fixture records without scanning."""
+        if type(limit) is not int or not 1 <= limit <= 100:
+            raise ContractError("S13_RECOVERY_PAGE_LIMIT")
+        keys = self.journal.list_keys("signal", after=after, limit=limit+1)
+        reports = []
+        for key in keys[:limit]:
+            report = self.resume("fixture-" + key.removeprefix("signal/"))
+            reports.append(report)
+            if report["status"] != "MOCK_PASS":
+                # Keep the caller's cursor at the last verified record.
+                return self._report("RECOVERY_BLOCKED", reports=reports, next_after=after)
+            after = key
+        return self._report("RECOVERY_PAGE_PASS", reports=reports,
+                            next_after=after if len(keys) > limit else None)
+
     def run(self, cycles):
         if type(cycles) is not int or not 1 <= cycles <= 1000:
             raise ContractError("S13_CYCLE_LIMIT")
