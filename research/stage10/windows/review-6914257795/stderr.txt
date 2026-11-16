@@ -1,0 +1,20 @@
+test_ablation_has_no_authority_and_is_hash_bound (test_stage10_futures_context.FuturesContextTests.test_ablation_has_no_authority_and_is_hash_bound) ... ok
+test_actual_liquidations_only (test_stage10_futures_context.FuturesContextTests.test_actual_liquidations_only) ... ok
+test_cvd_both_signs_and_empty_attested_interval (test_stage10_futures_context.FuturesContextTests.test_cvd_both_signs_and_empty_attested_interval) ... ok
+test_depth_zones_imbalance_and_crossing (test_stage10_futures_context.FuturesContextTests.test_depth_zones_imbalance_and_crossing) ... ok
+test_funding_applied_time_and_signed_rate (test_stage10_futures_context.FuturesContextTests.test_funding_applied_time_and_signed_rate) ... ok
+test_invalid_decimals_and_zero_depth_fail_closed (test_stage10_futures_context.FuturesContextTests.test_invalid_decimals_and_zero_depth_fail_closed) ... ok
+test_malformed_shapes_and_timestamps_are_isolated (test_stage10_futures_context.FuturesContextTests.test_malformed_shapes_and_timestamps_are_isolated) ... ok
+test_missing_unverified_and_stale_are_distinct (test_stage10_futures_context.FuturesContextTests.test_missing_unverified_and_stale_are_distinct) ... ok
+test_oi_and_price_timestamp_join (test_stage10_futures_context.FuturesContextTests.test_oi_and_price_timestamp_join) ... ok
+test_pages_complete_duplicate_gap_and_interruption (test_stage10_futures_context.FuturesContextTests.test_pages_complete_duplicate_gap_and_interruption) ... ok
+test_pit_source_symbol_and_declared_count (test_stage10_futures_context.FuturesContextTests.test_pit_source_symbol_and_declared_count) ... ok
+test_price_and_cvd_comparison_requires_aligned_window (test_stage10_futures_context.FuturesContextTests.test_price_and_cvd_comparison_requires_aligned_window) ... ok
+test_ratio_definition (test_stage10_futures_context.FuturesContextTests.test_ratio_definition) ... ok
+test_snapshot_coverage_and_exact_window (test_stage10_futures_context.FuturesContextTests.test_snapshot_coverage_and_exact_window) ... ok
+test_spot_import_does_not_initialize_futures_context (test_stage10_futures_context.FuturesContextTests.test_spot_import_does_not_initialize_futures_context) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.401s
+
+OK
