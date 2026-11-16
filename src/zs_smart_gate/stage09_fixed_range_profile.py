@@ -204,8 +204,19 @@ def _verified_trades(w: ProfileWindow, source: str, first: datetime,
     if (ids != list(range(cover.first_trade_id, cover.last_trade_id+1))
             or cover.trade_digest_sha256 != _coverage_digest(ts)):
         return "TRADE_SEQUENCE_OR_DIGEST_MISMATCH"
-    # This is an explicitly self-attested, synthetic coverage range.
-    # Real source completeness/authentication is NOT established.
+    # Reconcile complete synthetic prints to every OHLCV parent. A self-attested
+    # ID interval alone is never evidence of completeness in a live feed.
+    for bar in w.bars:
+        inside = [t for t in ts if bar.open_at <= utc(t.event_at) < bar.close_at]
+        if not inside:
+            return "TRADE_BAR_MISSING_PRINTS"
+        if (inside[0].price != bar.open or inside[-1].price != bar.close
+                or max(t.price for t in inside) != bar.high
+                or min(t.price for t in inside) != bar.low
+                or sum((t.base_qty for t in inside), ZERO) != bar.base_volume
+                or sum((t.price*t.base_qty for t in inside), ZERO) != bar.quote_volume):
+            return "TRADE_OHLCV_RECONCILIATION_FAILED"
+    # No authentic exchange signature or completeness witness is implied.
     return None
 
 
@@ -298,7 +309,7 @@ def _reactions(bars: tuple[CandleWindow, ...], *, ref_close: Decimal,
         if crossed:
             crossings.append({"event_close_at": stamp(bar.close_at),
                               "available_at": stamp(bar.available_at)})
-        if crossings and touched and favorable:
+        if crossings and not crossed and touched and favorable:
             retests.append({"event_close_at": stamp(bar.close_at),
                             "available_at": stamp(bar.available_at)})
         if previous_favorable and touched and not favorable:
@@ -428,7 +439,11 @@ def evaluate_profile(w: ProfileWindow, *, decision_at: datetime) -> dict:
     except (ContractError, ValueError, OverflowError, ArithmeticError) as exc:
         return _failure(str(exc) if isinstance(exc, ContractError)
                         else "INVALID_NUMERIC_PROFILE")
-    last_close = w.reaction[-1].close if w.reaction else w.bars[-1].close
+    last_observed_bar = w.reaction[-1] if w.reaction else w.bars[-1]
+    last_close = last_observed_bar.close
+    baseline_delta = last_observed_bar.close-last_observed_bar.open
+    baseline_sign = ("UP" if baseline_delta > ZERO else
+                     "DOWN" if baseline_delta < ZERO else "NEUTRAL")
     profile_end = w.bars[-1].close_at
     key = digest(canonical([VERSION, w.symbol, w.direction, w.kind, stamp(anchor),
                              stamp(profile_end), source, w.source_manifest_sha256,
@@ -490,6 +505,8 @@ def evaluate_profile(w: ProfileWindow, *, decision_at: datetime) -> dict:
             "total_base_volume": str(total),
             "bin_volumes": [[i, str(allocations[i])] for i in sorted(allocations)],
             "decision_price": str(last_close),
+            "price_only_baseline": baseline_sign,
+            "price_only_baseline_rule": "LAST_OBSERVED_BAR_CLOSE_MINUS_OPEN_SIGN",
             "decision_price_at": stamp(w.reaction[-1].close_at
                                        if w.reaction else w.bars[-1].close_at),
             "poc_distance": _distance(last_close, poc),
@@ -551,13 +568,13 @@ def retrospective_profile_observation(research: dict, future: Sequence[CandleWin
 
 
 def synthetic_ablation(records: Sequence[dict]) -> dict:
-    """Same-snapshot descriptive baseline vs POC and VWAP; no outcome claims."""
+    """Descriptive same-snapshot ablations, never evidence of prediction."""
     if not isinstance(records, (tuple, list)) or len(records) > 128:
         raise ContractError("STAGE09_ABLATION_BOUNDED_RECORDS_REQUIRED")
-    summary = {"count": 0, "baseline_up": 0, "baseline_down": 0,
-               "poc_up": 0, "poc_down": 0, "vwap_up": 0, "vwap_down": 0,
-               "baseline_poc_agree": 0, "baseline_vwap_agree": 0,
-               "neutral_unknown": 0}
+    counts = {k: {"up": 0, "down": 0, "neutral": 0,
+                  "agreement_with_baseline": 0, "conflict_with_baseline": 0}
+              for k in ("price_only", "with_poc_without_vwap",
+                        "with_vwap_without_poc")}
     for row in records:
         if (not isinstance(row, dict) or row.get("schema") != VERSION
                 or row.get("status") != "RESEARCH_MEASURED"
@@ -567,22 +584,29 @@ def synthetic_ablation(records: Sequence[dict]) -> dict:
                     k: v for k, v in row.items() if k != "result_sha256"}))):
             raise ContractError("STAGE09_ABLATION_RESEARCH_RECEIPT_REQUIRED")
         f = row["features"]
-        base = Decimal(f["decision_price"])-Decimal(f["poc"])
-        vw = Decimal(f["decision_price"])-Decimal(f["vwap"])
-        # Baseline: scenario direction relative to precomputed POC is intentionally
-        # NOT used. A profile-free baseline is current close vs previous
-        # closed source candle, currently represented only as UNAVAILABLE.
-        summary["count"] += 1
-        summary["poc_up" if base > ZERO else "poc_down"] += int(base != ZERO)
-        summary["vwap_up" if vw > ZERO else "vwap_down"] += int(vw != ZERO)
-        if base == ZERO or vw == ZERO:
-            summary["neutral_unknown"] += 1
-    return {"schema": BASELINE_VERSION, "summary": summary,
-            "ablations": {"remove_poc": "VWAP_ONLY_DESCRIPTIVE",
-                          "remove_vwap": "POC_ONLY_DESCRIPTIVE",
-                          "remove_both": "NO_PROFILE_LEVEL_BASELINE_UNAVAILABLE"},
-            "baseline_without_profile": "NOT_EVALUATED_NO_INDEPENDENT_PRICE_REFERENCE",
-            "prediction_accuracy": None, "false_positive_rate": None,
+        baseline = f["price_only_baseline"]
+        if baseline not in ("UP", "DOWN", "NEUTRAL"):
+            raise ContractError("STAGE09_ABLATION_BASELINE_INVALID")
+        price = Decimal(f["decision_price"])
+        comparisons = {
+            "price_only": baseline,
+            "with_poc_without_vwap": ("UP" if price > Decimal(f["poc"])
+                                       else "DOWN" if price < Decimal(f["poc"])
+                                       else "NEUTRAL"),
+            "with_vwap_without_poc": ("UP" if price > Decimal(f["vwap"])
+                                        else "DOWN" if price < Decimal(f["vwap"])
+                                        else "NEUTRAL")}
+        for key, result in comparisons.items():
+            stat = counts[key]
+            stat[result.lower()] += 1
+            if key != "price_only" and baseline != "NEUTRAL" and result != "NEUTRAL":
+                stat["agreement_with_baseline" if result == baseline
+                     else "conflict_with_baseline"] += 1
+    return {"schema": BASELINE_VERSION, "sample_count": len(records),
+            "baseline": "LAST_OBSERVED_CLOSED_BAR_CLOSE_MINUS_OPEN",
+            "ablation": "REMOVE_POC_OR_VWAP_AS_DESCRIPTIVE_LEVEL_ONLY",
+            "variants": counts, "prediction_accuracy": None,
+            "false_positive_rate": None,
             "source_scope": "SYNTHETIC_TEST_ONLY",
             "scientific_validity": "DESCRIPTIVE_ONLY_NOT_OOS",
             "qualification_authority": None}
