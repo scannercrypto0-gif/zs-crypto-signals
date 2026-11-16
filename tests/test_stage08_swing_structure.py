@@ -242,3 +242,49 @@ class Stage08SwingTests(TestCase):
             replace(w.parent_4h, high=D("NaN"))
         self.assertEqual(run(replace(w, source_manifest_sha256="not-a-sha"))["status"],
                          "UNAVAILABLE")
+
+    def test_bos_after_previous_confirmed_uptrend(self):
+        prefix = series_of_extrema([101,102,106,103,101], [99,98,95,98,99])
+        wick = candle("4h", START+timedelta(hours=20), 4, 100, 100, high=108, low=98)
+        initial = candle("4h", START+timedelta(hours=24), 4, 100, 107, high=108, low=99)
+        fresh_high = candle("4h", START+timedelta(hours=28), 4, 100, 100,
+                            high=111, low=98)
+        right1 = candle("4h", START+timedelta(hours=32), 4, 100, 100,
+                        high=109, low=97)
+        right2 = candle("4h", START+timedelta(hours=36), 4, 100, 100,
+                        high=108, low=98)
+        breakout = candle("4h", START+timedelta(hours=40), 4, 100, 112,
+                          high=113, low=99)
+        r = _pivots_and_breaks((*prefix, wick, initial,
+                               fresh_high, right1, right2, breakout))
+        self.assertEqual([x["kind"] for x in r["close_breaks"][:2]],
+                         ["INITIAL_BREAK", "BOS"])
+        self.assertEqual(r["close_breaks"][1]["side"], "UP")
+
+    def test_directional_initial_down_break(self):
+        prefix = series_of_extrema([101,102,106,103,101], [99,98,95,98,99])
+        down = candle("4h", START+timedelta(hours=20), 4, 100, 94,
+                      high=101, low=93)
+        r = _pivots_and_breaks((*prefix, down))
+        self.assertEqual(r["close_breaks"][0]["side"], "DOWN")
+        self.assertEqual(r["close_breaks"][0]["kind"], "INITIAL_BREAK")
+
+    def test_timezone_utc_offset_normalizes_without_changing_snapshot(self):
+        w = fixture()
+        original = run(w)
+        ksa_clock = w.parent_4h.available_at.astimezone(
+            timezone(timedelta(hours=3)))
+        adjusted = analyze_swing(w, decision_at=ksa_clock)
+        self.assertEqual(original, adjusted)
+        self.assertEqual(original["decision_lag_seconds"], "2.0")
+
+    def test_future_initial_gap_censored_not_observed(self):
+        w = fixture()
+        row = run(w)
+        # First full eligible 4h bar starts one 4h boundary after decision.
+        gap_start = w.parent_4h.close_at + timedelta(hours=8)
+        later = candle("4h", gap_start, 4, 105, 107)
+        label = retrospective_swing_observation(
+            row, (later,), as_of=later.available_at)
+        self.assertEqual(label["status"], "CENSORED_GAP")
+        self.assertIsNone(label["signed_close_return"])
