@@ -22,7 +22,8 @@ SQL, real signal/score promotion or any merge.
 - All used `CandleWindow` inputs carry source identity, UTC open/close,
   actual reception and availability. Source mismatch, invalid/tampered SHA
   text, non-finite numerics, missing history, noncontiguous windows, future
-  or stale-to-decision observations fail closed. Source eligibility is still
+  or not-yet-available observations fail closed. No unapproved maximum-age
+  policy is invented. Source eligibility is still
   **SYNTHETIC_TEST_ONLY**, not `APPROVED_REAL_SOURCE`.
 - Optional `15m` comparisons for full parents must exactly cover the parent
   and reconcile against the corresponding `5m` halves. Missing comparison
