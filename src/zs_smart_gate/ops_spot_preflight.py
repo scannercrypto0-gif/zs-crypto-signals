@@ -58,15 +58,17 @@ def run_preflight(*, get, monotonic, utc_now, record):
         try:
             http_status, used_weight, raw = get(path, params, min(5, remaining))
             received = utc_now()
+            entry["http_status"] = http_status
+            header_valid = (isinstance(used_weight, str) and used_weight.isascii()
+                            and used_weight.isdecimal() and len(used_weight) <= 9)
+            entry["used_weight_1m"] = int(used_weight) if header_valid else None
             if monotonic() - start >= MAX_SECONDS:
                 raise ContractError("OPS_BUDGET_STOP")
             if http_status != 200:
                 raise ContractError("OPS_HTTP_" + str(http_status))
             if not isinstance(raw, bytes) or len(raw) > MAX_BODY:
                 raise ContractError("OPS_RESPONSE_SIZE_OR_TYPE")
-            if (not isinstance(used_weight, str) or not used_weight.isascii()
-                    or not used_weight.isdecimal() or len(used_weight) > 9
-                    or int(used_weight) > MAX_USED_WEIGHT):
+            if not header_valid or int(used_weight) > MAX_USED_WEIGHT:
                 raise ContractError("OPS_QUOTA_HEADROOM_UNVERIFIED")
             body = json.loads(raw)
             if path == "time":
