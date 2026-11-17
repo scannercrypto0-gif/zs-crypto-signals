@@ -1,0 +1,18 @@
+{
+  "head": "eb367312edc44560d1e66aa13adbdc496180f85c",
+  "exit": 0,
+  "python": "Python 3.12.10",
+  "start_utc": "2026-11-17T07:52:09.2097990Z",
+  "tree": "3de10dc2f4752ac8e7d6eb078a89b452e29db630",
+  "stderr_sha256": "ADC374D3380058AFCF834BCE6850898778CFB318D72EA802CDB3CCC6C8066961",
+  "counts": {
+    "errors": 0,
+    "fail": 0,
+    "skips": 0,
+    "pass": 17,
+    "run": 17
+  },
+  "end_utc": "2026-11-17T07:52:14.7148168Z",
+  "command": "PYTHONPATH=src;tests; py -3.12 -m unittest -v test_ops_signals_readiness test_stage13_operational_harness test_ops_spot_preflight",
+  "stdout_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+}
