@@ -1,0 +1,8 @@
+test_elapsed_cap_stops_before_second_attempt (test_ops_spot_preflight.PreflightTests.test_elapsed_cap_stops_before_second_attempt) ... ok
+test_fixed_five_attempts_and_closed_candle_anchor (test_ops_spot_preflight.PreflightTests.test_fixed_five_attempts_and_closed_candle_anchor) ... ok
+test_http_quota_and_bad_candles_stop_without_retry (test_ops_spot_preflight.PreflightTests.test_http_quota_and_bad_candles_stop_without_retry) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.001s
+
+OK

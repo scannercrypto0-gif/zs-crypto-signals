@@ -1,0 +1,1 @@
+{"estimated_weight": 26, "independent_clock": "NOT_VERIFIED", "readiness": "NOT_READY", "requests": 5, "status": "SOURCE_READBACK_PASS_CLOCK_PENDING"}
