@@ -6,6 +6,7 @@ from pathlib import Path
 import subprocess
 import sys
 
+from zs_smart_gate.ops_windows_watchdog import run_tree
 
 
 def main():
@@ -21,17 +22,18 @@ def main():
     if subprocess.check_output(["git","status","--porcelain"],text=True).strip():
         parser.error("clean checkout required")
     args.output.mkdir()
-    elapsed = subprocess.run([sys.executable, "-m", "zs_smart_gate.ops_windows_child",
-                              str(args.output)], timeout=120)
-    return elapsed.returncode
+    code = run_tree([sys.executable, "-m", "zs_smart_gate.ops_windows_child",
+                     str(args.output)], timeout=120)
+    if code in (124, 130):
+        report = {"status": "WATCHDOG_STOP" if code == 124 else "OPERATOR_ABORT", "exit": code}
+        (args.output/"watchdog.json").write_text(json.dumps(report), encoding="utf-8")
+        print(json.dumps(report))
+    return code
 
 
 if __name__ == "__main__":
     try:
         raise SystemExit(main())
-    except subprocess.TimeoutExpired:
-        print(json.dumps({"status":"WATCHDOG_STOP"}))
-        raise SystemExit(2)
     except KeyboardInterrupt:
         print(json.dumps({"status":"OPERATOR_ABORT"}))
         raise SystemExit(130)

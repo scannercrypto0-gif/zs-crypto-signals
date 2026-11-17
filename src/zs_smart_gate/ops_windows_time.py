@@ -1,4 +1,5 @@
 """Read-only Windows Time observation and stamped public Spot receipts."""
+import math
 import os
 import re
 import subprocess
@@ -11,6 +12,9 @@ from .stage05_contracts import ContractError, canonical, digest, utc_now
 SOURCE = "time.cloudflare.com"
 CANDIDATE = {"max_offset_s": .5, "max_conditional_uncertainty_s": .5,
              "max_sync_age_s": 600, "max_step_s": .05, "quorum": 4}
+POLICY_ID = "WINDOWS_TIME_OPERATIONAL_V1"
+# Set only through reviewed repository policy adoption.
+REVIEWED_POLICY_SHA256 = None
 COMMANDS = {
     "service": ("sc.exe", "query", "W32Time"),
     "status": ("w32tm.exe", "/query", "/status"),
@@ -37,13 +41,19 @@ def command(argv):
                 wall_step_disagreement_s=round(abs((time.time()-wall_start)-(end_ns-start_ns)/1e9),6))
 
 
-def assess(receipts, *, sync_age_s=None):
+def assess(receipts, *, sync_age_s=None, policy=None):
+    approved = (
+        REVIEWED_POLICY_SHA256 is not None
+        and isinstance(policy, dict)
+        and policy == {"policy_id": POLICY_ID, "source": SOURCE, "limits": CANDIDATE}
+        and digest(canonical(policy)) == REVIEWED_POLICY_SHA256
+    )
     blockers = []
     for name in COMMANDS:
         row = receipts[name]
         if row["exit"] != 0:
             blockers.append(name.upper()+"_COMMAND_FAILED")
-        if row["wall_step_disagreement_s"] > CANDIDATE["max_step_s"]:
+        if not 0 <= row["wall_step_disagreement_s"] <= CANDIDATE["max_step_s"]:
             blockers.append(name.upper()+"_TIME_STEP")
     service = receipts["service"]["stdout"]
     if not re.search(r"STATE\s*:\s*4\b", service):
@@ -65,7 +75,7 @@ def assess(receipts, *, sync_age_s=None):
                    receipts["stripchart"]["stdout"])]
     if len(samples) < CANDIDATE["quorum"] or len({s["display_time"] for s in samples}) != len(samples):
         blockers.append("OFFSET_QUORUM_OR_DUPLICATE")
-    if any(abs(s["offset_s"]) > CANDIDATE["max_offset_s"] or not 0 <= s["rtt_s"] for s in samples):
+    if any(abs(s["offset_s"]) > CANDIDATE["max_offset_s"] or not math.isfinite(s["rtt_s"]) or s["rtt_s"] < 0 for s in samples):
         blockers.append("OFFSET_LIMIT")
     if samples and max(s["offset_s"] for s in samples)-min(s["offset_s"] for s in samples) > CANDIDATE["max_step_s"]:
         blockers.append("OFFSET_DISCONTINUITY")
@@ -75,8 +85,11 @@ def assess(receipts, *, sync_age_s=None):
                    if dispersion and root_delay and samples else None)
     if conditional is None or conditional > CANDIDATE["max_conditional_uncertainty_s"]:
         blockers.append("CONDITIONAL_UNCERTAINTY_UNVERIFIED_OR_HIGH")
-    return dict(status="BLOCKED", independent_time="INDEPENDENT_CRYPTOGRAPHIC_TIME_NOT_PROVEN",
-                blockers=[*blockers,"OPERATIONAL_TOLERANCES_NOT_APPROVED"], source=source,
+    if not approved:
+        blockers.append("OPERATIONAL_TOLERANCES_NOT_APPROVED")
+    return dict(status="BLOCKED" if blockers else "OPERATIONAL_TIME_ACCEPTED",
+                independent_time="INDEPENDENT_CRYPTOGRAPHIC_TIME_NOT_PROVEN",
+                policy_id=POLICY_ID, blockers=blockers, source=source,
                 sync_age_s=sync_age_s, candidate_limits=CANDIDATE, samples=samples,
                 conditional_uncertainty_s=conditional,
                 last_successful_sync_display=fields.get("Last Successful Sync Time"),
@@ -84,12 +97,12 @@ def assess(receipts, *, sync_age_s=None):
                 root_dispersion=fields.get("Root Dispersion"))
 
 
-def capture(root, *, sync_age, invoke=command, get=public_get):
+def capture(root, *, sync_age, invoke=command, get=public_get, policy=None):
     observations = {}
     for name, args in COMMANDS.items():
         observations[name] = invoke(args)
         (root/f"time-{name}.private.json").write_bytes(canonical(observations[name]))
-    status = assess(observations, sync_age_s=sync_age(observations["status"]["stdout"]))
+    status = assess(observations, sync_age_s=sync_age(observations["status"]["stdout"]), policy=policy)
     status["command_receipts"] = {
         k:{**{a:b for a,b in v.items() if a not in ("stdout","stderr")},
            "stdout_sha256":digest(v["stdout"].encode()),"stderr_sha256":digest(v["stderr"].encode()),

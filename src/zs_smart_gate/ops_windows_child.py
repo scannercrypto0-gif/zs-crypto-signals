@@ -6,6 +6,8 @@ import subprocess
 import sys
 
 from .ops_windows_time import capture
+from .ops_windows_watchdog import START
+
 
 def sync_age(status):
     line = next((s for s in status.splitlines() if s.startswith("Last Successful Sync Time:")), "")
@@ -14,8 +16,10 @@ def sync_age(status):
     env = dict(os.environ, ZS_SYNC_DISPLAY=line.split(":", 1)[1].strip())
     script = """
     $ErrorActionPreference='Stop'
-    $local=[DateTime]::SpecifyKind([DateTime]::Parse($env:ZS_SYNC_DISPLAY,
-        [Globalization.CultureInfo]::CurrentCulture),[DateTimeKind]::Unspecified)
+    $culture=[Globalization.CultureInfo]::CurrentCulture
+    $patterns=@($culture.DateTimeFormat.GetAllDateTimePatterns([char]'G'))
+    $local=[DateTime]::ParseExact($env:ZS_SYNC_DISPLAY,[string[]]$patterns,$culture,
+        [Globalization.DateTimeStyles]::AllowWhiteSpaces)
     $zone=[TimeZoneInfo]::Local
     if($zone.IsAmbiguousTime($local) -or $zone.IsInvalidTime($local)){exit 2}
     $utc=[TimeZoneInfo]::ConvertTimeToUtc($local,$zone)
@@ -30,6 +34,8 @@ def sync_age(status):
 
 
 if __name__ == "__main__":
+    if sys.stdin.buffer.readline() != START:
+        raise SystemExit(2)
     result = capture(Path(sys.argv[1]), sync_age=sync_age)
     print(json.dumps(result, sort_keys=True))
     raise SystemExit(0 if result["spot"]["status"] == "SOURCE_READBACK_PASS_CLOCK_PENDING" else 2)

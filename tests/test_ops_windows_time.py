@@ -41,3 +41,17 @@ class WindowsTimeTests(unittest.TestCase):
         result = assess(rows,sync_age_s=None)
         for reason in ("SOURCE_NOT_ALLOWLISTED","OFFSET_QUORUM_OR_DUPLICATE","OFFSET_LIMIT"):
             self.assertIn(reason,result["blockers"])
+
+    def test_reviewed_policy_requires_exact_pin_and_safe_measurements(self):
+        from unittest.mock import patch
+        from zs_smart_gate.ops_windows_time import CANDIDATE, POLICY_ID, SOURCE
+        from zs_smart_gate.stage05_contracts import canonical, digest
+
+        policy = dict(policy_id=POLICY_ID, source=SOURCE, limits=CANDIDATE)
+        with patch("zs_smart_gate.ops_windows_time.REVIEWED_POLICY_SHA256", digest(canonical(policy))):
+            self.assertEqual(assess(observations(), sync_age_s=20, policy=policy)["status"],
+                             "OPERATIONAL_TIME_ACCEPTED")
+            for age in (-1, None, 601, float("nan")):
+                self.assertEqual(assess(observations(), sync_age_s=age, policy=policy)["status"], "BLOCKED")
+            self.assertEqual(assess(observations(), sync_age_s=20,
+                                    policy={**policy, "source": "wrong"})["status"], "BLOCKED")
