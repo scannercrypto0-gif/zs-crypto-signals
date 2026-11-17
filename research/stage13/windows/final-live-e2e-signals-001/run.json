@@ -1,0 +1,19 @@
+{
+  "stdout_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+  "start_utc": "2026-11-17T10:09:06.3553400Z",
+  "command": "PYTHONPATH=src;tests; py -3.12 -m unittest -v test_ops_clock_recorded test_ops_dashboard test_ops_signals_readiness test_stage13_operational_harness test_ops_spot_preflight",
+  "powershell": "7.6.9",
+  "head": "3093c1f54c869cd585c64503f9803f0926275d35",
+  "tree": "96af96151d24fda8aa8deed33de07caac7e1b0c3",
+  "counts": {
+    "skips": 0,
+    "pass": 21,
+    "errors": 0,
+    "run": 21,
+    "fail": 0
+  },
+  "stderr_sha256": "8325ED84997E1D7DFF1C20EE76407A91E08E74C19892E723F904B8B846FD62E2",
+  "exit": 0,
+  "end_utc": "2026-11-17T10:09:12.1582892Z",
+  "python": "Python 3.12.10"
+}
