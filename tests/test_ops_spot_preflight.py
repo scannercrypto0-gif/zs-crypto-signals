@@ -1,7 +1,8 @@
 from unittest import TestCase
+from datetime import datetime, timezone
 
 from zs_smart_gate.ops_spot_preflight import SYMBOLS, run_preflight
-from zs_smart_gate.stage05_contracts import canonical
+from zs_smart_gate.stage05_contracts import canonical, utc_now
 
 
 class PreflightTests(TestCase):
@@ -24,7 +25,7 @@ class PreflightTests(TestCase):
             return 200, "20", canonical(payload)
 
         run = run_preflight(get=get, monotonic=clocks or (lambda: 0),
-                            utc_now=lambda: "2026-11-17T05:00:00Z", record=receipts.append)
+                            utc_now=lambda: utc_now(lambda: datetime(2026, 11, 17, 5, 0, 0, 123456, timezone.utc)), record=receipts.append)
         return run, attempts, receipts
 
     def test_fixed_five_attempts_and_closed_candle_anchor(self):

@@ -8,7 +8,7 @@ import subprocess
 import time
 
 from zs_smart_gate.ops_spot_preflight import public_get, run_preflight
-from zs_smart_gate.stage05_contracts import parse_utc
+from zs_smart_gate.stage05_contracts import ContractError, parse_utc, utc_now
 
 
 def git(*args):
@@ -42,14 +42,13 @@ def main():
         def get(path, params, timeout):
             remaining = (end-now()).total_seconds()
             if remaining <= 0:
-                from zs_smart_gate.stage05_contracts import ContractError
                 raise ContractError("OPS_UTC_WINDOW_CLOSED")
             return public_get(path, params, min(timeout, remaining))
 
         record(dict(state="STARTED", approval_id=args.approval_id, head=args.head, tree=args.tree,
                     start_utc=args.start_utc, end_utc=args.end_utc))
         report = run_preflight(get=get, monotonic=time.monotonic,
-                               utc_now=lambda: now().isoformat(), record=record)
+                               utc_now=lambda: utc_now(now), record=record)
         record(report)
     print(json.dumps(report, sort_keys=True))
     return 0 if report["status"] == "SOURCE_READBACK_PASS_CLOCK_PENDING" else 2
