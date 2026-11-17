@@ -1,0 +1,19 @@
+{
+  "tree": "2b26d18f2ec41b7ada8428cabfca56e009c35680",
+  "counts": {
+    "run": 15,
+    "fail": 0,
+    "pass": 15,
+    "skips": 0,
+    "errors": 0
+  },
+  "start_utc": "2026-11-17T11:40:04.0267404Z",
+  "end_utc": "2026-11-17T11:40:06.7236252Z",
+  "command": "py -3.12 -m unittest -v test_ops_nts_client test_ops_effect_gate test_ops_clock_recorded test_ops_spot_preflight test_ops_signals_readiness",
+  "stderr_sha256": "1B240A333F85D0D8DEC816ED026733BA029458B0BC16847C79CE529E82B553FF",
+  "stdout_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+  "head": "d3c8b91366429b129d15a4765b4d79ffdaafd3a2",
+  "powershell": "7.6.9",
+  "exit": 0,
+  "python": "Python 3.12.10"
+}
