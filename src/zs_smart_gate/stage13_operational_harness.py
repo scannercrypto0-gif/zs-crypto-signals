@@ -94,6 +94,9 @@ class CycleController:
             return self._report("INVALID_STORED_SIGNAL", signal_id=signal_id)
         return self.resume(signal_id)
 
+    def _stored_signal_valid(self, signal):
+        return True
+
     def resume(self, signal_id, *, expected_sha256=None):
         """Resume a stored fixture or restore only with an independent checksum pin."""
         if not isinstance(signal_id, str):
@@ -124,7 +127,7 @@ class CycleController:
             signal = json.loads(raw)
             if (signal.get("signal_id") != signal_id or signal.get("scope") != SCOPE
                     or signal.get("schema") != VERSION or signal.get("trading_authorized") is not False
-                    or canonical(signal) != raw):
+                    or canonical(signal) != raw or not self._stored_signal_valid(signal)):
                 raise ValueError
         except (AttributeError, TypeError, ValueError):
             return self._report("INVALID_STORED_SIGNAL", signal_id=signal_id)
