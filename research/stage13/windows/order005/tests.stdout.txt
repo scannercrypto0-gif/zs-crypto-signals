@@ -1,0 +1,21 @@
+offline ["PENDING_OFFLINE", 0, "4429b1fce70b4ad27591599eb4e1e2ffaa03c38f16b88913b60ec62b7dbd4018", "6f01e63db434238098aabdd3c5314a79a342d328d7a0d9a4bc200d1fd4ca9239"]
+online ["ACCEPTED", 1, "4429b1fce70b4ad27591599eb4e1e2ffaa03c38f16b88913b60ec62b7dbd4018", "6f01e63db434238098aabdd3c5314a79a342d328d7a0d9a4bc200d1fd4ca9239"]
+duplicate ["ACCEPTED", 0, "4429b1fce70b4ad27591599eb4e1e2ffaa03c38f16b88913b60ec62b7dbd4018", "6f01e63db434238098aabdd3c5314a79a342d328d7a0d9a4bc200d1fd4ca9239"]
+fail ["UNKNOWN_DELIVERY", 1, "4429b1fce70b4ad27591599eb4e1e2ffaa03c38f16b88913b60ec62b7dbd4018", "6f01e63db434238098aabdd3c5314a79a342d328d7a0d9a4bc200d1fd4ca9239"]
+recover ["UNKNOWN_DELIVERY", 0, "4429b1fce70b4ad27591599eb4e1e2ffaa03c38f16b88913b60ec62b7dbd4018", "6f01e63db434238098aabdd3c5314a79a342d328d7a0d9a4bc200d1fd4ca9239"]
+{
+  "mode": "DRY_RUN",
+  "trigger_utc": "2026-11-17T13:38:54.521869+00:00",
+  "riyadh": "2026-11-17T16:38:54.521869+03:00",
+  "config_sha": "15e30e9ff6d2a1899adf024f07fadf38a4eec8cac959d5bfee8e2bf9c9503339",
+  "input_sha": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "events": [],
+  "attempts": 0,
+  "http_attempts": 0,
+  "exit_code": 0,
+  "budget_seconds": 5,
+  "journal_gate": "BLOCKED / OWNER DECISION: approved durable GitHub journal and LIVE authorization required",
+  "clock": "UNKNOWN",
+  "status": "SIMULATION_COMPLETE"
+}
+NO_BOUNDED_DIAGNOSTIC

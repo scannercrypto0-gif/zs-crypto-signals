@@ -25,6 +25,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Install pinned optional NTS test dependencies
+        run: python -m pip install certifi==2026.2.25 cryptography==46.0.5 pyOpenSSL==25.3.0 cffi==2.0.0 pycparser==3.0 typing-extensions==4.15.0
       - name: Run all offline unit and integration tests (network not required)
         env:
           PYTHONPATH: src
