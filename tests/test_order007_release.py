@@ -218,3 +218,13 @@ class Order007ReleaseTests(unittest.TestCase):
         self.assertIn("BACKUP_SHA256",script)
         self.assertIn("UPGRADE_DISABLED HEAD=",script)
         self.assertNotIn("Enable-ScheduledTask",script)
+
+    def test_windows_restore_quiet_checkout_and_durable_failure_receipt(self):
+        manager=(ROOT/"scripts"/"order007-windows.ps1").read_text(encoding="utf-8")
+        acceptance=(ROOT/"scripts"/"order007-windows-acceptance.ps1").read_text(
+            encoding="utf-8")
+        self.assertIn("checkout --quiet --detach $pin.head",manager)
+        self.assertIn("restore_error=$restoreError",acceptance)
+        self.assertIn("fsck_error=$fsckError",acceptance)
+        self.assertIn("$restored=$false",acceptance)
+        self.assertIn("Get-FileHash -LiteralPath $stderr",acceptance)
