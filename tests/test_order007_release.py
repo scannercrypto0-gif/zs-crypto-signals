@@ -97,11 +97,23 @@ class Order007ReleaseTests(unittest.TestCase):
         private=folder/"BTCUSDT-source.private.json"
         private.write_bytes(canonical(packet))
         sha=digest(private.read_bytes())
+        files={}
+        receipts=[]
+        for i, frame in enumerate(("5m","30m","1h","4h"),1):
+            name=f"response-{i}.private"
+            data=f"synthetic-test-only-{frame}".encode()
+            (folder/name).write_bytes(data)
+            checksum=digest(data)
+            files[frame]={"file":name,"sha256":checksum}
+            receipts.append({"file":name,"sha256":checksum})
         manifest={
             "schema":"zs.order007.original-public-spot-source.v1",
+            "raw_body_receipts":receipts,
             "coverage":[{
                 "symbol":"BTCUSDT", "packet_sha256":("b"*64 if corrupt else sha),
                 "private_packet_sha256":sha,
+                "private_body_files":files,
+                "input_payload_sha256":{k:v["sha256"] for k,v in files.items()},
             }],
         }
         (folder/"sanitized-source-manifest.json").write_bytes(canonical(manifest))
@@ -167,3 +179,12 @@ class Order007ReleaseTests(unittest.TestCase):
             with self.assertRaises(PauseScan):
                 cap.get("klines",{"symbol":"BTCUSDT","interval":"5m",
                                    "endTime":"1","limit":"22"})
+
+    def test_science_rejects_mutated_original_response_bytes(self):
+        with TemporaryDirectory() as d:
+            folder=self._fixture(d)
+            (folder/"response-2.private").write_bytes(b"tampered")
+            result=source_intake(Path(d))
+            self.assertEqual(result["event_count"],0)
+            self.assertEqual(len(result["rejected_manifests"]),1)
+            self.assertEqual(result["status"],"SCIENCE_NOT_APPROVED")
