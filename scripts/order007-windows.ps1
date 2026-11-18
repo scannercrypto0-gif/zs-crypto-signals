@@ -113,196 +113,13 @@ if ($Action -eq 'Install') {
   return
 }
 if ($Action -eq 'Upgrade') {
-  # Upgrade an ALREADY-DISABLED release to a child commit; never delete D: data.
-  # The operator must have first checked out the exact new Git commit.
+  # Upgrade an already disabled release to a descendent exact HEAD/TREE.
+  # Preserve local data and retain the prior installed manifest with SHA-256.
   $previous = Get-Pin $Root
-  if ($Commit -notmatch '^[a-f0-9]{40}
-  if (-not (Test-Path -LiteralPath (Join-Path $Root 'state'))) { return }
-  [IO.File]::WriteAllText($stopFile, [DateTime]::UtcNow.ToString('o'))
-  Write-Output 'STOP_REQUESTED: shadow checks before each public GET; request timeout 8s and process-tree watchdog 120s. Ctrl+C is also supported.'
-  return
-}
-if ($Action -eq 'Disable') {
-  if (-not (Test-Path -LiteralPath (Join-Path $Root 'state'))) { throw 'NOT_INSTALLED' }
-  [IO.File]::WriteAllText($disabledFile, 'DISABLED')
-  [IO.File]::WriteAllText($stopFile, [DateTime]::UtcNow.ToString('o'))
-  Write-Output 'DISABLED: no unattended task is installed by ORDER007 v1'
-  return
-}
-if ($Action -eq 'Uninstall') {
-  if (Test-Path -LiteralPath $lockFile) { throw 'WORKER_LOCK_PRESENT_REFUSING_UNINSTALL' }
-  if (Test-Path -LiteralPath $releaseFile) {
-    $pin = Get-Pin $Root
-    [IO.File]::WriteAllText($disabledFile, 'DISABLED')
-    Move-Item -LiteralPath $releaseFile -Destination (Join-Path $Root ('backups\uninstalled-' + (Get-Date -Format 'yyyyMMdd-HHmmss') + '.json'))
-  }
-  # No deletion: owner data, D: venv and evidence retained for manual audit.
-  Write-Output 'UNINSTALLED_DISABLED_MANIFEST_ARCHIVED; OWNER_DATA_RETAINED'
-  return
-}
-$pin = Get-Pin $Root
-if ($Action -eq 'Status') {
-  [ordered]@{
-    utc=[DateTime]::UtcNow.ToString('o'); head=$pin.head; tree=$pin.tree
-    installed=$true; enabled=$false; scheduled=$false
-    foreground_running=(Test-Path -LiteralPath $lockFile)
-    disabled=(Test-Path -LiteralPath $disabledFile)
-    stop_requested=(Test-Path -LiteralPath $stopFile)
-    recent_results=@(Get-ChildItem -Path (Join-Path $Root 'data') -Filter 'result.json' -Recurse -ErrorAction SilentlyContinue |
-      Sort-Object LastWriteTimeUtc -Descending | Select-Object -First 3 -ExpandProperty FullName)
-    clock='NOT_INDEPENDENTLY_APPROVED'; production='OFF'; telegram='OFF'; sql='DEFERRED'
-  } | ConvertTo-Json -Depth 6
-  return
-}
-Assert-Checkout $Root $pin
-if ($Action -in @('Restore','Rollback')) {
-  if (Test-Path -LiteralPath $lockFile) { throw 'WORKER_LOCK_PRESENT' }
-  & git -C $repoPath fsck --no-reflogs --connectivity-only
-  if ($LASTEXITCODE -ne 0) { throw 'RESTORE_GIT_OBJECT_INTEGRITY_FAILED' }
-  & git -C $repoPath checkout --detach $pin.head
-  if ($LASTEXITCODE -ne 0) { throw 'RESTORE_FAILED' }
-  Assert-Checkout $Root $pin
-  Write-Output "RESTORE_VERIFIED HEAD=$($pin.head) TREE=$($pin.tree)"
-  return
-}
-if ($Action -eq 'Verify') {
-  if (-not (Test-Path -LiteralPath $python)) { throw 'D_VENV_MISSING' }
-  $version = ((& $python -c 'import platform; print(platform.python_version())') | Out-String).Trim()
-  if ($LASTEXITCODE -ne 0 -or $version -ne '3.12.10') { throw 'PYTHON_3_12_10_REQUIRED' }
-  Write-Output "VERIFY_PASS HEAD=$($pin.head) TREE=$($pin.tree) PYTHON=$version ENABLED=FALSE"
-  return
-}
-if ($Action -eq 'StartForeground') {
-  if (-not $LiveReadOnly) { throw 'EXPLICIT_LIVE_READ_ONLY_SWITCH_REQUIRED' }
-  if (-not (Test-Path -LiteralPath $disabledFile)) { throw 'DISABLED_INSTALL_MARKER_REQUIRED' }
-  if (Test-Path -LiteralPath $lockFile) { throw 'SHADOW_LOCK_PRESENT_STOP_OR_INVESTIGATE' }
-  if (Test-Path -LiteralPath $stopFile) { Remove-Item -LiteralPath $stopFile }
-  $env:PYTHONPATH = (Join-Path $Root 'repo\src')
-  $env:TEMP = Join-Path $Root 'temp'
-  $env:TMP = $env:TEMP
-  $env:PYTHONDONTWRITEBYTECODE = '1'
-  $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
-  $dest = Join-Path $Root ("data\shadow-$stamp-$PID")
-  # order006 watchdog creates the output directory itself, fail closed if it exists.
-  if (Test-Path -LiteralPath $dest) { throw 'FRESH_SHADOW_OUTPUT_REQUIRED' }
-  try {
-    [IO.File]::WriteAllText($lockFile, "pid=$PID `nstarted=$([DateTime]::UtcNow.ToString('o'))")
-    Push-Location $repoPath
-    try {
-      # Existing Windows process-tree watchdog enforces 120-second maximum.
-      & $python -B scripts/order007-shadow.py --live-read-only --root $Root --output $dest
-      $code = $LASTEXITCODE
-    } finally { Pop-Location }
-    if (-not (Test-Path -LiteralPath $dest)) { New-Item -ItemType Directory -Path $dest -Force | Out-Null }
-    Write-Record (Join-Path $dest 'foreground-exit.json') @{
-      utc=[DateTime]::UtcNow.ToString('o'); head=$pin.head; tree=$pin.tree
-      exit_code=$code; mode='PUBLIC_READ_ONLY_SHADOW'
-      qualification='BLOCKED_UNTIL_SCIENTIFIC_AND_CLOCK_ACCEPTANCE'
-    }
-    Write-Output "SHADOW_FOREGROUND_EXIT=$code DATA=$dest"
-    if ($code -ne 0) { throw "SHADOW_PARTIAL_OR_STOP_EXIT=$code" }
-  } finally {
-    if (Test-Path -LiteralPath $lockFile) { Remove-Item -LiteralPath $lockFile -Force }
-  }
-  return
-}
-throw 'UNSUPPORTED_ACTION'
- -or $ExpectedTree -notmatch '^[a-f0-9]{40}
-  if (-not (Test-Path -LiteralPath (Join-Path $Root 'state'))) { return }
-  [IO.File]::WriteAllText($stopFile, [DateTime]::UtcNow.ToString('o'))
-  Write-Output 'STOP_REQUESTED: shadow checks before each public GET; request timeout 8s and process-tree watchdog 120s. Ctrl+C is also supported.'
-  return
-}
-if ($Action -eq 'Disable') {
-  if (-not (Test-Path -LiteralPath (Join-Path $Root 'state'))) { throw 'NOT_INSTALLED' }
-  [IO.File]::WriteAllText($disabledFile, 'DISABLED')
-  [IO.File]::WriteAllText($stopFile, [DateTime]::UtcNow.ToString('o'))
-  Write-Output 'DISABLED: no unattended task is installed by ORDER007 v1'
-  return
-}
-if ($Action -eq 'Uninstall') {
-  if (Test-Path -LiteralPath $lockFile) { throw 'WORKER_LOCK_PRESENT_REFUSING_UNINSTALL' }
-  if (Test-Path -LiteralPath $releaseFile) {
-    $pin = Get-Pin $Root
-    [IO.File]::WriteAllText($disabledFile, 'DISABLED')
-    Move-Item -LiteralPath $releaseFile -Destination (Join-Path $Root ('backups\uninstalled-' + (Get-Date -Format 'yyyyMMdd-HHmmss') + '.json'))
-  }
-  # No deletion: owner data, D: venv and evidence retained for manual audit.
-  Write-Output 'UNINSTALLED_DISABLED_MANIFEST_ARCHIVED; OWNER_DATA_RETAINED'
-  return
-}
-$pin = Get-Pin $Root
-if ($Action -eq 'Status') {
-  [ordered]@{
-    utc=[DateTime]::UtcNow.ToString('o'); head=$pin.head; tree=$pin.tree
-    installed=$true; enabled=$false; scheduled=$false
-    foreground_running=(Test-Path -LiteralPath $lockFile)
-    disabled=(Test-Path -LiteralPath $disabledFile)
-    stop_requested=(Test-Path -LiteralPath $stopFile)
-    recent_results=@(Get-ChildItem -Path (Join-Path $Root 'data') -Filter 'result.json' -Recurse -ErrorAction SilentlyContinue |
-      Sort-Object LastWriteTimeUtc -Descending | Select-Object -First 3 -ExpandProperty FullName)
-    clock='NOT_INDEPENDENTLY_APPROVED'; production='OFF'; telegram='OFF'; sql='DEFERRED'
-  } | ConvertTo-Json -Depth 6
-  return
-}
-Assert-Checkout $Root $pin
-if ($Action -in @('Restore','Rollback')) {
-  if (Test-Path -LiteralPath $lockFile) { throw 'WORKER_LOCK_PRESENT' }
-  & git -C $repoPath fsck --no-reflogs --connectivity-only
-  if ($LASTEXITCODE -ne 0) { throw 'RESTORE_GIT_OBJECT_INTEGRITY_FAILED' }
-  & git -C $repoPath checkout --detach $pin.head
-  if ($LASTEXITCODE -ne 0) { throw 'RESTORE_FAILED' }
-  Assert-Checkout $Root $pin
-  Write-Output "RESTORE_VERIFIED HEAD=$($pin.head) TREE=$($pin.tree)"
-  return
-}
-if ($Action -eq 'Verify') {
-  if (-not (Test-Path -LiteralPath $python)) { throw 'D_VENV_MISSING' }
-  $version = ((& $python -c 'import platform; print(platform.python_version())') | Out-String).Trim()
-  if ($LASTEXITCODE -ne 0 -or $version -ne '3.12.10') { throw 'PYTHON_3_12_10_REQUIRED' }
-  Write-Output "VERIFY_PASS HEAD=$($pin.head) TREE=$($pin.tree) PYTHON=$version ENABLED=FALSE"
-  return
-}
-if ($Action -eq 'StartForeground') {
-  if (-not $LiveReadOnly) { throw 'EXPLICIT_LIVE_READ_ONLY_SWITCH_REQUIRED' }
-  if (-not (Test-Path -LiteralPath $disabledFile)) { throw 'DISABLED_INSTALL_MARKER_REQUIRED' }
-  if (Test-Path -LiteralPath $lockFile) { throw 'SHADOW_LOCK_PRESENT_STOP_OR_INVESTIGATE' }
-  if (Test-Path -LiteralPath $stopFile) { Remove-Item -LiteralPath $stopFile }
-  $env:PYTHONPATH = (Join-Path $Root 'repo\src')
-  $env:TEMP = Join-Path $Root 'temp'
-  $env:TMP = $env:TEMP
-  $env:PYTHONDONTWRITEBYTECODE = '1'
-  $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
-  $dest = Join-Path $Root ("data\shadow-$stamp-$PID")
-  # order006 watchdog creates the output directory itself, fail closed if it exists.
-  if (Test-Path -LiteralPath $dest) { throw 'FRESH_SHADOW_OUTPUT_REQUIRED' }
-  try {
-    [IO.File]::WriteAllText($lockFile, "pid=$PID `nstarted=$([DateTime]::UtcNow.ToString('o'))")
-    Push-Location $repoPath
-    try {
-      # Existing Windows process-tree watchdog enforces 120-second maximum.
-      & $python -B scripts/order007-shadow.py --live-read-only --root $Root --output $dest
-      $code = $LASTEXITCODE
-    } finally { Pop-Location }
-    if (-not (Test-Path -LiteralPath $dest)) { New-Item -ItemType Directory -Path $dest -Force | Out-Null }
-    Write-Record (Join-Path $dest 'foreground-exit.json') @{
-      utc=[DateTime]::UtcNow.ToString('o'); head=$pin.head; tree=$pin.tree
-      exit_code=$code; mode='PUBLIC_READ_ONLY_SHADOW'
-      qualification='BLOCKED_UNTIL_SCIENTIFIC_AND_CLOCK_ACCEPTANCE'
-    }
-    Write-Output "SHADOW_FOREGROUND_EXIT=$code DATA=$dest"
-    if ($code -ne 0) { throw "SHADOW_PARTIAL_OR_STOP_EXIT=$code" }
-  } finally {
-    if (Test-Path -LiteralPath $lockFile) { Remove-Item -LiteralPath $lockFile -Force }
-  }
-  return
-}
-throw 'UNSUPPORTED_ACTION'
-) {
+  if ($Commit -notmatch '^[a-f0-9]{40}$' -or $ExpectedTree -notmatch '^[a-f0-9]{40}$') {
     throw 'UPGRADE_EXACT_COMMIT_AND_TREE_REQUIRED'
   }
-  if (-not (Test-Path -LiteralPath $disabledFile) -or
-      (Test-Path -LiteralPath $lockFile)) {
+  if (-not (Test-Path -LiteralPath $disabledFile) -or (Test-Path -LiteralPath $lockFile)) {
     throw 'UPGRADE_REQUIRES_DISABLED_NO_WORKER'
   }
   $oldTree = ((& git -C $repoPath rev-parse "$($previous.head)^{tree}") | Out-String).Trim()
@@ -325,7 +142,7 @@ throw 'UNSUPPORTED_ACTION'
   if (-not (Test-Path -LiteralPath (Join-Path $Root 'backups'))) {
     throw 'BACKUP_DIRECTORY_MISSING'
   }
-  $backup = Join-Path $Root ('backups\\release-before-upgrade-' + (Get-Date -Format 'yyyyMMdd-HHmmss') + '-' + $previous.head.Substring(0,12) + '.json')
+  $backup = Join-Path $Root ('backups\release-before-upgrade-' + (Get-Date -Format 'yyyyMMdd-HHmmss') + '-' + $previous.head.Substring(0,12) + '.json')
   Copy-Item -LiteralPath $releaseFile -Destination $backup -ErrorAction Stop
   $backupHash = Hash-File $backup
   if ($backupHash -ne (Hash-File $releaseFile)) {
