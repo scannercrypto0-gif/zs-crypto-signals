@@ -124,6 +124,10 @@ def source_intake(root: Path) -> dict:
                            "reason": type(exc).__name__,
                            "state": "REJECTED"})
     ordered = sorted(unique)
+    dev_protocol = (Path(__file__).resolve().parents[2]/
+                    "research"/"stage13"/"ORDER007_UP_DOWN_DEV_HYPOTHESES.json")
+    dev_proto_sha = (hashlib.sha256(dev_protocol.read_bytes()).hexdigest()
+                     if dev_protocol.is_file() else None)
     result = {
         "schema": VERSION,
         "status": "SCIENCE_NOT_APPROVED",
@@ -137,6 +141,7 @@ def source_intake(root: Path) -> dict:
         "candidate_counts_by_direction": {d: dict(c) for d, c in counts.items()},
         "rejected_manifests": errors,
         "frozen_hypotheses": "DEVELOPMENT_HYPOTHESES_ONLY_NOT_SCIENTIFICALLY_REGISTERED",
+        "development_hypotheses_sha256": dev_proto_sha,
         "pit_d1_d5": "UNREVIEWED",
         "normalizers_12": "UNREVIEWED",
         "eligible_cost_model": "NOT_ADOPTED",
