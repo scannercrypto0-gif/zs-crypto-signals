@@ -103,9 +103,20 @@ def source_intake(root: Path) -> dict:
                             or row.get("input_payload_sha256", {}).get(frame) != (
                                 record.get("sha256"))):
                         raise ValueError("FRAME_TO_ORIGINAL_BYTES_MISMATCH")
+                    # Confirm the hash-checked original HTTP body, parsed JSON
+                    # source rows and retained packet are the SAME observations.
+                    raw_frame = json.loads((mfile.parent/record["file"]).read_bytes())
+                    saved = packet.get("frames", {}).get(frame)
+                    if (not isinstance(saved, dict)
+                            or raw_frame != saved.get("rows")
+                            or digest(canonical(raw_frame)) != saved.get("payload_sha256")):
+                        raise ValueError("ORIGINAL_HTTP_TO_FRAME_RECONCILIATION_FAILED")
                 if any(r.get("signal_id") for r in evaluate(packet)):
                     raise ValueError("PRODUCTION_SIGNAL_FORBIDDEN")
-                key = (symbol, packet.get("boundary_ms"))
+                boundary = packet.get("boundary_ms")
+                if type(boundary) is not int or boundary <= 0:
+                    raise ValueError("SOURCE_BOUNDARY_INVALID")
+                key = (symbol, boundary)
                 if key in unique:
                     if unique[key] != row["packet_sha256"]:
                         raise ValueError("CONFLICTING_SOURCE_SNAPSHOT")
