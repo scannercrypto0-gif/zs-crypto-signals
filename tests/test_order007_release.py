@@ -94,18 +94,21 @@ class Order007ReleaseTests(unittest.TestCase):
             "source_manifest_sha256":"a"*64, "decision_at":"2026-02-02T00:00:00Z",
             "frames":{}, "market":{}
         }
-        private=folder/"BTCUSDT-source.private.json"
-        private.write_bytes(canonical(packet))
-        sha=digest(private.read_bytes())
         files={}
         receipts=[]
         for i, frame in enumerate(("5m","30m","1h","4h"),1):
             name=f"response-{i}.private"
-            data=f"synthetic-test-only-{frame}".encode()
+            rows=[]  # deliberately incomplete, valid JSON synthetic fixture
+            data=canonical(rows)
             (folder/name).write_bytes(data)
             checksum=digest(data)
             files[frame]={"file":name,"sha256":checksum}
             receipts.append({"file":name,"sha256":checksum})
+            packet["frames"][frame]={"rows":rows,
+                "payload_sha256":digest(canonical(rows))}
+        private=folder/"BTCUSDT-source.private.json"
+        private.write_bytes(canonical(packet))
+        sha=digest(private.read_bytes())
         manifest={
             "schema":"zs.order007.original-public-spot-source.v1",
             "raw_body_receipts":receipts,
@@ -188,3 +191,20 @@ class Order007ReleaseTests(unittest.TestCase):
             self.assertEqual(result["event_count"],0)
             self.assertEqual(len(result["rejected_manifests"]),1)
             self.assertEqual(result["status"],"SCIENCE_NOT_APPROVED")
+
+    def test_source_intake_rejects_semantic_frame_mutation_even_if_rehashed(self):
+        with TemporaryDirectory() as d:
+            folder=self._fixture(d)
+            packet_path=folder/"BTCUSDT-source.private.json"
+            p=json.loads(packet_path.read_bytes())
+            p["frames"]["1h"]["rows"]=[["forged-frame"]]
+            p["frames"]["1h"]["payload_sha256"]=digest(canonical([["forged-frame"]]))
+            packet_path.write_bytes(canonical(p))
+            manifest_path=folder/"sanitized-source-manifest.json"
+            m=json.loads(manifest_path.read_bytes())
+            m["coverage"][0]["packet_sha256"]=digest(canonical(p))
+            m["coverage"][0]["private_packet_sha256"]=digest(packet_path.read_bytes())
+            manifest_path.write_bytes(canonical(m))
+            report=source_intake(Path(d))
+            self.assertEqual(report["event_count"],0)
+            self.assertEqual(len(report["rejected_manifests"]),1)
