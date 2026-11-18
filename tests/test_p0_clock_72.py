@@ -49,7 +49,7 @@ class P0ClockPR72Tests(unittest.TestCase):
                        "WaitForExit(2000)", "timed_out", "elapsed_ms",
                        "stdout_sha256", "stderr_sha256",
                        "DIAGNOSTIC_FAILED_CLOSED", "timeout_seconds",
-                       "UTF8Encoding($false)"):
+                       "UTF8Encoding]::new($false)"):
             with self.subTest(needle=needle):
                 self.assertIn(needle, text)
 
