@@ -41,7 +41,7 @@ def main():
                     transport=transport)
         print(json.dumps(outcome, sort_keys=True))
         # Partial/clock blocked is expected, but NEVER pretend a live pass.
-        return 0 if outcome.get("funnel", {}).get("coverage") == (
+        return 0 if (outcome.get("funnel") or {}).get("coverage") == (
             "MARKET_COVERAGE_VERIFIED") else 2
     if subprocess.check_output(["git","status","--porcelain"],text=True).strip():
         p.error("RELEASE_CHECKOUT_MUST_BE_CLEAN")
