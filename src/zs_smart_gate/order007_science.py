@@ -38,7 +38,7 @@ def _verify_original_bodies(manifest: dict, directory: Path) -> None:
             raise ValueError("SOURCE_BODY_RECORD_INVALID")
         name, sha = row.get("file"), row.get("sha256")
         if (not isinstance(name, str) or not re.fullmatch(
-                r"response-[1-9][0-9]*\\.private", name)
+                r"response-[1-9][0-9]*[.]private", name)
                 or name in seen or not isinstance(sha, str)
                 or not re.fullmatch(r"[a-f0-9]{64}", sha)):
             raise ValueError("SOURCE_BODY_PATH_OR_SHA_INVALID")
