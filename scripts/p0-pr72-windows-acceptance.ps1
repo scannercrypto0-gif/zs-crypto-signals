@@ -114,6 +114,15 @@ try {
       }
     }
   }
+  if ($normalContext -ne 'NORMAL_USER_CONTEXT') {
+    [void]$failures.Add('NORMAL_USER_PRIVILEGE_CONTEXT_NOT_VERIFIED')
+  }
+  if ($testExit -ne 0 -or $testCount -ne 12) {
+    [void]$failures.Add('TARGETED_TESTS_NOT_ALL_PROVEN')
+  }
+  if ($CollectElevated -and $elevated -cne 'ADMIN_EXIT_0_HASHES_VERIFIED') {
+    [void]$failures.Add('ELEVATED_COLLECTOR_NOT_VERIFIED')
+  }
 } catch { [void]$failures.Add([string]$_.Exception.Message) }
 finally {
   if(-not(Test-Path -LiteralPath $folder)){New-Item -ItemType Directory -Path $folder -Force | Out-Null}
