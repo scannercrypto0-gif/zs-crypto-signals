@@ -75,6 +75,12 @@ try {
   $testExit=$test.exit
   $testStderr=Get-Content -LiteralPath (Join-Path $folder 'targeted-tests.stderr.txt') -Raw
   if ($testStderr -match 'Ran (\d+) tests') { $testCount=[int]$Matches[1] }
+  # Existing direct clock and process-tree watchdog suites are scoped regression checks.
+  foreach ($pattern in @('test_ops_windows_time.py','test_ops_windows_watchdog.py')) {
+    $label=$pattern.Replace('.py','')
+    $suite=RunBounded $label $python @('-B','-m','unittest','discover','-s',(Join-Path $repo 'tests'),'-p',$pattern,'-v') 50
+    if ($suite.exit -ne 0) { [void]$failures.Add('REGRESSION_SUITE_FAILED_'+$label) }
+  }
   $w32tm=Join-Path $env:SystemRoot 'System32\w32tm.exe'
   foreach($what in @('source','configuration')) {
     $probe=RunBounded ('normal-'+$what) $w32tm @('/query',('/'+$what)) 8
