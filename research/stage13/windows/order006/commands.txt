@@ -1,0 +1,16 @@
+# Windows Python 3.12.10; execute from a clean PR71 checkout.
+# Replace each fresh-D-directory below with a distinct path on D:.
+$env:PYTHONPATH='src;D:\ZS-LOCAL-CI\ops-6923816767\nts-002\deps'
+$env:TEMP='D:\ZS-LOCAL-CI'
+$env:TMP=$env:TEMP
+
+py -3.12 -m unittest discover -s tests -v
+py -3.12 scripts/order006-controls.py D:/fresh-D-controls
+py -3.12 scripts/order006-recorded-replay.py research/stage51/closure/stage01-stage03-multi-20261114/capture.json 8aee74b4d185cdb8e36167ba16f0bb774d13232062e9f20360c84c23dee50ddb D:/fresh-D-replay --qv1-capture research/stage51/closure/live-stage03-stage04-20261114/qualification.json --qv1-sha256 d2221b6b7849bff258a50367d9fef1507e31e17f9e67aedd30d30309fccaeccb
+
+# Explicit bounded public-read command; no automatic retry after stops.
+py -3.12 scripts/order006-marketwide.py --live-read-only --output D:/fresh-D-source --cursor D:/marketwide-research-cursor.sqlite
+
+# Offline listing derivation requires the pinned owner-local response body.
+py -3.12 scripts/order006-discovery-readback.py D:/fresh-D-source D:/fresh-D-listing.json
+

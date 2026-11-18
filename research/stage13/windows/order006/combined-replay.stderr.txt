@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "D:\ZS-LOCAL-CI\ops-6923816767\repo\scripts\order006-recorded-replay.py", line 84, in <module>
+    print(canonical(replay(args.capture, args.pin, args.output,
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ZS-LOCAL-CI\ops-6923816767\repo\scripts\order006-recorded-replay.py", line 67, in replay
+    report["recorded_22_bar_directional_replay"] = replay_qv1(qv1_capture, qv1_pin)
+                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ZS-LOCAL-CI\ops-6923816767\repo\scripts\order006-recorded-replay.py", line 25, in replay_qv1
+    packet = packet_from_receipts(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ZS-LOCAL-CI\ops-6923816767\repo\src\zs_smart_gate\marketwide_research.py", line 125, in packet_from_receipts
+    raise ValueError("SYMBOL_OR_FRAME_REQUEST_BINDING")
+ValueError: SYMBOL_OR_FRAME_REQUEST_BINDING
