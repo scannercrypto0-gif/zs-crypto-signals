@@ -10,7 +10,7 @@ from pathlib import Path
 import os
 import time
 
-from .marketwide_capture import PublicCapture
+from .marketwide_capture import (PublicCapture, MAX_REQUESTS, MAX_WEIGHT, MAX_SECONDS, MAX_USED_WEIGHT, MAX_TOTAL_BODY, WEIGHTS)
 from .marketwide_cursor import PauseScan
 from .marketwide_research import FRAMES, evaluate, inventory, packet_from_receipts
 from .stage05_contracts import canonical, digest
@@ -20,6 +20,50 @@ from .ops_windows_child import sync_age
 
 VERSION = "zs.order007.original-public-spot-source.v1"
 MAX_SYMBOLS = 2
+
+
+class CompleteBoundedCapture(PublicCapture):
+    """Allows a complete 11th response but never a 12th GET.
+
+    The inherited capture's healthy() uses attempts < MAX_REQUESTS both
+    before AND after the response, stopping after an otherwise valid 11th
+    receipt. This strictly bounded subclass preserves the 11-attempt budget
+    and additionally enforces the actual observed one-minute exchange limit.
+    """
+    runtime_guard = MAX_USED_WEIGHT
+
+    def healthy(self):
+        return (self.monotonic()-self.start < MAX_SECONDS
+                and self.attempts <= MAX_REQUESTS
+                and self.used < self.runtime_guard
+                and self.bytes < MAX_TOTAL_BODY)
+
+    def get(self, path, params):
+        if path not in WEIGHTS:
+            raise ValueError("ENDPOINT_NOT_ALLOWED")
+        if (self.attempts >= MAX_REQUESTS
+                or self.weight + WEIGHTS[path] > MAX_WEIGHT
+                or self.used + WEIGHTS[path] >= self.runtime_guard):
+            raise PauseScan("ORDER007_DYNAMIC_RATE_HEADROOM_STOP")
+        return super().get(path, params)
+
+
+def _adopt_runtime_budget(receipt, transport):
+    limits = receipt["payload"].get("rateLimits")
+    if not isinstance(limits, list):
+        raise PauseScan("MISSING_EXCHANGE_REQUEST_WEIGHT_POLICY")
+    values = [x.get("limit") for x in limits
+              if isinstance(x, dict) and x.get("rateLimitType") == "REQUEST_WEIGHT"
+              and x.get("interval") == "MINUTE" and x.get("intervalNum") == 1]
+    if len(values) != 1 or type(values[0]) is not int or values[0] <= 500:
+        raise PauseScan("UNVERIFIED_EXCHANGE_REQUEST_WEIGHT_POLICY")
+    observed_cap = min(MAX_USED_WEIGHT, values[0]-500)
+    if observed_cap <= 100:
+        raise PauseScan("INSUFFICIENT_DYNAMIC_RATE_HEADROOM")
+    if isinstance(transport, CompleteBoundedCapture):
+        transport.runtime_guard = observed_cap
+    return {"exchange_request_weight_per_minute": values[0],
+            "internal_headroom_guard": observed_cap}
 
 
 def bounded_source(root: Path, symbols: tuple[str, ...], *, transport=None,
@@ -37,7 +81,7 @@ def bounded_source(root: Path, symbols: tuple[str, ...], *, transport=None,
             or not s.isascii() or not s.isalnum()
             or not s.endswith("USDT") or not s.isupper() for s in symbols):
         raise ValueError("ORDER007_CAPTURE_SYMBOL_IDENTITY")
-    transport = transport or PublicCapture(root)
+    transport = transport or CompleteBoundedCapture(root)
     clock = {"status": "BLOCKED", "blockers": ["NO_REVIEWED_OPERATIONAL_TIME_POLICY"]}
     result = {
         "schema": VERSION, "symbols_requested": list(symbols),
@@ -52,10 +96,10 @@ def bounded_source(root: Path, symbols: tuple[str, ...], *, transport=None,
     }
     source_rows = []
     try:
-        receipts = []
-        for endpoint in ("exchangeInfo", "ticker/24hr", "ticker/bookTicker"):
-            receipts.append(transport.get(endpoint, {"showPermissionSets": "false"}
-                                          if endpoint == "exchangeInfo" else {}))
+        receipts = [transport.get("exchangeInfo", {"showPermissionSets": "false"})]
+        result["dynamic_rate_budget"] = _adopt_runtime_budget(receipts[0], transport)
+        for endpoint in ("ticker/24hr", "ticker/bookTicker"):
+            receipts.append(transport.get(endpoint, {}))
         snap = inventory(receipts, datetime.now(timezone.utc),
                          scope="ALL_BINANCE_SPOT_INVENTORY")
         active = {row["symbol"]: row for row in snap["rows"] if row["eligible"]}
