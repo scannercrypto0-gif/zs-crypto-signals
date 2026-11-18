@@ -1,0 +1,2 @@
+{"attempt":1,"estimated_weight":20,"params":{"showPermissionSets":"false"},"path":"exchangeInfo","started_at":"2026-11-18T05:56:32.929534Z","state":"RESERVED"}
+{"attempt":1,"body_bytes":6784941,"body_sha256":"985b2f8dca6fc0fa5b14f2c4954c5678ee82639a984bca9ead273024fb4677fa","estimated_weight":20,"http_status":200,"params":{"showPermissionSets":"false"},"path":"exchangeInfo","received_at":"2026-11-18T05:56:36.284203Z","started_at":"2026-11-18T05:56:32.929534Z","state":"RECEIVED","used_weight_1m":"540"}

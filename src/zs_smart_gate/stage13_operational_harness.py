@@ -94,6 +94,9 @@ class CycleController:
             return self._report("INVALID_STORED_SIGNAL", signal_id=signal_id)
         return self.resume(signal_id)
 
+    def _stored_signal_valid(self, signal):
+        return True
+
     def resume(self, signal_id, *, expected_sha256=None):
         """Resume a stored fixture or restore only with an independent checksum pin."""
         if not isinstance(signal_id, str):
@@ -124,7 +127,7 @@ class CycleController:
             signal = json.loads(raw)
             if (signal.get("signal_id") != signal_id or signal.get("scope") != SCOPE
                     or signal.get("schema") != VERSION or signal.get("trading_authorized") is not False
-                    or canonical(signal) != raw):
+                    or canonical(signal) != raw or not self._stored_signal_valid(signal)):
                 raise ValueError
         except (AttributeError, TypeError, ValueError):
             return self._report("INVALID_STORED_SIGNAL", signal_id=signal_id)
@@ -173,6 +176,22 @@ class CycleController:
                 return self._report("INVALID_STORED_ACK", stage=stage, signal_id=signal_id)
             receipts[stage] = json.loads(expected_ack)
         return self._report("MOCK_PASS", signal_id=signal_id, sha256=sha, receipts=receipts)
+
+    def recover_page(self, *, after=None, limit=20):
+        """Recover a bounded page of local fixture records without scanning."""
+        if type(limit) is not int or not 1 <= limit <= 100:
+            raise ContractError("S13_RECOVERY_PAGE_LIMIT")
+        keys = self.journal.list_keys("signal", after=after, limit=limit+1)
+        reports = []
+        for key in keys[:limit]:
+            report = self.resume("fixture-" + key.removeprefix("signal/"))
+            reports.append(report)
+            if report["status"] != "MOCK_PASS":
+                # Keep the caller's cursor at the last verified record.
+                return self._report("RECOVERY_BLOCKED", reports=reports, next_after=after)
+            after = key
+        return self._report("RECOVERY_PAGE_PASS", reports=reports,
+                            next_after=after if len(keys) > limit else None)
 
     def run(self, cycles):
         if type(cycles) is not int or not 1 <= cycles <= 1000:

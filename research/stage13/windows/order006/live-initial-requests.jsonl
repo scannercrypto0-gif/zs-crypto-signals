@@ -1,0 +1,2 @@
+{"attempt":1,"estimated_weight":20,"params":{},"path":"exchangeInfo","started_at":"2026-11-18T05:55:04.753204Z","state":"RESERVED"}
+{"attempt":1,"body_bytes":16777217,"body_sha256":"f2124c483086a66278ee23ed92601215876743364e00f2586d32910e68bfbbae","estimated_weight":20,"http_status":200,"params":{},"path":"exchangeInfo","received_at":"2026-11-18T05:55:11.709917Z","started_at":"2026-11-18T05:55:04.753204Z","state":"RECEIVED","used_weight_1m":"380"}

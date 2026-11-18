@@ -1,0 +1,20 @@
+test_deps_ca_hash_and_hostname (test_ops_nts_client.NTSTests.test_deps_ca_hash_and_hostname) ... ok
+test_mock_combined_run_keeps_absolute_time_blocked (test_ops_nts_client.NTSTests.test_mock_combined_run_keeps_absolute_time_blocked) ... ok
+test_narrow_ke_negotiation_and_distinct_cookies (test_ops_nts_client.NTSTests.test_narrow_ke_negotiation_and_distinct_cookies) ... ok
+test_real_aead_rejects_replay_tamper_and_unsynchronized_sample (test_ops_nts_client.NTSTests.test_real_aead_rejects_replay_tamper_and_unsynchronized_sample) ... ok
+test_roles_are_default_off_and_reconcile_without_resending (test_ops_effect_gate.EffectGateTests.test_roles_are_default_off_and_reconcile_without_resending) ... ok
+test_altered_replayed_or_reordered_samples_are_blocked (test_ops_clock_recorded.ClockRecordedTests.test_altered_replayed_or_reordered_samples_are_blocked) ... ok
+test_authenticated_brackets_bound_two_distinct_events (test_ops_clock_recorded.ClockRecordedTests.test_authenticated_brackets_bound_two_distinct_events) ... ok
+test_unsynchronized_host_and_bad_markers_fail_closed (test_ops_clock_recorded.ClockRecordedTests.test_unsynchronized_host_and_bad_markers_fail_closed) ... ok
+test_elapsed_cap_stops_before_second_attempt (test_ops_spot_preflight.PreflightTests.test_elapsed_cap_stops_before_second_attempt) ... ok
+test_fixed_five_attempts_and_closed_candle_anchor (test_ops_spot_preflight.PreflightTests.test_fixed_five_attempts_and_closed_candle_anchor) ... ok
+test_http_quota_and_bad_candles_stop_without_retry (test_ops_spot_preflight.PreflightTests.test_http_quota_and_bad_candles_stop_without_retry) ... ok
+test_bad_witness_stops_before_local_or_remote_delivery (test_ops_signals_readiness.ReadinessTests.test_bad_witness_stops_before_local_or_remote_delivery) ... ok
+test_changed_snapshot_or_revoked_calibration_blocks_replay (test_ops_signals_readiness.ReadinessTests.test_changed_snapshot_or_revoked_calibration_blocks_replay) ... ok
+test_nontrigger_missing_context_and_real_policy_hold (test_ops_signals_readiness.ReadinessTests.test_nontrigger_missing_context_and_real_policy_hold) ... ok
+test_qualified_fixture_recovery_and_replay_bind_same_id (test_ops_signals_readiness.ReadinessTests.test_qualified_fixture_recovery_and_replay_bind_same_id) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 1.775s
+
+OK

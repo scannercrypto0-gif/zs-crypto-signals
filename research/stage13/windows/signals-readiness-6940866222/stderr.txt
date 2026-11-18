@@ -1,0 +1,22 @@
+test_bad_witness_stops_before_local_or_remote_delivery (test_ops_signals_readiness.ReadinessTests.test_bad_witness_stops_before_local_or_remote_delivery) ... ok
+test_changed_snapshot_or_revoked_calibration_blocks_replay (test_ops_signals_readiness.ReadinessTests.test_changed_snapshot_or_revoked_calibration_blocks_replay) ... ok
+test_nontrigger_missing_context_and_real_policy_hold (test_ops_signals_readiness.ReadinessTests.test_nontrigger_missing_context_and_real_policy_hold) ... ok
+test_qualified_fixture_recovery_and_replay_bind_same_id (test_ops_signals_readiness.ReadinessTests.test_qualified_fixture_recovery_and_replay_bind_same_id) ... ok
+test_committed_archive_with_unavailable_readback_blocks_all_delivery (test_stage13_operational_harness.Stage13Tests.test_committed_archive_with_unavailable_readback_blocks_all_delivery) ... ok
+test_corrupt_ack_on_reopen_blocks_pending_transport (test_stage13_operational_harness.Stage13Tests.test_corrupt_ack_on_reopen_blocks_pending_transport) ... ok
+test_github_failure_corruption_and_restore_with_pin (test_stage13_operational_harness.Stage13Tests.test_github_failure_corruption_and_restore_with_pin) ... ok
+test_invalid_ack_stops_before_later_integrations (test_stage13_operational_harness.Stage13Tests.test_invalid_ack_stops_before_later_integrations) ... ok
+test_invalid_observations_never_deliver (test_stage13_operational_harness.Stage13Tests.test_invalid_observations_never_deliver) ... ok
+test_local_signal_corruption_blocks_reopen_even_with_pin (test_stage13_operational_harness.Stage13Tests.test_local_signal_corruption_blocks_reopen_even_with_pin) ... ok
+test_outage_and_restart_after_mock_send_commit (test_stage13_operational_harness.Stage13Tests.test_outage_and_restart_after_mock_send_commit) ... ok
+test_quota_latency_and_health (test_stage13_operational_harness.Stage13Tests.test_quota_latency_and_health) ... ok
+test_recovery_discovers_pending_records_across_restart (test_stage13_operational_harness.Stage13Tests.test_recovery_discovers_pending_records_across_restart) ... ok
+test_stable_signal_readback_and_three_destinations (test_stage13_operational_harness.Stage13Tests.test_stable_signal_readback_and_three_destinations) ... ok
+test_elapsed_cap_stops_before_second_attempt (test_ops_spot_preflight.PreflightTests.test_elapsed_cap_stops_before_second_attempt) ... ok
+test_fixed_five_attempts_and_closed_candle_anchor (test_ops_spot_preflight.PreflightTests.test_fixed_five_attempts_and_closed_candle_anchor) ... ok
+test_http_quota_and_bad_candles_stop_without_retry (test_ops_spot_preflight.PreflightTests.test_http_quota_and_bad_candles_stop_without_retry) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 4.391s
+
+OK

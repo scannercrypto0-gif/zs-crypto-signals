@@ -1,0 +1,50 @@
+{
+  "schema": "zs.order007.directional-dev-prereg.v1",
+  "status": "DEVELOPMENT_HYPOTHESES_ONLY_NOT_SCIENTIFICALLY_APPROVED",
+  "source_scope": "PUBLIC_BINANCE_SPOT_READ_ONLY_REQUIRES_SEPARATE_SOURCE_AND_CLOCK_ADMISSION",
+  "universe": "ALL_VERIFIED_ACTIVE_SPOT_USDT_WITH_LIQUIDITY_ELIGIBILITY_AND_EXPLICIT_EXCLUSIONS",
+  "event_frame": "5m",
+  "required_consecutive_closed_5m": 22,
+  "required_context": [
+    "30m",
+    "1h",
+    "4h",
+    "24h market ticker/book"
+  ],
+  "direction_strategies": {
+    "UP": {
+      "rule": "close of most recent closed 5m exceeds maximum high of previous 20 candles AND closes above open AND quote-volume >= 1.20x previous20 mean AND prior predicate false",
+      "candidate_id": "VERSIONED_SOURCE_BOUND_EVENT_ONLY",
+      "research_only": true
+    },
+    "DOWN": {
+      "rule": "close of most recent closed 5m below minimum low of previous 20 candles AND closes below open AND quote-volume >= 1.20x previous20 mean AND prior predicate false",
+      "candidate_id": "VERSIONED_SOURCE_BOUND_EVENT_ONLY",
+      "research_only": true
+    }
+  },
+  "hypothesis_weights": "NONE",
+  "PIT_D1_D5": "NOT_INDEPENDENTLY_ADOPTED",
+  "normalizers_12": "NOT_INDEPENDENTLY_ADOPTED",
+  "N_REQUIRED": null,
+  "asset_regime_stratification": "PENDING_SOURCE_COVERAGE",
+  "calendar_split": {
+    "dev_start": null,
+    "dev_end": null,
+    "oos_start": null,
+    "oos_end": null,
+    "forward_start": null,
+    "overlap_embargo_seconds": null,
+    "oos_data_access": "FORBIDDEN_UNTIL_INDEPENDENT_PREREG_FREEZE"
+  },
+  "entry_assumption": "NOT_ADOPTED",
+  "slippage_fee_spread_model": "NOT_ADOPTED",
+  "labels_and_horizons": "NOT_ADOPTED",
+  "minimum_quality_thresholds": "NOT_ADOPTED",
+  "statistical_significance": "NOT_EVALUATED",
+  "positive_real_candidates": "NOT_OBSERVED",
+  "up_qualification": "BLOCKED",
+  "down_qualification": "BLOCKED",
+  "qualification_registry_write_authority": false,
+  "no_trade_no_external_delivery": true
+}

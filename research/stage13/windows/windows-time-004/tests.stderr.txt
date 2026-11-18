@@ -1,0 +1,11 @@
+test_source_failure_stale_and_step_are_explicit (test_ops_windows_time.WindowsTimeTests.test_source_failure_stale_and_step_are_explicit) ... ok
+test_unknown_source_quorum_and_unsafe_offset (test_ops_windows_time.WindowsTimeTests.test_unknown_source_quorum_and_unsafe_offset) ... ok
+test_valid_diagnostics_do_not_approve_unreviewed_tolerance (test_ops_windows_time.WindowsTimeTests.test_valid_diagnostics_do_not_approve_unreviewed_tolerance) ... ok
+test_elapsed_cap_stops_before_second_attempt (test_ops_spot_preflight.PreflightTests.test_elapsed_cap_stops_before_second_attempt) ... ok
+test_fixed_five_attempts_and_closed_candle_anchor (test_ops_spot_preflight.PreflightTests.test_fixed_five_attempts_and_closed_candle_anchor) ... ok
+test_http_quota_and_bad_candles_stop_without_retry (test_ops_spot_preflight.PreflightTests.test_http_quota_and_bad_candles_stop_without_retry) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.002s
+
+OK

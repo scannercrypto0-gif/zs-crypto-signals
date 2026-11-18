@@ -39,6 +39,21 @@ class LocalOutbox:
             raise ContractError("OUTBOX_PAYLOAD_SHA_MISMATCH")
         return row[1]
 
+    def list_keys(self, namespace, *, after=None, limit=100):
+        """Read one bounded lexicographic page without loading payloads."""
+        if (not isinstance(namespace, str) or not re.fullmatch(r"[a-z-]+", namespace)
+                or type(limit) is not int or not 1 <= limit <= 1000
+                or (after is not None and (not isinstance(after, str)
+                    or not KEY.fullmatch(after) or not after.startswith(namespace + "/")))):
+            raise ContractError("OUTBOX_PAGE_INVALID")
+        prefix = namespace + "/"
+        with closing(self._open()) as db:
+            rows = db.execute(
+                "SELECT key FROM records WHERE key > ? AND key < ? ORDER BY key LIMIT ?",
+                (after or prefix, namespace + "0", limit),
+            ).fetchall()
+        return tuple(key for (key,) in rows)
+
     def create_if_absent(self, key, content):
         if not KEY.fullmatch(key) or not isinstance(content, bytes) or len(content) > 262144:
             raise ContractError("OUTBOX_RECORD_INVALID")

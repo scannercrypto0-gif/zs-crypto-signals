@@ -1,0 +1,20 @@
+
+======================================================================
+ERROR: test_ops_nts_client (unittest.loader._FailedTest.test_ops_nts_client)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_ops_nts_client
+Traceback (most recent call last):
+  File "<PYTHON_INSTALL>\Lib\unittest\loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<PYTHON_INSTALL>\Lib\unittest\loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "D:\ZS-LOCAL-CI\ops-6923816767\repo\tests\test_ops_nts_client.py", line 7, in <module>
+    import certifi
+ModuleNotFoundError: No module named 'certifi'
+
+
+----------------------------------------------------------------------
+Ran 787 tests in 30.822s
+
+FAILED (errors=1)

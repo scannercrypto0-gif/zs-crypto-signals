@@ -1,0 +1,2 @@
+# Preserve exact bytes of published Order006 receipts on Windows checkout.
+research/stage13/windows/order006/** -text

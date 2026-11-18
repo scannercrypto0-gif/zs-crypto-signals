@@ -1,0 +1,1 @@
+{"active_spot":1373,"actually_evaluated":0,"body_sha256":"985b2f8dca6fc0fa5b14f2c4954c5678ee82639a984bca9ead273024fb4677fa","coverage":"MARKET_COVERAGE_PARTIAL","discovered":3743,"received_at":"2026-11-18T05:56:36.284203Z","scope":"ALL_BINANCE_INSTRUMENTS_RETURNED_WITH_EXPLICIT_SPOT_FLAGS","spot_discovered":3703,"supported_eligible":"NOT_ESTABLISHED"}
