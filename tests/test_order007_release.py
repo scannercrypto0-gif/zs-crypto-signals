@@ -5,7 +5,9 @@ import json
 import unittest
 
 from zs_smart_gate.marketwide_cursor import PauseScan
-from zs_smart_gate.order007_original_source import bounded_source
+from zs_smart_gate.order007_original_source import (
+    bounded_source, CompleteBoundedCapture, _adopt_runtime_budget,
+)
 from zs_smart_gate.order007_science import source_intake
 from zs_smart_gate.stage05_contracts import canonical, digest
 
@@ -140,3 +142,28 @@ class Order007ReleaseTests(unittest.TestCase):
             self.assertNotIn('"frames": {}',raw)
             self.assertNotIn("API_KEY",raw)
             self.assertEqual(result["qualification_registry_modified"],False)
+
+    def test_runtime_exchange_limit_controls_read_only_guard(self):
+        with TemporaryDirectory() as d:
+            cap=CompleteBoundedCapture(d)
+            receipt={"payload":{"rateLimits":[
+                {"rateLimitType":"REQUEST_WEIGHT","interval":"MINUTE",
+                 "intervalNum":1,"limit":6000}]}}
+            r=_adopt_runtime_budget(receipt,cap)
+            self.assertEqual(r["internal_headroom_guard"],5500)
+            self.assertEqual(cap.runtime_guard,5500)
+            r2=_adopt_runtime_budget({"payload":{"rateLimits":[
+                {"rateLimitType":"REQUEST_WEIGHT","interval":"MINUTE",
+                 "intervalNum":1,"limit":1100}]}},cap)
+            self.assertEqual(r2["internal_headroom_guard"],600)
+            with self.assertRaises(PauseScan):
+                _adopt_runtime_budget({"payload":{}},cap)
+
+    def test_exact_11_requests_no_12th_read_only_get(self):
+        with TemporaryDirectory() as d:
+            cap=CompleteBoundedCapture(d)
+            cap.attempts=11
+            self.assertTrue(cap.healthy())
+            with self.assertRaises(PauseScan):
+                cap.get("klines",{"symbol":"BTCUSDT","interval":"5m",
+                                   "endTime":"1","limit":"22"})
