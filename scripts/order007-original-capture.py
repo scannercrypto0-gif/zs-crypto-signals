@@ -31,8 +31,9 @@ def main():
         result = bounded_source(args.output, symbols)
         print(json.dumps(result, sort_keys=True))
         return 0 if result["status"] == "RESEARCH_CAPTURED_NO_SCIENCE_AUTHORITY" else 2
+    checkout = Path(__file__).resolve().parents[1]
     status = subprocess.check_output(
-        ["git", "status", "--porcelain"], text=True).strip()
+        ["git", "-C", str(checkout), "status", "--porcelain"], text=True).strip()
     if status:
         p.error("CLEAN_REPO_REQUIRED")
     if args.output.exists():
