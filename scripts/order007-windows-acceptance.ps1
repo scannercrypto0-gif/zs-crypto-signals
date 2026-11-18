@@ -51,12 +51,30 @@ $proven=($exitCode -eq 0 -and $log -match '(?m)^OK(?:\s|$)' -and $null -ne $test
 $afterHead=((& git -C $repo rev-parse HEAD) | Out-String).Trim()
 $afterTree=((& git -C $repo rev-parse 'HEAD^{tree}') | Out-String).Trim()
 $dirty=((& git -C $repo status --porcelain) | Out-String).Trim()
-& git -C $repo fsck --no-reflogs --connectivity-only *> (Join-Path $dir 'git-fsck.txt')
-$fsckExit=$LASTEXITCODE
+$fsckPath=Join-Path $dir 'git-fsck.txt'
+$fsckExit=-1
+$fsckError=$null
+try {
+  & git -C $repo fsck --no-reflogs --connectivity-only *> $fsckPath
+  $fsckExit=$LASTEXITCODE
+} catch {
+  # A native stderr record can throw in PowerShell 5.1 with
+  # ErrorActionPreference=Stop. Preserve the failed gate and original logs.
+  $fsckError=$_.Exception.GetType().Name
+}
+$restorePath=Join-Path $dir 'restore.txt'
 $restored=$false
-if ($proven -and $head -eq $afterHead -and $tree -eq $afterTree -and -not $dirty -and $fsckExit -eq 0) {
-  & $manager -Action Restore -Root $Root *> (Join-Path $dir 'restore.txt')
-  $restored=($? -and $LASTEXITCODE -eq 0)
+$restoreError=$null
+if ($proven -and $head -eq $afterHead -and $tree -eq $afterTree -and -not $dirty -and $fsckExit -eq 0 -and !$fsckError) {
+  try {
+    & $manager -Action Restore -Root $Root *> $restorePath
+    $restored=($? -and $LASTEXITCODE -eq 0)
+  } catch {
+    # Never lose a successful test's raw stdout/stderr and receipt just
+    # because source-restore readback fails.
+    $restoreError=$_.Exception.GetType().Name
+    $restored=$false
+  }
 }
 $receipt=[ordered]@{
   schema='zs.order007.windows-acceptance.v1'
@@ -69,7 +87,9 @@ $receipt=[ordered]@{
   clean_tree=($tree -eq $afterTree)
   clean_worktree=(!$dirty)
   fsck_exit=$fsckExit
+  fsck_error=$fsckError
   restore_verified=$restored
+  restore_error=$restoreError
   stdout_sha256=(Get-FileHash -LiteralPath $stdout -Algorithm SHA256).Hash.ToLowerInvariant()
   stderr_sha256=(Get-FileHash -LiteralPath $stderr -Algorithm SHA256).Hash.ToLowerInvariant()
   local_path=$dir
