@@ -129,14 +129,19 @@ def bounded_source(root: Path, symbols: tuple[str, ...], *, transport=None,
                 continue
             item = active[symbol]
             frame_receipts = []
-            # Six-year market coverage is NOT provided by this one bounded run.
+            frame_body_files = {}
+            # This is a bounded original source sample, not full market coverage.
             # Exactly 22 closed 5m bars plus 30m, 1h and 4h anchors.
             for frame, duration in FRAMES.items():
                 end = boundary // duration * duration
-                frame_receipts.append(transport.get("klines", {
+                rec = transport.get("klines", {
                     "symbol": symbol, "interval": frame,
                     "endTime": str(end-1),
-                    "limit": "22" if frame == "5m" else "1"}))
+                    "limit": "22" if frame == "5m" else "1"})
+                frame_receipts.append(rec)
+                frame_body_files[frame] = {
+                    "file": "response-" + str(transport.attempts) + ".private",
+                    "sha256": rec["body_sha256"]}
             packet = packet_from_receipts(
                 item, frame_receipts, boundary_ms=boundary,
                 decision_at=datetime.now(timezone.utc),
@@ -169,6 +174,7 @@ def bounded_source(root: Path, symbols: tuple[str, ...], *, transport=None,
                 "input_payload_sha256": {
                     row["params"]["interval"]: row["body_sha256"]
                     for row in frame_receipts},
+                "private_body_files": frame_body_files,
                 "event_30m_boundary_ms": boundary,
                 "first_5m_row_count": len(frame_receipts[0]["payload"]),
                 "directional_admission": outcome_summary,
@@ -187,6 +193,10 @@ def bounded_source(root: Path, symbols: tuple[str, ...], *, transport=None,
         result["last_observed_ip_weight"] = transport.used
         result["private_body_bytes"] = transport.bytes
         result["source_chain_sha256"] = digest(canonical(transport.receipts))
+        result["raw_body_receipts"] = [
+            {"file": "response-" + str(i) + ".private",
+             "sha256": row.get("body_sha256")}
+            for i, row in enumerate(transport.receipts, 1)]
         result["packet_chain_sha256"] = digest(canonical(source_rows))
         (root/"sanitized-source-manifest.json").write_bytes(canonical(result))
     return result
