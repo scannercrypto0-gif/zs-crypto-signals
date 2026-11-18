@@ -115,7 +115,7 @@ if ($Action -eq 'Install') {
 if ($Action -eq 'Stop') {
   if (-not (Test-Path -LiteralPath (Join-Path $Root 'state'))) { return }
   [IO.File]::WriteAllText($stopFile, [DateTime]::UtcNow.ToString('o'))
-  Write-Output 'STOP_REQUESTED: a running child is not interrupted by this marker; watchdog hard bound is 120 seconds. Ctrl+C requests immediate abort.'
+  Write-Output 'STOP_REQUESTED: shadow checks before each public GET; request timeout 8s and process-tree watchdog 120s. Ctrl+C is also supported.'
   return
 }
 if ($Action -eq 'Disable') {
@@ -186,7 +186,7 @@ if ($Action -eq 'StartForeground') {
     Push-Location $repoPath
     try {
       # Existing Windows process-tree watchdog enforces 120-second maximum.
-      & $python -B scripts/order006-marketwide.py --live-read-only --output $dest --cursor (Join-Path $Root 'state\marketwide-cursor.sqlite')
+      & $python -B scripts/order007-shadow.py --live-read-only --root $Root --output $dest
       $code = $LASTEXITCODE
     } finally { Pop-Location }
     if (-not (Test-Path -LiteralPath $dest)) { New-Item -ItemType Directory -Path $dest -Force | Out-Null }
