@@ -17,7 +17,7 @@ function Assert-PlainDirectory([string]$Path) {
   }
 }
 $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
-$principal = New-Object Security.Principal.WindowsPrincipal($identity)
+$principal = [Security.Principal.WindowsPrincipal]::new($identity)
 if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
   throw 'ADMINISTRATOR_REQUIRED'
 }
@@ -47,8 +47,8 @@ foreach ($item in $commands) {
 $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
 $folder = Join-Path $Root ("validation\CLOCK-ADMIN-EVIDENCE-$stamp-$([Guid]::NewGuid().ToString('N').Substring(0,8))")
 New-Item -ItemType Directory -Path $folder -ErrorAction Stop | Out-Null
-$results = New-Object 'System.Collections.Generic.List[object]'
-$utf8 = New-Object System.Text.UTF8Encoding($false)
+$results = [Collections.Generic.List[object]]::new()
+$utf8 = [Text.UTF8Encoding]::new($false)
 foreach ($item in $commands) {
   $stdout = Join-Path $folder "$($item.name).stdout.txt"
   $stderr = Join-Path $folder "$($item.name).stderr.txt"
