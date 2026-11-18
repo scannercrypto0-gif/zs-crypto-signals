@@ -13,11 +13,11 @@ $ErrorActionPreference='Stop'
 Set-StrictMode -Version Latest
 $root='D:\ZS-SMART-GATE'
 $repo=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
-$utf8=New-Object Text.UTF8Encoding($false)
+$utf8=[Text.UTF8Encoding]::new($false)
 $stamp=Get-Date -Format 'yyyyMMdd-HHmmss'
 $folder=Join-Path $root ('validation\P0-PR72-'+$stamp+'-'+[guid]::NewGuid().ToString('N').Substring(0,8))
-$checks=New-Object 'System.Collections.Generic.List[object]'
-$failures=New-Object 'System.Collections.Generic.List[string]'
+$checks=[Collections.Generic.List[object]]::new()
+$failures=[Collections.Generic.List[string]]::new()
 $head=$null; $tree=$null; $pythonVersion=$null
 $testExit=$null; $testCount=$null
 $normalContext='UNKNOWN'; $elevated='NOT_REQUESTED'
@@ -66,7 +66,7 @@ try {
   $pythonVersion=(& $python -c 'import platform; print(platform.python_version())' | Out-String).Trim()
   if ($LASTEXITCODE -ne 0 -or $pythonVersion -ne '3.12.10') { throw 'EXACT_PYTHON_31210_REQUIRED' }
   $identity=[Security.Principal.WindowsIdentity]::GetCurrent()
-  $principal=New-Object Security.Principal.WindowsPrincipal($identity)
+  $principal=[Security.Principal.WindowsPrincipal]::new($identity)
   $isAdmin=$principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
   $normalContext=$(if($isAdmin){'ADMIN_CONTEXT'}else{'NORMAL_USER_CONTEXT'})
   $env:PYTHONPATH=Join-Path $repo 'src'
