@@ -170,12 +170,23 @@ class BoundedOnlineG0FixtureTests(unittest.TestCase):
         self.assertEqual(row["attempt_count"], 1)
         self.assert_no_scientific_pit(row)
 
+        # The current owner-approved shared-IP stop is 5500, not the
+        # obsolete 1000 fixture threshold. Preserve the stop at 5500.
         fake = Fixture()
-        fake.rate_weight = 1000
+        fake.rate_weight = 5500
         row, _ = fixture_run(Horizon.INTRADAY, fake)
         self.assertEqual(row["status"], "ONLINE_BLOCKED")
         self.assertEqual(row["reason"], "RATE_WEIGHT_STOP")
         self.assertEqual(row["attempt_count"], 1)
+        self.assert_no_scientific_pit(row)
+
+        # A weight of 1000 is below the revised stop. It must NOT
+        # trigger RATE_WEIGHT_STOP; no scientific qualification follows.
+        fake = Fixture()
+        fake.rate_weight = 1000
+        row, _ = fixture_run(Horizon.INTRADAY, fake)
+        self.assertEqual(row["status"], "ONLINE_INTEGRATION_OBSERVED")
+        self.assertEqual(row["attempt_count"], 7)
         self.assert_no_scientific_pit(row)
 
     def test_geographical_or_waf_http_denial_is_online_blocked_not_code_failure(self):
