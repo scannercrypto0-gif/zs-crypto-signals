@@ -7,7 +7,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, ProxyHandler, build_opener
 
-from .binance_live import BASE
+from .binance_live import BASE, is_spot_enabled
 from .e2e51 import NoRedirect
 from .marketwide_cursor import PauseScan, ScanLedger
 from .marketwide_research import FRAMES, inventory, packet_from_receipts
@@ -67,7 +67,11 @@ class PublicCapture:
                 status = response.status
                 header = response.headers.get("X-MBX-USED-WEIGHT-1M")
                 raw = response.read(min(MAX_BODY, MAX_TOTAL_BODY-self.bytes)+1)
-        except (HTTPError, URLError, TimeoutError, OSError):
+        except HTTPError as exc:
+            self.record({**row, "state": "HTTP_STOP", "http_status": exc.code})
+            exc.close()
+            raise PauseScan("HTTP_STOP") from None
+        except (URLError, TimeoutError, OSError):
             self.record({**row, "state": "NETWORK_OR_HTTP_STOP"})
             raise PauseScan("NETWORK_OR_HTTP_STOP") from None
         if isinstance(header, str) and header.isascii() and header.isdecimal() and len(header) <= 9:
@@ -83,8 +87,6 @@ class PublicCapture:
                 or len(raw) > MAX_BODY or self.bytes > MAX_TOTAL_BODY):
             raise PauseScan("UNVERIFIED_RESPONSE_OR_SIZE")
         self.used = int(header)
-        if self.used > MAX_USED_WEIGHT or not self.healthy():
-            raise PauseScan("QUOTA_OR_DEADLINE_STOP")
         try:
             payload = json.loads(raw)
         except (ValueError, UnicodeError):
@@ -92,7 +94,40 @@ class PublicCapture:
         receipt = dict(path=path, params=params, payload=payload, received_at=meta["received_at"],
                        body_sha256=meta["body_sha256"])
         self.receipts.append(receipt)
+        if self.used > MAX_USED_WEIGHT or not self.healthy():
+            raise PauseScan("QUOTA_OR_DEADLINE_STOP")
         return receipt
+
+
+def discovery_only(receipt):
+    """Derive complete listing metadata after a quota stop; no market eligibility."""
+    if (receipt["path"] != "exchangeInfo"
+            or receipt["params"] not in ({}, {"showPermissionSets": "false"})):
+        raise ValueError("UNFILTERED_EXCHANGE_INVENTORY_REQUIRED")
+    symbols = receipt["payload"]["symbols"]
+    if not isinstance(symbols, list) or not 1 <= len(symbols) <= 20000:
+        raise ValueError("DISCOVERY_RESOURCE_BOUND")
+    seen = set()
+    rows = []
+    for row in symbols:
+        symbol = row["symbol"]
+        if symbol in seen or symbol != row["baseAsset"] + row["quoteAsset"]:
+            raise ValueError("DISCOVERY_IDENTITY_INVALID")
+        seen.add(symbol)
+        spot = is_spot_enabled(row)
+        rows.append(dict(symbol=symbol, base=row["baseAsset"], quote=row["quoteAsset"],
+                         spot=spot, active=spot and row["status"] == "TRADING",
+                         eligibility="UNKNOWN",
+                         reason=("UNSUPPORTED_QUOTE_POLICY" if row["quoteAsset"] != "USDT"
+                                 else "TICKER_AND_BOOK_NOT_OBSERVED"),
+                         scan_state="UNSCANNED"))
+    rows.sort(key=lambda row: row["symbol"])
+    return dict(scope="ALL_BINANCE_INSTRUMENTS_RETURNED_WITH_EXPLICIT_SPOT_FLAGS",
+                received_at=receipt["received_at"], body_sha256=receipt["body_sha256"],
+                discovered=len(rows), spot_discovered=sum(r["spot"] for r in rows),
+                active_spot=sum(r["active"] for r in rows),
+                supported_eligible="NOT_ESTABLISHED",
+                actually_evaluated=0, coverage="MARKET_COVERAGE_PARTIAL", rows=rows)
 
 
 def run(root, cursor, *, transport=None):
@@ -137,6 +172,11 @@ def run(root, cursor, *, transport=None):
         result["stop"] = str(exc)
     except (ValueError, KeyError, TypeError):
         result["stop"] = "INVALID_SOURCE_INVENTORY"
+    if result["snapshot"] is None and transport.receipts:
+        try:
+            result["discovery_only"] = discovery_only(transport.receipts[0])
+        except (ValueError, KeyError, TypeError):
+            result["discovery_only"] = {"status": "UNVERIFIED"}
     result["requests"] = transport.attempts
     result["estimated_weight"] = transport.weight
     result["body_bytes"] = transport.bytes

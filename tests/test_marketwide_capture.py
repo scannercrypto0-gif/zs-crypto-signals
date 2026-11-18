@@ -72,3 +72,18 @@ class MarketCaptureTests(TestCase):
             with self.assertRaises(PauseScan):
                 capture.get("exchangeInfo", {})
             self.assertEqual(opener.calls, 0)
+
+    def test_quota_preserves_complete_listing_for_offline_discovery(self):
+        import json
+        from zs_smart_gate.marketwide_capture import discovery_only
+        payload = dict(symbols=[dict(symbol="OTHERUSDT", baseAsset="OTHER", quoteAsset="USDT",
+                                    status="TRADING", isSpotTradingAllowed=True)])
+        with tempfile.TemporaryDirectory() as root:
+            capture = PublicCapture(root, opener=Opener(Response(
+                raw=json.dumps(payload).encode(), header="540")))
+            with self.assertRaises(PauseScan):
+                capture.get("exchangeInfo", {"showPermissionSets": "false"})
+            result = discovery_only(capture.receipts[0])
+            self.assertEqual(result["spot_discovered"], 1)
+            self.assertEqual(result["actually_evaluated"], 0)
+            self.assertEqual(result["rows"][0]["eligibility"], "UNKNOWN")

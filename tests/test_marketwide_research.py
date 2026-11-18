@@ -351,4 +351,3 @@ class MarketwideTests(unittest.TestCase):
         receipts[0]["params"] = {"showPermissionSets": "false"}
         result = inventory(receipts, snap["decision_at"], scope="ALL_BINANCE_SPOT_INVENTORY")
         self.assertEqual(len(result["rows"]), 2)
-

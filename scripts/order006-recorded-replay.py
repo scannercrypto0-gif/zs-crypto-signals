@@ -4,7 +4,6 @@ import json
 from pathlib import Path
 import runpy
 
-from zs_smart_gate.marketwide_cursor import ScanLedger
 from zs_smart_gate.marketwide_research import inventory, packet_from_receipts, evaluate
 from zs_smart_gate.stage05_contracts import canonical, digest
 
@@ -18,8 +17,6 @@ def replay(capture_path, pin, output):
     capture = json.loads(raw)
     snap = inventory(capture["receipts"][:3], capture["decision_at"], scope="RECORDED_BOUNDED_INVENTORY")
     output.mkdir()
-    ledger = ScanLedger(output / "scan.sqlite")
-    scan = ledger.register(snap, capture["anchor_ms"])
     # Historical multi-asset capture only includes six 5m bars per selected pair.
     # Record the real insufficiency rather than invent the missing 20-bar history.
     symbols = sorted(row["identity"]["symbol"] for row in validated["rows"])
