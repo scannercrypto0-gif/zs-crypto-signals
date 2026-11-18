@@ -115,7 +115,7 @@ if ($Action -eq 'Install') {
 if ($Action -eq 'Stop') {
   if (-not (Test-Path -LiteralPath (Join-Path $Root 'state'))) { return }
   [IO.File]::WriteAllText($stopFile, [DateTime]::UtcNow.ToString('o'))
-  Write-Output 'STOP_REQUESTED: foreground bounded job will exit at its safe stop; no process killed'
+  Write-Output 'STOP_REQUESTED: a running child is not interrupted by this marker; watchdog hard bound is 120 seconds. Ctrl+C requests immediate abort.'
   return
 }
 if ($Action -eq 'Disable') {
@@ -179,7 +179,8 @@ if ($Action -eq 'StartForeground') {
   $env:PYTHONDONTWRITEBYTECODE = '1'
   $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
   $dest = Join-Path $Root ("data\shadow-$stamp-$PID")
-  New-Item -ItemType Directory -Path $dest -ErrorAction Stop | Out-Null
+  # order006 watchdog creates the output directory itself, fail closed if it exists.
+  if (Test-Path -LiteralPath $dest) { throw 'FRESH_SHADOW_OUTPUT_REQUIRED' }
   try {
     [IO.File]::WriteAllText($lockFile, "pid=$PID `nstarted=$([DateTime]::UtcNow.ToString('o'))")
     Push-Location $repoPath
@@ -188,6 +189,7 @@ if ($Action -eq 'StartForeground') {
       & $python -B scripts/order006-marketwide.py --live-read-only --output $dest --cursor (Join-Path $Root 'state\marketwide-cursor.sqlite')
       $code = $LASTEXITCODE
     } finally { Pop-Location }
+    if (-not (Test-Path -LiteralPath $dest)) { New-Item -ItemType Directory -Path $dest -Force | Out-Null }
     Write-Record (Join-Path $dest 'foreground-exit.json') @{
       utc=[DateTime]::UtcNow.ToString('o'); head=$pin.head; tree=$pin.tree
       exit_code=$code; mode='PUBLIC_READ_ONLY_SHADOW'
