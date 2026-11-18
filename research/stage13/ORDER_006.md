@@ -70,3 +70,9 @@ A fresh read-only invocation can continue only with genuine quota headroom. The 
 Independent scientific review must freeze separate UP/DOWN criteria, context/liquidity normalization, spread/fee/slippage stress, horizon and outcome rules, causal data/witness eligibility, clustered/overlap-aware DEV/OOS/forward evaluation and acceptance thresholds. Non-USDT support additionally needs an approved causal conversion path to a common liquidity/cost unit, quote-source freshness and spread normalization. The current hypothesis supplies testable engineering behavior, not proven edge.
 
 No merge, trading, Telegram send, operational archive write, SQL provisioning or unattended operation. PM owns MASTER/README edits.
+
+## Independent GitHub restore and hosted CI
+
+Restored published evidence HEAD d384e251d9cfbcd5f8e800d342280298673298ca, TREE 74933dae208c81b29e85af843463625451bfdfae into a fresh D: checkout. All **57** original receipt hashes verified. The **30** new tests passed from the restored repository. Synthetic controls and authentic recorded replay reproduced byte-for-byte from GitHub source and fixtures, without using the private live response. Their SHA-256 values are 81abf5151e6106986e7013895a2a9317e2095f02fc6395e64d680a7b1da0714e and 065598576ac22cc3ea4ef4530e97d2b99c46276766c295ff7ade76d37529d33e respectively. This verification addition changes evidence only.
+
+Hosted [Foundation run 44249582224](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/44249582224) and [E2E run 44249582173](https://github.com/scannercrypto0-gif/zs-crypto-signals/actions/runs/44249582173) remain FAILURE. Sampled job-start annotations in both cite account payment/spending-limit restrictions. Hosted status is distinct from the 820-test local PASS. See github-*.txt and ci-*.txt receipts.
