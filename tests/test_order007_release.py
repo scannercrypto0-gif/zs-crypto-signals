@@ -208,3 +208,13 @@ class Order007ReleaseTests(unittest.TestCase):
             report=source_intake(Path(d))
             self.assertEqual(report["event_count"],0)
             self.assertEqual(len(report["rejected_manifests"]),1)
+
+    def test_disabled_upgrade_requires_ancestor_pinned_head_and_backups(self):
+        script=(ROOT/"scripts"/"order007-windows.ps1").read_text(encoding="utf-8")
+        self.assertIn("if ($Action -eq 'Upgrade')",script)
+        self.assertIn("merge-base --is-ancestor",script)
+        self.assertIn("UPGRADE_REQUIRES_DISABLED_NO_WORKER",script)
+        self.assertIn("UPGRADE_TARGET_HEAD_TREE_MISMATCH",script)
+        self.assertIn("BACKUP_SHA256",script)
+        self.assertIn("UPGRADE_DISABLED HEAD=",script)
+        self.assertNotIn("Enable-ScheduledTask",script)
