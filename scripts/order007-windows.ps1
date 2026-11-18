@@ -203,7 +203,11 @@ if ($Action -in @('Restore','Rollback')) {
   if (Test-Path -LiteralPath $lockFile) { throw 'WORKER_LOCK_PRESENT' }
   & git -C $repoPath fsck --no-reflogs --connectivity-only
   if ($LASTEXITCODE -ne 0) { throw 'RESTORE_GIT_OBJECT_INTEGRITY_FAILED' }
-  & git -C $repoPath checkout --detach $pin.head
+  # Git normally writes a benign "HEAD is now at ..." on stderr.
+  # PowerShell 5.1 redirects it into a terminating NativeCommandError when
+  # acceptance captures all streams with ErrorActionPreference=Stop.
+  # Quiet checkout suppresses only Git status text, never a genuine error.
+  & git -C $repoPath checkout --quiet --detach $pin.head
   if ($LASTEXITCODE -ne 0) { throw 'RESTORE_FAILED' }
   Assert-Checkout $Root $pin
   Write-Output "RESTORE_VERIFIED HEAD=$($pin.head) TREE=$($pin.tree)"
