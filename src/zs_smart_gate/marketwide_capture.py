@@ -17,7 +17,7 @@ from .ops_windows_child import sync_age
 
 MAX_REQUESTS = 11
 MAX_WEIGHT = 140
-MAX_USED_WEIGHT = 200
+MAX_USED_WEIGHT = 5500  # 500-point reserve below documented Spot 6000 weight/min per IP
 MAX_SECONDS = 110
 MAX_BODY = 16 * 1024 * 1024
 MAX_TOTAL_BODY = 32 * 1024 * 1024
