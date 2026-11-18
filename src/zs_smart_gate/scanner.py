@@ -27,7 +27,7 @@ from .core import (
 MAX_SYMBOLS_PER_CYCLE = 4  # small explicit research sample, NOT a scheduled market cadence
 MAX_HTTP_REQUESTS = 8     # actual outbound attempts, INCLUDING failed/retried GETs
 SOFT_PRE_REQUEST_GUARD_SECONDS = 60  # checked before attempts, NOT in-flight cancellation/SLA
-STOP_USED_WEIGHT_1M = 1000  # conservative observation threshold, NOT an exchange quota claim
+STOP_USED_WEIGHT_1M = 5500  # Binance Spot 6000/min IP limit minus 500 reserve; verify live exchangeInfo
 FIVE_MINUTE_MS = 300_000
 
 

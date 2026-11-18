@@ -354,10 +354,17 @@ class BoundedScannerTests(unittest.TestCase):
         self.assertIn("STALE_CLOSED_5M_WINDOW", report.results[0].reasons)
 
     def test_observed_weight_safety_stop_before_next_request(self):
-        fake = FakeGetter(weight="1000")
+        # Keep a 500-weight reserve beneath Binance Spot's documented 6000/min.
+        fake = FakeGetter(weight="5500")
         with self.assertRaisesRegex(LiveBlocked, "WEIGHT_SAFETY_STOP"):
             scan_once(limit=1, getter=fake)
         self.assertEqual(len(fake.calls), 1)
+
+    def test_observed_weight_540_does_not_trigger_internal_guard(self):
+        # The historical 540 used-weight header must not stop a 5500 guard.
+        fake = FakeGetter(weight="540")
+        scan_once(limit=1, getter=fake)
+        self.assertGreater(len(fake.calls), 1)
 
     def test_future_market_observation_fails_closed(self):
         tickers, books = market_rows()
