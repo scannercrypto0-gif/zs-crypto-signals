@@ -29,16 +29,23 @@ class Opener:
 class MarketCaptureTests(TestCase):
     def test_quota_stops_with_durable_actual_body_pin(self):
         with tempfile.TemporaryDirectory() as root:
-            opener = Opener(Response(header="203"))
+            opener = Opener(Response(header="5500"))
             capture = PublicCapture(root, opener=opener)
             with self.assertRaises(PauseScan):
                 capture.get("exchangeInfo", {})
             self.assertEqual(capture.attempts, 1)
-            self.assertEqual(capture.used, 203)
+            self.assertEqual(capture.used, 5500)
             self.assertTrue((Path(root)/"response-1.private").exists())
             with self.assertRaises(PauseScan):
                 capture.get("ticker/24hr", {})
             self.assertEqual(opener.calls, 1)
+
+    def test_540_header_is_below_new_guard(self):
+        with tempfile.TemporaryDirectory() as root:
+            capture = PublicCapture(root, opener=Opener(Response(header="540")))
+            receipt = capture.get("exchangeInfo", {})
+            self.assertEqual(receipt["path"], "exchangeInfo")
+            self.assertEqual(capture.used, 540)
 
     def test_timeout_and_unknown_header_never_retry(self):
         for response in (TimeoutError(), Response(header=None), Response(raw=b'invalid')):
@@ -80,7 +87,7 @@ class MarketCaptureTests(TestCase):
                                     status="TRADING", isSpotTradingAllowed=True)])
         with tempfile.TemporaryDirectory() as root:
             capture = PublicCapture(root, opener=Opener(Response(
-                raw=json.dumps(payload).encode(), header="540")))
+                raw=json.dumps(payload).encode(), header="5500")))
             with self.assertRaises(PauseScan):
                 capture.get("exchangeInfo", {"showPermissionSets": "false"})
             result = discovery_only(capture.receipts[0])
