@@ -50,7 +50,9 @@ def inventory(receipts, decision_at, *, scope):
         raise ValueError("INVENTORY_SCOPE_REQUIRED")
     if [r["path"] for r in receipts] != ["exchangeInfo", "ticker/24hr", "ticker/bookTicker"]:
         raise ValueError("INVENTORY_ENDPOINT_ORDER")
-    if scope == "ALL_BINANCE_SPOT_INVENTORY" and any(r["params"] for r in receipts):
+    if scope == "ALL_BINANCE_SPOT_INVENTORY" and (
+            receipts[0]["params"] not in ({}, {"showPermissionSets": "false"})
+            or any(r["params"] for r in receipts[1:])):
         raise ValueError("FULL_INVENTORY_CANNOT_USE_SYMBOL_FILTER")
     arrivals = [parse_utc(r["received_at"]) for r in receipts]
     decision = parse_utc(decision_at)

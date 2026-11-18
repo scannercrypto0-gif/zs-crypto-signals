@@ -345,3 +345,10 @@ class MarketwideTests(unittest.TestCase):
             report = ledger.report(second)
             self.assertEqual(report["unscanned_symbols"][0]["reason"], "DUPLICATE_PAIR_BOUNDARY_RESERVED")
             self.assertEqual(report["coverage"], "MARKET_COVERAGE_PARTIAL")
+
+    def test_permission_set_omission_preserves_unfiltered_inventory(self):
+        snap, receipts = snapshot(["AUSDT", "BUSDT"])
+        receipts[0]["params"] = {"showPermissionSets": "false"}
+        result = inventory(receipts, snap["decision_at"], scope="ALL_BINANCE_SPOT_INVENTORY")
+        self.assertEqual(len(result["rows"]), 2)
+

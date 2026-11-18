@@ -52,7 +52,8 @@ class PublicCapture:
         if (not self.healthy() or self.weight + units > MAX_WEIGHT
                 or self.used + units > MAX_USED_WEIGHT):
             raise PauseScan("BUDGET_OR_HEADROOM_STOP")
-        if path != "klines" and params != {}:
+        allowed = ({}, {"showPermissionSets": "false"}) if path == "exchangeInfo" else ({},)
+        if path != "klines" and params not in allowed:
             raise ValueError("UNFILTERED_DISCOVERY_REQUIRED")
         self.attempts += 1
         self.weight += units
@@ -69,6 +70,8 @@ class PublicCapture:
         except (HTTPError, URLError, TimeoutError, OSError):
             self.record({**row, "state": "NETWORK_OR_HTTP_STOP"})
             raise PauseScan("NETWORK_OR_HTTP_STOP") from None
+        if isinstance(header, str) and header.isascii() and header.isdecimal() and len(header) <= 9:
+            self.used = int(header)
         self.bytes += len(raw)
         private = self.root / ("response-" + str(self.attempts) + ".private")
         private.write_bytes(raw)
@@ -100,7 +103,7 @@ def run(root, cursor, *, transport=None):
                   snapshot=None, funnel=None, stop=None)
     try:
         for path in ("exchangeInfo", "ticker/24hr", "ticker/bookTicker"):
-            transport.get(path, {})
+            transport.get(path, {"showPermissionSets": "false"} if path == "exchangeInfo" else {})
         snap = inventory(transport.receipts[:3], now(), scope="ALL_BINANCE_SPOT_INVENTORY")
         (root/"snapshot.private.json").write_bytes(canonical(snap))
         result["snapshot"] = {k: v for k, v in snap.items() if k not in ("rows",)}
