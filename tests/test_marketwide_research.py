@@ -351,3 +351,21 @@ class MarketwideTests(unittest.TestCase):
         receipts[0]["params"] = {"showPermissionSets": "false"}
         result = inventory(receipts, snap["decision_at"], scope="ALL_BINANCE_SPOT_INVENTORY")
         self.assertEqual(len(result["rows"]), 2)
+
+    def test_pinned_real_replay_reports_insufficient_multi_asset_history(self):
+        root = Path(__file__).resolve().parents[1]
+        module = runpy.run_path(str(root/"scripts"/"order006-recorded-replay.py"))
+        multi = root/"research"/"stage51"/"closure"/"stage01-stage03-multi-20261114"/"capture.json"
+        qv1 = root/"research"/"stage51"/"closure"/"live-stage03-stage04-20261114"/"qualification.json"
+        with tempfile.TemporaryDirectory() as folder:
+            result = module["replay"](
+                multi, "8aee74b4d185cdb8e36167ba16f0bb774d13232062e9f20360c84c23dee50ddb",
+                Path(folder)/"replay", qv1_capture=qv1,
+                qv1_pin="d2221b6b7849bff258a50367d9fef1507e31e17f9e67aedd30d30309fccaeccb")
+            self.assertEqual(result["valid_directional_evaluations"], 0)
+            self.assertEqual(len(result["rows"]), 2)
+            self.assertTrue(all(r["detector_history"] == "INSUFFICIENT_22_BAR_HISTORY" for r in result["rows"]))
+            recorded = result["recorded_22_bar_directional_replay"]
+            self.assertEqual({r["direction"] for r in recorded["results"]}, {"UP", "DOWN"})
+            self.assertTrue(all(r["status"] == "NO_TRIGGER" for r in recorded["results"]))
+            self.assertTrue(all(r["signal_id"] is None for r in recorded["results"]))

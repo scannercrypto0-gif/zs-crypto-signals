@@ -227,6 +227,7 @@ def evaluate(packet):
                 status, reason = "QUALIFICATION_BLOCKED", "CLOCK_UNVERIFIED"
             rows.append({**common, "direction": direction, "status": status, "reason": reason,
                          "source_validated": True, "detector_trigger": trigger,
+                         "direction_policy_sha256": REAL_DIRECTION_POLICIES[direction],
                          "event_id": digest(canonical({**identity, "direction": direction})),
                          "strategy": STRATEGIES[direction]})
         return rows

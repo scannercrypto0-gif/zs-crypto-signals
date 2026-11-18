@@ -5,10 +5,45 @@ from pathlib import Path
 import runpy
 
 from zs_smart_gate.marketwide_research import inventory, packet_from_receipts, evaluate
-from zs_smart_gate.stage05_contracts import canonical, digest
+from zs_smart_gate.stage05_contracts import canonical, digest, parse_utc
+from zs_smart_gate.stage03_research_handoff import make_recorded_spot_handoff
 
 
-def replay(capture_path, pin, output):
+def replay_qv1(capture, pin):
+    raw = capture.read_bytes()
+    make_recorded_spot_handoff(raw, pin)
+    record = json.loads(raw)
+    receipts = json.loads(capture.with_name("market-receipts.json").read_bytes())
+    samples = json.loads(capture.with_name("clock-summary.json").read_bytes())
+    source = record["source"]["source"]
+    if (digest(canonical(receipts)) != source["receipts_sha256"]
+            or digest(canonical(samples)) != record["witness"]["calibration_ref"]):
+        raise ValueError("QV1_CAPTURE_RECEIPT_PIN_MISMATCH")
+    market = dict(record["joined_inputs"]["market"])
+    market["observed_at"] = market["observed_at"].replace(" ", "T").replace("+00:00", "Z")
+    boundary = int(parse_utc(source["event_close_at"]).timestamp()*1000)
+    # Legacy capture stored the implicit source symbol in its pinned source
+    # manifest, while receipt params omitted it. Preserve this weaker binding
+    # explicitly; the new live adapter requires symbol on every request.
+    frames = {}
+    for receipt in receipts[:4]:
+        params = receipt["params"]
+        frame = params["interval"]
+        if frame in frames or frame not in ("5m", "30m", "1h", "4h"):
+            raise ValueError("LEGACY_FRAME_BINDING")
+        frames[frame] = dict(rows=receipt["payload"], received_at=receipt["received_at"],
+                             payload_sha256=digest(canonical(receipt["payload"])))
+    packet = dict(symbol=source["symbol"], boundary_ms=boundary, market=market,
+                  frames=frames, decision_at=source["decision_at"],
+                  source_scope="RECORDED_PUBLIC_SPOT",
+                  source_manifest_sha256=source["receipts_sha256"],
+                  clock_status="RECORDED_CONDITIONAL_BRACKET")
+    return dict(capture_sha256=pin, scope="RECORDED_PUBLIC_SPOT",
+                request_binding="LEGACY_IMPLICIT_SYMBOL_IN_PINNED_SOURCE_MANIFEST",
+                symbol=source["symbol"], results=evaluate(packet), signal_id=None)
+
+
+def replay(capture_path, pin, output, *, qv1_capture=None, qv1_pin=None):
     raw = capture_path.read_bytes()
     if digest(raw) != pin:
         raise ValueError("CAPTURE_SHA_MISMATCH")
@@ -41,6 +76,8 @@ def replay(capture_path, pin, output):
                   rows=capture["directional_replay"], coverage="MARKET_COVERAGE_PARTIAL",
                   qualification="QV1_REAL_POLICY_BLOCKED", signal_id=None,
                   live_e2e="LIVE_E2E_NOT_PROVEN", baseline_input_sha256=digest(canonical(validated)))
+    if qv1_capture is not None:
+        report["recorded_22_bar_directional_replay"] = replay_qv1(qv1_capture, qv1_pin)
     (output/"result.json").write_bytes(canonical(report))
     return report
 
@@ -50,7 +87,12 @@ if __name__ == "__main__":
     parser.add_argument("capture", type=Path)
     parser.add_argument("pin")
     parser.add_argument("output", type=Path)
+    parser.add_argument("--qv1-capture", type=Path)
+    parser.add_argument("--qv1-sha256")
     args = parser.parse_args()
     if args.output.resolve().drive.upper() != "D:":
         parser.error("output must be on D:")
-    print(canonical(replay(args.capture, args.pin, args.output)).decode())
+    if bool(args.qv1_capture) != bool(args.qv1_sha256):
+        parser.error("QV1 capture and its SHA-256 must be supplied together")
+    print(canonical(replay(args.capture, args.pin, args.output,
+                          qv1_capture=args.qv1_capture, qv1_pin=args.qv1_sha256)).decode())
