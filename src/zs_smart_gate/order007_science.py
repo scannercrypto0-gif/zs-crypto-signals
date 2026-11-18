@@ -8,6 +8,8 @@ from __future__ import annotations
 from collections import Counter
 from pathlib import Path
 import json
+import re
+import hashlib
 
 from .marketwide_research import evaluate
 from .stage05_contracts import canonical, digest
@@ -24,6 +26,32 @@ def _read_json(path: Path) -> dict:
     if not isinstance(result, dict):
         raise ValueError("SCIENCE_SOURCE_OBJECT_REQUIRED")
     return result
+
+
+def _verify_original_bodies(manifest: dict, directory: Path) -> None:
+    rows = manifest.get("raw_body_receipts")
+    if not isinstance(rows, list) or not rows or len(rows) > 11:
+        raise ValueError("ORIGINAL_RESPONSE_HASH_MANIFEST_REQUIRED")
+    seen = set()
+    for row in rows:
+        if not isinstance(row, dict):
+            raise ValueError("SOURCE_BODY_RECORD_INVALID")
+        name, sha = row.get("file"), row.get("sha256")
+        if (not isinstance(name, str) or not re.fullmatch(
+                r"response-[1-9][0-9]*\\.private", name)
+                or name in seen or not isinstance(sha, str)
+                or not re.fullmatch(r"[a-f0-9]{64}", sha)):
+            raise ValueError("SOURCE_BODY_PATH_OR_SHA_INVALID")
+        seen.add(name)
+        path = directory/name
+        if not path.is_file() or path.stat().st_size > 16*1024*1024:
+            raise ValueError("SOURCE_BODY_FILE_MISSING_OR_OVERSIZE")
+        h = hashlib.sha256()
+        with path.open("rb") as stream:
+            for chunk in iter(lambda: stream.read(1024*1024), b""):
+                h.update(chunk)
+        if h.hexdigest() != sha:
+            raise ValueError("ORIGINAL_RESPONSE_BYTES_HASH_MISMATCH")
 
 
 def source_intake(root: Path) -> dict:
@@ -46,6 +74,7 @@ def source_intake(root: Path) -> dict:
             if manifest.get("schema") != "zs.order007.original-public-spot-source.v1":
                 raise ValueError("MANIFEST_SCHEMA_UNVERIFIED")
             manifest_hashes.append(digest(mfile.read_bytes()))
+            _verify_original_bodies(manifest, mfile.parent)
             for row in manifest.get("coverage", []):
                 if not isinstance(row, dict) or "packet_sha256" not in row:
                     continue
@@ -62,6 +91,18 @@ def source_intake(root: Path) -> dict:
                 if packet.get("symbol") != symbol or packet.get("source_scope") != (
                         "PUBLIC_SPOT_CONDITIONAL_RESEARCH"):
                     raise ValueError("SOURCE_SCOPE_SYMBOL_MISMATCH")
+                body_files = row.get("private_body_files")
+                if not isinstance(body_files, dict) or set(body_files) != (
+                        {"5m", "30m", "1h", "4h"}):
+                    raise ValueError("FRAME_ORIGINAL_BODIES_REQUIRED")
+                verified = {x["file"]: x["sha256"] for x in
+                            manifest["raw_body_receipts"]}
+                for frame, record in body_files.items():
+                    if (not isinstance(record, dict)
+                            or verified.get(record.get("file")) != record.get("sha256")
+                            or row.get("input_payload_sha256", {}).get(frame) != (
+                                record.get("sha256"))):
+                        raise ValueError("FRAME_TO_ORIGINAL_BYTES_MISMATCH")
                 if any(r.get("signal_id") for r in evaluate(packet)):
                     raise ValueError("PRODUCTION_SIGNAL_FORBIDDEN")
                 key = (symbol, packet.get("boundary_ms"))
