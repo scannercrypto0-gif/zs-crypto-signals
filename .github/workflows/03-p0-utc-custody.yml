@@ -1,0 +1,199 @@
+name: STAGE03 P0 independent time and private custody readiness
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/03-p0-utc-custody.yml"
+      - "scripts/p0-nts-witness.py"
+      - "scripts/p0-stamp-calibration.py"
+      - "scripts/p0-field-harness.py"
+      - "tests/test_p0_field_harness.py"
+      - "tests/test_p0_scope_separation.py"
+      - "tests/test_p0_nts_witness.py"
+      - "tests/test_p0_owner_receipt.py"
+      - "scripts/p0-owner-receipt.py"
+      - "tests/test_p0_custody_readback.py"
+      - "research/order025/p0-readiness/**"
+permissions:
+  contents: read
+jobs:
+  private-readback:
+    name: synthetic private GitHub readback and fresh restore
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Read back privately committed synthetic raw and verify restored SHA
+        run: python -m unittest discover -s tests -p "test_p0_custody_readback.py" -v
+      - name: UTC evaluator fail-closed unit tests (no network)
+        run: python -m unittest discover -s tests -p "test_p0_nts_witness.py" -v
+      - name: Owner external receipt comparison offline negative tests (no network)
+        run: python -m unittest discover -s tests -p "test_p0_owner_receipt.py" -v
+      - name: Portable owner receipt creation and negative tests (no network)
+        run: python -m unittest discover -s tests -p "test_p0_owner_anchor.py" -v
+      - name: Offline field harness fail-closed simulations only (no network capability)
+        run: python -m unittest discover -s tests -p "test_p0_field_harness.py" -v
+      - name: Functional decision record versus raw PIT evidence scope (offline only)
+        run: python -m unittest discover -s tests -p "test_p0_scope_separation.py" -v
+      - name: Emit and verify a pinned synthetic-only handoff receipt
+        shell: bash
+        env:
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          RECEIPT="$RUNNER_TEMP/ZS03_SYNTHETIC_OWNER_RECEIPT.json"
+          python scripts/p0-owner-anchor.py emit \
+            --raw research/order025/p0-readiness/synthetic-raw-v1.txt \
+            --manifest research/order025/p0-readiness/owner-custody-and-field-manifest-draft.md \
+            --study-id ZS03-P0-UTC-CUSTODY-FIELD-READINESS-001 \
+            --event-id ZS03-P0-SYNTHETIC-READBACK-0001 \
+            --code-sha "$PR_HEAD_SHA" \
+            --repository scannercrypto0-gif/zs-crypto-signals \
+            --raw-path research/order025/p0-readiness/synthetic-raw-v1.txt \
+            --manifest-path research/order025/p0-readiness/owner-custody-and-field-manifest-draft.md \
+            --creator SYNTHETIC_CI_WRITER \
+            --output "$RECEIPT"
+          RECEIPT_SHA="$(sha256sum "$RECEIPT" | awk '{print $1}')"
+          python scripts/p0-owner-anchor.py verify \
+            --raw research/order025/p0-readiness/synthetic-raw-v1.txt \
+            --manifest research/order025/p0-readiness/owner-custody-and-field-manifest-draft.md \
+            --receipt "$RECEIPT" \
+            --expected-owner-file-sha256 "$RECEIPT_SHA" \
+            --expected-code-sha "$PR_HEAD_SHA" \
+            --expected-event-id ZS03-P0-SYNTHETIC-READBACK-0001
+          {
+            echo "### Synthetic owner handoff receipt only — NOT independent custody"
+            echo "HEAD: $PR_HEAD_SHA"
+            echo "EVENT_ID: ZS03-P0-SYNTHETIC-READBACK-0001"
+            echo "RECEIPT_FILE_SHA256: $RECEIPT_SHA"
+            echo "RECEIPT_FILE_BYTES: $(wc -c < "$RECEIPT")"
+            echo "OWNER_CUSTODY_ACK_PENDING; owner must independently download/store/ack"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload receipt-only temporary handoff artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ZS03-synthetic-owner-receipt-${{ github.event.pull_request.head.sha }}
+          path: ${{ runner.temp }}/ZS03_SYNTHETIC_OWNER_RECEIPT.json
+          if-no-files-found: error
+          retention-days: 7
+  synthetic-stamp-observation:
+    name: observed synthetic local stamp callback on ephemeral Ubuntu (NO PIT)
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Observe monotonic-to-UTC scheduling window; stop on 100 ms threshold
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/p0-stamp-calibration.py --self-test
+          python scripts/p0-stamp-calibration.py --samples 2048 --margin-ms 100 --output "$RUNNER_TEMP/ZS03_SYNTHETIC_STAMP_OBSERVATION.json"
+          sha256sum "$RUNNER_TEMP/ZS03_SYNTHETIC_STAMP_OBSERVATION.json"
+          {
+            echo "### Synthetic local stamp observation — NOT NTS, not market PIT"
+            echo "Exact PR HEAD: ${{ github.event.pull_request.head.sha }}"
+            echo "Synthetic-only 2048 serialized two-thread callback samples"
+            echo "Observation JSON SHA256: $(sha256sum "$RUNNER_TEMP/ZS03_SYNTHETIC_STAMP_OBSERVATION.json" | awk '{print $1}')"
+            echo "Future independent UTC witness and full end-to-end 100ms upper bound: BLOCKED"
+            echo "Binance REST GET = 0; Binance WS = 0; NTS network probe = 0"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Preserve short-lived synthetic timing JSON (not independent custody)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ZS03-synthetic-stamp-observation-${{ github.event.pull_request.head.sha }}
+          path: ${{ runner.temp }}/ZS03_SYNTHETIC_STAMP_OBSERVATION.json
+          if-no-files-found: error
+          retention-days: 7
+  independent-clock:
+    # The single authorized live clock probe succeeded on this exact head.
+    # Do not repeat it for a Windows raw-byte checkout regression fix.
+    if: ${{ github.event.pull_request.head.sha == '39b890530286267b0e1bb975e53147c6c499116d' }}
+    name: one-shot independent authenticated NTS witness (NOT market PIT)
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Bounded independent UTC witness attempt only
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "SOURCE=Cloudflare NTS: time.cloudflare.com ; MARKET_GET=0 ; MARKET_WS=0"
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y chrony
+          sudo systemctl stop chrony || true
+          # chronyd drops root privileges before reading its config.
+          # RUNNER_TEMP is 0700 and was therefore inaccessible to _chrony.
+          WORK="/tmp/zs03-p0-clock-${GITHUB_RUN_ID}"
+          mkdir -p "$WORK"
+          chmod 755 "$WORK"
+          cat > "$WORK/chrony.conf" <<EOF
+          server time.cloudflare.com iburst nts minpoll 4 maxpoll 4
+          port 0
+          EOF
+          chmod 644 "$WORK/chrony.conf"
+          # Ubuntu confines chronyd with AppArmor; config must be in /etc/chrony.
+          sudo install -m 644 "$WORK/chrony.conf" /etc/chrony/chrony-p0-one-shot.conf
+          sudo timeout 95s chronyd -x -d -f /etc/chrony/chrony-p0-one-shot.conf > "$WORK/daemon.log" 2>&1 &
+          PID=$!
+          trap 'sudo kill "$PID" 2>/dev/null || true; sudo rm -f /etc/chrony/chrony-p0-one-shot.conf' EXIT
+          sleep 2
+          if ! kill -0 "$PID" 2>/dev/null; then
+            echo "CLOCK_BLOCKED_DAEMON_EARLY_EXIT"
+            tail -n 100 "$WORK/daemon.log" || true
+            exit 1
+          fi
+          SELECTED=0
+          for i in $(seq 1 25); do
+            if sudo chronyc -n sources 2>/dev/null | grep -qE '^[[:space:]]*\^\*[[:space:]]+'; then
+              SELECTED=1
+              break
+            fi
+            sleep 3
+          done
+          # First selected NTS sample can have high chrony root dispersion.
+          # Allow bounded source settling, NEVER lower the approved 1.5s bound.
+          if [ "$SELECTED" = 1 ]; then
+            for i in $(seq 1 16); do
+              DISP="$(sudo chronyc -n tracking | awk '/^Root dispersion/{print $4}')"
+              if python -c 'import math,sys; x=float(sys.argv[1]); sys.exit(0 if math.isfinite(x) and x < 1.0 else 1)' "$DISP" 2>/dev/null; then
+                break
+              fi
+              sleep 4
+            done
+          fi
+          if ! sudo chronyc -n tracking > "$WORK/tracking.txt"; then
+            echo "CLOCK_BLOCKED_DAEMON_UNREACHABLE"
+            tail -n 100 "$WORK/daemon.log" || true
+            exit 1
+          fi
+          cat "$WORK/tracking.txt"
+          sudo chronyc -n authdata | tee "$WORK/auth.txt"
+          sudo chronyc -n ntpdata | tee "$WORK/ntp.txt"
+          sudo chronyc -n sources -v | tee "$WORK/sources.txt"
+          if [ "$SELECTED" != 1 ]; then
+            echo "CLOCK_BLOCKED_NO_AUTHENTICATED_SELECTED_SOURCE"
+            tail -n 50 "$WORK/daemon.log" || true
+            exit 1
+          fi
+          python scripts/p0-nts-witness.py \
+            --tracking "$WORK/tracking.txt" \
+            --auth "$WORK/auth.txt" \
+            --ntp "$WORK/ntp.txt" \
+            --sources "$WORK/sources.txt"
+          echo "CLOCK_PROBE_COMPLETED_NO_MARKET_OR_SYSTEM_CLOCK_CHANGE"

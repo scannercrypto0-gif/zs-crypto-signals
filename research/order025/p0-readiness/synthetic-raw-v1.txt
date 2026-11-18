@@ -1,0 +1,6 @@
+ZS03-P0-SYNTHETIC-RAW-V1
+study=ZS03-P0-UTC-CUSTODY-FIELD-READINESS-001
+origin=SYNTHETIC_ONLY
+symbol=NONE
+market_requests=0
+payload=raw-receipt-test-0001
