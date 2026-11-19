@@ -22,7 +22,9 @@ if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administra
   # Use an explicit process exit code: a PowerShell host's generic success status
   # must never be mistaken for proof that the elevated collector was invoked.
   [Console]::Error.WriteLine('ADMINISTRATOR_REQUIRED')
-  exit 73
+  # Force the host process exit status, not just a PowerShell script status.
+  # A successful process-launch wrapper must not mask a privilege denial.
+  [Environment]::Exit(73)
 }
 if ($Root -cne 'D:\ZS-SMART-GATE') { throw 'OWNED_ROOT_REQUIRED' }
 if (-not (Test-Path -LiteralPath 'D:\' -PathType Container)) { throw 'D_DRIVE_REQUIRED' }
