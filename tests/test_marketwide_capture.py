@@ -158,3 +158,132 @@ class BoundaryPreflightRegressionTests(TestCase):
             self.assertIsNone(receipt["snapshot"])
             self.assertIsNone(receipt["funnel"])
             self.assertEqual(receipt["live_e2e"], "LIVE_E2E_NOT_PROVEN")
+
+
+class Clock73SyntheticFullChainTests(TestCase):
+    """Actual four-frame packet/parser/ledger on fake public HTTP, never network."""
+
+    def _run_fixture(self, *, symbols, expire_after=None):
+        import json
+        from urllib.parse import parse_qs, urlsplit
+        from unittest.mock import patch
+        from test_marketwide_research import packet
+        from test_p0_clock_73 import valid_receipts
+        from zs_smart_gate import ops_windows_time as clock
+        from zs_smart_gate.marketwide_capture import run
+
+        fixtures = {symbol: packet(symbol=symbol) for symbol in symbols}
+        exemplar = next(iter(fixtures.values()))
+        boundary_ms = exemplar["boundary_ms"]
+        epoch = [boundary_ms / 1000 + 10]
+        observed = exemplar["frames"]["5m"]["received_at"]
+
+        class FakePublicHTTP:
+            def __init__(self):
+                self.calls = []
+            def open(self, request, timeout):
+                parsed = urlsplit(request.full_url)
+                endpoint = parsed.path.rsplit("/", 1)[-1]
+                params = parse_qs(parsed.query)
+                self.calls.append((endpoint, params))
+                if endpoint == "exchangeInfo":
+                    payload = {"symbols": [
+                        {"symbol": sym, "baseAsset": sym.removesuffix("USDT"),
+                         "quoteAsset": "USDT", "status": "TRADING",
+                         "isSpotTradingAllowed": True}
+                        for sym in symbols]}
+                elif endpoint == "ticker/24hr":
+                    payload = [{"symbol": sym, "quoteVolume": "50000000",
+                                "closeTime": boundary_ms} for sym in symbols]
+                elif endpoint == "ticker/bookTicker":
+                    payload = [{"symbol": sym, "bidPrice": "100",
+                                "askPrice": "100.01"} for sym in symbols]
+                elif endpoint == "klines":
+                    symbol = params["symbol"][0]
+                    frame = params["interval"][0]
+                    payload = fixtures[symbol]["frames"][frame]["rows"]
+                    self_test.assertEqual(params["endTime"][0],
+                                          str(boundary_ms // {
+                                              "5m": 300000, "30m": 1800000,
+                                              "1h": 3600000, "4h": 14400000
+                                          }[frame] * {
+                                              "5m": 300000, "30m": 1800000,
+                                              "1h": 3600000, "4h": 14400000
+                                          }[frame] - 1))
+                    if expire_after == "first_packet" and frame == "4h":
+                        epoch[0] = boundary_ms / 1000 + 91
+                    if expire_after == "first_frame" and frame == "5m":
+                        epoch[0] = boundary_ms / 1000 + 91
+                else:
+                    raise AssertionError("UNEXPECTED_TEST_ENDPOINT")
+                return Response(raw=json.dumps(payload).encode(), header="1544")
+
+        self_test = self
+        fake = FakePublicHTTP()
+        w32 = valid_receipts()
+        clock_commands = {tuple(argv): w32[name]
+                          for name, argv in clock.COMMANDS.items()}
+        with tempfile.TemporaryDirectory() as root:
+            capture = PublicCapture(root, opener=fake)
+            with patch("zs_smart_gate.marketwide_capture.time.time",
+                       side_effect=lambda: epoch[0]), \
+                 patch("zs_smart_gate.marketwide_capture.now", return_value=observed), \
+                 patch("zs_smart_gate.marketwide_capture._is_admin", return_value=True), \
+                 patch("zs_smart_gate.marketwide_capture.command",
+                       side_effect=lambda argv: clock_commands[tuple(argv)]), \
+                 patch("zs_smart_gate.marketwide_capture.sync_age", return_value=10):
+                result = run(Path(root), Path(root) / "cursor.sqlite",
+                             transport=capture, admin_clock_pilot=True)
+            persisted = json.loads((Path(root) / "result.json").read_text())
+            self.assertEqual(persisted, result)
+            self.assertEqual(result["clock"]["status"], "OPERATIONAL_TIME_ACCEPTED")
+            self.assertEqual(result["clock"]["policy_sha256"], clock.REVIEWED_POLICY_SHA256)
+            self.assertEqual(result["qualification"], "QV1_REAL_POLICY_BLOCKED")
+            self.assertEqual(result["live_e2e"], "LIVE_E2E_NOT_PROVEN")
+            self.assertEqual(result["estimated_weight"], capture.weight)
+            self.assertEqual(result["requests"], len(fake.calls))
+            self.assertTrue((Path(root) / "requests.jsonl").is_file())
+            return result, fake.calls
+
+    def test_positive_end_to_end_four_closed_timeframes_one_pair(self):
+        result, calls = self._run_fixture(symbols=["OTHERUSDT"])
+        self.assertEqual([endpoint for endpoint, _ in calls],
+                         ["exchangeInfo", "ticker/24hr", "ticker/bookTicker",
+                          "klines", "klines", "klines", "klines"])
+        self.assertEqual([params["interval"][0] for endpoint, params in calls
+                          if endpoint == "klines"], ["5m", "30m", "1h", "4h"])
+        funnel = result["funnel"]
+        self.assertEqual(funnel["attempted"], 1)
+        self.assertEqual(funnel["source_validated"], 1)
+        self.assertEqual(funnel["directionally_evaluated"], 2)
+        self.assertEqual(funnel["coverage"], "MARKET_COVERAGE_VERIFIED")
+        self.assertIsNone(funnel["stopped_reason"])
+        directions = funnel["actual_evaluations"][0]["results"]
+        self.assertEqual({row["direction"] for row in directions}, {"UP", "DOWN"})
+        self.assertTrue(all(row["source_validated"] for row in directions))
+        self.assertEqual({row["signal_id"] for row in directions}, {None})
+        self.assertEqual(funnel["production_signals"], 0)
+
+    def test_expiry_after_first_packet_before_second_pair_is_precise(self):
+        result, calls = self._run_fixture(
+            symbols=["OTHERUSDT", "SECONDUSDT"], expire_after="first_packet")
+        self.assertEqual(len(calls), 7)
+        self.assertEqual(sum(endpoint == "klines" for endpoint, _ in calls), 4)
+        self.assertEqual(result["funnel"]["attempted"], 1)
+        self.assertEqual(result["funnel"]["source_validated"], 1)
+        self.assertEqual(result["funnel"]["eligible"], 2)
+        self.assertEqual(result["funnel"]["stopped_reason"], "CANDLE_ENTRY_WINDOW_EXPIRED")
+        self.assertEqual(result["stop"], "CANDLE_ENTRY_WINDOW_EXPIRED")
+        self.assertFalse(result["funnel"]["stopped_due_to_quota"])
+
+    def test_mid_packet_expiry_stops_next_candle_http_fail_closed(self):
+        result, calls = self._run_fixture(
+            symbols=["OTHERUSDT"], expire_after="first_frame")
+        self.assertEqual(len(calls), 4)
+        self.assertEqual(sum(endpoint == "klines" for endpoint, _ in calls), 1)
+        self.assertEqual(result["funnel"]["attempted"], 1)
+        self.assertEqual(result["funnel"]["source_validated"], 0)
+        self.assertEqual(result["funnel"]["stopped_reason"], "CANDLE_ENTRY_WINDOW_EXPIRED")
+        self.assertEqual(result["stop"], "CANDLE_ENTRY_WINDOW_EXPIRED")
+        self.assertEqual(result["funnel"]["coverage"], "MARKET_COVERAGE_PARTIAL")
+        self.assertFalse(result["funnel"]["stopped_due_to_quota"])
