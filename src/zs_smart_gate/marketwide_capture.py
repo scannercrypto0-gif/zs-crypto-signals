@@ -211,6 +211,9 @@ def run(root, cursor, *, transport=None, admin_clock_pilot=False):
         def fetch(item):
             receipts = []
             for frame, period in FRAMES.items():
+                # Never issue a candle GET after the original 30m entry window.
+                if not boundary_preflight(time.time(), boundary_ms=boundary)["admitted"]:
+                    raise PauseScan("CANDLE_ENTRY_WINDOW_EXPIRED")
                 end = boundary // period * period
                 receipts.append(transport.get("klines", dict(
                     symbol=item["symbol"], interval=frame, endTime=str(end-1),
@@ -227,7 +230,11 @@ def run(root, cursor, *, transport=None, admin_clock_pilot=False):
             result["funnel"] = ledger.chunk(
                 scan, fetch, max_pairs=2,
                 healthy=lambda: transport.healthy() and clock["status"] == "OPERATIONAL_TIME_ACCEPTED"
-                and boundary_preflight(time.time(), boundary_ms=boundary)["admitted"])
+                and boundary_preflight(time.time(), boundary_ms=boundary)["admitted"],
+                stop_reason=lambda: (
+                    "CANDLE_ENTRY_WINDOW_EXPIRED"
+                    if not boundary_preflight(time.time(), boundary_ms=boundary)["admitted"]
+                    else "CLOCK_SOURCE_OR_BUDGET_UNHEALTHY"))
     except PauseScan as exc:
         result["stop"] = str(exc)
     except (ValueError, KeyError, TypeError):
