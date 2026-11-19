@@ -232,6 +232,19 @@ if ($Action -eq 'StartForeground') {
   if (-not $LiveReadOnly) { throw 'EXPLICIT_LIVE_READ_ONLY_SWITCH_REQUIRED' }
   if (-not (Test-Path -LiteralPath $disabledFile)) { throw 'DISABLED_INSTALL_MARKER_REQUIRED' }
   if (Test-Path -LiteralPath $lockFile) { throw 'SHADOW_LOCK_PRESENT_STOP_OR_INVESTIGATE' }
+  # Operator-visible 30m entry check before any child starts or public GET.
+  # This cannot guarantee downstream readiness: discovery may exceed the
+  # remaining 90-second window, in which case the Python scan stops safely.
+  $utcNow=[DateTimeOffset]::UtcNow
+  $epochMs=$utcNow.ToUnixTimeMilliseconds()
+  $boundaryMs=[long]([math]::Floor($epochMs / 1800000) * 1800000)
+  $ageSeconds=($epochMs - $boundaryMs) / 1000.0
+  $remainingSeconds=[math]::Max(0.0, 90.0 - $ageSeconds)
+  Write-Output ("CANDLE_ENTRY_PREFLIGHT BOUNDARY_MS={0} AGE_SECONDS={1:F3} REMAINING_SECONDS={2:F3}" -f $boundaryMs,$ageSeconds,$remainingSeconds)
+  if ($ageSeconds -gt 90.0 -or $ageSeconds -lt 0.0) {
+    Write-Output 'CANDLE_ENTRY_PREFLIGHT_BLOCKED_NO_PUBLIC_GETS'
+    throw 'CANDLE_ENTRY_WINDOW_EXPIRED_BEFORE_LAUNCH'
+  }
   if (Test-Path -LiteralPath $stopFile) { Remove-Item -LiteralPath $stopFile }
   $env:PYTHONPATH = (Join-Path $Root 'repo\src')
   $env:TEMP = Join-Path $Root 'temp'
