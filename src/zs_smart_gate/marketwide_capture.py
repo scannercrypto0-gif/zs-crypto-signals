@@ -31,6 +31,25 @@ MAX_BODY = 16 * 1024 * 1024
 MAX_TOTAL_BODY = 32 * 1024 * 1024
 WEIGHTS = {"exchangeInfo": 20, "ticker/24hr": 80, "ticker/bookTicker": 4, "klines": 2}
 
+# Preserve the existing 90-second 30m-boundary entry gate. This is not a
+# scheduler and never waits for a future market boundary.
+CANDLE_ENTRY_WINDOW_SECONDS = 90
+
+
+def boundary_preflight(epoch_seconds, *, boundary_ms=None):
+    """Public pure gate: evaluate the real 30m boundary before any HTTP."""
+    if boundary_ms is None:
+        boundary_ms = int(epoch_seconds * 1000) // 1800000 * 1800000
+    age_s = epoch_seconds - boundary_ms / 1000
+    remaining_s = CANDLE_ENTRY_WINDOW_SECONDS - age_s
+    admitted = 0 <= age_s <= CANDLE_ENTRY_WINDOW_SECONDS
+    return dict(boundary_ms=boundary_ms, age_seconds=round(age_s, 3),
+                remaining_seconds=round(max(0.0, remaining_s), 3),
+                freshness_window_seconds=CANDLE_ENTRY_WINDOW_SECONDS,
+                admitted=admitted,
+                status="WITHIN_CANDLE_ENTRY_WINDOW" if admitted
+                       else "CANDLE_ENTRY_WINDOW_EXPIRED")
+
 
 class PublicCapture:
     def __init__(self, root, *, opener=None, monotonic=time.monotonic):
@@ -154,6 +173,19 @@ def run(root, cursor, *, transport=None, admin_clock_pilot=False):
     result = dict(status="MARKET_COVERAGE_PARTIAL", qualification="QV1_REAL_POLICY_BLOCKED",
                   live_e2e="LIVE_E2E_NOT_PROVEN", source="BINANCE_SPOT",
                   snapshot=None, funnel=None, stop=None)
+    # Fail fast before expensive discovery, without modifying clock/source,
+    # quota limits, or the existing 90s guard at each candle claim.
+    preflight = boundary_preflight(time.time())
+    result["boundary_preflight"] = preflight
+    if not preflight["admitted"]:
+        result["stop"] = "CANDLE_ENTRY_WINDOW_EXPIRED_BEFORE_DISCOVERY"
+        result["requests"] = transport.attempts
+        result["estimated_weight"] = transport.weight
+        result["body_bytes"] = transport.bytes
+        result["observed_used_weight"] = transport.used
+        result["receipt_manifest_sha256"] = digest(canonical(transport.receipts))
+        (root/"result.json").write_bytes(canonical(result))
+        return result
     try:
         for path in ("exchangeInfo", "ticker/24hr", "ticker/bookTicker"):
             transport.get(path, {"showPermissionSets": "false"} if path == "exchangeInfo" else {})
@@ -170,7 +202,8 @@ def run(root, cursor, *, transport=None, admin_clock_pilot=False):
                                           else "NORMAL_USER_NO_WITNESS")
         result["clock"]["policy_sha256"] = (REVIEWED_POLICY_SHA256 if admin_clock_pilot else None)
         # No invented reviewed policy. Discovery is distinct from clock-admitted scans.
-        boundary = int(time.time()*1000) // 1800000 * 1800000
+        boundary = preflight["boundary_ms"]
+        result["boundary_preflight_at_scan"] = boundary_preflight(time.time(), boundary_ms=boundary)
         ledger = ScanLedger(cursor)
         scan = ledger.register(snap, boundary)
 
@@ -185,10 +218,15 @@ def run(root, cursor, *, transport=None, admin_clock_pilot=False):
                                         scope="PUBLIC_SPOT_CONDITIONAL_RESEARCH",
                                         clock_status="OPERATIONAL_TIME_ACCEPTED")
 
-        result["funnel"] = ledger.chunk(
-            scan, fetch, max_pairs=2,
-            healthy=lambda: transport.healthy() and clock["status"] == "OPERATIONAL_TIME_ACCEPTED"
-            and 0 <= time.time()-boundary/1000 <= 90)
+        if not result["boundary_preflight_at_scan"]["admitted"]:
+            # Preserve the registered snapshot but never claim a pair or send
+            # a candle GET after the entry window closes.
+            result["funnel"] = ledger.report(scan, stopped="CANDLE_ENTRY_WINDOW_EXPIRED")
+        else:
+            result["funnel"] = ledger.chunk(
+                scan, fetch, max_pairs=2,
+                healthy=lambda: transport.healthy() and clock["status"] == "OPERATIONAL_TIME_ACCEPTED"
+                and boundary_preflight(time.time(), boundary_ms=boundary)["admitted"])
     except PauseScan as exc:
         result["stop"] = str(exc)
     except (ValueError, KeyError, TypeError):
@@ -198,6 +236,8 @@ def run(root, cursor, *, transport=None, admin_clock_pilot=False):
             result["discovery_only"] = discovery_only(transport.receipts[0])
         except (ValueError, KeyError, TypeError):
             result["discovery_only"] = {"status": "UNVERIFIED"}
+    if result.get("funnel") and result["funnel"].get("stopped_reason"):
+        result["stop"] = result["funnel"]["stopped_reason"]
     result["requests"] = transport.attempts
     result["estimated_weight"] = transport.weight
     result["body_bytes"] = transport.bytes
