@@ -94,3 +94,67 @@ class MarketCaptureTests(TestCase):
             self.assertEqual(result["spot_discovered"], 1)
             self.assertEqual(result["actually_evaluated"], 0)
             self.assertEqual(result["rows"][0]["eligibility"], "UNKNOWN")
+
+
+class BoundaryPreflightRegressionTests(TestCase):
+    """Deterministic 30m entry-window checks with zero live HTTP."""
+
+    def test_inside_first_90_seconds_is_admitted(self):
+        from zs_smart_gate.marketwide_capture import boundary_preflight
+        boundary = 1795086000000
+        for age in (0, 45, 90):
+            receipt = boundary_preflight(boundary / 1000 + age, boundary_ms=boundary)
+            self.assertTrue(receipt["admitted"])
+            self.assertEqual(receipt["boundary_ms"], boundary)
+            self.assertEqual(receipt["freshness_window_seconds"], 90)
+
+    def test_expired_window_is_blocked_with_explicit_age(self):
+        from zs_smart_gate.marketwide_capture import boundary_preflight
+        boundary = 1795086000000
+        expired = boundary_preflight(boundary / 1000 + 1020, boundary_ms=boundary)
+        self.assertEqual(expired["status"], "CANDLE_ENTRY_WINDOW_EXPIRED")
+        self.assertFalse(expired["admitted"])
+        self.assertEqual(expired["age_seconds"], 1020.0)
+        self.assertEqual(expired["remaining_seconds"], 0.0)
+
+    def test_outside_window_prevents_every_http_even_with_admin_clock(self):
+        from unittest.mock import patch
+        from zs_smart_gate.marketwide_capture import run
+        with tempfile.TemporaryDirectory() as root:
+            # A real PublicCapture would attempt HTTP if the preflight regressed.
+            opener = Opener(Response())
+            transport = PublicCapture(root, opener=opener)
+            with patch("zs_smart_gate.marketwide_capture.time.time",
+                       return_value=1795086000 + 1020):
+                with patch("zs_smart_gate.marketwide_capture._is_admin", return_value=True):
+                    receipt = run(Path(root), Path(root)/"cursor.sqlite",
+                                  transport=transport, admin_clock_pilot=False)
+            self.assertEqual(receipt["stop"], "CANDLE_ENTRY_WINDOW_EXPIRED_BEFORE_DISCOVERY")
+            self.assertEqual(receipt["requests"], 0)
+            self.assertEqual(receipt["estimated_weight"], 0)
+            self.assertEqual(opener.calls, 0)
+            self.assertIsNone(receipt["funnel"])
+            self.assertEqual(receipt["qualification"], "QV1_REAL_POLICY_BLOCKED")
+            self.assertTrue((Path(root)/"result.json").is_file())
+
+    def test_clock_acceptance_never_overrides_expired_window(self):
+        from unittest.mock import patch
+        from zs_smart_gate.marketwide_capture import run
+        from zs_smart_gate import ops_windows_time as clock
+        from zs_smart_gate.stage05_contracts import canonical, digest
+        policy = {"policy_id": clock.POLICY_ID, "source": clock.SOURCE,
+                  "limits": clock.CANDIDATE}
+        self.assertEqual(digest(canonical(policy)), clock.REVIEWED_POLICY_SHA256)
+        with tempfile.TemporaryDirectory() as root:
+            opener = Opener(Response())
+            transport = PublicCapture(root, opener=opener)
+            with patch("zs_smart_gate.marketwide_capture.time.time",
+                       return_value=1795086000 + 1020):
+                with patch("zs_smart_gate.marketwide_capture._is_admin", return_value=True):
+                    receipt = run(Path(root), Path(root)/"cursor.sqlite",
+                                  transport=transport, admin_clock_pilot=True)
+            self.assertEqual(receipt["requests"], 0)
+            self.assertEqual(opener.calls, 0)
+            self.assertIsNone(receipt["snapshot"])
+            self.assertIsNone(receipt["funnel"])
+            self.assertEqual(receipt["live_e2e"], "LIVE_E2E_NOT_PROVEN")
