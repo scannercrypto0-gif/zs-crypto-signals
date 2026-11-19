@@ -56,7 +56,7 @@ def assess(receipts, *, sync_age_s=None, policy=None):
         # code alone; reject diagnostic failures on either output stream.
         output = str(row.get("stdout", "")) + "\n" + str(row.get("stderr", ""))
         failed_output = re.search(
-            r"(?i)(0x80070005|access\\s+(?:is\\s+)?denied|"
+            r"(?i)(0x80070005|access[ ]+(?:is[ ]+)?denied|"
             r"the following error occurred)", output
         )
         if row["exit"] != 0 or failed_output:
