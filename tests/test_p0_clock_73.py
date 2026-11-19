@@ -60,6 +60,16 @@ class Clock73Tests(unittest.TestCase):
         self.assertNotIn("Register-ScheduledTask", script)
         self.assertNotIn("Send-MailMessage", script)
 
+    def test_operator_preflight_and_summary_are_read_only(self):
+        script = (ROOT / "scripts" / "order007-windows.ps1").read_text(encoding="utf-8")
+        self.assertIn("CANDLE_ENTRY_PREFLIGHT_BLOCKED_NO_PUBLIC_GETS", script)
+        self.assertIn("CANDLE_ENTRY_WINDOW_EXPIRED_BEFORE_LAUNCH", script)
+        self.assertIn("CANDLE_ENTRY_PREFLIGHT BOUNDARY_MS=", script)
+        self.assertIn("SHADOW_STOP_REASON=", script)
+        self.assertIn("MARKET_ELIGIBLE=", script)
+        self.assertIn("PUBLIC_GETS=", script)
+        self.assertNotIn("Register-ScheduledTask", script)
+
     def test_policy_change_fails_closed(self):
         policy = {"policy_id": clock.POLICY_ID, "source": clock.SOURCE,
                   "limits": {**clock.CANDIDATE, "max_offset_s": 1.5}}
