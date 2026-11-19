@@ -82,8 +82,25 @@ try {
     if ($suite.exit -ne 0) { [void]$failures.Add('REGRESSION_SUITE_FAILED_'+$label) }
   }
   $w32tm=Join-Path $env:SystemRoot 'System32\w32tm.exe'
+  $normalClockStatus='NOT_MEASURED'
   foreach($what in @('source','configuration')) {
     $probe=RunBounded ('normal-'+$what) $w32tm @('/query',('/'+$what)) 8
+    # w32tm can return EXIT=0 while stdout explicitly says Access Denied.
+    # Preserve raw exit, but record an independent semantic result.
+    $rawOut=[IO.File]::ReadAllText((Join-Path $folder ('normal-'+$what+'.stdout.txt')))
+    $rawErr=[IO.File]::ReadAllText((Join-Path $folder ('normal-'+$what+'.stderr.txt')))
+    $raw=$rawOut+[Environment]::NewLine+$rawErr
+    $denied=[bool]($raw -match '(?i)(0x80070005|access[ ]+(?:is[ ]+)?denied)')
+    $reportedError=[bool]($raw -match '(?i)(the following error occurred|0x[0-9a-f]{8})')
+    $semantic=$(if($denied){'ACCESS_DENIED'}elseif($probe.exit -ne 0 -or $probe.timed_out -or $reportedError -or [string]::IsNullOrWhiteSpace($raw)){'COMMAND_UNVERIFIED'}else{'OUTPUT_RECEIVED_NOT_OPERATIONALLY_APPROVED'})
+    if($semantic -eq 'ACCESS_DENIED'){$normalClockStatus='ACCESS_DENIED'}
+    [void]$checks.Add([pscustomobject]@{
+      name=('normal-'+$what+'-semantic')
+      raw_exit=$probe.exit
+      status=$semantic
+      operationally_approved=$false
+    })
+    Write-Output "NORMAL_$($what.ToUpperInvariant())=$semantic RAW_EXIT=$($probe.exit)"
   }
   if (-not $isAdmin) {
     # Distinct exit and stderr marker are required; do not infer denial from
@@ -150,6 +167,7 @@ finally {
     expected_tree=$ExpectedTree; observed_tree=$tree
     python=$pythonVersion; powershell=$PSVersionTable.PSVersion.ToString()
     normal_user=$normalContext; elevated_collector=$elevated
+    normal_clock_status=$normalClockStatus
     targeted_tests_exit=$testExit; targeted_tests_discovered=$testCount
     checks=@($checks.ToArray());errors=@($failures.ToArray())
     clock_policy='NOT_INDEPENDENTLY_APPROVED';runtime_bridge='NOT_ESTABLISHED'
@@ -163,6 +181,7 @@ finally {
   Write-Output "HEAD=$head TREE=$tree PYTHON=$pythonVersion"
   Write-Output "TESTS_EXIT=$testExit COUNT=$testCount NORMAL=$normalContext ADMIN=$elevated"
   Write-Output "ERRORS=$($failures.Count) POLICY_UNAPPROVED SHADOW_NOT_RUN"
+  foreach($entry in @($failures.ToArray())) { Write-Output "ERROR_DETAIL=$entry" }
 }
 if($failures.Count -gt 0 -or $testExit -ne 0 -or $head -cne $ExpectedHead -or
    $tree -cne $ExpectedTree -or $pythonVersion -ne '3.12.10') {
