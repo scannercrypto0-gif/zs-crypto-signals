@@ -44,7 +44,7 @@ class P0ClockPR72Tests(unittest.TestCase):
         self.assertNotIn("w32tm /resync", text)
         # Real Windows acceptance separately tests this exact process exit.
         self.assertIn("[Console]::Error.WriteLine('ADMINISTRATOR_REQUIRED')", text)
-        self.assertIn("exit 73", text)
+        self.assertIn("[Environment]::Exit(73)", text)
         acceptance = (ROOT / "scripts" / "p0-pr72-windows-acceptance.ps1").read_text(
             encoding="utf-8"
         )
