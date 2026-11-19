@@ -258,6 +258,31 @@ if ($Action -eq 'StartForeground') {
       qualification='BLOCKED_UNTIL_SCIENTIFIC_AND_CLOCK_ACCEPTANCE'
     }
     Write-Output "SHADOW_FOREGROUND_EXIT=$code DATA=$dest"
+    # Concise receipt only; never stream the giant private snapshot.
+    $summaryPath=Join-Path $dest 'result.json'
+    if (Test-Path -LiteralPath $summaryPath -PathType Leaf) {
+      try {
+        $summary=Get-Content -LiteralPath $summaryPath -Raw | ConvertFrom-Json
+        $stopReason=$summary.stop
+        if (-not $stopReason -and $null -ne $summary.funnel) {
+          $stopReason=$summary.funnel.stopped_reason
+        }
+        if (-not $stopReason) { $stopReason='NONE_RECORDED' }
+        Write-Output "SHADOW_STOP_REASON=$stopReason"
+        if ($null -ne $summary.boundary_preflight) {
+          $bp=$summary.boundary_preflight
+          Write-Output "CANDLE_WINDOW=$($bp.status) BOUNDARY_MS=$($bp.boundary_ms) AGE_SECONDS=$($bp.age_seconds) REMAINING_SECONDS=$($bp.remaining_seconds)"
+        }
+        if ($null -ne $summary.funnel) {
+          Write-Output "MARKET_ELIGIBLE=$($summary.funnel.eligible) ATTEMPTED=$($summary.funnel.attempted) COVERAGE_PCT=$($summary.funnel.coverage_pct)"
+        }
+        Write-Output "PUBLIC_GETS=$($summary.requests) ESTIMATED_WEIGHT=$($summary.estimated_weight) OBSERVED_USED_WEIGHT=$($summary.observed_used_weight)"
+      } catch {
+        Write-Output 'SHADOW_SUMMARY_UNREADABLE_FAIL_CLOSED'
+      }
+    } else {
+      Write-Output 'SHADOW_RESULT_MISSING'
+    }
     if ($code -ne 0) { throw "SHADOW_PARTIAL_OR_STOP_EXIT=$code" }
   } finally {
     if (Test-Path -LiteralPath $lockFile) { Remove-Item -LiteralPath $lockFile -Force }
