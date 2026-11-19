@@ -104,17 +104,59 @@ try {
     Write-Output "NORMAL_$($what.ToUpperInvariant())=$semantic RAW_EXIT=$($probe.exit)"
   }
   if (-not $isAdmin) {
-    # Distinct exit and stderr marker are required; do not infer denial from
-    # a successful PowerShell host invocation or an unrelated launch failure.
+    # Direct .NET ProcessStartInfo owns the child handle until ExitCode is read.
+    # Start-Process -PassThru on Windows PowerShell 5.1 has returned a blank
+    # ExitCode in owner evidence even after WaitForExit and Refresh.
     $denyScript=Join-Path $repo 'scripts\p0-windows-time-admin-evidence.ps1'
-    $deny=RunBounded 'nonadmin-collector' (Join-Path $PSHOME 'powershell.exe') @(
-      '-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',('"'+$denyScript+'"')
-    ) 12
-    $denialStderr=Get-Content -LiteralPath (Join-Path $folder 'nonadmin-collector.stderr.txt') -Raw
-    if ($deny.exit -ne 73 -or $deny.timed_out) {
+    $denyOut=Join-Path $folder 'nonadmin-collector.stdout.txt'
+    $denyErr=Join-Path $folder 'nonadmin-collector.stderr.txt'
+    $denyExit=$null
+    $denyTimedOut=$false
+    $denyProcess=$null
+    $denyStdout=''
+    $denyStderr=''
+    try {
+      $psi=[Diagnostics.ProcessStartInfo]::new()
+      $psi.FileName=Join-Path $PSHOME 'powershell.exe'
+      $psi.Arguments='-NoProfile -NonInteractive -ExecutionPolicy Bypass -File "'+$denyScript+'"'
+      $psi.UseShellExecute=$false
+      $psi.CreateNoWindow=$true
+      $psi.RedirectStandardOutput=$true
+      $psi.RedirectStandardError=$true
+      $denyProcess=[Diagnostics.Process]::new()
+      $denyProcess.StartInfo=$psi
+      if (-not $denyProcess.Start()) { throw 'DENIAL_PROCESS_START_FAILED' }
+      # Async readers avoid child-pipe deadlock; streams are small for denial.
+      $outTask=$denyProcess.StandardOutput.ReadToEndAsync()
+      $errTask=$denyProcess.StandardError.ReadToEndAsync()
+      if (-not $denyProcess.WaitForExit(12000)) {
+        $denyTimedOut=$true
+        try { $denyProcess.Kill(); [void]$denyProcess.WaitForExit(2000) } catch {}
+      } else {
+        $denyProcess.WaitForExit()
+        $denyExit=[int]$denyProcess.ExitCode
+        $denyStdout=$outTask.GetAwaiter().GetResult()
+        $denyStderr=$errTask.GetAwaiter().GetResult()
+      }
+    } catch {
+      [void]$failures.Add('NONADMIN_COLLECTOR_PROCESS_CAPTURE_FAILED')
+    } finally {
+      if ($null -ne $denyProcess) { $denyProcess.Dispose() }
+      [IO.File]::WriteAllText($denyOut,$denyStdout,$utf8)
+      [IO.File]::WriteAllText($denyErr,$denyStderr,$utf8)
+    }
+    [void]$checks.Add([pscustomobject]@{
+      name='nonadmin-collector'
+      exit=$denyExit
+      timed_out=$denyTimedOut
+      timeout_seconds=12
+      stdout_sha256=(Hash $denyOut)
+      stderr_sha256=(Hash $denyErr)
+    })
+    if ($null -eq $denyExit -or $denyExit -ne 73 -or $denyTimedOut) {
       [void]$failures.Add('NONADMIN_COLLECTOR_DENIAL_EXIT_NOT_PROVEN')
     }
-    if ($denialStderr -notmatch '(?m)^ADMINISTRATOR_REQUIRED\s*$') {
+    if ($denyStderr -notmatch '(?m)^ADMINISTRATOR_REQUIRED\s*$') {
       [void]$failures.Add('NONADMIN_COLLECTOR_DENIAL_MARKER_NOT_PROVEN')
     }
   }
