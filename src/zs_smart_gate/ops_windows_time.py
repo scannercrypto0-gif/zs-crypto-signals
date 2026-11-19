@@ -51,7 +51,15 @@ def assess(receipts, *, sync_age_s=None, policy=None):
     blockers = []
     for name in COMMANDS:
         row = receipts[name]
-        if row["exit"] != 0:
+        # Windows w32tm may emit an access/error diagnostic on stdout even
+        # when the process exit code is zero. Never infer authority from exit
+        # code alone; reject diagnostic failures on either output stream.
+        output = str(row.get("stdout", "")) + "\n" + str(row.get("stderr", ""))
+        failed_output = re.search(
+            r"(?i)(0x80070005|access\\s+(?:is\\s+)?denied|"
+            r"the following error occurred)", output
+        )
+        if row["exit"] != 0 or failed_output:
             blockers.append(name.upper()+"_COMMAND_FAILED")
         if not 0 <= row["wall_step_disagreement_s"] <= CANDIDATE["max_step_s"]:
             blockers.append(name.upper()+"_TIME_STEP")
