@@ -96,7 +96,7 @@ def inventory(receipts, decision_at, *, scope):
             market_data = asdict(market)
             for key in ("quote_volume_24h", "bid", "ask"):
                 market_data[key] = str(market_data[key])
-            market_data["observed_at"] = market.observed_at.isoformat()
+            market_data["observed_at"] = market.observed_at.isoformat().replace("+00:00", "Z")
         rows.append(dict(symbol=symbol, base=info.get("baseAsset"), quote=info.get("quoteAsset"),
                          active=active, eligible=not reasons, reasons=sorted(set(reasons)),
                          available_at=arrivals[-1].isoformat(), market=market_data))
