@@ -186,7 +186,12 @@ class Clock73SyntheticFullChainTests(TestCase):
                 self.calls = []
             def open(self, request, timeout):
                 parsed = urlsplit(request.full_url)
-                endpoint = parsed.path.rsplit("/", 1)[-1]
+                # Preserve nested Binance endpoints: ticker/24hr and
+                # ticker/bookTicker must not collapse to their last segment.
+                prefix = "/api/v3/"
+                if not parsed.path.startswith(prefix):
+                    raise AssertionError("UNEXPECTED_TEST_API_PREFIX")
+                endpoint = parsed.path[len(prefix):]
                 params = parse_qs(parsed.query)
                 self.calls.append((endpoint, params))
                 if endpoint == "exchangeInfo":
