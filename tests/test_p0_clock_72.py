@@ -42,6 +42,14 @@ class P0ClockPR72Tests(unittest.TestCase):
         self.assertNotIn("Invoke-Expression", text)
         self.assertNotIn("Register-ScheduledTask", text)
         self.assertNotIn("w32tm /resync", text)
+        # Real Windows acceptance separately tests this exact process exit.
+        self.assertIn("[Console]::Error.WriteLine('ADMINISTRATOR_REQUIRED')", text)
+        self.assertIn("exit 73", text)
+        acceptance = (ROOT / "scripts" / "p0-pr72-windows-acceptance.ps1").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("NONADMIN_COLLECTOR_DENIAL_EXIT_NOT_PROVEN", acceptance)
+        self.assertIn("NONADMIN_COLLECTOR_DENIAL_MARKER_NOT_PROVEN", acceptance)
 
     def test_bounded_child_failure_and_preserved_raw_hashes(self):
         text = COLLECTOR.read_text(encoding="utf-8")
