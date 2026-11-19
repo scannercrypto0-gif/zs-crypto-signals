@@ -1,4 +1,5 @@
 import io
+import json
 from pathlib import Path
 import tempfile
 from unittest import TestCase
@@ -257,7 +258,9 @@ class Clock73SyntheticFullChainTests(TestCase):
                           if endpoint == "klines"], ["5m", "30m", "1h", "4h"])
         funnel = result["funnel"]
         self.assertEqual(funnel["attempted"], 1)
-        self.assertEqual(funnel["source_validated"], 1)
+        self.assertEqual(funnel["source_validated"], 1,
+                         msg="SOURCE_VALIDATION_DIAGNOSTIC=" + json.dumps(
+                             funnel["actual_evaluations"], sort_keys=True))
         self.assertEqual(funnel["directionally_evaluated"], 2)
         self.assertEqual(funnel["coverage"], "MARKET_COVERAGE_VERIFIED")
         self.assertIsNone(funnel["stopped_reason"])
@@ -273,7 +276,9 @@ class Clock73SyntheticFullChainTests(TestCase):
         self.assertEqual(len(calls), 7)
         self.assertEqual(sum(endpoint == "klines" for endpoint, _ in calls), 4)
         self.assertEqual(result["funnel"]["attempted"], 1)
-        self.assertEqual(result["funnel"]["source_validated"], 1)
+        self.assertEqual(result["funnel"]["source_validated"], 1,
+                         msg="SOURCE_VALIDATION_DIAGNOSTIC=" + json.dumps(
+                             result["funnel"]["actual_evaluations"], sort_keys=True))
         self.assertEqual(result["funnel"]["eligible"], 2)
         self.assertEqual(result["funnel"]["stopped_reason"], "CANDLE_ENTRY_WINDOW_EXPIRED")
         self.assertEqual(result["stop"], "CANDLE_ENTRY_WINDOW_EXPIRED")
