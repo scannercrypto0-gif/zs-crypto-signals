@@ -175,6 +175,7 @@ def run(root, cursor, *, transport=None, admin_clock_pilot=False):
                   snapshot=None, funnel=None, stop=None)
     # Fail fast before expensive discovery, without modifying clock/source,
     # quota limits, or the existing 90s guard at each candle claim.
+    # Existing 30m boundaries still govern packet identity.
     preflight = boundary_preflight(time.time())
     result["boundary_preflight"] = preflight
     if not preflight["admitted"]:
