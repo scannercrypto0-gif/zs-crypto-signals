@@ -50,6 +50,9 @@ class P0ClockPR72Tests(unittest.TestCase):
         )
         self.assertIn("NONADMIN_COLLECTOR_DENIAL_EXIT_NOT_PROVEN", acceptance)
         self.assertIn("NONADMIN_COLLECTOR_DENIAL_MARKER_NOT_PROVEN", acceptance)
+        self.assertIn("[Diagnostics.ProcessStartInfo]::new()", acceptance)
+        self.assertIn("$denyProcess.ExitCode", acceptance)
+        self.assertIn("ReadToEndAsync()", acceptance)
 
     def test_bounded_child_failure_and_preserved_raw_hashes(self):
         text = COLLECTOR.read_text(encoding="utf-8")
