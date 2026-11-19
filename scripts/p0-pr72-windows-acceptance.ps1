@@ -21,6 +21,7 @@ $failures=[Collections.Generic.List[string]]::new()
 $head=$null; $tree=$null; $pythonVersion=$null
 $testExit=$null; $testCount=$null
 $normalContext='UNKNOWN'; $elevated='NOT_REQUESTED'
+$normalClockStatus='NOT_MEASURED'
 function Hash([string]$Path) {
   if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) { return $null }
   return (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()
