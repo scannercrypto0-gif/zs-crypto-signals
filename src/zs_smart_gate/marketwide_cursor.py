@@ -85,14 +85,15 @@ class ScanLedger:
             if changed != 1:
                 raise ValueError("CLAIM_CONFLICT_OR_REPLAY")
 
-    def chunk(self, scan, fetch, *, max_pairs, healthy):
+    def chunk(self, scan, fetch, *, max_pairs, healthy, stop_reason=None):
         if type(max_pairs) is not int or not 1 <= max_pairs <= 4:
             raise ValueError("CHUNK_LIMIT_1_TO_4")
         stopped = None
         for _ in range(max_pairs):
             # Recheck time/budget before every claim; caller must also guard each GET.
             if not healthy():
-                stopped = "CLOCK_SOURCE_OR_BUDGET_UNHEALTHY"
+                # Optional caller diagnostic; health gate is still authoritative.
+                stopped = (stop_reason() if stop_reason is not None else None) or "CLOCK_SOURCE_OR_BUDGET_UNHEALTHY"
                 break
             item = self.claim(scan)
             if item is None:
@@ -105,8 +106,11 @@ class ScanLedger:
                     raise ValueError("FETCH_IDENTITY_MISMATCH")
                 result = evaluate(packet)
                 self.finish(scan, item["symbol"], "EVALUATED", result)
-            except PauseScan:
-                stopped = "QUOTA_CONNECTIVITY_OR_DEADLINE"
+            except PauseScan as exc:
+                # Preserve the one explicit window-expiry diagnostic, without
+                # mislabeling unrelated transport pauses as clock problems.
+                stopped = ("CANDLE_ENTRY_WINDOW_EXPIRED" if str(exc) == "CANDLE_ENTRY_WINDOW_EXPIRED"
+                           else "QUOTA_CONNECTIVITY_OR_DEADLINE")
                 self.finish(scan, item["symbol"], "PAUSED", [])
                 break
             except (ValueError, KeyError, TypeError):
