@@ -76,13 +76,19 @@ class P0ClockPR72Tests(unittest.TestCase):
         self.assertIn("OPERATIONAL_TOLERANCES_NOT_APPROVED", result["blockers"])
 
     def test_nonadmin_source_and_configuration_denials(self):
-        rows = receipts()
-        for name in ("source", "configuration"):
-            rows[name]["exit"] = 5
-            rows[name]["stdout"] = "Access is denied."
-        result = assess(rows, sync_age_s=10)
-        self.assertIn("SOURCE_COMMAND_FAILED", result["blockers"])
-        self.assertIn("CONFIGURATION_COMMAND_FAILED", result["blockers"])
+        # Real Windows proof showed w32tm access denial on stdout with EXIT=0.
+        # Both EXIT=0 and EXIT=5 must fail closed when the body says denied.
+        for code in (0, 5):
+            with self.subTest(exit=code):
+                rows = receipts()
+                for name in ("source", "configuration"):
+                    rows[name]["exit"] = code
+                    rows[name]["stdout"] = (
+                        "The following error occurred: Access is denied. (0x80070005)"
+                    )
+                result = assess(rows, sync_age_s=10)
+                self.assertIn("SOURCE_COMMAND_FAILED", result["blockers"])
+                self.assertIn("CONFIGURATION_COMMAND_FAILED", result["blockers"])
 
     def test_changed_source_denied(self):
         rows = receipts()
