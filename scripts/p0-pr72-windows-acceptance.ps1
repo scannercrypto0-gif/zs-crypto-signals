@@ -86,9 +86,8 @@ try {
     $probe=RunBounded ('normal-'+$what) $w32tm @('/query',('/'+$what)) 8
   }
   if (-not $isAdmin) {
-    # An exit code by itself is not proof of the intended privilege guard.
-    # Demand the collector's explicit non-admin denial code AND marker.
-    # Inspect the raw output even if the child process unexpectedly exits 0.
+    # Distinct exit and stderr marker are required; do not infer denial from
+    # a successful PowerShell host invocation or an unrelated launch failure.
     $denyScript=Join-Path $repo 'scripts\p0-windows-time-admin-evidence.ps1'
     $deny=RunBounded 'nonadmin-collector' (Join-Path $PSHOME 'powershell.exe') @(
       '-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',('"'+$denyScript+'"')
@@ -97,77 +96,7 @@ try {
     if ($deny.exit -ne 73 -or $deny.timed_out) {
       [void]$failures.Add('NONADMIN_COLLECTOR_DENIAL_EXIT_NOT_PROVEN')
     }
-    if ($denialStderr -notmatch '(?m)^ADMINISTRATOR_REQUIRED\s*
-  if ($CollectElevated) {
-    if ($isAdmin) { $elevated='ADMIN_CONTEXT_SPLIT_NOT_PROVEN' }
-    else {
-      $previous=@(Get-ChildItem -LiteralPath (Join-Path $root 'validation') -Directory -Filter 'CLOCK-ADMIN-EVIDENCE-*' -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName })
-      $collector=Join-Path $repo 'scripts\p0-windows-time-admin-evidence.ps1'
-      $admin=$null
-      try {
-        $admin=Start-Process -FilePath (Join-Path $PSHOME 'powershell.exe') -Verb RunAs -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File',('"'+$collector+'"')) -PassThru -ErrorAction Stop
-        if($admin.WaitForExit(65000)) { $elevated="ADMIN_EXIT_$($admin.ExitCode)" }
-        else { $elevated='ADMIN_TIMEOUT';try{$admin.Kill();[void]$admin.WaitForExit(2000)}catch{} }
-      } catch { $elevated='ADMIN_UAC_DECLINED_OR_START_FAILED' }
-      finally {if($null -ne $admin){$admin.Dispose()}}
-      $fresh=@(Get-ChildItem -LiteralPath (Join-Path $root 'validation') -Directory -Filter 'CLOCK-ADMIN-EVIDENCE-*' -ErrorAction SilentlyContinue | Where-Object { $previous -notcontains $_.FullName })
-      if($fresh.Count -eq 1) {
-        $manifest=Join-Path $fresh[0].FullName 'report.json'
-        if(Test-Path -LiteralPath $manifest -PathType Leaf) {
-          $data=Get-Content -LiteralPath $manifest -Raw | ConvertFrom-Json
-          $valid=($data.schema -eq 'zs.windows-time.admin-evidence.v2' -and $data.elevated -eq $true -and $data.operational_policy_approved -eq $false -and $data.runtime_witness_authorized -eq $false -and @($data.commands).Count -eq 5)
-          foreach($item in @($data.commands)) {
-            foreach($stream in @('stdout','stderr')) {
-              $file=Join-Path $fresh[0].FullName ($item.command+'.'+$stream+'.txt')
-              $expected=$(if($stream -eq 'stdout'){$item.stdout_sha256}else{$item.stderr_sha256})
-              if((Hash $file) -cne $expected){$valid=$false}
-            }
-          }
-          $elevated+=$(if($valid){'_HASHES_VERIFIED'}else{'_HASHES_FAILED'})
-          [void]$checks.Add([pscustomobject]@{name='admin-evidence';path=$manifest;sha256=(Hash $manifest);hashes_verified=$valid})
-        }
-      }
-    }
-  }
-  if ($normalContext -ne 'NORMAL_USER_CONTEXT') {
-    [void]$failures.Add('NORMAL_USER_PRIVILEGE_CONTEXT_NOT_VERIFIED')
-  }
-  if ($testExit -ne 0 -or $testCount -ne 12) {
-    [void]$failures.Add('TARGETED_TESTS_NOT_ALL_PROVEN')
-  }
-  if ($CollectElevated -and $elevated -cne 'ADMIN_EXIT_0_HASHES_VERIFIED') {
-    [void]$failures.Add('ELEVATED_COLLECTOR_NOT_VERIFIED')
-  }
-} catch { [void]$failures.Add([string]$_.Exception.Message) }
-finally {
-  if(-not(Test-Path -LiteralPath $folder)){New-Item -ItemType Directory -Path $folder -Force | Out-Null}
-  $r=[ordered]@{
-    schema='zs.p0.pr72.windows-local-acceptance.v1'
-    created_utc=[DateTime]::UtcNow.ToString('o')
-    expected_head=$ExpectedHead; observed_head=$head
-    expected_tree=$ExpectedTree; observed_tree=$tree
-    python=$pythonVersion; powershell=$PSVersionTable.PSVersion.ToString()
-    normal_user=$normalContext; elevated_collector=$elevated
-    targeted_tests_exit=$testExit; targeted_tests_discovered=$testCount
-    checks=@($checks.ToArray());errors=@($failures.ToArray())
-    clock_policy='NOT_INDEPENDENTLY_APPROVED';runtime_bridge='NOT_ESTABLISHED'
-    shadow='NOT_RUN';scheduled='OFF';trading='OFF';telegram='OFF'
-    outcome='P0_CLOCK_OPERATIONAL_BLOCKED'
-  }
-  $receipt=Join-Path $folder 'acceptance.json'
-  [IO.File]::WriteAllText($receipt,($r | ConvertTo-Json -Depth 10 -Compress)+[Environment]::NewLine,$utf8)
-  Write-Output "EVIDENCE_DIR=$folder"
-  Write-Output "RECEIPT_SHA256=$(Hash $receipt)"
-  Write-Output "HEAD=$head TREE=$tree PYTHON=$pythonVersion"
-  Write-Output "TESTS_EXIT=$testExit COUNT=$testCount NORMAL=$normalContext ADMIN=$elevated"
-  Write-Output "ERRORS=$($failures.Count) POLICY_UNAPPROVED SHADOW_NOT_RUN"
-}
-if($failures.Count -gt 0 -or $testExit -ne 0 -or $head -cne $ExpectedHead -or
-   $tree -cne $ExpectedTree -or $pythonVersion -ne '3.12.10') {
-  throw 'P0_LOCAL_ACCEPTANCE_INCOMPLETE'
-}
-Write-Output 'P0_TARGETED_TESTS_FINISHED; OPERATIONAL_CLOCK_REMAINS_BLOCKED'
-) {
+    if ($denialStderr -notmatch '(?m)^ADMINISTRATOR_REQUIRED\s*$') {
       [void]$failures.Add('NONADMIN_COLLECTOR_DENIAL_MARKER_NOT_PROVEN')
     }
   }
