@@ -240,6 +240,15 @@ class Clock73SyntheticFullChainTests(TestCase):
                              transport=capture, admin_clock_pilot=True)
             persisted = json.loads((Path(root) / "result.json").read_text())
             self.assertEqual(persisted, result)
+            if result.get("snapshot") and result["snapshot"]["rows"]:
+                # Public inventory must preserve the strict Z-suffixed UTC
+                # observation consumed by the source-join contract.
+                from zs_smart_gate.marketwide_research import inventory
+                snap = inventory(capture.receipts[:3], observed,
+                                 scope="ALL_BINANCE_SPOT_INVENTORY")
+                for row in snap["rows"]:
+                    if row["market"] is not None:
+                        self.assertTrue(row["market"]["observed_at"].endswith("Z"))
             self.assertEqual(result["clock"]["status"], "OPERATIONAL_TIME_ACCEPTED")
             self.assertEqual(result["clock"]["policy_sha256"], clock.REVIEWED_POLICY_SHA256)
             self.assertEqual(result["qualification"], "QV1_REAL_POLICY_BLOCKED")
