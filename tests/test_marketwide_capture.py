@@ -245,6 +245,27 @@ class Clock73SyntheticFullChainTests(TestCase):
             self.assertEqual(result["qualification"], "QV1_REAL_POLICY_BLOCKED")
             self.assertEqual(result["live_e2e"], "LIVE_E2E_NOT_PROVEN")
             self.assertEqual(result["estimated_weight"], capture.weight)
+            # Expose the exact parser/join rejection only in offline test output.
+            # Never change production evaluate() or weaken validation.
+            if (result.get("funnel") and
+                    result["funnel"]["attempted"] and
+                    not result["funnel"]["source_validated"] and
+                    len(capture.receipts) >= 7):
+                from zs_smart_gate.marketwide_research import (
+                    inventory, packet_from_receipts, _joined)
+                snap = inventory(capture.receipts[:3], observed,
+                                 scope="ALL_BINANCE_SPOT_INVENTORY")
+                item = next(row for row in snap["rows"] if row["eligible"])
+                reconstructed = packet_from_receipts(
+                    item, capture.receipts[3:7], boundary_ms=boundary_ms,
+                    decision_at=observed,
+                    scope="PUBLIC_SPOT_CONDITIONAL_RESEARCH",
+                    clock_status="OPERATIONAL_TIME_ACCEPTED")
+                try:
+                    _joined(reconstructed)
+                except Exception as exc:
+                    self.fail("EXACT_SOURCE_JOIN_FAILURE=" +
+                              type(exc).__name__ + ":" + repr(str(exc)))
             self.assertEqual(result["requests"], len(fake.calls))
             self.assertTrue((Path(root) / "requests.jsonl").is_file())
             return result, fake.calls
