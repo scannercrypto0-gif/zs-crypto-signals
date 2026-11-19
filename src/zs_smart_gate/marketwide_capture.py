@@ -15,6 +15,14 @@ from .ops_windows_time import COMMANDS, assess, command, now
 from .stage05_contracts import canonical, digest
 from .ops_windows_child import sync_age
 
+def _is_admin():
+    """Check the current Windows process token, never trust a caller flag."""
+    if os.name != "nt":
+        return False
+    import ctypes
+    return ctypes.windll.shell32.IsUserAnAdmin() == 1
+
+
 MAX_REQUESTS = 11
 MAX_WEIGHT = 140
 MAX_USED_WEIGHT = 5500  # 500-point reserve below documented Spot 6000 weight/min per IP
@@ -136,8 +144,7 @@ def run(root, cursor, *, transport=None, admin_clock_pilot=False):
     from .ops_windows_time import CANDIDATE, POLICY_ID, SOURCE, REVIEWED_POLICY_SHA256
     policy = None
     if admin_clock_pilot:
-        import ctypes
-        if os.name != "nt" or ctypes.windll.shell32.IsUserAnAdmin() != 1:
+        if not _is_admin():
             raise PermissionError("CLOCK_PILOT_ADMIN_CONTEXT_REQUIRED")
         policy = {"policy_id": POLICY_ID, "source": SOURCE, "limits": CANDIDATE}
         if digest(canonical(policy)) != REVIEWED_POLICY_SHA256:

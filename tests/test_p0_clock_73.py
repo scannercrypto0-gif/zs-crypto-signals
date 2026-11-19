@@ -46,8 +46,9 @@ class Clock73Tests(unittest.TestCase):
 
     def test_admin_pilot_denied_without_windows_elevation(self):
         with TemporaryDirectory() as tmp:
-            with self.assertRaises(PermissionError):
-                run(Path(tmp), Path(tmp) / "cursor.sqlite", admin_clock_pilot=True)
+            with patch("zs_smart_gate.marketwide_capture._is_admin", return_value=False):
+                with self.assertRaises(PermissionError):
+                    run(Path(tmp), Path(tmp) / "cursor.sqlite", admin_clock_pilot=True)
 
     def test_no_unreviewed_service_or_effects_added(self):
         script = (ROOT / "scripts" / "order007-windows.ps1").read_text(encoding="utf-8")
