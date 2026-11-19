@@ -10,7 +10,8 @@ param(
   [string]$Root = 'D:\ZS-SMART-GATE',
   [string]$Commit,
   [string]$ExpectedTree,
-  [switch]$LiveReadOnly
+  [switch]$LiveReadOnly,
+  [switch]$AdminClockPilot
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
@@ -221,6 +222,13 @@ if ($Action -eq 'Verify') {
   return
 }
 if ($Action -eq 'StartForeground') {
+  if ($AdminClockPilot) {
+    $identity=[Security.Principal.WindowsIdentity]::GetCurrent()
+    $principal=[Security.Principal.WindowsPrincipal]::new($identity)
+    if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+      throw 'CLOCK_PILOT_ADMIN_CONTEXT_REQUIRED'
+    }
+  }
   if (-not $LiveReadOnly) { throw 'EXPLICIT_LIVE_READ_ONLY_SWITCH_REQUIRED' }
   if (-not (Test-Path -LiteralPath $disabledFile)) { throw 'DISABLED_INSTALL_MARKER_REQUIRED' }
   if (Test-Path -LiteralPath $lockFile) { throw 'SHADOW_LOCK_PRESENT_STOP_OR_INVESTIGATE' }
@@ -238,13 +246,15 @@ if ($Action -eq 'StartForeground') {
     Push-Location $repoPath
     try {
       # Existing Windows process-tree watchdog enforces 120-second maximum.
-      & $python -B scripts/order007-shadow.py --live-read-only --root $Root --output $dest
+      $shadowArgs=@('-B','scripts/order007-shadow.py','--live-read-only','--root',$Root,'--output',$dest)
+      if ($AdminClockPilot) { $shadowArgs += '--admin-clock-pilot' }
+      & $python @shadowArgs
       $code = $LASTEXITCODE
     } finally { Pop-Location }
     if (-not (Test-Path -LiteralPath $dest)) { New-Item -ItemType Directory -Path $dest -Force | Out-Null }
     Write-Record (Join-Path $dest 'foreground-exit.json') @{
       utc=[DateTime]::UtcNow.ToString('o'); head=$pin.head; tree=$pin.tree
-      exit_code=$code; mode='PUBLIC_READ_ONLY_SHADOW'
+      exit_code=$code; mode='PUBLIC_READ_ONLY_SHADOW'; admin_clock_pilot=[bool]$AdminClockPilot
       qualification='BLOCKED_UNTIL_SCIENTIFIC_AND_CLOCK_ACCEPTANCE'
     }
     Write-Output "SHADOW_FOREGROUND_EXIT=$code DATA=$dest"

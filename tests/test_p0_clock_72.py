@@ -69,9 +69,10 @@ class P0ClockPR72Tests(unittest.TestCase):
         self.assertIn("operational_policy_approved = $false", text)
         self.assertIn("runtime_witness_authorized = $false", text)
         self.assertIn("shadow_rerun = $false", text)
-        self.assertIsNone(__import__(
+        self.assertEqual(__import__(
             "zs_smart_gate.ops_windows_time", fromlist=["REVIEWED_POLICY_SHA256"]
-        ).REVIEWED_POLICY_SHA256)
+        ).REVIEWED_POLICY_SHA256,
+            digest(canonical({"policy_id": POLICY_ID, "source": SOURCE, "limits": CANDIDATE})))
 
     def test_pending_review_is_blocked_despite_clean_measurements(self):
         result = assess(receipts(), sync_age_s=10)

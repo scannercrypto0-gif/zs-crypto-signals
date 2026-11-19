@@ -130,7 +130,18 @@ def discovery_only(receipt):
                 actually_evaluated=0, coverage="MARKET_COVERAGE_PARTIAL", rows=rows)
 
 
-def run(root, cursor, *, transport=None):
+def run(root, cursor, *, transport=None, admin_clock_pilot=False):
+    # Owner-approved P0 is a single 120s elevated foreground experiment ONLY.
+    # No normal-user process may trust an admin JSON report from writable D:.
+    from .ops_windows_time import CANDIDATE, POLICY_ID, SOURCE, REVIEWED_POLICY_SHA256
+    policy = None
+    if admin_clock_pilot:
+        import ctypes
+        if os.name != "nt" or ctypes.windll.shell32.IsUserAnAdmin() != 1:
+            raise PermissionError("CLOCK_PILOT_ADMIN_CONTEXT_REQUIRED")
+        policy = {"policy_id": POLICY_ID, "source": SOURCE, "limits": CANDIDATE}
+        if digest(canonical(policy)) != REVIEWED_POLICY_SHA256:
+            raise PermissionError("CLOCK_PILOT_REVIEWED_POLICY_PIN_MISMATCH")
     root = Path(root)
     transport = transport or PublicCapture(root)
     result = dict(status="MARKET_COVERAGE_PARTIAL", qualification="QV1_REAL_POLICY_BLOCKED",
@@ -146,8 +157,11 @@ def run(root, cursor, *, transport=None):
         observations = {name: command(argv) for name, argv in COMMANDS.items()}
         for name, value in observations.items():
             (root/("time-" + name + ".private.json")).write_bytes(canonical(value))
-        clock = assess(observations, sync_age_s=sync_age(observations["status"]["stdout"]))
+        clock = assess(observations, sync_age_s=sync_age(observations["status"]["stdout"]), policy=policy)
         result["clock"] = {k: v for k, v in clock.items() if k != "last_successful_sync_display"}
+        result["clock"]["pilot_mode"] = ("OWNER_APPROVED_BOUNDED_ELEVATED" if admin_clock_pilot
+                                          else "NORMAL_USER_NO_WITNESS")
+        result["clock"]["policy_sha256"] = (REVIEWED_POLICY_SHA256 if admin_clock_pilot else None)
         # No invented reviewed policy. Discovery is distinct from clock-admitted scans.
         boundary = int(time.time()*1000) // 1800000 * 1800000
         ledger = ScanLedger(cursor)

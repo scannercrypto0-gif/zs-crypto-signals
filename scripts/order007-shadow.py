@@ -19,6 +19,8 @@ def main():
     p.add_argument("--root", type=Path, required=True)
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--child", action="store_true", help=argparse.SUPPRESS)
+    p.add_argument("--admin-clock-pilot", action="store_true",
+                   help="Owner-approved one-shot elevated clock pilot, not a service")
     args=p.parse_args()
     if (os.name != "nt" or sys.version_info[:3] != (3,12,10)
             or args.root.resolve().drive.upper() != "D:"
@@ -38,7 +40,7 @@ def main():
                         and not (args.root/"state"/"STOP_REQUESTED").exists())
         transport=StopAware(args.output)
         outcome=run(args.output, args.root/"state"/"marketwide-cursor.sqlite",
-                    transport=transport)
+                    transport=transport, admin_clock_pilot=args.admin_clock_pilot)
         print(json.dumps(outcome, sort_keys=True))
         # Partial/clock blocked is expected, but NEVER pretend a live pass.
         return 0 if (outcome.get("funnel") or {}).get("coverage") == (
@@ -50,6 +52,8 @@ def main():
     args.output.mkdir(parents=True)
     argv=[sys.executable,__file__,"--live-read-only","--child",
           "--root",str(args.root),"--output",str(args.output)]
+    if args.admin_clock_pilot:
+        argv.append("--admin-clock-pilot")
     code=run_tree(argv,timeout=120)
     if code in (124,130):
         (args.output/"watchdog.json").write_text(
