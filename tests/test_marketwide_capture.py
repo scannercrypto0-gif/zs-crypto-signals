@@ -165,18 +165,21 @@ class Clock73SyntheticFullChainTests(TestCase):
 
     def _run_fixture(self, *, symbols, expire_after=None):
         import json
+        from datetime import datetime, timezone
         from urllib.parse import parse_qs, urlsplit
         from unittest.mock import patch
         from test_marketwide_research import packet
         from test_p0_clock_73 import valid_receipts
         from zs_smart_gate import ops_windows_time as clock
         from zs_smart_gate.marketwide_capture import run
+        from zs_smart_gate.marketwide_research import FRAMES
 
         fixtures = {symbol: packet(symbol=symbol) for symbol in symbols}
         exemplar = next(iter(fixtures.values()))
         boundary_ms = exemplar["boundary_ms"]
         epoch = [boundary_ms / 1000 + 10]
-        observed = exemplar["frames"]["5m"]["received_at"]
+        observed = datetime.fromtimestamp(
+            boundary_ms / 1000 + 10, timezone.utc).isoformat().replace("+00:00", "Z")
 
         class FakePublicHTTP:
             def __init__(self):
@@ -202,14 +205,9 @@ class Clock73SyntheticFullChainTests(TestCase):
                     symbol = params["symbol"][0]
                     frame = params["interval"][0]
                     payload = fixtures[symbol]["frames"][frame]["rows"]
+                    period = FRAMES[frame]
                     self_test.assertEqual(params["endTime"][0],
-                                          str(boundary_ms // {
-                                              "5m": 300000, "30m": 1800000,
-                                              "1h": 3600000, "4h": 14400000
-                                          }[frame] * {
-                                              "5m": 300000, "30m": 1800000,
-                                              "1h": 3600000, "4h": 14400000
-                                          }[frame] - 1))
+                                          str(boundary_ms // period * period - 1))
                     if expire_after == "first_packet" and frame == "4h":
                         epoch[0] = boundary_ms / 1000 + 91
                     if expire_after == "first_frame" and frame == "5m":
