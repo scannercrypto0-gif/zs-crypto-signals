@@ -271,6 +271,16 @@ if ($Action -eq 'StartForeground') {
       qualification='BLOCKED_UNTIL_SCIENTIFIC_AND_CLOCK_ACCEPTANCE'
     }
     Write-Output "SHADOW_FOREGROUND_EXIT=$code DATA=$dest"
+    # Compact integrity pointer only; full private evidence remains on D:.
+    $resultPath=Join-Path $dest 'result.json'
+    if (Test-Path -LiteralPath $resultPath -PathType Leaf) {
+      Write-Output "RESULT_JSON=$resultPath RESULT_SHA256=$(Hash-File $resultPath)"
+    }
+    $journalPath=Join-Path $dest 'requests.jsonl'
+    if (Test-Path -LiteralPath $journalPath -PathType Leaf) {
+      Write-Output "REQUEST_JOURNAL=$journalPath JOURNAL_SHA256=$(Hash-File $journalPath)"
+    }
+
     # Concise receipt only; never stream the giant private snapshot.
     $summaryPath=Join-Path $dest 'result.json'
     if (Test-Path -LiteralPath $summaryPath -PathType Leaf) {
