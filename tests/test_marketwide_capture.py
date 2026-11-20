@@ -370,6 +370,22 @@ class Clock73SyntheticFullChainTests(TestCase):
         self.assertEqual({row["signal_id"] for row in directions}, {None})
         self.assertEqual(funnel["production_signals"], 0)
 
+    def test_two_pairs_exactly_eleven_http_second_pair_evaluated(self):
+        result, calls = self._run_fixture(
+            symbols=["OTHERUSDT", "SECONDUSDT"])
+        self.assertEqual(len(calls), 11)
+        self.assertEqual(sum(endpoint == "klines" for endpoint, _ in calls), 8)
+        funnel = result["funnel"]
+        self.assertEqual(funnel["eligible"], 2)
+        self.assertEqual(funnel["attempted"], 2)
+        self.assertEqual(funnel["source_validated"], 2)
+        self.assertEqual(funnel["directionally_evaluated"], 4)
+        self.assertEqual(funnel["coverage"], "MARKET_COVERAGE_VERIFIED")
+        self.assertIsNone(funnel["stopped_reason"])
+        self.assertEqual(result["requests"], 11)
+        self.assertEqual(result["production_signals"] if "production_signals" in result
+                         else funnel["production_signals"], 0)
+
     def test_expiry_after_first_packet_before_second_pair_is_precise(self):
         result, calls = self._run_fixture(
             symbols=["OTHERUSDT", "SECONDUSDT"], expire_after="first_packet")
