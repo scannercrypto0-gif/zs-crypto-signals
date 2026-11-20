@@ -41,6 +41,76 @@ class MarketCaptureTests(TestCase):
                 capture.get("ticker/24hr", {})
             self.assertEqual(opener.calls, 1)
 
+
+    def test_exact_eleventh_http_receipt_accepted_twelfth_forbidden(self):
+        import hashlib
+        from zs_smart_gate.marketwide_capture import MAX_REQUESTS
+        self.assertEqual(MAX_REQUESTS, 11)
+
+        class FreshOpener:
+            def __init__(self):
+                self.calls = 0
+
+            def open(self, request, timeout):
+                self.calls += 1
+                return Response(raw=b'{"complete":true}', header="120")
+
+        with tempfile.TemporaryDirectory() as root:
+            fake = FreshOpener()
+            capture = PublicCapture(root, opener=fake, monotonic=lambda: 10)
+            for ordinal in range(1, 12):
+                receipt = capture.get("klines", {"symbol": "TESTUSDT",
+                                               "interval": "5m", "endTime": "1", "limit": "1"})
+                self.assertTrue(receipt["payload"]["complete"])
+                self.assertEqual(capture.attempts, ordinal)
+                self.assertEqual(
+                    receipt["body_sha256"],
+                    hashlib.sha256(b'{"complete":true}').hexdigest())
+                self.assertEqual(
+                    (Path(root) / ("response-" + str(ordinal) + ".private")).read_bytes(),
+                    b'{"complete":true}')
+            self.assertEqual(len(capture.receipts), 11)
+            self.assertEqual(capture.stop_reason(), "REQUEST_BUDGET_EXHAUSTED")
+            with self.assertRaisesRegex(PauseScan, "REQUEST_BUDGET_EXHAUSTED"):
+                capture.get("klines", {"symbol": "TESTUSDT",
+                                      "interval": "5m", "endTime": "1", "limit": "1"})
+            self.assertEqual(fake.calls, 11)
+            journal = [json.loads(row) for row in
+                       (Path(root) / "requests.jsonl").read_text().splitlines()]
+            self.assertEqual(len([r for r in journal if r["state"] == "RECEIVED"]), 11)
+
+    def test_post_response_deadline_and_weight_still_fail_closed(self):
+        class MovingClock:
+            def __init__(self):
+                self.value = 0
+            def __call__(self):
+                return self.value
+
+        class TimedOpener:
+            def __init__(self, clock):
+                self.clock = clock
+                self.calls = 0
+            def open(self, request, timeout):
+                self.calls += 1
+                self.clock.value = 110
+                return Response(raw=b'{"complete":true}', header="120")
+
+        with tempfile.TemporaryDirectory() as root:
+            clock = MovingClock()
+            fake = TimedOpener(clock)
+            capture = PublicCapture(root, opener=fake, monotonic=clock)
+            with self.assertRaisesRegex(PauseScan, "CAPTURE_DEADLINE_EXHAUSTED"):
+                capture.get("klines", {"symbol": "TESTUSDT",
+                                      "interval": "5m", "endTime": "1", "limit": "1"})
+            self.assertEqual(fake.calls, 1)
+            self.assertEqual(len(capture.receipts), 1)
+
+        with tempfile.TemporaryDirectory() as root:
+            capture = PublicCapture(root, opener=Opener(Response(header="5500")))
+            with self.assertRaisesRegex(PauseScan, "OBSERVED_WEIGHT_HEADROOM_EXHAUSTED"):
+                capture.get("exchangeInfo", {})
+            self.assertEqual(len(capture.receipts), 1)
+
     def test_540_header_is_below_new_guard(self):
         with tempfile.TemporaryDirectory() as root:
             capture = PublicCapture(root, opener=Opener(Response(header="540")))
