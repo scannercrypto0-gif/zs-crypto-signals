@@ -111,6 +111,39 @@ class MarketCaptureTests(TestCase):
                 capture.get("exchangeInfo", {})
             self.assertEqual(len(capture.receipts), 1)
 
+    def test_restart_preserves_final_raw_receipt_and_no_duplicate_claim(self):
+        import hashlib
+        from zs_smart_gate.marketwide_cursor import ScanLedger
+        from zs_smart_gate.stage05_contracts import canonical, digest
+        with tempfile.TemporaryDirectory() as root:
+            root_path = Path(root)
+            capture = PublicCapture(
+                root, opener=Opener(Response(raw=b'{"source":"original"}')))
+            first = capture.get("klines", {
+                "symbol": "TESTUSDT", "interval": "5m", "endTime": "1", "limit": "1"})
+            raw = (root_path / "response-1.private").read_bytes()
+            self.assertEqual(hashlib.sha256(raw).hexdigest(),
+                             first["body_sha256"])
+            snapshot = {"version": "test", "scope": "SYNTHETIC",
+                        "rows": [{"symbol": "TESTUSDT", "eligible": True,
+                                  "active": True, "reasons": []}]}
+            snapshot["snapshot_sha256"] = digest(canonical(snapshot))
+            path = root_path / "cursor.sqlite"
+            ledger = ScanLedger(path)
+            scan = ledger.register(snapshot, 1800000)
+            item = ledger.claim(scan)
+            self.assertEqual(item["symbol"], "TESTUSDT")
+            ledger.finish(scan, item["symbol"], "PAUSED", [])
+            resumed = ScanLedger(path)
+            self.assertIsNone(resumed.claim(scan))
+            report = resumed.report(scan)
+            self.assertEqual(report["attempted"], 1)
+            self.assertEqual(report["interrupted_or_paused"], 1)
+            self.assertEqual((root_path / "response-1.private").read_bytes(), raw)
+            journal = [json.loads(x) for x in
+                       (root_path / "requests.jsonl").read_text().splitlines()]
+            self.assertEqual(journal[-1]["body_sha256"], first["body_sha256"])
+
     def test_540_header_is_below_new_guard(self):
         with tempfile.TemporaryDirectory() as root:
             capture = PublicCapture(root, opener=Opener(Response(header="540")))
