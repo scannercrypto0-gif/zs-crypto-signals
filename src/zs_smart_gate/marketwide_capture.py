@@ -15,6 +15,14 @@ from .ops_windows_time import COMMANDS, assess, command, now
 from .stage05_contracts import canonical, digest
 from .ops_windows_child import sync_age
 
+def _is_admin():
+    """Check the current Windows process token, never trust a caller flag."""
+    if os.name != "nt":
+        return False
+    import ctypes
+    return ctypes.windll.shell32.IsUserAnAdmin() == 1
+
+
 MAX_REQUESTS = 11
 MAX_WEIGHT = 140
 MAX_USED_WEIGHT = 5500  # 500-point reserve below documented Spot 6000 weight/min per IP
@@ -22,6 +30,25 @@ MAX_SECONDS = 110
 MAX_BODY = 16 * 1024 * 1024
 MAX_TOTAL_BODY = 32 * 1024 * 1024
 WEIGHTS = {"exchangeInfo": 20, "ticker/24hr": 80, "ticker/bookTicker": 4, "klines": 2}
+
+# Preserve the existing 90-second 30m-boundary entry gate. This is not a
+# scheduler and never waits for a future market boundary.
+CANDLE_ENTRY_WINDOW_SECONDS = 90
+
+
+def boundary_preflight(epoch_seconds, *, boundary_ms=None):
+    """Public pure gate: evaluate the real 30m boundary before any HTTP."""
+    if boundary_ms is None:
+        boundary_ms = int(epoch_seconds * 1000) // 1800000 * 1800000
+    age_s = epoch_seconds - boundary_ms / 1000
+    remaining_s = CANDLE_ENTRY_WINDOW_SECONDS - age_s
+    admitted = 0 <= age_s <= CANDLE_ENTRY_WINDOW_SECONDS
+    return dict(boundary_ms=boundary_ms, age_seconds=round(age_s, 3),
+                remaining_seconds=round(max(0.0, remaining_s), 3),
+                freshness_window_seconds=CANDLE_ENTRY_WINDOW_SECONDS,
+                admitted=admitted,
+                status="WITHIN_CANDLE_ENTRY_WINDOW" if admitted
+                       else "CANDLE_ENTRY_WINDOW_EXPIRED")
 
 
 class PublicCapture:
@@ -130,12 +157,36 @@ def discovery_only(receipt):
                 actually_evaluated=0, coverage="MARKET_COVERAGE_PARTIAL", rows=rows)
 
 
-def run(root, cursor, *, transport=None):
+def run(root, cursor, *, transport=None, admin_clock_pilot=False):
+    # Owner-approved P0 is a single 120s elevated foreground experiment ONLY.
+    # No normal-user process may trust an admin JSON report from writable D:.
+    from .ops_windows_time import CANDIDATE, POLICY_ID, SOURCE, REVIEWED_POLICY_SHA256
+    policy = None
+    if admin_clock_pilot:
+        if not _is_admin():
+            raise PermissionError("CLOCK_PILOT_ADMIN_CONTEXT_REQUIRED")
+        policy = {"policy_id": POLICY_ID, "source": SOURCE, "limits": CANDIDATE}
+        if digest(canonical(policy)) != REVIEWED_POLICY_SHA256:
+            raise PermissionError("CLOCK_PILOT_REVIEWED_POLICY_PIN_MISMATCH")
     root = Path(root)
     transport = transport or PublicCapture(root)
     result = dict(status="MARKET_COVERAGE_PARTIAL", qualification="QV1_REAL_POLICY_BLOCKED",
                   live_e2e="LIVE_E2E_NOT_PROVEN", source="BINANCE_SPOT",
                   snapshot=None, funnel=None, stop=None)
+    # Fail fast before expensive discovery, without modifying clock/source,
+    # quota limits, or the existing 90s guard at each candle claim.
+    # Existing 30m boundaries still govern packet identity.
+    preflight = boundary_preflight(time.time())
+    result["boundary_preflight"] = preflight
+    if not preflight["admitted"]:
+        result["stop"] = "CANDLE_ENTRY_WINDOW_EXPIRED_BEFORE_DISCOVERY"
+        result["requests"] = transport.attempts
+        result["estimated_weight"] = transport.weight
+        result["body_bytes"] = transport.bytes
+        result["observed_used_weight"] = transport.used
+        result["receipt_manifest_sha256"] = digest(canonical(transport.receipts))
+        (root/"result.json").write_bytes(canonical(result))
+        return result
     try:
         for path in ("exchangeInfo", "ticker/24hr", "ticker/bookTicker"):
             transport.get(path, {"showPermissionSets": "false"} if path == "exchangeInfo" else {})
@@ -146,16 +197,23 @@ def run(root, cursor, *, transport=None):
         observations = {name: command(argv) for name, argv in COMMANDS.items()}
         for name, value in observations.items():
             (root/("time-" + name + ".private.json")).write_bytes(canonical(value))
-        clock = assess(observations, sync_age_s=sync_age(observations["status"]["stdout"]))
+        clock = assess(observations, sync_age_s=sync_age(observations["status"]["stdout"]), policy=policy)
         result["clock"] = {k: v for k, v in clock.items() if k != "last_successful_sync_display"}
+        result["clock"]["pilot_mode"] = ("OWNER_APPROVED_BOUNDED_ELEVATED" if admin_clock_pilot
+                                          else "NORMAL_USER_NO_WITNESS")
+        result["clock"]["policy_sha256"] = (REVIEWED_POLICY_SHA256 if admin_clock_pilot else None)
         # No invented reviewed policy. Discovery is distinct from clock-admitted scans.
-        boundary = int(time.time()*1000) // 1800000 * 1800000
+        boundary = preflight["boundary_ms"]
+        result["boundary_preflight_at_scan"] = boundary_preflight(time.time(), boundary_ms=boundary)
         ledger = ScanLedger(cursor)
         scan = ledger.register(snap, boundary)
 
         def fetch(item):
             receipts = []
             for frame, period in FRAMES.items():
+                # Never issue a candle GET after the original 30m entry window.
+                if not boundary_preflight(time.time(), boundary_ms=boundary)["admitted"]:
+                    raise PauseScan("CANDLE_ENTRY_WINDOW_EXPIRED")
                 end = boundary // period * period
                 receipts.append(transport.get("klines", dict(
                     symbol=item["symbol"], interval=frame, endTime=str(end-1),
@@ -164,10 +222,19 @@ def run(root, cursor, *, transport=None):
                                         scope="PUBLIC_SPOT_CONDITIONAL_RESEARCH",
                                         clock_status="OPERATIONAL_TIME_ACCEPTED")
 
-        result["funnel"] = ledger.chunk(
-            scan, fetch, max_pairs=2,
-            healthy=lambda: transport.healthy() and clock["status"] == "OPERATIONAL_TIME_ACCEPTED"
-            and 0 <= time.time()-boundary/1000 <= 90)
+        if not result["boundary_preflight_at_scan"]["admitted"]:
+            # Preserve the registered snapshot but never claim a pair or send
+            # a candle GET after the entry window closes.
+            result["funnel"] = ledger.report(scan, stopped="CANDLE_ENTRY_WINDOW_EXPIRED")
+        else:
+            result["funnel"] = ledger.chunk(
+                scan, fetch, max_pairs=2,
+                healthy=lambda: transport.healthy() and clock["status"] == "OPERATIONAL_TIME_ACCEPTED"
+                and boundary_preflight(time.time(), boundary_ms=boundary)["admitted"],
+                stop_reason=lambda: (
+                    "CANDLE_ENTRY_WINDOW_EXPIRED"
+                    if not boundary_preflight(time.time(), boundary_ms=boundary)["admitted"]
+                    else "CLOCK_SOURCE_OR_BUDGET_UNHEALTHY"))
     except PauseScan as exc:
         result["stop"] = str(exc)
     except (ValueError, KeyError, TypeError):
@@ -177,6 +244,8 @@ def run(root, cursor, *, transport=None):
             result["discovery_only"] = discovery_only(transport.receipts[0])
         except (ValueError, KeyError, TypeError):
             result["discovery_only"] = {"status": "UNVERIFIED"}
+    if result.get("funnel") and result["funnel"].get("stopped_reason"):
+        result["stop"] = result["funnel"]["stopped_reason"]
     result["requests"] = transport.attempts
     result["estimated_weight"] = transport.weight
     result["body_bytes"] = transport.bytes

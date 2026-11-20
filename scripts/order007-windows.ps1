@@ -10,7 +10,8 @@ param(
   [string]$Root = 'D:\ZS-SMART-GATE',
   [string]$Commit,
   [string]$ExpectedTree,
-  [switch]$LiveReadOnly
+  [switch]$LiveReadOnly,
+  [switch]$AdminClockPilot
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
@@ -221,9 +222,29 @@ if ($Action -eq 'Verify') {
   return
 }
 if ($Action -eq 'StartForeground') {
+  if ($AdminClockPilot) {
+    $identity=[Security.Principal.WindowsIdentity]::GetCurrent()
+    $principal=[Security.Principal.WindowsPrincipal]::new($identity)
+    if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+      throw 'CLOCK_PILOT_ADMIN_CONTEXT_REQUIRED'
+    }
+  }
   if (-not $LiveReadOnly) { throw 'EXPLICIT_LIVE_READ_ONLY_SWITCH_REQUIRED' }
   if (-not (Test-Path -LiteralPath $disabledFile)) { throw 'DISABLED_INSTALL_MARKER_REQUIRED' }
   if (Test-Path -LiteralPath $lockFile) { throw 'SHADOW_LOCK_PRESENT_STOP_OR_INVESTIGATE' }
+  # Operator-visible 30m entry check before any child starts or public GET.
+  # This cannot guarantee downstream readiness: discovery may exceed the
+  # remaining 90-second window, in which case the Python scan stops safely.
+  $utcNow=[DateTimeOffset]::UtcNow
+  $epochMs=$utcNow.ToUnixTimeMilliseconds()
+  $boundaryMs=[long]([math]::Floor($epochMs / 1800000) * 1800000)
+  $ageSeconds=($epochMs - $boundaryMs) / 1000.0
+  $remainingSeconds=[math]::Max(0.0, 90.0 - $ageSeconds)
+  Write-Output ("CANDLE_ENTRY_PREFLIGHT BOUNDARY_MS={0} AGE_SECONDS={1:F3} REMAINING_SECONDS={2:F3}" -f $boundaryMs,$ageSeconds,$remainingSeconds)
+  if ($ageSeconds -gt 90.0 -or $ageSeconds -lt 0.0) {
+    Write-Output 'CANDLE_ENTRY_PREFLIGHT_BLOCKED_NO_PUBLIC_GETS'
+    throw 'CANDLE_ENTRY_WINDOW_EXPIRED_BEFORE_LAUNCH'
+  }
   if (Test-Path -LiteralPath $stopFile) { Remove-Item -LiteralPath $stopFile }
   $env:PYTHONPATH = (Join-Path $Root 'repo\src')
   $env:TEMP = Join-Path $Root 'temp'
@@ -238,16 +259,43 @@ if ($Action -eq 'StartForeground') {
     Push-Location $repoPath
     try {
       # Existing Windows process-tree watchdog enforces 120-second maximum.
-      & $python -B scripts/order007-shadow.py --live-read-only --root $Root --output $dest
+      $shadowArgs=@('-B','scripts/order007-shadow.py','--live-read-only','--root',$Root,'--output',$dest)
+      if ($AdminClockPilot) { $shadowArgs += '--admin-clock-pilot' }
+      & $python @shadowArgs
       $code = $LASTEXITCODE
     } finally { Pop-Location }
     if (-not (Test-Path -LiteralPath $dest)) { New-Item -ItemType Directory -Path $dest -Force | Out-Null }
     Write-Record (Join-Path $dest 'foreground-exit.json') @{
       utc=[DateTime]::UtcNow.ToString('o'); head=$pin.head; tree=$pin.tree
-      exit_code=$code; mode='PUBLIC_READ_ONLY_SHADOW'
+      exit_code=$code; mode='PUBLIC_READ_ONLY_SHADOW'; admin_clock_pilot=[bool]$AdminClockPilot
       qualification='BLOCKED_UNTIL_SCIENTIFIC_AND_CLOCK_ACCEPTANCE'
     }
     Write-Output "SHADOW_FOREGROUND_EXIT=$code DATA=$dest"
+    # Concise receipt only; never stream the giant private snapshot.
+    $summaryPath=Join-Path $dest 'result.json'
+    if (Test-Path -LiteralPath $summaryPath -PathType Leaf) {
+      try {
+        $summary=Get-Content -LiteralPath $summaryPath -Raw | ConvertFrom-Json
+        $stopReason=$summary.stop
+        if (-not $stopReason -and $null -ne $summary.funnel) {
+          $stopReason=$summary.funnel.stopped_reason
+        }
+        if (-not $stopReason) { $stopReason='NONE_RECORDED' }
+        Write-Output "SHADOW_STOP_REASON=$stopReason"
+        if ($null -ne $summary.boundary_preflight) {
+          $bp=$summary.boundary_preflight
+          Write-Output "CANDLE_WINDOW=$($bp.status) BOUNDARY_MS=$($bp.boundary_ms) AGE_SECONDS=$($bp.age_seconds) REMAINING_SECONDS=$($bp.remaining_seconds)"
+        }
+        if ($null -ne $summary.funnel) {
+          Write-Output "MARKET_ELIGIBLE=$($summary.funnel.eligible) ATTEMPTED=$($summary.funnel.attempted) COVERAGE_PCT=$($summary.funnel.coverage_pct)"
+        }
+        Write-Output "PUBLIC_GETS=$($summary.requests) ESTIMATED_WEIGHT=$($summary.estimated_weight) OBSERVED_USED_WEIGHT=$($summary.observed_used_weight)"
+      } catch {
+        Write-Output 'SHADOW_SUMMARY_UNREADABLE_FAIL_CLOSED'
+      }
+    } else {
+      Write-Output 'SHADOW_RESULT_MISSING'
+    }
     if ($code -ne 0) { throw "SHADOW_PARTIAL_OR_STOP_EXIT=$code" }
   } finally {
     if (Test-Path -LiteralPath $lockFile) { Remove-Item -LiteralPath $lockFile -Force }

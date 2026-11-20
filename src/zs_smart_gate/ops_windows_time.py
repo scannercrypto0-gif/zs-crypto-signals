@@ -14,7 +14,7 @@ CANDIDATE = {"max_offset_s": .5, "max_conditional_uncertainty_s": .5,
              "max_sync_age_s": 600, "max_step_s": .05, "quorum": 4}
 POLICY_ID = "WINDOWS_TIME_OPERATIONAL_V1"
 # Set only through reviewed repository policy adoption.
-REVIEWED_POLICY_SHA256 = None
+REVIEWED_POLICY_SHA256 = "8a256ebdf21a808f630c3218d2f981ca22a8eb7154831f001e58c4b1defdf683"  # owner-approved P0, source/limits only; measurements still required
 COMMANDS = {
     "service": ("sc.exe", "query", "W32Time"),
     "status": ("w32tm.exe", "/query", "/status"),
@@ -83,7 +83,7 @@ def assess(receipts, *, sync_age_s=None, policy=None):
                    receipts["stripchart"]["stdout"])]
     if len(samples) < CANDIDATE["quorum"] or len({s["display_time"] for s in samples}) != len(samples):
         blockers.append("OFFSET_QUORUM_OR_DUPLICATE")
-    if any(abs(s["offset_s"]) > CANDIDATE["max_offset_s"] or not math.isfinite(s["rtt_s"]) or s["rtt_s"] < 0 for s in samples):
+    if any(not math.isfinite(s["offset_s"]) or abs(s["offset_s"]) > CANDIDATE["max_offset_s"] or not math.isfinite(s["rtt_s"]) or s["rtt_s"] < 0 for s in samples):
         blockers.append("OFFSET_LIMIT")
     if samples and max(s["offset_s"] for s in samples)-min(s["offset_s"] for s in samples) > CANDIDATE["max_step_s"]:
         blockers.append("OFFSET_DISCONTINUITY")
