@@ -1,0 +1,8 @@
+test_altered_replayed_or_reordered_samples_are_blocked (test_ops_clock_recorded.ClockRecordedTests.test_altered_replayed_or_reordered_samples_are_blocked) ... ok
+test_authenticated_brackets_bound_two_distinct_events (test_ops_clock_recorded.ClockRecordedTests.test_authenticated_brackets_bound_two_distinct_events) ... ok
+test_unsynchronized_host_and_bad_markers_fail_closed (test_ops_clock_recorded.ClockRecordedTests.test_unsynchronized_host_and_bad_markers_fail_closed) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.002s
+
+OK

@@ -1,0 +1,17 @@
+test_bounded_child_failure_and_preserved_raw_hashes (test_p0_clock_72.P0ClockPR72Tests.test_bounded_child_failure_and_preserved_raw_hashes) ... ok
+test_changed_source_denied (test_p0_clock_72.P0ClockPR72Tests.test_changed_source_denied) ... ok
+test_clock_step_denied (test_p0_clock_72.P0ClockPR72Tests.test_clock_step_denied) ... ok
+test_diagnostics_never_self_approve_policy_or_runtime (test_p0_clock_72.P0ClockPR72Tests.test_diagnostics_never_self_approve_policy_or_runtime) ... ok
+test_dispersion_limit_denied (test_p0_clock_72.P0ClockPR72Tests.test_dispersion_limit_denied) ... ok
+test_duplicate_and_insufficient_quorum_denied (test_p0_clock_72.P0ClockPR72Tests.test_duplicate_and_insufficient_quorum_denied) ... ok
+test_elevated_collector_absolute_fixed_binary_allowlist (test_p0_clock_72.P0ClockPR72Tests.test_elevated_collector_absolute_fixed_binary_allowlist) ... ok
+test_nonadmin_source_and_configuration_denials (test_p0_clock_72.P0ClockPR72Tests.test_nonadmin_source_and_configuration_denials) ... ok
+test_offset_limit_denied (test_p0_clock_72.P0ClockPR72Tests.test_offset_limit_denied) ... ok
+test_pending_review_is_blocked_despite_clean_measurements (test_p0_clock_72.P0ClockPR72Tests.test_pending_review_is_blocked_despite_clean_measurements) ... ok
+test_policy_hash_replay_or_change_does_not_authorize (test_p0_clock_72.P0ClockPR72Tests.test_policy_hash_replay_or_change_does_not_authorize) ... ok
+test_stale_missing_and_future_sync_denied (test_p0_clock_72.P0ClockPR72Tests.test_stale_missing_and_future_sync_denied) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.008s
+
+OK

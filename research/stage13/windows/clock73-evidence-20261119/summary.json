@@ -1,0 +1,66 @@
+{
+    "Head":  "ff4eb8b9d586de77d37dfdb0602d2226a479fa56",
+    "Tree":  "f6f4931f3875857019a8e8c8e450fef0e149579f",
+    "SourceClean":  true,
+    "Suites":  7,
+    "TotalTests":  66,
+    "AllPass":  true,
+    "Results":  [
+                    {
+                        "Suite":  "test_marketwide_capture.py",
+                        "Tests":  13,
+                        "Skipped":  0,
+                        "Exit":  0,
+                        "Pass":  true,
+                        "SHA256":  "76D2306393AD8B0393A98A92B9EA5E7E690359DA505557C60DFCFDC9B1BEC9F3"
+                    },
+                    {
+                        "Suite":  "test_marketwide_research.py",
+                        "Tests":  25,
+                        "Skipped":  0,
+                        "Exit":  0,
+                        "Pass":  true,
+                        "SHA256":  "7D1CA022AB853E65513D5CA1B19F81E59AE638286E13CA20588E418BCD486FB5"
+                    },
+                    {
+                        "Suite":  "test_ops_clock_recorded.py",
+                        "Tests":  3,
+                        "Skipped":  0,
+                        "Exit":  0,
+                        "Pass":  true,
+                        "SHA256":  "D844F746E71E143557004B7CE889EDD9ED57FA494F2E1CA47B79E349D554C363"
+                    },
+                    {
+                        "Suite":  "test_ops_windows_time.py",
+                        "Tests":  4,
+                        "Skipped":  0,
+                        "Exit":  0,
+                        "Pass":  true,
+                        "SHA256":  "9DF7420751C53430CF6247A781CF8149CD97D3287E8365E55FCA8CA2613BAFE5"
+                    },
+                    {
+                        "Suite":  "test_ops_windows_watchdog.py",
+                        "Tests":  3,
+                        "Skipped":  0,
+                        "Exit":  0,
+                        "Pass":  true,
+                        "SHA256":  "95018E22408428C27EB7032B7775432CDE93DADA7DA7022CB62FFCCFEE08535E"
+                    },
+                    {
+                        "Suite":  "test_p0_clock_72.py",
+                        "Tests":  12,
+                        "Skipped":  0,
+                        "Exit":  0,
+                        "Pass":  true,
+                        "SHA256":  "26338EAC4E6346C68C8EDD0A2FF0BB9A7EA65905D4152E6E990E24D459D53AFC"
+                    },
+                    {
+                        "Suite":  "test_p0_clock_73.py",
+                        "Tests":  6,
+                        "Skipped":  0,
+                        "Exit":  0,
+                        "Pass":  true,
+                        "SHA256":  "BC2E75747390111C7D0616923110BD0939149DB1A7BE944BD9401100431495AB"
+                    }
+                ]
+}

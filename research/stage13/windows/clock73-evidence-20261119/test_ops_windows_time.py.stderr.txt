@@ -1,0 +1,9 @@
+test_reviewed_policy_requires_exact_pin_and_safe_measurements (test_ops_windows_time.WindowsTimeTests.test_reviewed_policy_requires_exact_pin_and_safe_measurements) ... ok
+test_source_failure_stale_and_step_are_explicit (test_ops_windows_time.WindowsTimeTests.test_source_failure_stale_and_step_are_explicit) ... ok
+test_unknown_source_quorum_and_unsafe_offset (test_ops_windows_time.WindowsTimeTests.test_unknown_source_quorum_and_unsafe_offset) ... ok
+test_valid_diagnostics_do_not_approve_unreviewed_tolerance (test_ops_windows_time.WindowsTimeTests.test_valid_diagnostics_do_not_approve_unreviewed_tolerance) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.098s
+
+OK
