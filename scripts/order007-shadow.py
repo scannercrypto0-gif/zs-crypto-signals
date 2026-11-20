@@ -41,7 +41,16 @@ def main():
         transport=StopAware(args.output)
         outcome=run(args.output, args.root/"state"/"marketwide-cursor.sqlite",
                     transport=transport, admin_clock_pilot=args.admin_clock_pilot)
-        print(json.dumps(outcome, sort_keys=True))
+        # Full private result is already durably saved as result.json on D:.
+        # Never stream inventory rows or detailed evaluations to operator stdout.
+        summary = {"status": outcome.get("status"), "stop": outcome.get("stop"),
+                   "requests": outcome.get("requests"),
+                   "receipt_manifest_sha256": outcome.get("receipt_manifest_sha256"),
+                   "eligible": (outcome.get("funnel") or {}).get("eligible"),
+                   "source_validated": (outcome.get("funnel") or {}).get("source_validated"),
+                   "coverage": (outcome.get("funnel") or {}).get("coverage"),
+                   "result_path": str(args.output / "result.json")}
+        print(json.dumps(summary, sort_keys=True))
         # Partial/clock blocked is expected, but NEVER pretend a live pass.
         return 0 if (outcome.get("funnel") or {}).get("coverage") == (
             "MARKET_COVERAGE_VERIFIED") else 2
