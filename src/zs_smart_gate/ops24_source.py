@@ -121,10 +121,11 @@ def discover(client):
     return receipts, inventory(receipts,client.stamp(),scope="ALL_BINANCE_SPOT_INVENTORY")
 
 
-def scan(client, *, boundary_ms, wall=time.time, stamp=now):
+def scan(client, *, boundary_ms, wall=time.time, stamp=now, release=None):
     """Cohort freeze before candles, complete revalidation at a common decision."""
     budget = client.budget
     result = dict(version=budget.policy.version,policy_sha256=budget.policy.sha256,
+                  head=release["head"] if release else None,tree=release["tree"] if release else None,
                   boundary_ms=boundary_ms,scope="SHADOW_RESEARCH_ONLY",
                   coverage="BLOCKED",qualification="QV1_REAL_POLICY_BLOCKED",
                   signal_ids=[],telegram_calls=0,sql_writes=0,stop=None,rows=[])

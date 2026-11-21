@@ -102,3 +102,21 @@ class Ops24SupervisorTests(unittest.TestCase):
             with self.subTest(script=name):
                 self.assertEqual(process.returncode,0,process.stderr)
                 self.assertIn("usage:",process.stdout)
+
+    def test_reviewed_proof_from_another_release_cannot_enable_current_code(self):
+        from zs_smart_gate.stage05_contracts import canonical,digest
+        module=runpy.run_path(str(ROOT/"scripts"/"ops24-worker.py"))
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder)
+            (root/"proofs").mkdir()
+            raw=canonical(dict(head="c"*40,tree="d"*40,accepted=True))
+            (root/"proofs"/"engineering.json").write_bytes(raw)
+            (root/"release.json").write_text(json.dumps(dict(head="a"*40,tree="b"*40,
+                owner_sid="S-1-5-21-123")))
+            (root/"activation.json").write_text(json.dumps(dict(schema="zs.ops24.activation.v1",
+                head="a"*40,tree="b"*40,purpose="READ_ONLY_RESEARCH_24H",seconds=86400,
+                pm_review_url="https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/51",
+                proofs=dict(engineering=dict(sha256=digest(raw))))))
+            with patch("subprocess.check_output",return_value='"owner","S-1-5-21-123"'):
+                with self.assertRaisesRegex(Hold,"ACTIVATION_PROOF_RELEASE_MISMATCH"):
+                    module["activation"](root,"a"*40,"b"*40)

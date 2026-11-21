@@ -92,7 +92,8 @@ def main():
                     budget.stop("BOUNDARY_CUTOFF")
                     return False
             return True
-        except (Hold,OSError,ValueError,KeyError):
+        except (Hold,OSError,ValueError,KeyError,subprocess.TimeoutExpired):
+            budget.stop("CLOCK_OR_RESOURCE_PROBE_FAILED")
             return False
     def healthy():
         with health_lock:
@@ -115,7 +116,7 @@ def main():
     else:
         if args.boundary is None or (args.cycle_child and args.runtime_root is None):
             raise Hold("RUNTIME_CLOCK_AND_BOUNDARY_REQUIRED")
-        result=scan(client,boundary_ms=args.boundary*1000)
+        result=scan(client,boundary_ms=args.boundary*1000,release=dict(head=code_head,tree=code_tree))
     print(json.dumps({k:v for k,v in result.items() if k not in ("inventory","rows")},sort_keys=True))
     return 0 if result.get("status")=="SOURCE_DISCOVERY_VERIFIED" else (
         0 if result.get("coverage")=="MARKET_COVERAGE_VERIFIED" else 2)

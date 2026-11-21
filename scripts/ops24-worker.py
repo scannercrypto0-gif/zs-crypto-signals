@@ -49,6 +49,8 @@ def activation(root, head, tree):
         if digest(raw)!=row["sha256"]:
             raise Hold("ACTIVATION_PROOF_HASH_INVALID")
         proof=json.loads(raw)
+        if proof.get("head")!=head or proof.get("tree")!=tree:
+            raise Hold("ACTIVATION_PROOF_RELEASE_MISMATCH")
         if gate=="full_market" and not (proof.get("coverage")=="MARKET_COVERAGE_VERIFIED"
                 and proof.get("eligible",0)>0 and proof.get("eligible")==proof.get("validated")
                 and proof.get("missing")==0):
