@@ -70,3 +70,60 @@ def intake(root):
                 return_after_costs=None,signals_created=0,
                 blockers=["INDEPENDENT_PIT_SOURCE_REVIEW","PRE_REGISTERED_DEV_OOS_FORWARD",
                           "COST_MODEL_AND_SAMPLE_SIZE","INDEPENDENT_DIRECTIONAL_ACCEPTANCE"])
+
+
+def legacy_research_replay(root, expected_result_sha):
+    """A new offline research calculation; never edits original live outcomes."""
+    from .ops_windows_time import REVIEWED_POLICY_SHA256
+    from .stage05_contracts import parse_utc
+    root=Path(root)
+    original_bytes=(root/"result.json").read_bytes()
+    if digest(original_bytes)!=expected_result_sha:
+        raise Hold("LEGACY_SOURCE_RESULT_PIN_MISMATCH")
+    original=json.loads(original_bytes)
+    if (original["clock"]["status"]!="OPERATIONAL_TIME_ACCEPTED"
+            or original["clock"].get("policy_sha256")!=REVIEWED_POLICY_SHA256):
+        raise Hold("LEGACY_OPERATIONAL_CLOCK_NOT_RECORDED")
+    snapshot=json.loads((root/"snapshot.private.json").read_bytes())
+    log=[json.loads(row) for row in (root/"requests.jsonl").read_bytes().splitlines()]
+    receipts=[]
+    pins=[]
+    for row in log:
+        if row["state"]!="RECEIVED":
+            continue
+        body=(root/("response-"+str(row["attempt"])+".private")).read_bytes()
+        if digest(body)!=row["body_sha256"] or row["http_status"]!=200 or len(body)!=row["body_bytes"]:
+            raise Hold("LEGACY_ORIGINAL_BODY_NOT_VERIFIED")
+        receipts.append(dict(path=row["path"],params=row["params"],received_at=row["received_at"],
+                             body_sha256=row["body_sha256"],payload=json.loads(body)))
+        pins.append(dict(file="response-"+str(row["attempt"])+".private",sha256=digest(body)))
+    if not receipts:
+        raise Hold("LEGACY_SOURCE_EMPTY")
+    decision=max(r["received_at"] for r in receipts)
+    boundary=original["boundary_preflight"]["boundary_ms"]
+    symbols=sorted({r["params"]["symbol"] for r in receipts if r["path"]=="klines"})
+    counts={direction:Counter() for direction in ("UP","DOWN")}
+    events=[]
+    for symbol in symbols:
+        frames=[r for frame in FRAMES for r in receipts if r["path"]=="klines"
+                and r["params"].get("symbol")==symbol and r["params"].get("interval")==frame]
+        if len(frames)!=4:
+            events.append(dict(symbol=symbol,status="INCOMPLETE_FOUR_FRAME_HISTORY"))
+            continue
+        item=next(row for row in snapshot["rows"] if row["symbol"]==symbol)
+        packet=packet_from_receipts(item,frames,boundary_ms=boundary,decision_at=decision,
+                 scope="PUBLIC_SPOT_CONDITIONAL_RESEARCH",clock_status="OPERATIONAL_TIME_ACCEPTED")
+        outcomes=evaluate(packet)
+        for row in outcomes:
+            counts[row["direction"]][row["status"]]+=1
+        events.append(dict(symbol=symbol,input_sha256=digest(canonical(packet)),directions=outcomes))
+    return dict(schema="zs.ops24.legacy-original-research-replay.v1",
+        scope="NEW_OFFLINE_CALCULATION_FROM_ORIGINAL_RECORDED_BODIES",
+        original_live_result_sha256=expected_result_sha,
+        original_live_funnel=original["funnel"],original_live_outcome_unchanged=True,
+        decision_definition="MAX_RECORDED_RESPONSE_RECEIPT_NOT_ORIGINAL_RUNTIME_DECISION",
+        decision_at=decision,boundary_ms=boundary,source_body_pins=pins,
+        clock_evidence="RECORDED_ADMIN_PILOT_SELF_ATTESTED_REVIEW_REQUIRED",
+        events=events,counts={key:dict(value) for key,value in counts.items()},
+        science="NOT_APPROVED",oos="NOT_EVALUATED",forward="NOT_OBSERVED",
+        precision=None,recall=None,calibration=None,return_after_costs=None,signals_created=0)

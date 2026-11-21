@@ -55,3 +55,5 @@ Observation makes at most three sequential public discovery GETs and holds full 
 After PM and owner exact-head merge/deployment review, controller operations are InstallDisabled, BuildTask, Status, Stop, Disable, Restore and Rollback. Actual Register/Enable require the protected authority and signed gate evidence. Until then G1/G2 are blocked and G3 is NOT_STARTED.
 
 One Draft implementation PR and original Windows receipts are synchronized to the private official GitHub repository and independently restored. Only new/affected tests plus the single CLOCK74 final-response compatibility regression run; the unchanged 91-test baseline is not repeated.
+
+Offline legacy research intake can additionally verify the pinned original CLOCK73 response bytes and calculate a new common-decision research replay. It preserves the original live 1/45 result and labels its later offline calculation separately. It does not rewrite the original runtime outcome or create prospective/OOS evidence.

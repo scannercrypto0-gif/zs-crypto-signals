@@ -317,3 +317,41 @@ class Ops24RuntimeTests(unittest.TestCase):
                 receipt=json.loads(path.read_bytes())
                 self.assertEqual(receipt["started_clock"],proof)
                 self.assertEqual(receipt["received_clock"],proof)
+
+    def test_legacy_replay_is_a_new_offline_calculation_not_a_rewrite(self):
+        from zs_smart_gate.ops24_science import legacy_research_replay
+        from zs_smart_gate.ops_windows_time import REVIEWED_POLICY_SHA256
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder)
+            market=FakeMarket(2)
+            budget=Budget(root,"cycle")
+            scan(Client(budget,get=market.get,guard=lambda:True,stamp=market.stamp),
+                 boundary_ms=market.boundary,wall=lambda:market.epoch,stamp=market.stamp)
+            snapshot=json.loads((root/"inventory.private.json").read_bytes())
+            (root/"snapshot.private.json").write_bytes(canonical(snapshot))
+            with closing(budget.open()) as db:
+                rows=[(row["key"],json.loads(row["receipt"])) for row in db.execute(
+                    "SELECT key,receipt FROM requests WHERE state='COMMITTED'")]
+            rows.sort(key=lambda item:item[1]["started_mono_ns"])
+            log=[]
+            old_receipts=[]
+            for ordinal,(key,row) in enumerate(rows,1):
+                body=(root/(key+".private")).read_bytes()
+                (root/("response-"+str(ordinal)+".private")).write_bytes(body)
+                log.append({**row,"attempt":ordinal,"state":"RECEIVED"})
+                old_receipts.append(dict(path=row["path"],params=row["params"],received_at=row["received_at"],
+                                         body_sha256=row["body_sha256"],payload=json.loads(body)))
+            (root/"requests.jsonl").write_bytes(b"\n".join(canonical(row) for row in log)+b"\n")
+            original=canonical(dict(clock=dict(status="OPERATIONAL_TIME_ACCEPTED",policy_sha256=REVIEWED_POLICY_SHA256),
+                funnel=dict(source_validated=1),boundary_preflight=dict(boundary_ms=market.boundary),
+                snapshot=dict(snapshot_sha256=snapshot["snapshot_sha256"]),
+                receipt_manifest_sha256=digest(canonical(old_receipts))))
+            (root/"result.json").write_bytes(original)
+            replay=legacy_research_replay(root,digest(original))
+            self.assertEqual(len(replay["events"]),2)
+            self.assertEqual(replay["signals_created"],0)
+            self.assertEqual(replay["science"],"NOT_APPROVED")
+            self.assertEqual((root/"result.json").read_bytes(),original)
+            (root/"response-1.private").write_bytes(b"corrupt")
+            with self.assertRaises(Hold):
+                legacy_research_replay(root,digest(original))
