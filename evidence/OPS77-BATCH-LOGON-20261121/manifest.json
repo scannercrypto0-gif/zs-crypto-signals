@@ -1,0 +1,47 @@
+{
+  "schema": "zs.ops77.batch-logon.evidence.v1",
+  "head": "8c8c84b54465b9a7478bac77b090ad6faeabaa95",
+  "tree": "de03fa242464386fdcafb15af7ef6d5c4c962d99",
+  "files": [
+    {
+      "path": "OPS77-batch-right-tests/scheduler-start-failure.redacted.json",
+      "bytes": 371,
+      "sha256": "d3c1edd080114c17c3e8feb442d018736ab2fda527c9841d8d360439f1c37531"
+    },
+    {
+      "path": "OPS77-batch-right-tests/stderr.raw.txt",
+      "bytes": 1420,
+      "sha256": "997d5b597d76ae818a569a0c44c25ee709c07c48def2cda0a695e48fbfd089bf"
+    },
+    {
+      "path": "OPS77-batch-right-tests/stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-batch-right-tests/tests.json",
+      "bytes": 273,
+      "sha256": "bc0696a3f08935bd4aec3ef3780b625bfe602f4f9a757adee2d38c7da0739fd5"
+    },
+    {
+      "path": "OPS77-batch-right-reproduction/stderr.raw.txt",
+      "bytes": 1420,
+      "sha256": "72417869ac9450551111343889fda21f806d938abe0062b49407f11d1f08dcd6"
+    },
+    {
+      "path": "OPS77-batch-right-reproduction/stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-batch-right-reproduction/tests.json",
+      "bytes": 274,
+      "sha256": "39b640824e1d5974e896d4b5130e059bc2575dbf7a113ca4f6944cffb09250db"
+    },
+    {
+      "path": "original-task-probe-report.json",
+      "bytes": 907,
+      "sha256": "b6995d9caaa54d42fb289eaac6385fa3a982fb1a1f48b846ede672851116c2bc"
+    }
+  ]
+}

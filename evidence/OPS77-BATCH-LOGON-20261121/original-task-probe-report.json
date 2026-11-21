@@ -1,0 +1,22 @@
+{
+    "schema":  "zs.ops24.task-probe-driver.v2",
+    "head":  "8981f5bef96bb9f1be885ba25f52982b169e9ca9",
+    "tree":  "1802d00502f6893edaf256b904002b4e082fb2b2",
+    "task":  "ZS-OPS24-IsolatedProbe-8073dccd43ca4acab2431f8dc3c795c8",
+    "origin":  "ACTUAL_WINDOWS_SCHEDULER",
+    "market_calls":  0,
+    "telegram_calls":  0,
+    "sql_writes":  0,
+    "registered":  true,
+    "probe_observed":  false,
+    "cleanup":  true,
+    "real_reboot":  "NOT_EXECUTED",
+    "real_logoff":  "NOT_EXECUTED",
+    "xml_sha256":  "72f604e5d1bc2c07910d335a9bfbffcf7ffef306531fdae7ee2c7bc7ad3f2ca0",
+    "last_task_result":  267011,
+    "last_run_utc":  "1999-11-29T21:00:00.0000000Z",
+    "python":  "D:\\ZS-SMART-GATE\\runtime\\python-3.12.10-ops77\\python.exe",
+    "status":  "BLOCKED_WINDOWS_TASK_PREFLIGHT",
+    "error_id":  "ACTUAL_SCHEDULED_PROBE_NOT_OBSERVED",
+    "hresult":  -2146233087
+}

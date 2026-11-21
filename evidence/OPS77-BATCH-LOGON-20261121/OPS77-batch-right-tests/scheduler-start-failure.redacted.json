@@ -1,0 +1,13 @@
+{
+  "schema": "zs.ops77.scheduler-event-extract.v1",
+  "redacted": true,
+  "source": "ACTUAL_WINDOWS_TASKSCHEDULER_OPERATIONAL",
+  "events": [
+    {
+      "event_id": 101,
+      "utc": "2026-11-21T13:50:07.8380578Z",
+      "result_code": 2147943785,
+      "original_event_sha256": "5a5085c609154dd84fbf99a69288574fbc3037acbe4aa1d8d10620c6807b5ceb"
+    }
+  ]
+}
