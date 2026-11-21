@@ -93,3 +93,12 @@ class Ops24SupervisorTests(unittest.TestCase):
             report=journal.report(window,1800+86400)
             self.assertEqual(report["observed_uptime_lower_bound_seconds"],0)
             self.assertEqual(report["stability"],"24H_STABILITY_NOT_PROVEN")
+
+    def test_entrypoints_resolve_checkout_without_caller_pythonpath(self):
+        import sys
+        for name in ("ops24-worker.py","ops24-bounded.py","ops24-science-replay.py"):
+            process=subprocess.run([sys.executable,"-E","-B",str(ROOT/"scripts"/name),"--help"],
+                capture_output=True,text=True,timeout=15)
+            with self.subTest(script=name):
+                self.assertEqual(process.returncode,0,process.stderr)
+                self.assertIn("usage:",process.stdout)

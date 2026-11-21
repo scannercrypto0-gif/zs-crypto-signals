@@ -1,6 +1,10 @@
 """Offline research replay of pinned owner-local CLOCK73 originals, without HTTP."""
 import argparse
 from pathlib import Path
+# Resolve this pinned checkout without an installed package or caller PYTHONPATH.
+import sys
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"src"))
+
 from zs_smart_gate.ops24_science import legacy_research_replay
 from zs_smart_gate.ops24_source import atomic
 from zs_smart_gate.stage05_contracts import canonical

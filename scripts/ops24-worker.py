@@ -7,6 +7,10 @@ import subprocess
 import sys
 import time
 
+# Resolve this pinned checkout without an installed package or caller PYTHONPATH.
+import sys
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"src"))
+
 from zs_smart_gate.ops24_budget import Hold
 from zs_smart_gate.marketwide_capture import _is_admin as is_admin
 from zs_smart_gate.ops24_runtime import RuntimeJournal, supervisor
