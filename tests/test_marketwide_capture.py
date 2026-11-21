@@ -41,6 +41,109 @@ class MarketCaptureTests(TestCase):
                 capture.get("ticker/24hr", {})
             self.assertEqual(opener.calls, 1)
 
+
+    def test_exact_eleventh_http_receipt_accepted_twelfth_forbidden(self):
+        import hashlib
+        from zs_smart_gate.marketwide_capture import MAX_REQUESTS
+        self.assertEqual(MAX_REQUESTS, 11)
+
+        class FreshOpener:
+            def __init__(self):
+                self.calls = 0
+
+            def open(self, request, timeout):
+                self.calls += 1
+                return Response(raw=b'{"complete":true}', header="120")
+
+        with tempfile.TemporaryDirectory() as root:
+            fake = FreshOpener()
+            capture = PublicCapture(root, opener=fake, monotonic=lambda: 10)
+            for ordinal in range(1, 12):
+                receipt = capture.get("klines", {"symbol": "TESTUSDT",
+                                               "interval": "5m", "endTime": "1", "limit": "1"})
+                self.assertTrue(receipt["payload"]["complete"])
+                self.assertEqual(capture.attempts, ordinal)
+                self.assertEqual(
+                    receipt["body_sha256"],
+                    hashlib.sha256(b'{"complete":true}').hexdigest())
+                self.assertEqual(
+                    (Path(root) / ("response-" + str(ordinal) + ".private")).read_bytes(),
+                    b'{"complete":true}')
+            self.assertEqual(len(capture.receipts), 11)
+            self.assertEqual(capture.stop_reason(), "REQUEST_BUDGET_EXHAUSTED")
+            with self.assertRaisesRegex(PauseScan, "REQUEST_BUDGET_EXHAUSTED"):
+                capture.get("klines", {"symbol": "TESTUSDT",
+                                      "interval": "5m", "endTime": "1", "limit": "1"})
+            self.assertEqual(fake.calls, 11)
+            journal = [json.loads(row) for row in
+                       (Path(root) / "requests.jsonl").read_text().splitlines()]
+            self.assertEqual(len([r for r in journal if r["state"] == "RECEIVED"]), 11)
+
+    def test_post_response_deadline_and_weight_still_fail_closed(self):
+        class MovingClock:
+            def __init__(self):
+                self.value = 0
+            def __call__(self):
+                return self.value
+
+        class TimedOpener:
+            def __init__(self, clock):
+                self.clock = clock
+                self.calls = 0
+            def open(self, request, timeout):
+                self.calls += 1
+                self.clock.value = 110
+                return Response(raw=b'{"complete":true}', header="120")
+
+        with tempfile.TemporaryDirectory() as root:
+            clock = MovingClock()
+            fake = TimedOpener(clock)
+            capture = PublicCapture(root, opener=fake, monotonic=clock)
+            with self.assertRaisesRegex(PauseScan, "CAPTURE_DEADLINE_EXHAUSTED"):
+                capture.get("klines", {"symbol": "TESTUSDT",
+                                      "interval": "5m", "endTime": "1", "limit": "1"})
+            self.assertEqual(fake.calls, 1)
+            self.assertEqual(len(capture.receipts), 1)
+
+        with tempfile.TemporaryDirectory() as root:
+            capture = PublicCapture(root, opener=Opener(Response(header="5500")))
+            with self.assertRaisesRegex(PauseScan, "OBSERVED_WEIGHT_HEADROOM_EXHAUSTED"):
+                capture.get("exchangeInfo", {})
+            self.assertEqual(len(capture.receipts), 1)
+
+    def test_restart_preserves_final_raw_receipt_and_no_duplicate_claim(self):
+        import hashlib
+        from zs_smart_gate.marketwide_cursor import ScanLedger
+        from zs_smart_gate.stage05_contracts import canonical, digest
+        with tempfile.TemporaryDirectory() as root:
+            root_path = Path(root)
+            capture = PublicCapture(
+                root, opener=Opener(Response(raw=b'{"source":"original"}')))
+            first = capture.get("klines", {
+                "symbol": "TESTUSDT", "interval": "5m", "endTime": "1", "limit": "1"})
+            raw = (root_path / "response-1.private").read_bytes()
+            self.assertEqual(hashlib.sha256(raw).hexdigest(),
+                             first["body_sha256"])
+            snapshot = {"version": "test", "scope": "SYNTHETIC",
+                        "rows": [{"symbol": "TESTUSDT", "eligible": True,
+                                  "active": True, "reasons": []}]}
+            snapshot["snapshot_sha256"] = digest(canonical(snapshot))
+            path = root_path / "cursor.sqlite"
+            ledger = ScanLedger(path)
+            scan = ledger.register(snapshot, 1800000)
+            item = ledger.claim(scan)
+            self.assertEqual(item["symbol"], "TESTUSDT")
+            ledger.finish(scan, item["symbol"], "PAUSED", [])
+            resumed = ScanLedger(path)
+            self.assertIsNone(resumed.claim(scan))
+            report = resumed.report(scan)
+            self.assertEqual(report["attempted"], 1)
+            self.assertEqual(report["interrupted_or_paused"], 1)
+            self.assertEqual((root_path / "response-1.private").read_bytes(), raw)
+            journal = [json.loads(x) for x in
+                       (root_path / "requests.jsonl").read_text().splitlines()]
+            self.assertEqual(journal[-1]["body_sha256"], first["body_sha256"])
+
     def test_540_header_is_below_new_guard(self):
         with tempfile.TemporaryDirectory() as root:
             capture = PublicCapture(root, opener=Opener(Response(header="540")))
@@ -299,6 +402,22 @@ class Clock73SyntheticFullChainTests(TestCase):
         self.assertTrue(all(row["source_validated"] for row in directions))
         self.assertEqual({row["signal_id"] for row in directions}, {None})
         self.assertEqual(funnel["production_signals"], 0)
+
+    def test_two_pairs_exactly_eleven_http_second_pair_evaluated(self):
+        result, calls = self._run_fixture(
+            symbols=["OTHERUSDT", "SECONDUSDT"])
+        self.assertEqual(len(calls), 11)
+        self.assertEqual(sum(endpoint == "klines" for endpoint, _ in calls), 8)
+        funnel = result["funnel"]
+        self.assertEqual(funnel["eligible"], 2)
+        self.assertEqual(funnel["attempted"], 2)
+        self.assertEqual(funnel["source_validated"], 2)
+        self.assertEqual(funnel["directionally_evaluated"], 4)
+        self.assertEqual(funnel["coverage"], "MARKET_COVERAGE_VERIFIED")
+        self.assertIsNone(funnel["stopped_reason"])
+        self.assertEqual(result["requests"], 11)
+        self.assertEqual(result["production_signals"] if "production_signals" in result
+                         else funnel["production_signals"], 0)
 
     def test_expiry_after_first_packet_before_second_pair_is_precise(self):
         result, calls = self._run_fixture(

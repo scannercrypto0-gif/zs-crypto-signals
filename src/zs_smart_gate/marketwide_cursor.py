@@ -109,8 +109,7 @@ class ScanLedger:
             except PauseScan as exc:
                 # Preserve the one explicit window-expiry diagnostic, without
                 # mislabeling unrelated transport pauses as clock problems.
-                stopped = ("CANDLE_ENTRY_WINDOW_EXPIRED" if str(exc) == "CANDLE_ENTRY_WINDOW_EXPIRED"
-                           else "QUOTA_CONNECTIVITY_OR_DEADLINE")
+                stopped = str(exc) or "QUOTA_CONNECTIVITY_OR_DEADLINE"
                 self.finish(scan, item["symbol"], "PAUSED", [])
                 break
             except (ValueError, KeyError, TypeError):

@@ -68,17 +68,33 @@ class PublicCapture:
             os.fsync(stream.fileno())
 
     def healthy(self):
+        """Before-request admission only; the final successful response is usable."""
         return (self.monotonic()-self.start < MAX_SECONDS
                 and self.attempts < MAX_REQUESTS and self.used < MAX_USED_WEIGHT
                 and self.bytes < MAX_TOTAL_BODY)
+
+    def stop_reason(self):
+        """Return the first auditable stop condition, without issuing HTTP."""
+        if self.monotonic() - self.start >= MAX_SECONDS:
+            return "CAPTURE_DEADLINE_EXHAUSTED"
+        if self.attempts >= MAX_REQUESTS:
+            return "REQUEST_BUDGET_EXHAUSTED"
+        if self.used >= MAX_USED_WEIGHT:
+            return "OBSERVED_WEIGHT_HEADROOM_EXHAUSTED"
+        if self.bytes >= MAX_TOTAL_BODY:
+            return "BODY_BUDGET_EXHAUSTED"
+        return None
 
     def get(self, path, params):
         if path not in WEIGHTS:
             raise ValueError("ENDPOINT_NOT_ALLOWED")
         units = WEIGHTS[path]
-        if (not self.healthy() or self.weight + units > MAX_WEIGHT
-                or self.used + units > MAX_USED_WEIGHT):
-            raise PauseScan("BUDGET_OR_HEADROOM_STOP")
+        if not self.healthy():
+            raise PauseScan(self.stop_reason() or "CAPTURE_HEALTH_GATE_BLOCKED")
+        if self.weight + units > MAX_WEIGHT:
+            raise PauseScan("ESTIMATED_WEIGHT_BUDGET_EXHAUSTED")
+        if self.used + units > MAX_USED_WEIGHT:
+            raise PauseScan("OBSERVED_WEIGHT_HEADROOM_EXHAUSTED")
         allowed = ({}, {"showPermissionSets": "false"}) if path == "exchangeInfo" else ({},)
         if path != "klines" and params not in allowed:
             raise ValueError("UNFILTERED_DISCOVERY_REQUIRED")
@@ -121,8 +137,14 @@ class PublicCapture:
         receipt = dict(path=path, params=params, payload=payload, received_at=meta["received_at"],
                        body_sha256=meta["body_sha256"])
         self.receipts.append(receipt)
-        if self.used > MAX_USED_WEIGHT or not self.healthy():
-            raise PauseScan("QUOTA_OR_DEADLINE_STOP")
+        # Post-response limits are independent of next-request admission.
+        # Attempt #11 may be the last complete, auditable HTTP receipt.
+        if self.used >= MAX_USED_WEIGHT:
+            raise PauseScan("OBSERVED_WEIGHT_HEADROOM_EXHAUSTED")
+        if self.monotonic() - self.start >= MAX_SECONDS:
+            raise PauseScan("CAPTURE_DEADLINE_EXHAUSTED")
+        if self.bytes >= MAX_TOTAL_BODY:
+            raise PauseScan("BODY_BUDGET_EXHAUSTED")
         return receipt
 
 
@@ -234,7 +256,8 @@ def run(root, cursor, *, transport=None, admin_clock_pilot=False):
                 stop_reason=lambda: (
                     "CANDLE_ENTRY_WINDOW_EXPIRED"
                     if not boundary_preflight(time.time(), boundary_ms=boundary)["admitted"]
-                    else "CLOCK_SOURCE_OR_BUDGET_UNHEALTHY"))
+                    else (transport.stop_reason() if hasattr(transport, "stop_reason")
+                          else None) or "CLOCK_SOURCE_OR_BUDGET_UNHEALTHY"))
     except PauseScan as exc:
         result["stop"] = str(exc)
     except (ValueError, KeyError, TypeError):
