@@ -1,0 +1,11 @@
+test_admin_pilot_denied_without_windows_elevation (test_p0_clock_73.Clock73Tests.test_admin_pilot_denied_without_windows_elevation) ... ok
+test_no_unreviewed_service_or_effects_added (test_p0_clock_73.Clock73Tests.test_no_unreviewed_service_or_effects_added) ... ok
+test_nonfinite_offset_must_fail_closed (test_p0_clock_73.Clock73Tests.test_nonfinite_offset_must_fail_closed) ... ok
+test_operator_preflight_and_summary_are_read_only (test_p0_clock_73.Clock73Tests.test_operator_preflight_and_summary_are_read_only) ... ok
+test_owner_policy_digest_exact_and_no_implicit_activation (test_p0_clock_73.Clock73Tests.test_owner_policy_digest_exact_and_no_implicit_activation) ... ok
+test_policy_change_fails_closed (test_p0_clock_73.Clock73Tests.test_policy_change_fails_closed) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.029s
+
+OK

@@ -1,0 +1,8 @@
+test_normal_nonzero_exit_preserved (test_ops_windows_watchdog.WatchdogTests.test_normal_nonzero_exit_preserved) ... ok
+test_operator_interrupt_returns_130_and_cleans_up (test_ops_windows_watchdog.WatchdogTests.test_operator_interrupt_returns_130_and_cleans_up) ... ok
+test_timeout_kills_descendant_only (test_ops_windows_watchdog.WatchdogTests.test_timeout_kills_descendant_only) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 3.627s
+
+OK

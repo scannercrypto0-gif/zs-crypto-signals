@@ -1,0 +1,10 @@
+test_eleventh_response_deadline_and_observed_weight_still_stop (test_clock74_acceptance.Clock74AcceptanceTests.test_eleventh_response_deadline_and_observed_weight_still_stop) ... ok
+test_eleventh_response_size_and_total_byte_guards_preserve_original (test_clock74_acceptance.Clock74AcceptanceTests.test_eleventh_response_size_and_total_byte_guards_preserve_original) ... ok
+test_estimated_weight_exact_cap_accepts_response_then_stops (test_clock74_acceptance.Clock74AcceptanceTests.test_estimated_weight_exact_cap_accepts_response_then_stops) ... ok
+test_powershell51_actual_summary_block_and_hash_pointers (test_clock74_acceptance.Clock74AcceptanceTests.test_powershell51_actual_summary_block_and_hash_pointers) ... ok
+test_python_compact_output_preserves_large_original_and_no_delivery (test_clock74_acceptance.Clock74AcceptanceTests.test_python_compact_output_preserves_large_original_and_no_delivery) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 1.051s
+
+OK

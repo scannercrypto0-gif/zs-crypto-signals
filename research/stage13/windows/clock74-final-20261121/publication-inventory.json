@@ -1,0 +1,441 @@
+{
+  "schema": "zs.clock74.publication-inventory.v1",
+  "private_repository": true,
+  "source_branch": "fix/clock73-offline-11th-receipt",
+  "tested_head": "3e360d7471fa6d7270ededd77660392e80c8b250",
+  "tested_tree": "ac9b9fd8b0c7801183589b027cba1082d616f32b",
+  "accepted_raw_verified": true,
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 8,
+      "sha256": "705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da"
+    },
+    {
+      "path": "accepted/acceptance.json",
+      "bytes": 10898,
+      "sha256": "d3a1317ea93b0ce1e0b901a40cfc52bd7a08e8e3e5820855d7695fc759923f02"
+    },
+    {
+      "path": "accepted/SHA256SUMS",
+      "bytes": 2845,
+      "sha256": "f11a0a655dfbd31cf08efca4e4737d0c5740b65829150eb36b819578fedca21e"
+    },
+    {
+      "path": "accepted/test_clock74_acceptance.result.json",
+      "bytes": 278,
+      "sha256": "eec7bf8179150fc116dba0f39eb1d2b4cea6d61e0f65586ac6c59fee332fb284"
+    },
+    {
+      "path": "accepted/test_clock74_acceptance.stderr.raw.txt",
+      "bytes": 1020,
+      "sha256": "7b3a3e401527a9dd588df20536aa0208166742ee1b13fe1d10c8bb1b34da5e8b"
+    },
+    {
+      "path": "accepted/test_clock74_acceptance.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "accepted/test_marketwide_capture.result.json",
+      "bytes": 278,
+      "sha256": "9d164e0647d3c82fff0fe1fce06e685175a02fd22a67d18f1742de0b6680cc3c"
+    },
+    {
+      "path": "accepted/test_marketwide_capture.stderr.raw.txt",
+      "bytes": 2889,
+      "sha256": "ab0fc2de7f87c22646296dfb88e836ab54a99bf6ad27b2c439d4127d2eecc0b3"
+    },
+    {
+      "path": "accepted/test_marketwide_capture.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "accepted/test_marketwide_research.result.json",
+      "bytes": 281,
+      "sha256": "37dfaaaf0d9e93cc1b5ff96a8832123d5c5382ca568760577d5eabb22f32dd2e"
+    },
+    {
+      "path": "accepted/test_marketwide_research.stderr.raw.txt",
+      "bytes": 3939,
+      "sha256": "b2eda1041f028070bb1987e24fd89045467b11350b95536adbb54d2f1d401e03"
+    },
+    {
+      "path": "accepted/test_marketwide_research.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "accepted/test_ops_clock_recorded.result.json",
+      "bytes": 278,
+      "sha256": "94047d6def76e50b33be0840e08591b07b80b832219301401f4a62ec4ed9f428"
+    },
+    {
+      "path": "accepted/test_ops_clock_recorded.stderr.raw.txt",
+      "bytes": 586,
+      "sha256": "b62cb40e3c670aac93b703f5fc9c922cce1fbb58a92755ccdc98aa5c9b9bde8f"
+    },
+    {
+      "path": "accepted/test_ops_clock_recorded.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "accepted/test_ops_windows_time.result.json",
+      "bytes": 275,
+      "sha256": "2061e2b9c536530b7374b9cdb77b693cb049046d81b1ccc7f1e051a123527385"
+    },
+    {
+      "path": "accepted/test_ops_windows_time.stderr.raw.txt",
+      "bytes": 727,
+      "sha256": "eadd1b8f34851b0d2ade6860fdf204f11845cee4dd4c7e42cfe74cac8c88b483"
+    },
+    {
+      "path": "accepted/test_ops_windows_time.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "accepted/test_ops_windows_watchdog.result.json",
+      "bytes": 280,
+      "sha256": "44afead894b6ff6c4a6ef9425badb9ab2b225041fc186eb40b3e1e8044c40d7b"
+    },
+    {
+      "path": "accepted/test_ops_windows_watchdog.stderr.raw.txt",
+      "bytes": 493,
+      "sha256": "1b55ef48fdf14ef3760fce22ebfc3a05f80af100f4e03658a0fa16655e292669"
+    },
+    {
+      "path": "accepted/test_ops_windows_watchdog.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "accepted/test_order007_release.result.json",
+      "bytes": 278,
+      "sha256": "efae5db827baa6375d728299ab04058f285072b3107e989422a1e9a6e25742de"
+    },
+    {
+      "path": "accepted/test_order007_release.stderr.raw.txt",
+      "bytes": 2650,
+      "sha256": "cdcd22804a1b3ed205c6587152e9895cda02105ff08edf6eec1fe7f410bf8d24"
+    },
+    {
+      "path": "accepted/test_order007_release.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "accepted/test_p0_clock_72.result.json",
+      "bytes": 273,
+      "sha256": "03e69743a5ff7f002b5549bfbf8cda133e574a758a1267070f4681dfe92c575e"
+    },
+    {
+      "path": "accepted/test_p0_clock_72.stderr.raw.txt",
+      "bytes": 1656,
+      "sha256": "11ba800c5e6f646e4e1b20a1b9ccb4a6117dbed308cca6da507ac4a3375691cf"
+    },
+    {
+      "path": "accepted/test_p0_clock_72.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "accepted/test_p0_clock_73.result.json",
+      "bytes": 271,
+      "sha256": "d12dae820e4d357ce30075207e79300a914ef25344ec99566152be41fe9dd61e"
+    },
+    {
+      "path": "accepted/test_p0_clock_73.stderr.raw.txt",
+      "bytes": 889,
+      "sha256": "b0dbf98d3150561d05c8dc43c737969b933356bf6ab61b9e772371c88ee38382"
+    },
+    {
+      "path": "accepted/test_p0_clock_73.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "drivers/CLOCK74-FINAL-20261121-driver-v2.exit.txt",
+      "bytes": 3,
+      "sha256": "f1b2f662800122bed0ff255693df89c4487fbdcf453d3524a42d4ec20c3d9c04"
+    },
+    {
+      "path": "drivers/CLOCK74-FINAL-20261121-driver-v2.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "drivers/CLOCK74-FINAL-20261121-driver-v2.stdout.txt",
+      "bytes": 348,
+      "sha256": "c37fc8523ffe2b7c1d440449d70bc54dbfb70674ccbea8ae7229665e8c9da0a3"
+    },
+    {
+      "path": "drivers/CLOCK74-FINAL-20261121-driver-v3.exit.txt",
+      "bytes": 3,
+      "sha256": "13bf7b3039c63bf5a50491fa3cfd8eb4e699d1ba1436315aef9cbe5711530354"
+    },
+    {
+      "path": "drivers/CLOCK74-FINAL-20261121-driver-v3.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "drivers/CLOCK74-FINAL-20261121-driver-v3.stdout.txt",
+      "bytes": 351,
+      "sha256": "8eb4a16f7e015be32e502b7c778f900a541e6f2872ee7c21a6e71be4624c2bca"
+    },
+    {
+      "path": "drivers/CLOCK74-FINAL-20261121-driver.exit.txt",
+      "bytes": 3,
+      "sha256": "f1b2f662800122bed0ff255693df89c4487fbdcf453d3524a42d4ec20c3d9c04"
+    },
+    {
+      "path": "drivers/CLOCK74-FINAL-20261121-driver.stderr.txt",
+      "bytes": 539,
+      "sha256": "15f0cac3d264d51b5713cbadb8caf439baa7cbeed89a3b385e53145bd821b0d8"
+    },
+    {
+      "path": "drivers/CLOCK74-FINAL-20261121-driver.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness-iteration-not-accepted/acceptance.json",
+      "bytes": 10911,
+      "sha256": "a16af97dced71e1162a9b6aed22d605fc04422ad773dcfdce52abd2f74f70fd3"
+    },
+    {
+      "path": "harness-iteration-not-accepted/SHA256SUMS",
+      "bytes": 2845,
+      "sha256": "6b1418671f82ced88c16d8f803edddb65753ea245999c93a6ff91b9f1fac558d"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_clock74_acceptance.result.json",
+      "bytes": 278,
+      "sha256": "e0a9d0652066029484dbb1c7dbe986fbcad80d227b69bf361ada8e71afa48375"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_clock74_acceptance.stderr.raw.txt",
+      "bytes": 1020,
+      "sha256": "ce7f88340a34906f3dd56f3dceaee924ae472ed968c834292f8d228059a7dd87"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_clock74_acceptance.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_marketwide_capture.result.json",
+      "bytes": 280,
+      "sha256": "300b14fcba99e60621d020b0feeeed9ad3aef016c56b199e7e1613270809b20a"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_marketwide_capture.stderr.raw.txt",
+      "bytes": 2889,
+      "sha256": "3aee1134108cf22e800ab4b2dafbdef7b3f4001c363b7550ff7f6dc264758bdd"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_marketwide_capture.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_marketwide_research.result.json",
+      "bytes": 281,
+      "sha256": "b5ce5dcb81769eab78db4addc23a773f832c4b37c6c4565a70d5203b6c5ecfa8"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_marketwide_research.stderr.raw.txt",
+      "bytes": 3939,
+      "sha256": "77941b24feaf22c8eb5e08a6ad10244a00c02acddf822d9d16445b2677127674"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_marketwide_research.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_ops_clock_recorded.result.json",
+      "bytes": 278,
+      "sha256": "af91a1b9f2a1572c0a81e383359d7c070c60918d6a8c95ba4276ea901e0183c1"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_ops_clock_recorded.stderr.raw.txt",
+      "bytes": 586,
+      "sha256": "69bede452e3ef3fc2070ae07115c54fff3484a271f02fb0553130f242126b175"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_ops_clock_recorded.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_ops_windows_time.result.json",
+      "bytes": 276,
+      "sha256": "aa0b215e1a8b7ddbae8c085922034a2cf590f8b374db16360668fd980c0cebea"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_ops_windows_time.stderr.raw.txt",
+      "bytes": 727,
+      "sha256": "0db51ce2439b431721beded37e3de31cc181c39ba4e375024826073834c67a6a"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_ops_windows_time.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_ops_windows_watchdog.result.json",
+      "bytes": 280,
+      "sha256": "e59ad1853dd0586f0446481d84391b5e69e9faf13e9369f9b71b61f0401e6952"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_ops_windows_watchdog.stderr.raw.txt",
+      "bytes": 493,
+      "sha256": "b38ac4bbd90fdf26b8e303d91051c8c3548e20a2ee05f0f435832d4ac72ae152"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_ops_windows_watchdog.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_order007_release.result.json",
+      "bytes": 278,
+      "sha256": "f13b12328c57b93953328263b38cc447c5f978274eaa2ba45199d5c556f99c07"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_order007_release.stderr.raw.txt",
+      "bytes": 2650,
+      "sha256": "0744b6bd38627fe468264227f04ae705dd11df02651e1f009954ee578bc071a7"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_order007_release.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_p0_clock_72.result.json",
+      "bytes": 273,
+      "sha256": "03e69743a5ff7f002b5549bfbf8cda133e574a758a1267070f4681dfe92c575e"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_p0_clock_72.stderr.raw.txt",
+      "bytes": 1656,
+      "sha256": "5bc69e99bd2d084ed3a4645ab08e06fb79e988b7e344888158dea2e1ff1f1fbe"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_p0_clock_72.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_p0_clock_73.result.json",
+      "bytes": 271,
+      "sha256": "65d30cf0922f865841244cf86ec79b821840c345d8a7343ea682f308fec60e25"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_p0_clock_73.stderr.raw.txt",
+      "bytes": 889,
+      "sha256": "b0dbf98d3150561d05c8dc43c737969b933356bf6ab61b9e772371c88ee38382"
+    },
+    {
+      "path": "harness-iteration-not-accepted/test_p0_clock_73.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "historical-85-of-86/summary.json",
+      "bytes": 3143,
+      "sha256": "47179a74b2e7467a7a3bccbe143c4168c2942235c13eeec0ed9d45e650b0cc08"
+    },
+    {
+      "path": "historical-85-of-86/test_marketwide_capture.stderr.txt",
+      "bytes": 6652,
+      "sha256": "49d2414188ca257571926b232fe62088814b98e9227d58c17c1b202f030ce6d7"
+    },
+    {
+      "path": "historical-85-of-86/test_marketwide_capture.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "historical-85-of-86/test_marketwide_research.stderr.txt",
+      "bytes": 9916,
+      "sha256": "a95f4c133db82bcff6d4d2c0c82ce2150f9eaed2660e1d167a8a8b7437216d3f"
+    },
+    {
+      "path": "historical-85-of-86/test_marketwide_research.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "historical-85-of-86/test_ops_clock_recorded.stderr.txt",
+      "bytes": 1974,
+      "sha256": "cd19d11f49cd5302e501304ec9fab4b47385136ba5fae3d10f700753b122527a"
+    },
+    {
+      "path": "historical-85-of-86/test_ops_clock_recorded.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "historical-85-of-86/test_ops_windows_time.stderr.txt",
+      "bytes": 2260,
+      "sha256": "98bd7607a46774db22ec1aef4e9052b5c1f03aa70df5ed2911d9364e95a3065d"
+    },
+    {
+      "path": "historical-85-of-86/test_ops_windows_time.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "historical-85-of-86/test_ops_windows_watchdog.stderr.txt",
+      "bytes": 1784,
+      "sha256": "5594e43762f42d23ccebdc24f4a686bac9bba86fc404255f45696dacc090e715"
+    },
+    {
+      "path": "historical-85-of-86/test_ops_windows_watchdog.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "historical-85-of-86/test_order007_release.stderr.txt",
+      "bytes": 6154,
+      "sha256": "f9eff7b7d4df6383d1b05c8ab6baf2c4e7894405c98ba071a750293c1b2075c5"
+    },
+    {
+      "path": "historical-85-of-86/test_order007_release.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "historical-85-of-86/test_p0_clock_72.stderr.txt",
+      "bytes": 4134,
+      "sha256": "706a00b058985d65a94c95b5da874965c0a4b3578b2f16ca2e82722483291c17"
+    },
+    {
+      "path": "historical-85-of-86/test_p0_clock_72.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "historical-85-of-86/test_p0_clock_73.stderr.txt",
+      "bytes": 2584,
+      "sha256": "7584a7e5a3325bd9562bd61f0417d60aab1737d778d8a87a970816e6b096be40"
+    },
+    {
+      "path": "historical-85-of-86/test_p0_clock_73.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "README.md",
+      "bytes": 6771,
+      "sha256": "48b579b8871ad33c0f1be25098b5b2e14cd38df5023861aecd328a777adae645"
+    }
+  ],
+  "secret_screen": "NO_MATCHES_IN_ALLOWLISTED_TEST_EVIDENCE"
+}

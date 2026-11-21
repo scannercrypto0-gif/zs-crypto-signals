@@ -1,0 +1,12 @@
+{
+  "suite": "test_marketwide_research",
+  "tests": 25,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "passed": 25,
+  "success": true,
+  "duration_seconds": 1.547,
+  "python_network_attempts": 0,
+  "network_scope": "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS"
+}

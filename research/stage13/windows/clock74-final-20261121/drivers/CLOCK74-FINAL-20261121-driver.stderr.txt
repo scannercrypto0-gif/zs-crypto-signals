@@ -1,0 +1,8 @@
+Split-Path : Cannot bind argument to parameter 'Path' because it is an empty string.
+At D:\ZS-SMART-GATE\validation\CLOCK74-FINAL-20261121-source\scripts\clock74-windows-acceptance.ps1:9 char:31
++   [string]$Source=(Split-Path $PSScriptRoot -Parent),
++                               ~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidData: (:) [Split-Path], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : ParameterArgumentValidationErrorEmptyStringNotAllowed,Microsoft.PowerShell.Commands.Spli 
+   tPathCommand
+ 

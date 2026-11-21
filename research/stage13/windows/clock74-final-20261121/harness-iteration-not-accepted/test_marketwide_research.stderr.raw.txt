@@ -1,0 +1,30 @@
+test_all_quotes_explicit_and_no_silent_missing_drop (test_marketwide_research.MarketwideTests.test_all_quotes_explicit_and_no_silent_missing_drop) ... ok
+test_clock_unverified_prevents_candidate_admission (test_marketwide_research.MarketwideTests.test_clock_unverified_prevents_candidate_admission) ... ok
+test_concurrent_claims_are_disjoint (test_marketwide_research.MarketwideTests.test_concurrent_claims_are_disjoint) ... ok
+test_directional_outcome_sign_and_no_short_authority (test_marketwide_research.MarketwideTests.test_directional_outcome_sign_and_no_short_authority) ... ok
+test_duplicate_reservation_and_corrupted_snapshot_stop (test_marketwide_research.MarketwideTests.test_duplicate_reservation_and_corrupted_snapshot_stop) ... ok
+test_duplicates_and_future_inventory_rejected (test_marketwide_research.MarketwideTests.test_duplicates_and_future_inventory_rejected) ... ok
+test_equal_high_low_and_insufficient_volume_no_trigger (test_marketwide_research.MarketwideTests.test_equal_high_low_and_insufficient_volume_no_trigger) ... ok
+test_fair_rotation_across_new_boundaries_no_favorite (test_marketwide_research.MarketwideTests.test_fair_rotation_across_new_boundaries_no_favorite) ... ok
+test_filtered_inventory_cannot_claim_complete_scope (test_marketwide_research.MarketwideTests.test_filtered_inventory_cannot_claim_complete_scope) ... ok
+test_full_flat_detector_coverage_is_separate_from_policy_block (test_marketwide_research.MarketwideTests.test_full_flat_detector_coverage_is_separate_from_policy_block) ... ok
+test_invalid_join_and_timing_symmetric (test_marketwide_research.MarketwideTests.test_invalid_join_and_timing_symmetric) ... ok
+test_missing_raw_shape_rejected_without_fallback (test_marketwide_research.MarketwideTests.test_missing_raw_shape_rejected_without_fallback) ... ok
+test_mixed_bear_and_bull_other_symbols_are_not_btc_gated (test_marketwide_research.MarketwideTests.test_mixed_bear_and_bull_other_symbols_are_not_btc_gated) ... ok
+test_new_snapshot_cannot_rescan_same_pair_boundary (test_marketwide_research.MarketwideTests.test_new_snapshot_cannot_rescan_same_pair_boundary) ... ok
+test_no_claim_on_unhealthy_clock_or_source (test_marketwide_research.MarketwideTests.test_no_claim_on_unhealthy_clock_or_source) ... ok
+test_permission_set_omission_preserves_unfiltered_inventory (test_marketwide_research.MarketwideTests.test_permission_set_omission_preserves_unfiltered_inventory) ... ok
+test_pinned_real_replay_reports_insufficient_multi_asset_history (test_marketwide_research.MarketwideTests.test_pinned_real_replay_reports_insufficient_multi_asset_history) ... ok
+test_previous_true_blocks_repeated_trigger_symmetrically (test_marketwide_research.MarketwideTests.test_previous_true_blocks_repeated_trigger_symmetrically) ... ok
+test_reopened_corrupt_results_are_rejected (test_marketwide_research.MarketwideTests.test_reopened_corrupt_results_are_rejected) ... ok
+test_restart_quota_and_no_repeated_claim (test_marketwide_research.MarketwideTests.test_restart_quota_and_no_repeated_claim) ... ok
+test_source_request_swap_cannot_relabel_symbol (test_marketwide_research.MarketwideTests.test_source_request_swap_cannot_relabel_symbol) ... ok
+test_symmetric_positives_and_directional_identity (test_marketwide_research.MarketwideTests.test_symmetric_positives_and_directional_identity) ... ok
+test_synthetic_clock_cannot_admit_public_packet (test_marketwide_research.MarketwideTests.test_synthetic_clock_cannot_admit_public_packet) ... ok
+test_unsupported_and_inactive_and_invalid_bid_do_not_scan (test_marketwide_research.MarketwideTests.test_unsupported_and_inactive_and_invalid_bid_do_not_scan) ... ok
+test_zero_volume_history_invalid_and_late_frame_invalid (test_marketwide_research.MarketwideTests.test_zero_volume_history_invalid_and_late_frame_invalid) ... ok
+
+----------------------------------------------------------------------
+Ran 25 tests in 1.454s
+
+OK

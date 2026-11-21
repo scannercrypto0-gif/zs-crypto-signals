@@ -1,0 +1,59 @@
+{
+    "schema":  "zs.clock74.offline-acceptance.v1",
+    "head":  "e41a25520eeba3bf5bca977b1c257d1d9de2dc17",
+    "tree":  "97b43a86c3eddbb2a000847d932452cf8a34adc9",
+    "python":  "3.12.10",
+    "offline_only":  true,
+    "live_shadow":  false,
+    "tests":  [
+                  {
+                      "suite":  "test_marketwide_capture",
+                      "exit":  0,
+                      "stdout_sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                      "stderr_sha256":  "49d2414188ca257571926b232fe62088814b98e9227d58c17c1b202f030ce6d7"
+                  },
+                  {
+                      "suite":  "test_marketwide_research",
+                      "exit":  1,
+                      "stdout_sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                      "stderr_sha256":  "a95f4c133db82bcff6d4d2c0c82ce2150f9eaed2660e1d167a8a8b7437216d3f"
+                  },
+                  {
+                      "suite":  "test_order007_release",
+                      "exit":  0,
+                      "stdout_sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                      "stderr_sha256":  "f9eff7b7d4df6383d1b05c8ab6baf2c4e7894405c98ba071a750293c1b2075c5"
+                  },
+                  {
+                      "suite":  "test_p0_clock_72",
+                      "exit":  0,
+                      "stdout_sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                      "stderr_sha256":  "706a00b058985d65a94c95b5da874965c0a4b3578b2f16ca2e82722483291c17"
+                  },
+                  {
+                      "suite":  "test_p0_clock_73",
+                      "exit":  0,
+                      "stdout_sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                      "stderr_sha256":  "7584a7e5a3325bd9562bd61f0417d60aab1737d778d8a87a970816e6b096be40"
+                  },
+                  {
+                      "suite":  "test_ops_clock_recorded",
+                      "exit":  0,
+                      "stdout_sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                      "stderr_sha256":  "cd19d11f49cd5302e501304ec9fab4b47385136ba5fae3d10f700753b122527a"
+                  },
+                  {
+                      "suite":  "test_ops_windows_time",
+                      "exit":  0,
+                      "stdout_sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                      "stderr_sha256":  "98bd7607a46774db22ec1aef4e9052b5c1f03aa70df5ed2911d9364e95a3065d"
+                  },
+                  {
+                      "suite":  "test_ops_windows_watchdog",
+                      "exit":  0,
+                      "stdout_sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                      "stderr_sha256":  "5594e43762f42d23ccebdc24f4a686bac9bba86fc404255f45696dacc090e715"
+                  }
+              ],
+    "all_exit_zero":  false
+}

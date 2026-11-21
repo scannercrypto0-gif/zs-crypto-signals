@@ -1,0 +1,22 @@
+test_clock_acceptance_never_overrides_expired_window (test_marketwide_capture.BoundaryPreflightRegressionTests.test_clock_acceptance_never_overrides_expired_window) ... ok
+test_expired_window_is_blocked_with_explicit_age (test_marketwide_capture.BoundaryPreflightRegressionTests.test_expired_window_is_blocked_with_explicit_age) ... ok
+test_inside_first_90_seconds_is_admitted (test_marketwide_capture.BoundaryPreflightRegressionTests.test_inside_first_90_seconds_is_admitted) ... ok
+test_outside_window_prevents_every_http_even_with_admin_clock (test_marketwide_capture.BoundaryPreflightRegressionTests.test_outside_window_prevents_every_http_even_with_admin_clock) ... ok
+test_expiry_after_first_packet_before_second_pair_is_precise (test_marketwide_capture.Clock73SyntheticFullChainTests.test_expiry_after_first_packet_before_second_pair_is_precise) ... ok
+test_mid_packet_expiry_stops_next_candle_http_fail_closed (test_marketwide_capture.Clock73SyntheticFullChainTests.test_mid_packet_expiry_stops_next_candle_http_fail_closed) ... ok
+test_positive_end_to_end_four_closed_timeframes_one_pair (test_marketwide_capture.Clock73SyntheticFullChainTests.test_positive_end_to_end_four_closed_timeframes_one_pair) ... ok
+test_two_pairs_exactly_eleven_http_second_pair_evaluated (test_marketwide_capture.Clock73SyntheticFullChainTests.test_two_pairs_exactly_eleven_http_second_pair_evaluated) ... ok
+test_540_header_is_below_new_guard (test_marketwide_capture.MarketCaptureTests.test_540_header_is_below_new_guard) ... ok
+test_deadline_and_endpoint_guard_have_no_http (test_marketwide_capture.MarketCaptureTests.test_deadline_and_endpoint_guard_have_no_http) ... ok
+test_exact_eleventh_http_receipt_accepted_twelfth_forbidden (test_marketwide_capture.MarketCaptureTests.test_exact_eleventh_http_receipt_accepted_twelfth_forbidden) ... ok
+test_post_response_deadline_and_weight_still_fail_closed (test_marketwide_capture.MarketCaptureTests.test_post_response_deadline_and_weight_still_fail_closed) ... ok
+test_quota_preserves_complete_listing_for_offline_discovery (test_marketwide_capture.MarketCaptureTests.test_quota_preserves_complete_listing_for_offline_discovery) ... ok
+test_quota_stops_with_durable_actual_body_pin (test_marketwide_capture.MarketCaptureTests.test_quota_stops_with_durable_actual_body_pin) ... ok
+test_restart_preserves_final_raw_receipt_and_no_duplicate_claim (test_marketwide_capture.MarketCaptureTests.test_restart_preserves_final_raw_receipt_and_no_duplicate_claim) ... ok
+test_timeout_and_unknown_header_never_retry (test_marketwide_capture.MarketCaptureTests.test_timeout_and_unknown_header_never_retry) ... ok
+test_weights_and_symbol_filter_rejected (test_marketwide_capture.MarketCaptureTests.test_weights_and_symbol_filter_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 0.750s
+
+OK

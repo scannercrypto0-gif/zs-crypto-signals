@@ -1,0 +1,12 @@
+{
+  "suite": "test_order007_release",
+  "tests": 16,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "passed": 16,
+  "success": true,
+  "duration_seconds": 0.703,
+  "python_network_attempts": 0,
+  "network_scope": "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS"
+}
