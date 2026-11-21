@@ -1,0 +1,66 @@
+{
+  "version": "010-PILOT-2A",
+  "status": "CANDIDATE_RESEARCH_NOT_APPROVED",
+  "supersedes": "No retrospective modification to010-PILOT-1; entirely new experiment",
+  "dataset": "010-B BTCUSDT/ETHUSDT monthly5m/30m/1h/4h Jan-Jun2025, exactproviderchecksums",
+  "warmup": "Jan2025",
+  "DEV": "Feb1-Mar31 2025, purge outcomes crossingApr1",
+  "OOS": "Apr1-Jun30 2025, embargo1hINTRADAY/24hSWING; onepass nofit",
+  "horizons": {
+    "INTRADAY": {
+      "parent": "30m",
+      "child": "5m",
+      "children": 6,
+      "outcome_hours": 1
+    },
+    "SWING": {
+      "parent": "4h",
+      "child": "1h",
+      "children": 4,
+      "outcome_hours": 24
+    }
+  },
+  "D1": {
+    "I2": {
+      "A": "directional child net / sum(abs(child close-open)); zero pathnull",
+      "B": "mean(Q_DEV(A), retention,positive_body_fraction); retention=clip(net/maxdirectionalfavorableexcursion,0,1), no volume toavoidI4overlap",
+      "ablations": "Aplusretentiononly; Aplusconsistencyonly; compareBminusall=A"
+    },
+    "I4": {
+      "A": "secondhalf childquotevolume / sumquotevolume",
+      "Bbase": "mean(A,Q_DEV(last5mbase/meanprevious20base))",
+      "Bquote": "mean(A,Q_DEV(last5mquote/meanprevious20quote)); not mixed withBASE"
+    },
+    "S3": "sameI2 onfour1hchildren, separateSWINGfits",
+    "S4": {
+      "A": "mean lastCLOSEDdaily/weekly directionclose-location; derivedcomplete5mcontext",
+      "B": "mean(A,lastCLOSED8h directionclose-location,causal20closed4hchannelposition)"
+    }
+  },
+  "setup": "mutually exclusive candidatecausal rules: currentdirectionbody<=0 NEGATIVE; otherwise EARLY if abs(priorparentbody)<=.25*ATR20prior; CONTINUATION if directionpriorbody>.25ATR; REVERSAL if directionpriorbody<-.25ATR AND currentclosebreakslatestdirection-favorable confirmed2-left2-right pivot; otherwiseUNKNOWN. Pivotconfirmbar mustalreadybeclosed. NoOOSlabelretuning.",
+  "normalizers": "Q_DEVmidrank tails0/1, R_DEVatan median/MAD1.4826 withMAD0null, Dexplicitboundedfeaturesonly. Fitbyhorizon,direction,groupDEVonly. Missingnever0. Fixedexistinggroupweightsunchanged, nofullV2whenI6/S6missing.",
+  "groups": {
+    "I1": "mean close-location,(signedbody/range+1)/2,1-adversewick/range",
+    "I2": "D1I2A/B",
+    "I3": "directional latest5mC2Cpercentage, monotoniccandidatehypothesis",
+    "I4": "D1I4A/B",
+    "I5": "mean closed1h/4h directionclose-location ascontextproxy NOTapprovedBOS",
+    "I6": "UNAVAILABLE historicalbid/ask/24hquoteeligibilityPITnotpresent",
+    "S1": "mean causal20closed4hchannelposition, directionbreaklatestconfirmedpivot flag; missingpivotnull; researchproxyNOTapprovedBOS/CHoCH",
+    "S2": "I1on4h",
+    "S3": "D1S3",
+    "S4": "D1S4",
+    "S5": "mean(Q_DEVdirectional4hOC,Q_DEV4hquoteRVOL20)",
+    "S6": "UNAVAILABLEsameI6"
+  },
+  "context": "DailyUTC andISO-Mondayweekly derivedfromexactcomplete5mbars; 8hderivedfromexacttwo4hbars; no developingcontext. Independent30m/4hreconciliation exactDecimal; parent/childrenmismatchfailsadmission, countsreported.",
+  "outcomes": "12horizonxdirectionxsetup cells; grossdirectional openfirstfull5mstrictlyafterclose+60s tocloseexact1h/24hlater. FixedUP pairedbaseline and feesensitivity0/5/10bpsperleg hypotheticalonly, notnetexecutableP&L. Alternative +/-1% firsthit usingallfuture5mhighlow; samebarbothUNKNOWN,censoredseparate.",
+  "metric": "Primary descriptive Pearson(feature,directional grossoutcome); paired B-A difference oncommonsupport. CompareQ/R/Dnormalizers descriptively DEV only; freezeA regardlessinsufficientqualification. Nraw,Neventclusters,Nasset-day/ISOweekblocks,N_effseparate.",
+  "inference": "Weeklyassetblock bootstrap512resamplesseed1042, exploratory95%intervals (nobootstrapqualificationclaim). Labelpermutation4096resamplesseed2042, wholeISOweekoutcomeblocks withinasset matchingweekday/timeslot, conditionalblockexchangeabilityassumption explicit; MonteCarlo null-association diagnostics only, notcausalproof. Holm40plannedcomparisons for eligiblepermutationpvalues, missingtestsremainfamilycount40; nofinalwinner/scienceclaimfrompvalue.",
+  "power": "rho_min.1,alpha.05/40,power.8 independentFisher-z planning; observeddependence estimated byblockbootstrap/iidvariance diagnostic, N_effective cappedNeventclusters, unstablevariance=>UNKNOWN. No promise1435clusters unchanged undernewmultiplicity.",
+  "strata": "asset,direction,setup,regime(lastcloseddailyUP/DOWN/QUIET); no forcedminimumclaims, reportcounts/nullintervals whereinsufficient.",
+  "PIT": "Historical publication/sourceavailabilityUNKNOWN =>FAIL_HOLD; nofullstrategyqualification. LiquidityI6/S6UNAVAILABLE. ClosedOHLCV doesnot certifyPIT.",
+  "Forward": "Planneronly; zeroHTTPunlessindependentlyattestedpublication, freshverifiedUTCuncertainty<1s, pinnedcode/futuremanifest/evidencedestination accepted. MissedcloseNOT_ATTEMPTED, nohistoricalcatchup. No collector scheduled.",
+  "stop": "No fullScore oracceptedwinner; changesafterfreeze require010-PILOT-3. No rawmarketredistribution/paidspend/trades/Telegram/productionwriter.",
+  "amendment": "Before any expanded-batch feature/outcome analysis, increase permutation count256→4096: minimumMonteCarlo p1/257 cannot surviveHolm40; this is a planning-resolution correction, not result-driven selection. Preserve original010-PILOT-2 preregistration."
+}

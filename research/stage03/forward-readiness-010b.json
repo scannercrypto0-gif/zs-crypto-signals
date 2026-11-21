@@ -1,0 +1,64 @@
+{
+  "version": "010B-FORWARD-READINESS-1",
+  "status": "NOT_ARMED_ZERO_HTTP",
+  "assets": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ],
+  "candidate_event_groups": [
+    {
+      "frame": "30m",
+      "close_UTC": "00:30"
+    },
+    {
+      "frame": "30m",
+      "close_UTC": "01:00"
+    },
+    {
+      "frame": "4h",
+      "close_UTC": "04:00"
+    },
+    {
+      "frame": "4h",
+      "close_UTC": "08:00"
+    }
+  ],
+  "future_day": "UNSET_UNTIL_ALL_GATES_PASS_AND_NEW_MANIFEST_FROZEN",
+  "preconditions": {
+    "exact_accepted_code_sha": "PENDING_INDEPENDENT_REVIEW",
+    "independently_attested_publication": "MISSING",
+    "source_clock_uncertainty_less_than_1s": "UNKNOWN",
+    "clock_sample_age_max_seconds": 30,
+    "immutable_future_manifest": "NOT_CREATED",
+    "evidence_destination_and_retention": "REQUIRES_SCOPED_ACCEPTANCE_BEFORE_ARMING",
+    "sample_sufficiency": "N_REQUIRED_ACTUAL_UNDETERMINED"
+  },
+  "admission": {
+    "earliest_seconds_after_close": 60,
+    "deadline_seconds_after_close": 600,
+    "late": "NOT_ATTEMPTED_ZERO_HTTP",
+    "unknown_publication": "NOT_ATTEMPTED_ZERO_HTTP",
+    "unknown_clock": "CLOCK_UNTRUSTED_ZERO_HTTP",
+    "catchup": false,
+    "duplicate_physical_attempts": "DENY_AFTER_CLAIM_OR_UNCERTAIN_PRIOR_ATTEMPT"
+  },
+  "runtime": {
+    "transport_implemented": false,
+    "windows_task_installed": false,
+    "model_or_Codex_schedule": false,
+    "HTTP_requests_executed": 0
+  },
+  "purpose": "A finite source/timing smoke, once prerequisites exist, is not sufficient strategy Forward validation; no future observations are claimed.",
+  "required_provenance": [
+    "event_close",
+    "publisher_publication_independent_evidence",
+    "source_available_independent_evidence",
+    "collector_received",
+    "clock_bound_evidence",
+    "decision_UTC",
+    "raw_sha256",
+    "claim_receipt",
+    "execution_SHA"
+  ],
+  "limitations": "Tardis sample collector timestamps and synchronized-clock documentation do not establish per-record publication/absolute UTC bound. Historical OHLCV cannot generate these missing fields."
+}

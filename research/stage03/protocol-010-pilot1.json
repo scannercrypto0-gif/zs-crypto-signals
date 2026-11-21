@@ -1,0 +1,55 @@
+{
+  "version": "010-PILOT-1",
+  "status": "PREREGISTERED_CANDIDATE_NOT_SCIENTIFICALLY_ACCEPTED",
+  "data": "batch010-A BTC/ETH 5m Jan1-2 2025 checksum-verified retrospective OHLCV; no PIT or bid/ask",
+  "DEV": "2025-01-01 UTC",
+  "OOS": "2025-01-02 UTC; never fit or optimize",
+  "D1": {
+    "I2_A": "direction*(last_child_close-first_child_open)/sum(abs(child_close-child_open)); zero=>null; Q_DEV normalizer allows ratio outside[-1,1]",
+    "I2_B": "equal mean(Q_DEV(A),retention,consistency); retention=clip(directional net/max favorable excursion,0,1), consistency=fraction of direction-positive child bodies",
+    "I4_A": "sum second-half child quote volume / total child quote volume; zero=>null",
+    "I4_B_base": "mean(A,Q_DEV(last5m base volume/mean20previous5m base volumes))",
+    "I4_B_quote": "same B with quote RVOL, separate arm not interchangeable",
+    "S3": "same I2 A/B on4x1h",
+    "S4_A": "mean directional close-location of last closed daily andweekly candle; missing=>null",
+    "S4_B": "equal mean(S4_A,last closed8h directional close-location,causal20closed4h channel-position); missing=>null"
+  },
+  "D2": {
+    "I1": "D mean(directional close-location, (directional body/range+1)/2,1-adversewick/range)",
+    "I2": "Q_DEV(A), compare frozen B above",
+    "I3": "Q_DEV directional latest5m C2C; linear monotonic research hypothesis only",
+    "I4": "D halfquote-share,compare Bbase/Bquote",
+    "I5": "D mean directional close-location on latest closed1h/4h; causal context proxy, not approved BOS",
+    "I6": "mean(Q_DEV(24hquotevolume),1-Q_DEV(spreadbps)); missing historic snapshot=>null",
+    "S1": "D causal20closed4h channel-position; pivot confirmation trailing only; no inferred BOS/CHoCH",
+    "S2": "same I1 on4h, separateDEVfit whereused",
+    "S3": "same I2 on4x1h separateDEVfit",
+    "S4": "A/B asabove",
+    "S5": "mean(Q_DEV directional4hOC,Q_DEV4hquoteRVOL20)",
+    "S6": "same I6 separatelyfitSWING"
+  },
+  "normalization": "Q_DEV midrank=(#less+0.5#equal)/N; fitted sorted DEV finite only; tails0/1; missing/null; R alternative0.5+atan((x-median)/(1.4826*MAD))/pi, MAD0=>null; fixed group weights unchanged; no V2 emitted with missing groups",
+  "D3": {
+    "scenarios": "INTRADAY/SWING x UP/DOWN x EARLY/CONTINUATION/REVERSAL",
+    "HI": "1h",
+    "HS": "24h",
+    "t0": "first full5m bar strictly after parentclose+60s decision; reference open; descriptive nonexecutable",
+    "outcome": "direction*(close at exactt0+H - open_t0)/open_t0; gross not net",
+    "baseline": "paired sameasset/time fixedUP direction; DOWN descriptive notshort",
+    "alternative": "firsthit +/-1% overH, both hit inone5mbar=>UNKNOWN, never infer order",
+    "setups": "causal directional parentROC sign; EARLY priorparentROC=0, CONTINUATION same prior sign, REVERSAL oppositeprior sign; no eligible setup if missing; this is candidate label not semantic truth",
+    "metric": "primary DEV paired Pearson correlation(feature,directional gross outcome), compare B-A within same asset and setup; economicqualification unavailablewithoutcosts"
+  },
+  "D4": "strict independently evidenced close<=publication<=sourceavailable<=receipt<=decision, uncertainty<1s, source attestation required; retrospective archives cannotpass; no synthetic timestamps",
+  "D5": {
+    "sampleunit": "asset+parentclose cluster; directions/setups notindependent; reportdayblocks for uncertainty",
+    "purge": "DEVoutcomeend mustprecedeJan2 boundary; OOScontext mayusepastDEVbars but normalizer neverOOS; 24hSwing training mostlyinsufficient",
+    "embargo": "OOSskip first24h forfullSWING; INTRADAYfirst1h. ConsequentlySWINGOOSempty=>INSUFFICIENT",
+    "selection": "no winner unless adequate independent clusters and corrected evidence; otherwise freezeA as simpler diagnostic comparator, neverapprovedwinner",
+    "multiplicity": "Bonferroni16candidate comparisons, alpha.05",
+    "power": "min detectable correlation.1,power.8, Fisher-z independentcluster planning; actualeffectiveN undetermined without adequate dependence estimates",
+    "controls": "DEVlabel permutation fixedseed42; reverse/time-shift features diagnostics; nofutureinput/holdoutleakage",
+    "stop": "PIT_FAIL_HOLD and wholeV2unavailable; noqualifyingOOS/Forward claim; Forward depends on independent publisher/time evidence and futureaccrual"
+  },
+  "retention": "privateD30days review; GitHub hashes/code/protocolonly"
+}
