@@ -9,6 +9,20 @@ ROOT=Path(__file__).resolve().parents[1]
 
 
 class Ops24ControllerTests(unittest.TestCase):
+    def test_other_user_s4u_registration_passes_transient_credentials(self):
+        helper=ROOT/'scripts/ops24-register-probe.ps1'
+        command=". '"+str(helper)+"'; $id=[Security.Principal.WindowsIdentity]::GetCurrent(); $s=ConvertTo-SecureString 'unit-test-only' -AsPlainText -Force; $c=[PSCredential]::new($id.Name,$s); function Register-ScheduledTask {param($TaskName,$Xml,$User,$Password,$ErrorAction) if($Password -cne 'unit-test-only' -or $User -cne $c.UserName){throw 'CREDENTIAL_NOT_PASSED'}; $script:called=$true}; $x='<Task><Principals><Principal><UserId>'+$id.User.Value+'</UserId><LogonType>S4U</LogonType><RunLevel>LeastPrivilege</RunLevel></Principal></Principals></Task>'; Register-ZsIsolatedProbe -TaskName test -Xml $x -WorkerSid $id.User.Value -WorkerCredential $c; if(-not $script:called){throw 'NOT_CALLED'}; $s.Dispose(); 'TRANSIENT_CREDENTIAL_PATH_PASS'"
+        process=subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-Command',command],capture_output=True,text=True,timeout=20,creationflags=subprocess.CREATE_NO_WINDOW)
+        self.assertEqual(process.returncode,0,process.stderr)
+        self.assertEqual(process.stdout.strip(),'TRANSIENT_CREDENTIAL_PATH_PASS')
+
+    def test_other_user_s4u_without_credentials_is_rejected_before_registration(self):
+        helper=ROOT/'scripts/ops24-register-probe.ps1'
+        command=". '"+str(helper)+"'; function Register-ScheduledTask {throw 'MUST_NOT_REGISTER'}; try {Register-ZsIsolatedProbe -TaskName test -Xml '<Task/>' -WorkerSid 'S-1-5-18'; exit 9} catch {if($_.Exception.Message -cne 'OTHER_USER_S4U_CREDENTIAL_REQUIRED'){throw}; 'MISSING_CREDENTIAL_REJECTED'}"
+        process=subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-Command',command],capture_output=True,text=True,timeout=20,creationflags=subprocess.CREATE_NO_WINDOW)
+        self.assertEqual(process.returncode,0,process.stderr)
+        self.assertEqual(process.stdout.strip(),'MISSING_CREDENTIAL_REJECTED')
+
     def test_disabled_install_status_task_and_offline_restore_with_activation_hold(self):
         head=subprocess.check_output(["git","rev-parse","HEAD"],cwd=ROOT,text=True).strip()
         tree=subprocess.check_output(["git","rev-parse","HEAD^{tree}"],cwd=ROOT,text=True).strip()
@@ -67,7 +81,7 @@ class Ops24ControllerTests(unittest.TestCase):
         source=(ROOT/'scripts/ops24-standard-role-probe.ps1').read_text(encoding='utf-8-sig')
         marker=re.search(r"\$marker='([^']+)'",source)[1]
         command="(Get-Command New-LocalUser).Parameters['Description'].Attributes | Where-Object {$_ -is [System.Management.Automation.ValidateLengthAttribute]} | Select-Object -ExpandProperty MaxLength"
-        result=subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-Command',command],
+        result=subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-Command',command],
                  capture_output=True,text=True,timeout=15,creationflags=subprocess.CREATE_NO_WINDOW)
         self.assertEqual(result.returncode,0,result.stderr)
         maximum=int(result.stdout.strip())

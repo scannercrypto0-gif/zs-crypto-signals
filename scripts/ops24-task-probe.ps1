@@ -4,6 +4,7 @@ param([Parameter(Mandatory=$true)][string]$Source,[Parameter(Mandatory=$true)][s
  [Parameter(Mandatory=$true)][string]$Tree,[Parameter(Mandatory=$true)][string]$Root,
  [ValidateSet('Probe','Health')][string]$ProbeAction='Probe',
  [string]$WorkerSid='',
+ [PSCredential]$WorkerCredential,
  [string]$Python='D:\ZS-SMART-GATE\runtime\python-3.12.10-ops77\python.exe')
 $ErrorActionPreference='Stop';Set-StrictMode -Version Latest
 if($PSVersionTable.PSVersion.Major -ne 5 -or $PSVersionTable.PSVersion.Minor -ne 1){throw 'POWERSHELL_51_REQUIRED'}
@@ -33,7 +34,8 @@ try{
  $xml=[regex]::Replace($xml,'<Command>[^<]+</Command>',('<Command>'+$command+'</Command>'))
  $xml=[regex]::Replace($xml,'<Arguments>[^<]+</Arguments>',('<Arguments>'+$arguments+'</Arguments>'))
  $record.xml_sha256=[BitConverter]::ToString([Security.Cryptography.SHA256]::Create().ComputeHash([Text.Encoding]::Unicode.GetBytes($xml))).Replace('-','').ToLowerInvariant()
- Register-ScheduledTask -TaskName $task -Xml $xml -ErrorAction Stop|Out-Null
+ . (Join-Path $Source 'scripts\ops24-register-probe.ps1')
+ Register-ZsIsolatedProbe -TaskName $task -Xml $xml -WorkerSid $WorkerSid -WorkerCredential $WorkerCredential
  $record.registered=$true
  Enable-ScheduledTask -TaskName $task|Out-Null
  Start-ScheduledTask -TaskName $task

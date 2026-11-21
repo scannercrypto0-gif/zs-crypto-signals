@@ -55,3 +55,23 @@ The eventual standard worker receives no owner GitHub credentials. Owner bootstr
 ## Owned-file DACL correction and original hash verification
 
 The first standard-account setup accepted the shortened Windows48-character description, then a recursive icacls combination left empty protected file DACLs. It did not change file bytes, create a market worker or send a message. The owner recovered2925 source/runtime objects using their existing WRITE_DAC rights, through a scoped DACL-only native call (no SACL/owner mutation, privilege escalation or system path change). All2126 runtime hashes match the original manifest; the immutable source checkout remains clean. The flawed icacls sequence is removed. An actual Windows regression intentionally empties an owned temporary file DACL and verifies restoration of explicit owner/System/Admin FullControl, worker RX and unchanged bytes. This original failure and repair remain evidence, not PASS reclassification.
+
+## Actual cross-user S4U registration failure (2026-11-21)
+
+The f98ce7a Windows administrator-run isolated probe reached registration but
+returned 0x80070005, registered=false; no scheduled worker or network call ran.
+This is not a successful scheduler/clock/reboot/logoff acceptance.
+Microsoft documents that an administrator registering S4U as a different user
+must provide that user's password:
+https://learn.microsoft.com/en-us/windows/win32/taskschd/security-contexts-for-running-tasks
+
+The probe now supplies a PSCredential in-process. Its dedicated, unused project
+account receives a random password only when no existing task or Windows user
+profile references that account. Existing nonproject accounts/admin membership
+are rejected. No password is passed in a process argument, file, report or Git.
+S4U and LeastPrivilege remain unchanged. Credential references are cleared and
+the SecureString disposed. Windows SAM retains the account password hash; this
+is not a claim that managed plaintext memory can be provably zeroed.
+This finite diagnostic repair does not fix or certify unattended bootstrap
+registration, reboot/logoff, or 24-hour operation. Those remain separate gates.
+A new empty root must be used; failed evidence must never be overwritten.
