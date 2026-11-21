@@ -98,7 +98,7 @@
   {
     "requirement": "D2 GitHub receipt hash readback",
     "code": "privacy-screened evidence branch",
-    "test": "fresh remote clone SHA256SUMS verification recorded in handoff",
-    "status": "FINAL_READBACK_REQUIRED"
+    "test": "Original SHA256SUMS verified all 434 files; source blob tree identical to final source clone. Final publication checksum separately recorded in handoff.",
+    "status": "PASS_434_ORIGINAL_FILES_GITHUB_CLONE_READBACK_33ad312"
   }
 ]

@@ -48,7 +48,15 @@
     "tree": "dcf6a9b1abc2a62c9b91891e605dfcbdccf2bd98",
     "validated": 56
   },
-  "github_evidence_sync": "READBACK_VERIFICATION_REPORTED_IN_HANDOFF_COMMENT",
+  "github_evidence_sync": "PASS_FRESH_GITHUB_CLONE_434_FILES_SOURCE_TREE_MATCHED; final receipt addition verified in handoff",
+  "github_readback": {
+    "bytes": 3242096,
+    "files": 434,
+    "manifest_sha256": "f2b90937ca90a12bcdb33313c84b5873e3b1d88649110aaff418aa44c25dce6c",
+    "source_head": "8c52be6f9c5d7a49af19bf68b1d8d50bd63a5b72",
+    "source_tree": "dcf6a9b1abc2a62c9b91891e605dfcbdccf2bd98",
+    "status": "PASS"
+  },
   "github_reproduction": {
     "clean": true,
     "errors": 0,

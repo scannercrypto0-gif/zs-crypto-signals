@@ -6,9 +6,9 @@
       "sha256": "705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da"
     },
     {
-      "bytes": 11055,
+      "bytes": 11417,
       "path": "acceptance-packet.json",
-      "sha256": "0f310a3cb19da2a66a46473379b6c8e6ed7c5ba91b4be9a42795ecfbad9ccac1"
+      "sha256": "ec8c563f0c29295dcc04a1ceca705ed3cb9d35d8de93fb972070bc031ce19f2d"
     },
     {
       "bytes": 3216,
@@ -1266,6 +1266,11 @@
       "sha256": "512e5a4070e157fcda4c5fa8e3adfb5ea0e4118bd5d016dd60be6394f23171c9"
     },
     {
+      "bytes": 257,
+      "path": "github-readback-33ad312.raw.json",
+      "sha256": "2cb3dcfca56d7219c650e94e8209ea6854e930ae32c09b34c286a9f3822b6952"
+    },
+    {
       "bytes": 3,
       "path": "historical-iterations/OPS24-20261121-accepted-driver.exit.txt",
       "sha256": "13bf7b3039c63bf5a50491fa3cfd8eb4e699d1ba1436315aef9cbe5711530354"
@@ -1391,9 +1396,9 @@
       "sha256": "6a5d1515254e2eed005271271eac8464193268761ccb668a555e1381c6f876b4"
     },
     {
-      "bytes": 4733,
+      "bytes": 4853,
       "path": "requirements-matrix.json",
-      "sha256": "7c51c8126d46e5ea1d04204587fa4d67de69466acd8722f270098ec971282c98"
+      "sha256": "14d066607fb2b44be3ca8853a4020fb078cdb203ee1da8fae30f0091e431d337"
     },
     {
       "bytes": 530,
