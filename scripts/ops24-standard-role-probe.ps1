@@ -40,6 +40,8 @@ $users=Get-LocalGroup -SID 'S-1-5-32-545'
 if(-not(Get-LocalGroupMember -Group $users|Where-Object{$_.SID.Value -eq $user.SID.Value})){Add-LocalGroupMember -Group $users -Member $user}
 $workerSid=$user.SID.Value
 $ownerSid=$identity.User.Value
+. (Join-Path $Source 'scripts\ops24-batch-logon.ps1')
+Enable-ZsProjectBatchLogon|ConvertTo-Json -Compress
 # Native DACL-only helper retains explicit owner access on every file.
 . (Join-Path $Source 'scripts\ops24-owned-acl.ps1')
 foreach($folder in @($Source,'D:\ZS-SMART-GATE\runtime\python-3.12.10-ops77')){

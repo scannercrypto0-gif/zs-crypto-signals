@@ -75,3 +75,21 @@ is not a claim that managed plaintext memory can be provably zeroed.
 This finite diagnostic repair does not fix or certify unattended bootstrap
 registration, reboot/logoff, or 24-hour operation. Those remain separate gates.
 A new empty root must be used; failed evidence must never be overwritten.
+
+## Actual batch-logon gate after registration (2026-11-21)
+
+The 8981f5b administrator attempt registered and cleaned its finite task, but no
+worker began. Operational events 101/104 recorded result 2147943785 (0x80070569),
+which is ERROR_LOGON_TYPE_NOT_GRANTED. LastTaskResult 267011 was merely
+HAS_NOT_RUN, not the underlying cause. No project profile was loaded.
+
+Provision only SeBatchLogonRight for the marked nonadmin ZS_SG_Research account
+using LSA additive account-right APIs. Preserve every other right and all deny
+policies; an explicit account batch deny aborts. Group/GPO denies are not removed
+and can still cause a real hold. No global secedit overwrite, admin membership,
+UAC change or task-security bypass. The operating-system right persists for this
+worker; native source, receipts and temporary compiler output remain on D.
+Task failure receipts now retain sanitized scheduler event IDs and ResultCode.
+Reference: https://learn.microsoft.com/windows/security/threat-protection/security-policy-settings/log-on-as-a-batch-job
+Native compilation/nonadmin rejection tests do not establish actual LSA grant or
+scheduled execution; those require the administrator-run pinned probe.

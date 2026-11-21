@@ -9,6 +9,13 @@ ROOT=Path(__file__).resolve().parents[1]
 
 
 class Ops24ControllerTests(unittest.TestCase):
+    def test_batch_logon_native_helper_compiles_and_refuses_nonadmin_mutation(self):
+        helper=ROOT/'scripts/ops24-batch-logon.ps1'
+        command=". '"+str(helper)+"'; if(-not ('ZsBatchLogon' -as [type])){throw 'NATIVE_HELPER_NOT_COMPILED'}; try{Enable-ZsProjectBatchLogon; exit 9}catch{if($_.Exception.Message -cne 'BATCH_LOGON_SETUP_REQUIRES_ADMIN'){throw}; 'NATIVE_COMPILED_NONADMIN_REJECTED'}"
+        process=subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-Command',command],capture_output=True,text=True,timeout=30,creationflags=subprocess.CREATE_NO_WINDOW)
+        self.assertEqual(process.returncode,0,process.stderr)
+        self.assertEqual(process.stdout.strip(),'NATIVE_COMPILED_NONADMIN_REJECTED')
+
     def test_other_user_s4u_registration_passes_transient_credentials(self):
         helper=ROOT/'scripts/ops24-register-probe.ps1'
         command=". '"+str(helper)+"'; $id=[Security.Principal.WindowsIdentity]::GetCurrent(); $s=ConvertTo-SecureString 'unit-test-only' -AsPlainText -Force; $c=[PSCredential]::new($id.Name,$s); function Register-ScheduledTask {param($TaskName,$Xml,$User,$Password,$ErrorAction) if($Password -cne 'unit-test-only' -or $User -cne $c.UserName){throw 'CREDENTIAL_NOT_PASSED'}; $script:called=$true}; $x='<Task><Principals><Principal><UserId>'+$id.User.Value+'</UserId><LogonType>S4U</LogonType><RunLevel>LeastPrivilege</RunLevel></Principal></Principals></Task>'; Register-ZsIsolatedProbe -TaskName test -Xml $x -WorkerSid $id.User.Value -WorkerCredential $c; if(-not $script:called){throw 'NOT_CALLED'}; $s.Dispose(); 'TRANSIENT_CREDENTIAL_PATH_PASS'"

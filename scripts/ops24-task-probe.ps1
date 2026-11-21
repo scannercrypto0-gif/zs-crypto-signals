@@ -67,6 +67,19 @@ try{
  $record.status='BLOCKED_WINDOWS_TASK_PREFLIGHT'
  $record.error_id=$_.FullyQualifiedErrorId
  $record.hresult=$_.Exception.HResult
+ # LastTaskResult may remain HAS_NOT_RUN when logon fails. Preserve the actual
+ # scheduler failure code without exporting account names/SIDs or event XML.
+ try{
+  $failures=@()
+  foreach($event in Get-WinEvent -FilterHashtable @{LogName='Microsoft-Windows-TaskScheduler/Operational';Id=101,104;StartTime=(Get-Date).AddMinutes(-10)} -MaxEvents 100 -ErrorAction Stop){
+   [xml]$eventXml=$event.ToXml()
+   $fields=@{};foreach($data in $eventXml.Event.EventData.Data){$fields[$data.Name]=[string]$data.'#text'}
+   if($fields['TaskName'] -ceq ('\'+$task) -and $fields.ContainsKey('ResultCode')){
+    $failures+=[ordered]@{event_id=$event.Id;utc=$event.TimeCreated.ToUniversalTime().ToString('o');result_code=[uint32]$fields['ResultCode']}
+   }
+  }
+  $record.scheduler_failures=$failures
+ }catch{$record.scheduler_diagnostic='UNAVAILABLE'}
 }finally{
  if($record.registered){
   Stop-ScheduledTask -TaskName $task -ErrorAction SilentlyContinue
