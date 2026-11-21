@@ -1,0 +1,12 @@
+{
+  "status": "OWNER_FULL_AND_STANDARD_RX_RESTORED_DACL_ONLY",
+  "objects": 2925,
+  "roots": [
+    "D:\\ZS-SMART-GATE\\validation\\OPS77-role-fixed-source",
+    "D:\\ZS-SMART-GATE\\runtime\\python-3.12.10-ops77"
+  ],
+  "contents_modified": false,
+  "system_paths_modified": false,
+  "elevation_used": false,
+  "utc": "2026-11-21T13:12:53.7060178Z"
+}

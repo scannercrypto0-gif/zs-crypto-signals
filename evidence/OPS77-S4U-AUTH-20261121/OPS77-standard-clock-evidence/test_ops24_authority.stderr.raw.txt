@@ -1,0 +1,11 @@
+test_actual_pm_exact_head_marker_not_flags_or_old_review (test_ops24_authority.StandingAuthorityTests.test_actual_pm_exact_head_marker_not_flags_or_old_review) ... ok
+test_deployment_flags_never_substitute_real_receipts (test_ops24_authority.StandingAuthorityTests.test_deployment_flags_never_substitute_real_receipts) ... ok
+test_owner_standing_permission_does_not_forge_pm_review_or_merge (test_ops24_authority.StandingAuthorityTests.test_owner_standing_permission_does_not_forge_pm_review_or_merge) ... ok
+test_remote_authority_mutation_revokes_cached_decision (test_ops24_authority.StandingAuthorityTests.test_remote_authority_mutation_revokes_cached_decision) ... ok
+test_standard_worker_cannot_claim_its_own_mutable_cache_as_owner_authority (test_ops24_authority.StandingAuthorityTests.test_standard_worker_cannot_claim_its_own_mutable_cache_as_owner_authority) ... ok
+test_windows_original_stdout_tamper_and_test_totals (test_ops24_authority.StandingAuthorityTests.test_windows_original_stdout_tamper_and_test_totals) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.198s
+
+OK

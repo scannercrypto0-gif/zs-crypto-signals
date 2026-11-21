@@ -1,0 +1,9 @@
+test_disabled_install_status_task_and_offline_restore_with_activation_hold (test_ops24_control.Ops24ControllerTests.test_disabled_install_status_task_and_offline_restore_with_activation_hold) ... ok
+test_owned_dacl_repair_keeps_file_contents_and_explicit_owner_rights (test_ops24_control.Ops24ControllerTests.test_owned_dacl_repair_keeps_file_contents_and_explicit_owner_rights) ... ok
+test_service_account_description_fits_actual_windows_parameter_limit (test_ops24_control.Ops24ControllerTests.test_service_account_description_fits_actual_windows_parameter_limit) ... ok
+test_standard_role_setup_cannot_self_elevate_from_normal_operator (test_ops24_control.Ops24ControllerTests.test_standard_role_setup_cannot_self_elevate_from_normal_operator) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 14.348s
+
+OK

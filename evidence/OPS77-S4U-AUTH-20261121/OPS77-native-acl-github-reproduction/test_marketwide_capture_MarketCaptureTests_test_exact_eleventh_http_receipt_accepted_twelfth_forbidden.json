@@ -1,0 +1,12 @@
+{
+  "suite": "test_marketwide_capture.MarketCaptureTests.test_exact_eleventh_http_receipt_accepted_twelfth_forbidden",
+  "tests": 1,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "passed": 1,
+  "success": true,
+  "duration_seconds": 0.515,
+  "python_network_attempts": 0,
+  "network_scope": "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS"
+}

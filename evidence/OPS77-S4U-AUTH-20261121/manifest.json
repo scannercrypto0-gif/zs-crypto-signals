@@ -1,0 +1,267 @@
+{
+  "schema": "zs.ops77.s4u.evidence.v1",
+  "source_head": "8981f5bef96bb9f1be885ba25f52982b169e9ca9",
+  "source_tree": "1802d00502f6893edaf256b904002b4e082fb2b2",
+  "files": [
+    {
+      "path": "OPS77-s4u-credential-tests/stderr.raw.txt",
+      "bytes": 1230,
+      "sha256": "eaec6844691044c5026b9d52dd146e42b9a7dc1aa31142c5bf712b2d0537fb55"
+    },
+    {
+      "path": "OPS77-s4u-credential-tests/stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-s4u-credential-tests/tests.json",
+      "bytes": 274,
+      "sha256": "88b4cbf5cfa86eb0f1d0b938a361f81fcf761ac3db846a379857939438401a6f"
+    },
+    {
+      "path": "OPS77-s4u-auth-reproduction/stderr.raw.txt",
+      "bytes": 1230,
+      "sha256": "7ff175f53989f03e0bdc6ce8b26b1fd6ab9dbb981198d640b2221f7a58ce2b81"
+    },
+    {
+      "path": "OPS77-s4u-auth-reproduction/stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-s4u-auth-reproduction/tests.json",
+      "bytes": 274,
+      "sha256": "4e0b61f474ee6f924586ec1ec371dc1223d7b86d82e7bcd29fe2493f6897f7e6"
+    },
+    {
+      "path": "OPS77-standard-clock-evidence/acceptance.json",
+      "bytes": 8183,
+      "sha256": "b25965ab88b64fad4bbee168f046ed1f21e10834a47bf4f539b75c2b776c27e6"
+    },
+    {
+      "path": "OPS77-standard-clock-evidence/test_marketwide_capture_MarketCaptureTests_test_exact_eleventh_http_receipt_accepted_twelfth_forbidden.json",
+      "bytes": 357,
+      "sha256": "e06ed98c9e818ff2d5bda891783e00c7bab63a502dac225392baf6e9a012ef29"
+    },
+    {
+      "path": "OPS77-standard-clock-evidence/test_marketwide_capture_MarketCaptureTests_test_exact_eleventh_http_receipt_accepted_twelfth_forbidden.stderr.raw.txt",
+      "bytes": 275,
+      "sha256": "691ee9bc581b5fc42cf1e81ba622d4f13b7262bc2eff32f5731725d433982546"
+    },
+    {
+      "path": "OPS77-standard-clock-evidence/test_marketwide_capture_MarketCaptureTests_test_exact_eleventh_http_receipt_accepted_twelfth_forbidden.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-standard-clock-evidence/test_ops24.json",
+      "bytes": 268,
+      "sha256": "e064aaebdaddd0eba881b9b7b49a7c0fb0e55272f0c226498208275ae137c519"
+    },
+    {
+      "path": "OPS77-standard-clock-evidence/test_ops24.stderr.raw.txt",
+      "bytes": 3724,
+      "sha256": "79f45c312eed0ccbf7e70f5d6dda7849fa8406f1a2b7025eea42c7022da78a54"
+    },
+    {
+      "path": "OPS77-standard-clock-evidence/test_ops24.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-standard-clock-evidence/test_ops24_authority.json",
+      "bytes": 275,
+      "sha256": "cd76d1e9b1e636e5748b93a772543580b97d98126bc5abc6a9e54cf99b4cce81"
+    },
+    {
+      "path": "OPS77-standard-clock-evidence/test_ops24_authority.stderr.raw.txt",
+      "bytes": 1141,
+      "sha256": "33d030fd2c08749c9b935aff52481976faf84534441e1b924d75d597462e2076"
+    },
+    {
+      "path": "OPS77-standard-clock-evidence/test_ops24_authority.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-standard-clock-evidence/test_ops24_control.json",
+      "bytes": 274,
+      "sha256": "c564fe7a14c64c8acf7e199fa8be8caa56448b6a805b8fabeb966ac201881b58"
+    },
+    {
+      "path": "OPS77-standard-clock-evidence/test_ops24_control.stderr.raw.txt",
+      "bytes": 862,
+      "sha256": "cdf2d28bac285bfbb802e2b5bac6988972c40fef6bf1c41a05ba70ae9970cc60"
+    },
+    {
+      "path": "OPS77-standard-clock-evidence/test_ops24_control.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-standard-clock-evidence/test_ops24_intervals.json",
+      "bytes": 277,
+      "sha256": "be531489e5eb2093fac77ae349f4924fc6a7c0b7335e07d9754af001f263af89"
+    },
+    {
+      "path": "OPS77-standard-clock-evidence/test_ops24_intervals.stderr.raw.txt",
+      "bytes": 3092,
+      "sha256": "bbe163aa2b7a3dc53597db8b121cec71fee8008272acf5a1985085da2f95de18"
+    },
+    {
+      "path": "OPS77-standard-clock-evidence/test_ops24_intervals.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-standard-clock-evidence/test_ops24_normal_clock.json",
+      "bytes": 277,
+      "sha256": "2e334aaf569cd4f59e831f96d29cdcbec5241169296a6a46a5c683e9318b6e56"
+    },
+    {
+      "path": "OPS77-standard-clock-evidence/test_ops24_normal_clock.stderr.raw.txt",
+      "bytes": 1306,
+      "sha256": "81e66767e48d18e73a11be3c35f9443b5a46669615a07830c118b2eb36c1600d"
+    },
+    {
+      "path": "OPS77-standard-clock-evidence/test_ops24_normal_clock.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-standard-clock-evidence/test_ops24_runtime.json",
+      "bytes": 276,
+      "sha256": "9366a0994f987524edb4329d24e053ac53b9a80bf81f49b6bec02efb7d713198"
+    },
+    {
+      "path": "OPS77-standard-clock-evidence/test_ops24_runtime.stderr.raw.txt",
+      "bytes": 1899,
+      "sha256": "3d00aab6cb3eee8aeb245bd2af82ada80cc0308dbe2058b675f6ff862149dcf1"
+    },
+    {
+      "path": "OPS77-standard-clock-evidence/test_ops24_runtime.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-native-acl-github-reproduction/acceptance.json",
+      "bytes": 8184,
+      "sha256": "95f42f04dcbf8c8eb1680c1cd0f0f46de0a75b94f3d8a240dbe912c29bfb5b74"
+    },
+    {
+      "path": "OPS77-native-acl-github-reproduction/test_marketwide_capture_MarketCaptureTests_test_exact_eleventh_http_receipt_accepted_twelfth_forbidden.json",
+      "bytes": 357,
+      "sha256": "ae0833df6f992aea92ec1f0b89ec1b5187d398e138c69536025df1501695a011"
+    },
+    {
+      "path": "OPS77-native-acl-github-reproduction/test_marketwide_capture_MarketCaptureTests_test_exact_eleventh_http_receipt_accepted_twelfth_forbidden.stderr.raw.txt",
+      "bytes": 275,
+      "sha256": "5ccb700c976a8f5da9a3690ab8270f9975e90c402eee11b5e3a7100a30335ba2"
+    },
+    {
+      "path": "OPS77-native-acl-github-reproduction/test_marketwide_capture_MarketCaptureTests_test_exact_eleventh_http_receipt_accepted_twelfth_forbidden.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-native-acl-github-reproduction/test_ops24.json",
+      "bytes": 268,
+      "sha256": "8b4c8956afcb116eb9018c5a99b1277b4b7e519fac7fcaa9916cd88be735137e"
+    },
+    {
+      "path": "OPS77-native-acl-github-reproduction/test_ops24.stderr.raw.txt",
+      "bytes": 3724,
+      "sha256": "83c6df88888238fe9f54aae7e2e2967f6ff3575da73b7a23eaed1d3143062068"
+    },
+    {
+      "path": "OPS77-native-acl-github-reproduction/test_ops24.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-native-acl-github-reproduction/test_ops24_authority.json",
+      "bytes": 275,
+      "sha256": "d5aa002d9d9b04428a73e798c3a725b9a5d34863da959cdb1dafc2cac298542f"
+    },
+    {
+      "path": "OPS77-native-acl-github-reproduction/test_ops24_authority.stderr.raw.txt",
+      "bytes": 1141,
+      "sha256": "e65524ca99b6e40c1c7c38d313d81bc7ba3205432aab9f89c8588c3d9b5934c1"
+    },
+    {
+      "path": "OPS77-native-acl-github-reproduction/test_ops24_authority.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-native-acl-github-reproduction/test_ops24_control.json",
+      "bytes": 274,
+      "sha256": "425e027912fef7b33d4708ba2b26558dc69b9cb1b06608dbcc7aa65dd9d4a67b"
+    },
+    {
+      "path": "OPS77-native-acl-github-reproduction/test_ops24_control.stderr.raw.txt",
+      "bytes": 862,
+      "sha256": "1d7f77879649eb94dce8c77774532f1746c4814127ed2ae03ef78a1e7331ae29"
+    },
+    {
+      "path": "OPS77-native-acl-github-reproduction/test_ops24_control.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-native-acl-github-reproduction/test_ops24_intervals.json",
+      "bytes": 277,
+      "sha256": "9d6656df3ec14ae9ee752df74894a57ed187cd1b16e46841c22341e67e86abdd"
+    },
+    {
+      "path": "OPS77-native-acl-github-reproduction/test_ops24_intervals.stderr.raw.txt",
+      "bytes": 3092,
+      "sha256": "7462e141286efbe23a891b1a6315e3b062e2f9de1e61b4f588325c732bb01290"
+    },
+    {
+      "path": "OPS77-native-acl-github-reproduction/test_ops24_intervals.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-native-acl-github-reproduction/test_ops24_normal_clock.json",
+      "bytes": 278,
+      "sha256": "e59d9ed5af36be15d4a67951bcf4dedafa2d40eb3b0dc691384de4a8526fcada"
+    },
+    {
+      "path": "OPS77-native-acl-github-reproduction/test_ops24_normal_clock.stderr.raw.txt",
+      "bytes": 1306,
+      "sha256": "fb0e8b403d2be24b2e03d820aa7c2f89e02938988e076314b50e6c391c728ece"
+    },
+    {
+      "path": "OPS77-native-acl-github-reproduction/test_ops24_normal_clock.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-native-acl-github-reproduction/test_ops24_runtime.json",
+      "bytes": 276,
+      "sha256": "bf2325ff4885a6e716a3bcae93586afb03fd8eaa6667ebce108f99633a16345c"
+    },
+    {
+      "path": "OPS77-native-acl-github-reproduction/test_ops24_runtime.stderr.raw.txt",
+      "bytes": 1899,
+      "sha256": "7046f9235f16658f9a94af6bd464860eae785926d94f5780d6f43ddd9ac64d48"
+    },
+    {
+      "path": "OPS77-native-acl-github-reproduction/test_ops24_runtime.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-task-probe-standard-user-task-probe-report.json",
+      "bytes": 746,
+      "sha256": "68e6c81ca9103c642b74122ff1b3f27d37b25db5b936babd642537474a17c230"
+    },
+    {
+      "path": "validation-OPS77-acl-repair.json",
+      "bytes": 362,
+      "sha256": "58d7ac1e73644c2a09a97c354b41d11e881db542875d9e669d8e8e603d593e01"
+    }
+  ]
+}

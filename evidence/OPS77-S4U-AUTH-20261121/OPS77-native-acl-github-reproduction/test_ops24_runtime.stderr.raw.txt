@@ -1,0 +1,16 @@
+test_disabled_or_missing_activation_never_runs (test_ops24_runtime.Ops24SupervisorTests.test_disabled_or_missing_activation_never_runs) ... ok
+test_elapsed_wall_time_does_not_replace_observed_process_uptime (test_ops24_runtime.Ops24SupervisorTests.test_elapsed_wall_time_does_not_replace_observed_process_uptime) ... ok
+test_elevated_worker_is_rejected (test_ops24_runtime.Ops24SupervisorTests.test_elevated_worker_is_rejected) ... ok
+test_entrypoints_resolve_checkout_without_caller_pythonpath (test_ops24_runtime.Ops24SupervisorTests.test_entrypoints_resolve_checkout_without_caller_pythonpath) ... ok
+test_one_mock_cycle_has_health_and_boundary_without_24h_claim (test_ops24_runtime.Ops24SupervisorTests.test_one_mock_cycle_has_health_and_boundary_without_24h_claim) ... ok
+test_probe_uses_pinned_git_in_minimal_service_environment (test_ops24_runtime.Ops24SupervisorTests.test_probe_uses_pinned_git_in_minimal_service_environment) ... ok
+test_standing_release_from_another_head_is_refused_before_network (test_ops24_runtime.Ops24SupervisorTests.test_standing_release_from_another_head_is_refused_before_network) ... ok
+test_startup_network_or_missing_receipt_hold_stops_without_market (test_ops24_runtime.Ops24SupervisorTests.test_startup_network_or_missing_receipt_hold_stops_without_market) ... ok
+test_stop_and_singleton_hold_and_restart_slots (test_ops24_runtime.Ops24SupervisorTests.test_stop_and_singleton_hold_and_restart_slots) ... ok
+test_timed_breaker_resumes_but_stop_and_unknown_ban_do_not (test_ops24_runtime.Ops24SupervisorTests.test_timed_breaker_resumes_but_stop_and_unknown_ban_do_not) ... ok
+test_unreviewed_activation_cannot_be_replaced_by_bare_flags (test_ops24_runtime.Ops24SupervisorTests.test_unreviewed_activation_cannot_be_replaced_by_bare_flags) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 17.347s
+
+OK

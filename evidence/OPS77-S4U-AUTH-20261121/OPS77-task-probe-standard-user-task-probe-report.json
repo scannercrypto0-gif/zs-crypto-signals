@@ -1,0 +1,19 @@
+{
+    "schema":  "zs.ops24.task-probe-driver.v2",
+    "head":  "f98ce7aeaf11275e3ee82b257b22b3f1a780af58",
+    "tree":  "585bd6017daf8a6d73726a019139a45e6e419175",
+    "task":  "ZS-OPS24-IsolatedProbe-40395ed21e9940039844739af8e8b654",
+    "origin":  "ACTUAL_WINDOWS_SCHEDULER",
+    "market_calls":  0,
+    "telegram_calls":  0,
+    "sql_writes":  0,
+    "registered":  false,
+    "probe_observed":  false,
+    "cleanup":  true,
+    "real_reboot":  "NOT_EXECUTED",
+    "real_logoff":  "NOT_EXECUTED",
+    "xml_sha256":  "f210cf0d414a7dddbf98a5d1529c1dfdac2db7bafbea1536ae54a50b62d2605f",
+    "status":  "BLOCKED_WINDOWS_TASK_PREFLIGHT",
+    "error_id":  "HRESULT 0x80070005,Register-ScheduledTask",
+    "hresult":  -2146233088
+}
