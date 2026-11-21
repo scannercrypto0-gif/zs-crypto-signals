@@ -88,10 +88,15 @@ def legacy_research_replay(root, expected_result_sha):
     log=[json.loads(row) for row in (root/"requests.jsonl").read_bytes().splitlines()]
     receipts=[]
     pins=[]
+    seen=set()
     for row in log:
         if row["state"]!="RECEIVED":
             continue
-        body=(root/("response-"+str(row["attempt"])+".private")).read_bytes()
+        attempt=row["attempt"]
+        if type(attempt) is not int or not 1<=attempt<=11 or attempt in seen:
+            raise Hold("LEGACY_REQUEST_ID_INVALID_OR_DUPLICATE")
+        seen.add(attempt)
+        body=(root/("response-"+str(attempt)+".private")).read_bytes()
         if digest(body)!=row["body_sha256"] or row["http_status"]!=200 or len(body)!=row["body_bytes"]:
             raise Hold("LEGACY_ORIGINAL_BODY_NOT_VERIFIED")
         receipts.append(dict(path=row["path"],params=row["params"],received_at=row["received_at"],
@@ -99,7 +104,10 @@ def legacy_research_replay(root, expected_result_sha):
         pins.append(dict(file="response-"+str(row["attempt"])+".private",sha256=digest(body)))
     if not receipts:
         raise Hold("LEGACY_SOURCE_EMPTY")
-    decision=max(r["received_at"] for r in receipts)
+    if (snapshot["snapshot_sha256"]!=original["snapshot"]["snapshot_sha256"]
+            or digest(canonical(receipts))!=original["receipt_manifest_sha256"]):
+        raise Hold("LEGACY_SOURCE_MANIFEST_BINDING_MISMATCH")
+    decision=max((r["received_at"] for r in receipts),key=parse_utc)
     boundary=original["boundary_preflight"]["boundary_ms"]
     symbols=sorted({r["params"]["symbol"] for r in receipts if r["path"]=="klines"})
     counts={direction:Counter() for direction in ("UP","DOWN")}
