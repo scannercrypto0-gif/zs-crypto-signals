@@ -56,7 +56,7 @@ if($Action -eq 'InstallDisabled'){
  $bundle=Join-Path $Root ('source-'+$Head+'.bundle')
  if(-not(Test-Path -LiteralPath $bundle)){Invoke-Git -Values @('-C',$Source,'bundle','create',$bundle,'HEAD')}
  $owner=[Security.Principal.WindowsIdentity]::GetCurrent().User.Value
- $gitExecutable=(Get-Command git -CommandType Application -ErrorAction Stop).Source
+ $gitExecutable=(Get-Command git -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source
  $record=[ordered]@{schema='zs.ops24.disabled-release.v1';git_executable=$gitExecutable;git_sha256=(Get-FileHash $gitExecutable).Hash.ToLowerInvariant();head=$Head;tree=$Tree;source=$Source;python=$Python;owner_sid=$owner;
    bundle=$bundle;bundle_sha256=(Get-FileHash $bundle).Hash.ToLowerInvariant();clock_profile='WINDOWS_STATUS_PROTECTED_REGISTRY_V1';enabled=$false}
  Write-Atomic $releasePath ($record|ConvertTo-Json -Depth 5)
