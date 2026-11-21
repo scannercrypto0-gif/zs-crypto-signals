@@ -54,6 +54,8 @@ foreach($suite in $suites){
   $runner=Join-Path $Source 'scripts\clock74-offline-tests.py'
   $arguments=@('-B',('"'+$runner+'"'),$suite,'--receipt',('"'+$receipt+'"'))
   $proc=Start-Process -FilePath $Python -ArgumentList $arguments -WorkingDirectory $Source -WindowStyle Hidden -PassThru -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+  # Cache the native handle before waiting so PowerShell 5.1 retains ExitCode.
+  $null=$proc.Handle
   $timedOut=-not $proc.WaitForExit(120000)
   if($timedOut){
     & taskkill.exe /PID $proc.Id /T /F | Out-Null
