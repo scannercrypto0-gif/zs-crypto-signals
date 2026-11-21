@@ -143,8 +143,8 @@ def resources(root):
 
 
 def supervisor(root, window, *, activation, run_cycle, clock, wall=time.time, sleep=time.sleep):
-    """Activation is a cryptographically verified release/window, never a bare flag."""
-    from .ops24_clock import is_admin
+    """Activation requires reviewed release/window proof, never a bare flag."""
+    from .marketwide_capture import _is_admin as is_admin
     root=Path(root)
     if is_admin():
         raise Hold("NORMAL_USER_TOKEN_REQUIRED")

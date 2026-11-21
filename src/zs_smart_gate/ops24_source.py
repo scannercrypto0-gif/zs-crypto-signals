@@ -55,13 +55,19 @@ class Client:
 
     def get(self, path, params):
         if not self.guard():
-            raise Hold("CLOCK_STOP_OR_SOURCE_GUARD")
+            raise Hold(self.budget.state()["halt"] or "CLOCK_STOP_OR_SOURCE_GUARD")
         key, limit, cached = self.budget.reserve(path, params)
         if cached is not None:
             raw = (self.budget.root/(key+".private")).read_bytes()
             return {**cached, "payload": json.loads(raw)}
         receipt = dict(path=path,params=params,started_at=self.stamp(),started_mono_ns=time.monotonic_ns(),
-                       started_clock=self.clock_receipt())
+                       started_clock=self.clock_receipt(),http_attempted=False)
+        if not self.guard():
+            reason=self.budget.state()["halt"] or "CLOCK_STOP_BEFORE_HTTP"
+            self.budget.finish(key,limit,{**receipt,"body_bytes":0},reason=reason)
+            raise Hold(reason)
+        receipt.update(started_at=self.stamp(),started_mono_ns=time.monotonic_ns(),
+                       started_clock=self.clock_receipt(),http_attempted=True)
         try:
             status, headers, raw = self.transport(
                 path, params, max(.001,min(self.budget.policy.request_timeout,self.budget.remaining())),limit)
@@ -88,7 +94,7 @@ class Client:
         elif len(raw)>limit:
             reason = "BODY_CAP"
         elif not self.guard():
-            reason = "CLOCK_STOP_OR_SOURCE_GUARD"
+            reason = self.budget.state()["halt"] or "CLOCK_STOP_OR_SOURCE_GUARD"
         try:
             payload = json.loads(raw) if reason is None else None
         except (ValueError,UnicodeError):
@@ -181,9 +187,9 @@ def scan(client, *, boundary_ms, wall=time.time, stamp=now):
                         submit()
         if budget.state()["halt"]:
             result["stop"] = budget.state()["halt"]
-        decision = stamp()
         if not client.guard() or not 0<=wall()-boundary_ms/1000<=budget.policy.freshness_seconds:
             raise Hold("FINAL_CLOCK_OR_FRESHNESS")
+        decision = stamp()
         for item in eligible:
             symbol = item["symbol"]
             packet = packets.get(symbol)
@@ -219,6 +225,8 @@ def scan(client, *, boundary_ms, wall=time.time, stamp=now):
     latency=sorted((r["received_mono_ns"]-r["started_mono_ns"])/1e9 for r in audited
                    if "received_mono_ns" in r and "started_mono_ns" in r)
     result["metrics"]=dict(requests_measured=len(latency),
+        known_transport_attempts=sum(row.get("http_attempted",False) for row in audited),
+        unresolved_requests=result["budget"]["active"],
         mean_request_seconds=sum(latency)/len(latency) if latency else None,
         p95_request_seconds=latency[math.ceil(.95*len(latency))-1] if latency else None,
         capture_seconds=budget.mono()-result["budget"]["started"])

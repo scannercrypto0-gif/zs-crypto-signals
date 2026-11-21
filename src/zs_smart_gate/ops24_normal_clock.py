@@ -1,0 +1,201 @@
+"""Normal-token live Windows Time observations with protected OS provenance.
+
+Same owner-approved numerical policy; separate versioned observation profile.
+No source/config query exit is rewritten and no caller JSON is a clock witness.
+"""
+from datetime import datetime, timezone
+import json
+import os
+from pathlib import Path
+import re
+import subprocess
+import threading
+import time
+
+from .ops24_budget import Hold
+from .marketwide_capture import _is_admin as is_admin
+from .ops_windows_time import COMMANDS, CANDIDATE, POLICY_ID, SOURCE, assess, command
+from .ops_windows_child import sync_age
+from .stage05_contracts import canonical, digest
+
+PROFILE="WINDOWS_STATUS_PROTECTED_REGISTRY_V1"
+TRUSTED={"S-1-5-18","S-1-5-32-544",
+         "S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464"}
+INSPECT=r"""
+$ErrorActionPreference='Stop'
+$base=[Microsoft.Win32.RegistryKey]::OpenBaseKey([Microsoft.Win32.RegistryHive]::LocalMachine,[Microsoft.Win32.RegistryView]::Registry64)
+$names=@('SYSTEM\CurrentControlSet\Services\W32Time',
+ 'SYSTEM\CurrentControlSet\Services\W32Time\Parameters',
+ 'SYSTEM\CurrentControlSet\Services\W32Time\TimeProviders\NtpClient',
+ 'SYSTEM\CurrentControlSet\Services\autotimesvc',
+ 'SYSTEM\CurrentControlSet\Services\autotimesvc\Parameters',
+ 'SOFTWARE\Policies\Microsoft\W32Time\Parameters',
+ 'SOFTWARE\Policies\Microsoft\W32Time\TimeProviders\NtpClient')
+$rows=@()
+foreach($name in $names){
+ $key=$base.OpenSubKey($name,$false)
+ if($null -eq $key){continue}
+ try{
+  $acl=$key.GetAccessControl()
+  $rows+=@{path=$name;values=@{Type=$key.GetValue('Type');NtpServer=$key.GetValue('NtpServer');ImagePath=$key.GetValue('ImagePath');ServiceDll=$key.GetValue('ServiceDll');Enabled=$key.GetValue('Enabled')};
+   owner=$acl.GetOwner([Security.Principal.SecurityIdentifier]).Value;
+   rules=@($acl.GetAccessRules($true,$true,[Security.Principal.SecurityIdentifier])|ForEach-Object{
+    @{sid=$_.IdentityReference.Value;rights=[int64]$_.RegistryRights;type=$_.AccessControlType.ToString();propagation=[int]$_.PropagationFlags}})}
+ }finally{$key.Dispose()}
+}
+$base.Dispose()
+$system32=[Environment]::SystemDirectory
+$sidText=''
+foreach($service in @('W32Time','autotimesvc')){
+ $sidText+=(& (Join-Path $system32 'sc.exe') showsid $service|Out-String)
+ if($LASTEXITCODE -ne 0){throw 'SERVICE_SID_QUERY_FAILED'}
+}
+$signatures=@()
+foreach($name in @('sc.exe','w32tm.exe','w32time.dll','svchost.exe','autotimesvc.dll')){
+ $file=Join-Path $system32 $name
+ $signature=Get-AuthenticodeSignature -LiteralPath $file
+ $acl=Get-Acl -LiteralPath $file
+ $signatures+=@{file=$name;status=$signature.Status.ToString();signer=$signature.SignerCertificate.Subject;
+  sha256=(Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash.ToLowerInvariant();
+  owner=$acl.GetOwner([Security.Principal.SecurityIdentifier]).Value;
+  rules=@($acl.GetAccessRules($true,$true,[Security.Principal.SecurityIdentifier])|ForEach-Object{
+   @{sid=$_.IdentityReference.Value;rights=[int64]$_.FileSystemRights;type=$_.AccessControlType.ToString();propagation=[int]$_.PropagationFlags}})}
+}
+@{registry=$rows;signatures=$signatures;service_sid_text=$sidText;system32=$system32}|ConvertTo-Json -Depth 12 -Compress
+"""
+
+
+def system_directory():
+    import ctypes
+    buffer=ctypes.create_unicode_buffer(32768)
+    if not ctypes.windll.kernel32.GetSystemDirectoryW(buffer,len(buffer)):
+        raise Hold("SYSTEM_DIRECTORY_UNVERIFIED")
+    return Path(buffer.value)
+
+
+def inspect():
+    binary=system_directory()/"WindowsPowerShell"/"v1.0"/"powershell.exe"
+    result=subprocess.run([str(binary),"-NoProfile","-NonInteractive","-ExecutionPolicy","Bypass","-Command",INSPECT],
+                          env={**os.environ,"PSModulePath":str(system_directory()/"WindowsPowerShell"/"v1.0"/"Modules")},
+                          capture_output=True,timeout=20,creationflags=subprocess.CREATE_NO_WINDOW)
+    if result.returncode!=0:
+        raise Hold("NORMAL_CLOCK_OS_PROVENANCE_UNAVAILABLE")
+    return json.loads(result.stdout)
+
+
+def verify_provenance(profile):
+    matches=set(re.findall(r"S-1-5-80-(?:\d+-){4}\d+",profile["service_sid_text"]))
+    if len(matches)!=2:
+        raise Hold("WINDOWS_TIME_SERVICE_SID_UNVERIFIED")
+    allowed=TRUSTED|matches
+    signatures={row["file"]:row for row in profile["signatures"]}
+    if set(signatures)!={"sc.exe","w32tm.exe","w32time.dll","svchost.exe","autotimesvc.dll"}:
+        raise Hold("SYSTEM_BINARY_SET_UNVERIFIED")
+    for row in signatures.values():
+        if (row["status"]!="Valid" or not row["signer"].startswith(
+                ("CN=Microsoft Windows,","CN=Microsoft Windows Publisher,"))
+                or "O=Microsoft Corporation" not in row["signer"]
+                or not re.fullmatch(r"[a-f0-9]{64}",row["sha256"])):
+            raise Hold("SYSTEM_BINARY_SIGNATURE_UNVERIFIED")
+        if row["owner"] not in TRUSTED:
+            raise Hold("SYSTEM_BINARY_OWNER_UNVERIFIED")
+        for ace in row["rules"]:
+            if ((ace["propagation"]&2)==0 and ace["type"]=="Allow"
+                    and ace["rights"]&0xD0156 and ace["sid"] not in TRUSTED|{"S-1-3-0"}):
+                raise Hold("SYSTEM_BINARY_WRITABLE")
+    rows={row["path"]:row for row in profile["registry"]}
+    base="SYSTEM\\CurrentControlSet\\Services\\W32Time"
+    auto="SYSTEM\\CurrentControlSet\\Services\\autotimesvc"
+    for required in (base,base+"\\Parameters",base+"\\TimeProviders\\NtpClient",auto,auto+"\\Parameters"):
+        if required not in rows:
+            raise Hold("PROTECTED_CLOCK_CONFIG_MISSING")
+    for row in rows.values():
+        if row["owner"] not in TRUSTED:
+            raise Hold("CLOCK_CONFIG_OWNER_UNTRUSTED")
+        for ace in row["rules"]:
+            if (ace["propagation"] & 2)==0 and ace["type"]=="Allow":
+                if (ace["rights"] & (0xD0026|0x10000000|0x40000000)) and ace["sid"] not in allowed:
+                    raise Hold("CLOCK_CONFIG_WRITABLE_BY_NONPRIVILEGED_PRINCIPAL")
+    params=rows[base+"\\Parameters"]["values"]
+    if params["Type"]!="NTP" or params["NtpServer"].lower()!=SOURCE+",0x8":
+        raise Hold("CLOCK_CONFIG_SOURCE_MISMATCH")
+    system32=Path(profile["system32"])
+    if str(system32).lower()!=str(system_directory()).lower():
+        raise Hold("SYSTEM_DIRECTORY_MISMATCH")
+    if str(params["ServiceDll"]).lower()!=str(system32/"w32time.dll").lower():
+        raise Hold("CLOCK_SERVICE_DLL_MISMATCH")
+    image=rows[base]["values"]["ImagePath"].lower()
+    if not image.startswith(str(system32/"svchost.exe").lower()+" -k localservice"):
+        raise Hold("CLOCK_SERVICE_IMAGE_MISMATCH")
+    if (str(rows[auto+"\\Parameters"]["values"]["ServiceDll"]).lower()!=str(system32/"autotimesvc.dll").lower()
+            or not rows[auto]["values"]["ImagePath"].lower().startswith(
+                str(system32/"svchost.exe").lower()+" -k autotimesvc")):
+        raise Hold("AUTOTIME_OS_SERVICE_IMAGE_MISMATCH")
+    if rows[base+"\\TimeProviders\\NtpClient"]["values"]["Enabled"]!=1:
+        raise Hold("NTP_CLIENT_DISABLED")
+    for name,row in rows.items():
+        if name.startswith("SOFTWARE\\Policies"):
+            values=row["values"]
+            if ((values["Type"] is not None and values["Type"]!="NTP")
+                    or (values["NtpServer"] is not None and values["NtpServer"].lower()!=SOURCE+",0x8")
+                    or (values["Enabled"] is not None and values["Enabled"]!=1)):
+                raise Hold("GPO_CLOCK_SOURCE_OVERRIDE")
+    return True
+
+
+def assess_normal(observations, profile, age):
+    verify_provenance(profile)
+    policy=dict(policy_id=POLICY_ID,source=SOURCE,limits=CANDIDATE)
+    result=assess(observations,sync_age_s=age,policy=policy)
+    retained=list(result["blockers"])
+    # These exact two redundant RPC failures are substituted only after verified
+    # protected configuration and active status source satisfy equivalent inputs.
+    blockers=[value for value in retained if value not in ("SOURCE_COMMAND_FAILED","CONFIGURATION_COMMAND_FAILED")]
+    return {**result,"status":"OPERATIONAL_TIME_ACCEPTED" if not blockers else "BLOCKED",
+            "blockers":blockers,"original_rpc_blockers":retained,
+            "observation_profile":PROFILE,"provenance_sha256":digest(canonical(profile)),
+            "rpc_exit_codes":{name:observations[name]["exit"] for name in COMMANDS},
+            "equivalence_review":"ENGINEERING_PROFILE_PENDING_INDEPENDENT_PM_REVIEW"}
+
+
+class NormalClock:
+    def __init__(self, *, observe=command, provenance=inspect, age=sync_age):
+        self.observe,self.provenance,self.age=observe,provenance,age
+        self.lock=threading.Lock()
+        self.latest=None
+        self.at_mono=self.at_wall=None
+
+    def refresh(self):
+        if is_admin():
+            raise Hold("NORMAL_TOKEN_CLOCK_REQUIRED")
+        with self.lock:
+            mono,wall=time.monotonic(),time.time()
+            if self.latest is not None and (mono<self.at_mono or
+                    abs((wall-self.at_wall)-(mono-self.at_mono))>.05):
+                raise Hold("NORMAL_CLOCK_TIME_STEP")
+            if (self.latest is not None and 0<=mono-self.at_mono<=20
+                    and self.latest["assessment"]["sync_age_s"] is not None
+                    and self.latest["assessment"]["sync_age_s"]+(mono-self.at_mono)<=600
+                    and abs((wall-self.at_wall)-(mono-self.at_mono))<=.05):
+                return self.latest
+            profile=self.provenance()
+            verify_provenance(profile)
+            system32=Path(profile["system32"])
+            observations={name:self.observe((str(system32/argv[0]),*argv[1:]))
+                          for name,argv in COMMANDS.items()}
+            age=self.age(observations["status"]["stdout"])
+            if abs((time.time()-wall)-(time.monotonic()-mono))>.05:
+                raise Hold("NORMAL_CLOCK_OBSERVATION_TIME_STEP")
+            result=assess_normal(observations,profile,age)
+            self.latest=dict(profile=PROFILE,assessment=result,observations=observations,
+                provenance=profile,measured_utc=datetime.now(timezone.utc).isoformat().replace("+00:00","Z"),
+                measured_mono_ns=time.monotonic_ns())
+            self.at_mono,self.at_wall=time.monotonic(),time.time()
+            return self.latest
+
+    def accepted(self):
+        try:
+            return self.refresh()["assessment"]["status"]=="OPERATIONAL_TIME_ACCEPTED"
+        except (Hold,OSError,ValueError,KeyError,subprocess.TimeoutExpired):
+            return False
+

@@ -1,4 +1,0 @@
-# Optional operational witness verification, installed only on D:.
-cryptography==46.0.5
-cffi==2.0.0
-pycparser==3.0

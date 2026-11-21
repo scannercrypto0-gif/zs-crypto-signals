@@ -1,4 +1,4 @@
-"""Normal-token OPS24 worker. Signed activation is separate from code installation."""
+"""Normal-token OPS24 worker. Reviewed activation is separate from code installation."""
 import argparse
 import json
 import os
@@ -8,7 +8,7 @@ import sys
 import time
 
 from zs_smart_gate.ops24_budget import Hold
-from zs_smart_gate.ops24_clock import check_clock, is_admin, verify_envelope, protected_authority
+from zs_smart_gate.marketwide_capture import _is_admin as is_admin
 from zs_smart_gate.ops24_runtime import RuntimeJournal, supervisor
 from zs_smart_gate.ops24_source import atomic
 from zs_smart_gate.stage05_contracts import canonical, digest
@@ -23,19 +23,22 @@ def release(source):
 
 def activation(root, head, tree):
     config=json.loads((root/"release.json").read_bytes())
-    pem=(root/"authority.public.pem").read_bytes()
-    pin=config["authority_sha256"]
-    if pin is None:
-        raise Hold("PROTECTED_CLOCK_DEPLOYMENT_PENDING")
     if config.get("head")!=head or config.get("tree")!=tree:
         raise Hold("INSTALLED_RELEASE_PIN_MISMATCH")
-    protected_authority(root)
-    permit=verify_envelope(json.loads((root/"activation.json").read_bytes()),pem,pin)
+    # The authenticated owner supplies reviewed gate references. No additional
+    # digital signature is required for operator permission.
+    permit=json.loads((root/"activation.json").read_bytes())
     if (permit.get("schema")!="zs.ops24.activation.v1" or permit.get("head")!=head
             or permit.get("tree")!=tree or permit.get("purpose")!="READ_ONLY_RESEARCH_24H"
-            or permit.get("seconds")!=86400 or permit.get("pm_review_url","").startswith(
-                "https://github.com/scannercrypto0-gif/zs-crypto-signals/") is False):
+            or permit.get("seconds")!=86400 or not permit.get("pm_review_url","").startswith(
+                "https://github.com/scannercrypto0-gif/zs-crypto-signals/")):
         raise Hold("ACTIVATION_SCOPE_INVALID")
+    from zs_smart_gate.ops24_normal_clock import system_directory
+    user=subprocess.check_output([str(system_directory()/"whoami.exe"),"/user","/fo","csv","/nh"],text=True)
+    import re
+    sid=re.search(r"S-1-[0-9-]+",user)
+    if sid is None or config.get("owner_sid")!=sid[0]:
+        raise Hold("AUTHENTICATED_OPERATOR_REQUIRED")
     for gate in ("engineering","full_market","normal_worker","stop_rollback","owner_merge"):
         row=permit["proofs"][gate]
         raw=(root/"proofs"/(gate+".json")).read_bytes()
@@ -48,7 +51,7 @@ def activation(root, head, tree):
             raise Hold("FULL_MARKET_PREFLIGHT_NOT_PASSED")
         if gate!="full_market" and proof.get("accepted") is not True:
             raise Hold("REVIEWED_GATE_NOT_PASSED")
-    return permit,config,pem
+    return permit,config,None
 
 
 def main():
@@ -73,24 +76,21 @@ def main():
         return 0
     source=Path(__file__).resolve().parents[1]
     head,tree=release(source)
-    permit,config,pem=activation(root,head,tree)
+    permit,config,_=activation(root,head,tree)
     start=permit["start_epoch"]
     if type(start) is not int or start%1800 or not start-1800<=time.time()<start+86400:
         raise Hold("ACTIVATION_WINDOW_INVALID")
     if args.action=="Validate":
-        print(json.dumps(dict(status="SIGNED_ACTIVATION_VERIFIED",head=head,tree=tree)))
+        print(json.dumps(dict(status="REVIEWED_ACTIVATION_VERIFIED",head=head,tree=tree)))
         return 0
     activation_bytes=(root/"activation.json").read_bytes()
     release_bytes=(root/"release.json").read_bytes()
     journal=RuntimeJournal(root)
     window=journal.plan(start,head)
+    from zs_smart_gate.ops24_normal_clock import NormalClock
+    normal_clock=NormalClock()
     def clock():
-        try:
-            check_clock(json.loads((root/"clock.json").read_bytes()),pem,config["authority_sha256"],
-                        head=head,tree=tree)
-            return True
-        except (OSError,ValueError,KeyError,ImportError,Hold):
-            return False
+        return normal_clock.accepted()
     def admitted():
         try:
             return ((root/"activation.json").read_bytes()==activation_bytes

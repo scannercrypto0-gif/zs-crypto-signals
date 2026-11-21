@@ -355,3 +355,19 @@ class Ops24RuntimeTests(unittest.TestCase):
             (root/"response-1.private").write_bytes(b"corrupt")
             with self.assertRaises(Hold):
                 legacy_research_replay(root,digest(original))
+
+    def test_second_guard_can_stop_reserved_request_before_any_http(self):
+        with tempfile.TemporaryDirectory() as folder:
+            market=FakeMarket(1)
+            count=[0]
+            def guard():
+                count[0]+=1
+                return count[0]==1
+            budget=Budget(folder,"cycle")
+            with self.assertRaisesRegex(Hold,"CLOCK_STOP_BEFORE_HTTP"):
+                Client(budget,get=market.get,guard=guard).get("exchangeInfo",{})
+            self.assertEqual(market.calls,[])
+            self.assertEqual(budget.state()["bytes"],0)
+            with closing(budget.open()) as db:
+                receipt=json.loads(db.execute("SELECT receipt FROM requests").fetchone()[0])
+            self.assertFalse(receipt["http_attempted"])

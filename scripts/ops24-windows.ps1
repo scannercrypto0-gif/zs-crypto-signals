@@ -1,4 +1,4 @@
-<# OPS24 disabled-first controller. Runtime activation has separate signed gates. #>
+<# OPS24 disabled-first controller. Runtime activation has separate reviewed gates. #>
 [CmdletBinding()]
 param(
  [ValidateSet('InstallDisabled','BuildTask','Status','Stop','Disable','Restore','Rollback','Register','Enable')]
@@ -56,7 +56,7 @@ if($Action -eq 'InstallDisabled'){
  if(-not(Test-Path -LiteralPath $bundle)){Invoke-Git -Values @('-C',$Source,'bundle','create',$bundle,'HEAD')}
  $owner=[Security.Principal.WindowsIdentity]::GetCurrent().User.Value
  $record=[ordered]@{schema='zs.ops24.disabled-release.v1';head=$Head;tree=$Tree;source=$Source;python=$Python;owner_sid=$owner;
-   bundle=$bundle;bundle_sha256=(Get-FileHash $bundle).Hash.ToLowerInvariant();authority_sha256=$null;enabled=$false}
+   bundle=$bundle;bundle_sha256=(Get-FileHash $bundle).Hash.ToLowerInvariant();clock_profile='WINDOWS_STATUS_PROTECTED_REGISTRY_V1';enabled=$false}
  Write-Atomic $releasePath ($record|ConvertTo-Json -Depth 5)
  Write-Output "INSTALLED_DISABLED HEAD=$Head TREE=$Tree"
  }finally{$installLock.Dispose()}
@@ -67,7 +67,7 @@ $config=Get-Content (Join-Path $Root 'release.json') -Raw|ConvertFrom-Json
 if($config.owner_sid -cne [Security.Principal.WindowsIdentity]::GetCurrent().User.Value){throw 'AUTHENTICATED_OPERATOR_REQUIRED'}
 if($Action -eq 'Status'){
  [ordered]@{disabled=(Test-Path (Join-Path $Root 'DISABLED'));stop_requested=(Test-Path (Join-Path $Root 'STOP_REQUESTED'));
- head=$config.head;tree=$config.tree;clock_authority_installed=($null -ne $config.authority_sha256);
+ head=$config.head;tree=$config.tree;clock_profile=$config.clock_profile;
   status_file=(Join-Path $Root 'status.json');stability='NOT_ACCEPTED_BY_STATUS_ALONE'}|ConvertTo-Json
  return
 }
@@ -115,12 +115,12 @@ if($Action -eq 'BuildTask'){
  Write-Output 'TASK_XML_DISABLED_LEAST_PRIVILEGE_S4U_REVIEW_REQUIRED'
  return
 }
-# Registration/enablement remains a genuine gate until protected clock deployment,
+# Registration/enablement remains a genuine gate until normal-worker deployment,
 # reviewed full-market evidence and owner merge approval are installed.
-if($null -eq $config.authority_sha256){throw 'PROTECTED_CLOCK_DEPLOYMENT_AND_ACCEPTANCE_GATES_PENDING'}
+if(-not(Test-Path (Join-Path $Root 'activation.json'))){throw 'REVIEWED_ACTIVATION_GATES_PENDING'}
 $worker=Join-Path $config.source 'scripts\ops24-worker.py'
 & $config.python -B $worker Validate --root $Root
-if($LASTEXITCODE -ne 0){throw 'SIGNED_ACTIVATION_NOT_VALID'}
+if($LASTEXITCODE -ne 0){throw 'REVIEWED_ACTIVATION_NOT_VALID'}
 if($Action -eq 'Register'){
  $xmlPath=Join-Path $Root 'worker.disabled.xml'
  if(-not(Test-Path $xmlPath)){throw 'BUILD_DISABLED_TASK_FIRST'}
