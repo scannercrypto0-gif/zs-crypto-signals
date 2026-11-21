@@ -41,6 +41,10 @@ $decision=Join-Path $Root ('standing-'+[guid]::NewGuid().ToString('N')+'.json')
 & $python -B (Join-Path $source 'scripts\ops24-standing-release.py') --head $windows.head --tree $tree --windows $WindowsEvidence --source-proof $SourceEvidence --output $decision
 if($LASTEXITCODE -ne 0){throw 'GENUINE_REVIEW_OR_WINDOWS_SOURCE_EVIDENCE_PENDING'}
 Move-Item -LiteralPath $decision -Destination (Join-Path $Root 'standing-authority.json') -Force
+$releasePath=Join-Path $Root 'release.json'
+$config=Get-Content $releasePath -Raw|ConvertFrom-Json
+$config|Add-Member -NotePropertyName standing_authority_sha256 -NotePropertyValue (Get-FileHash (Join-Path $Root 'standing-authority.json')).Hash.ToLowerInvariant() -Force
+[IO.File]::WriteAllText($releasePath,($config|ConvertTo-Json -Depth 8),[Text.UTF8Encoding]::new($false))
 & $controller -Action BuildTask -Root $Root
 & $controller -Action Register -Root $Root
 if(-not(Test-Path (Join-Path $Root 'deployment-proof.json'))){Write-Output 'RELEASE_INSTALLED_TASK_DISABLED_ACTUAL_G3_PROOF_PENDING';return}

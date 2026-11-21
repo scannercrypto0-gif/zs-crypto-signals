@@ -2,6 +2,7 @@
 [CmdletBinding()]
 param([Parameter(Mandatory=$true)][string]$Source,[Parameter(Mandatory=$true)][string]$Head,
  [Parameter(Mandatory=$true)][string]$Tree,[Parameter(Mandatory=$true)][string]$Root,
+ [string]$WorkerSid='',
  [string]$Python='D:\ZS-SMART-GATE\runtime\python-3.12.10-ops77\python.exe')
 $ErrorActionPreference='Stop';Set-StrictMode -Version Latest
 if($PSVersionTable.PSVersion.Major -ne 5 -or $PSVersionTable.PSVersion.Minor -ne 1){throw 'POWERSHELL_51_REQUIRED'}
@@ -13,8 +14,29 @@ $controller=Join-Path $Source 'scripts\ops24-windows.ps1'
 $task='ZS-OPS24-IsolatedProbe-'+[guid]::NewGuid().ToString('N')
 $record=[ordered]@{schema='zs.ops24.task-probe-driver.v2';head=$Head;tree=$Tree;task=$task;origin='ACTUAL_WINDOWS_SCHEDULER';market_calls=0;telegram_calls=0;sql_writes=0;registered=$false;probe_observed=$false;cleanup=$false;real_reboot='NOT_EXECUTED';real_logoff='NOT_EXECUTED'}
 try{
- & $controller -Action InstallDisabled -Root $Root -Source $Source -Head $Head -Tree $Tree -Python $Python
+ & $controller -Action InstallDisabled -Root $Root -Source $Source -Head $Head -Tree $Tree -Python $Python -WorkerSid $WorkerSid
  if($LASTEXITCODE -ne 0){throw 'DISABLED_INSTALL_FAILED'}
+ if($WorkerSid){
+  # State files may be written; release configuration is separately read-only.
+  $acl=New-Object Security.AccessControl.DirectorySecurity
+  $owner=[Security.Principal.WindowsIdentity]::GetCurrent().User
+  $acl.SetOwner($owner);$acl.SetAccessRuleProtection($true,$false)
+  foreach($sid in @($owner.Value,'S-1-5-18','S-1-5-32-544')){
+   $acl.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new([Security.Principal.SecurityIdentifier]::new($sid),'FullControl','ContainerInherit,ObjectInherit','None','Allow'))
+  }
+  $worker=[Security.Principal.SecurityIdentifier]::new($WorkerSid)
+  $acl.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new($worker,'ReadAndExecute,Write','None','None','Allow'))
+  $acl.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new($worker,'Modify','ContainerInherit,ObjectInherit','InheritOnly','Allow'))
+  [IO.Directory]::SetAccessControl($Root,$acl)
+  foreach($name in @('release.json','DISABLED','STOP_REQUESTED')){
+   $path=Join-Path $Root $name
+   $file=New-Object Security.AccessControl.FileSecurity
+   $file.SetOwner($owner);$file.SetAccessRuleProtection($true,$false)
+   foreach($sid in @($owner.Value,'S-1-5-18','S-1-5-32-544')){$file.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new([Security.Principal.SecurityIdentifier]::new($sid),'FullControl','Allow'))}
+   $file.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new($worker,'ReadAndExecute','Allow'))
+   [IO.File]::SetAccessControl($path,$file)
+  }
+ }
  & $controller -Action BuildTask -Root $Root
  $xmlPath=Join-Path $Root 'worker.disabled.xml'
  $xml=(Get-Content $xmlPath -Raw).Replace(' Serve --root ',' Probe --root ').Replace('<ExecutionTimeLimit>PT25H</ExecutionTimeLimit>','<ExecutionTimeLimit>PT30S</ExecutionTimeLimit>')

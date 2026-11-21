@@ -19,9 +19,9 @@ from zs_smart_gate.stage05_contracts import canonical, digest
 
 
 def release(source,git="git"):
-    if subprocess.check_output([git,"-C",str(source),"status","--porcelain"],text=True).strip():
+    if subprocess.check_output([git,"-c","safe.directory="+str(source),"-C",str(source),"status","--porcelain"],text=True).strip():
         raise Hold("RELEASE_CHECKOUT_DIRTY")
-    return tuple(subprocess.check_output([git,"-C",str(source),"rev-parse",value],text=True).strip()
+    return tuple(subprocess.check_output([git,"-c","safe.directory="+str(source),"-C",str(source),"rev-parse",value],text=True).strip()
                  for value in ("HEAD","HEAD^{tree}"))
 
 
@@ -32,13 +32,19 @@ def activation(root, head, tree):
     from zs_smart_gate.ops24_authority import verify_cached,verify_remote
     decision=json.loads((root/'standing-authority.json').read_bytes())
     verify_cached(decision,head=head,tree=tree)
-    verify_remote(decision)  # Real GitHub records, never self-declared approval.
     from zs_smart_gate.ops24_normal_clock import system_directory
     user=subprocess.check_output([str(system_directory()/"whoami.exe"),"/user","/fo","csv","/nh"],text=True)
     import re
     sid=re.search(r"S-1-[0-9-]+",user)
-    if sid is None or config.get("owner_sid")!=sid[0]:
-        raise Hold("AUTHENTICATED_OPERATOR_REQUIRED")
+    if sid is None:
+        raise Hold('AUTHENTICATED_OPERATOR_REQUIRED')
+    if sid[0]==config.get('owner_sid'):
+        verify_remote(decision)
+    elif sid[0]==config.get('worker_sid'):
+        from zs_smart_gate.ops24_authority import verify_protected_cache
+        verify_protected_cache(root,decision,config)
+    else:
+        raise Hold('AUTHENTICATED_WORKER_OR_OPERATOR_REQUIRED')
     from zs_smart_gate.ops24_authority import deployment_proof
     deployment_proof(root,head,tree,config['owner_sid'])
     start=json.loads((root/'window.json').read_bytes())['start_epoch']
@@ -51,6 +57,9 @@ def main():
     parser.add_argument("--root",type=Path,required=True)
     args=parser.parse_args()
     root=args.root.resolve()
+    os.environ['TEMP']='D:/ZS-SMART-GATE/temp'
+    os.environ['TMP']='D:/ZS-SMART-GATE/temp'
+    os.environ['PSModuleAnalysisCachePath']=str(root/'ps-module-analysis-cache')
     owned=Path("D:/ZS-SMART-GATE").resolve()
     if os.name!="nt" or sys.version_info[:3]!=(3,12,10) or owned not in root.parents:
         parser.error("Windows 3.12.10 / owned D: root required")

@@ -53,3 +53,11 @@ class Ops24ControllerTests(unittest.TestCase):
             rolled=run("Rollback")
             self.assertEqual(rolled.returncode,0,rolled.stderr.decode(errors="replace"))
             self.assertIn("ROLLED_BACK_DISABLED",rolled.stdout.decode(errors="replace"))
+
+    def test_standard_role_setup_cannot_self_elevate_from_normal_operator(self):
+        result=subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass',
+            '-File',str(ROOT/'scripts/ops24-standard-role-probe.ps1'),'-Source',str(ROOT),
+            '-Head','a'*40,'-Tree','b'*40,'-Root','D:/ZS-SMART-GATE/temp/never-created-by-nonadmin'],
+             capture_output=True,timeout=15,creationflags=subprocess.CREATE_NO_WINDOW)
+        self.assertNotEqual(result.returncode,0)
+        self.assertIn(b'REQUIRES_ADMIN',result.stderr)

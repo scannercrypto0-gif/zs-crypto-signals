@@ -66,3 +66,9 @@ class StandingAuthorityTests(unittest.TestCase):
    windows=dict(head=HEAD,tree=TREE,tests=1),source=dict(head=HEAD,tree=TREE,eligible=1))
   with self.assertRaisesRegex(Hold,'AUTHORITY_CHANGED'):
    verify_remote(decision,fetch=lambda _:dict(body='changed authority'))
+
+ def test_standard_worker_cannot_claim_its_own_mutable_cache_as_owner_authority(self):
+  from zs_smart_gate.ops24_authority import verify_protected_cache
+  with tempfile.TemporaryDirectory() as root:
+   with self.assertRaisesRegex(Hold,'PROTECTED_STANDING_CACHE_REQUIRED'):
+    verify_protected_cache(root,{},dict(owner_sid='same-fixture-owner',worker_sid='same-fixture-owner'))

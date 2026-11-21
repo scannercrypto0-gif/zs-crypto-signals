@@ -4,6 +4,7 @@ param([Parameter(Mandatory=$true)][ValidateSet('Probe','Health')][string]$Action
  [Parameter(Mandatory=$true)][string]$Root)
 $ErrorActionPreference='Stop';Set-StrictMode -Version Latest
 if(-not [IO.Path]::GetFullPath($Root).StartsWith('D:\ZS-SMART-GATE\',[StringComparison]::OrdinalIgnoreCase)){throw 'D_OWNED_ROOT_REQUIRED'}
+$env:PSModuleAnalysisCachePath=Join-Path $Root 'ps-module-analysis-cache'
 $env:TEMP='D:\ZS-SMART-GATE\temp';$env:TMP=$env:TEMP
 $env:PSModulePath=Join-Path ([Environment]::SystemDirectory) 'WindowsPowerShell\v1.0\Modules'
 $config=Get-Content (Join-Path $Root 'release.json') -Raw|ConvertFrom-Json

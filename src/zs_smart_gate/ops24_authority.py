@@ -183,3 +183,47 @@ def deployment_proof(root,head,tree,owner_sid):
             or records['stop'].get('lock_exclusive') is not True):
         raise Hold('ACTUAL_STOP_PROOF_REQUIRED')
     return dict(receipt_sha256=digest(canonical(manifest)),scope='ACTUAL_DEPLOYMENT_RECORDS_ONLY')
+
+
+def verify_protected_cache(root,decision,config):
+    """A standard worker trusts owner-written immutable files, never owner credentials.
+
+    The owner bootstrap verified real GitHub records online. This read-only cache
+    lets the separate standard account start offline without a GitHub write token.
+    """
+    import os
+    from .ops24_normal_clock import system_directory
+    root=Path(root).resolve()
+    owner,worker=config['owner_sid'],config['worker_sid']
+    if owner==worker or digest((root/'standing-authority.json').read_bytes())!=config.get('standing_authority_sha256'):
+        raise Hold('PROTECTED_STANDING_CACHE_REQUIRED')
+    script=r"""
+$ErrorActionPreference='Stop'
+$root=$env:ZS_CACHE_ROOT
+$source=$env:ZS_CACHE_SOURCE
+$rows=@()
+foreach($path in @($root,(Join-Path $root 'release.json'),(Join-Path $root 'standing-authority.json'),$source,(Join-Path $source '.git'))){
+ $acl=Get-Acl -LiteralPath $path
+ $rows+=@{path=$path;owner=$acl.GetOwner([Security.Principal.SecurityIdentifier]).Value;
+  rules=@($acl.GetAccessRules($true,$true,[Security.Principal.SecurityIdentifier])|ForEach-Object{
+   @{sid=$_.IdentityReference.Value;rights=[int64]$_.FileSystemRights;type=$_.AccessControlType.ToString();propagation=[int]$_.PropagationFlags}})}
+}
+ConvertTo-Json -InputObject @($rows) -Depth 8 -Compress
+"""
+    result=subprocess.run([str(system_directory()/'WindowsPowerShell/v1.0/powershell.exe'),
+                           '-NoProfile','-NonInteractive','-Command',script],capture_output=True,timeout=15,
+          env={**os.environ,'ZS_CACHE_ROOT':str(root),'ZS_CACHE_SOURCE':config['source'],
+               'PSModulePath':str(system_directory()/'WindowsPowerShell/v1.0/Modules')},
+          creationflags=subprocess.CREATE_NO_WINDOW)
+    if result.returncode:raise Hold('PROTECTED_CACHE_ACL_QUERY_FAILED')
+    allowed={owner,'S-1-5-18','S-1-5-32-544'}
+    for row in json.loads(result.stdout):
+        if row['owner'] not in allowed:raise Hold('PROTECTED_CACHE_OWNER_MISMATCH')
+        for ace in row['rules']:
+            if ace['type']!='Allow' or ace['propagation']&2 or ace['sid'] in allowed:continue
+            mask=0xD0156|0x10000000|0x40000000
+            if str(Path(row['path']).resolve()).lower()==str(root).lower() and ace['sid']==worker:
+                mask=0xD0040|0x10000000  # No root delete/delete-child/ownership/DACL mutation.
+            if ace['rights']&mask:raise Hold('STANDING_CACHE_WRITABLE_BY_UNTRUSTED_PRINCIPAL')
+    return dict(scope='OWNER_VERIFIED_CACHE_NO_GITHUB_CREDENTIALS_IN_WORKER',
+                authority_sha256=config['standing_authority_sha256'])

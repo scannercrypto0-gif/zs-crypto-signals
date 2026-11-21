@@ -7,6 +7,7 @@ param(
  [string]$Source,
  [string]$Head,
  [string]$Tree,
+ [string]$WorkerSid='',
  [string]$Python='D:\ZS-SMART-GATE\runtime\python-3.12.10-ops77\python.exe'
 )
 $ErrorActionPreference='Stop'
@@ -57,7 +58,7 @@ if($Action -eq 'InstallDisabled'){
  if(-not(Test-Path -LiteralPath $bundle)){Invoke-Git -Values @('-C',$Source,'bundle','create',$bundle,'HEAD')}
  $owner=[Security.Principal.WindowsIdentity]::GetCurrent().User.Value
  $gitExecutable=(Get-Command git -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source
- $record=[ordered]@{schema='zs.ops24.disabled-release.v1';git_executable=$gitExecutable;git_sha256=(Get-FileHash $gitExecutable).Hash.ToLowerInvariant();head=$Head;tree=$Tree;source=$Source;python=$Python;owner_sid=$owner;
+ $record=[ordered]@{schema='zs.ops24.disabled-release.v1';git_executable=$gitExecutable;git_sha256=(Get-FileHash $gitExecutable).Hash.ToLowerInvariant();head=$Head;tree=$Tree;source=$Source;python=$Python;owner_sid=$owner;worker_sid=$(if($WorkerSid){$WorkerSid}else{$owner});
    bundle=$bundle;bundle_sha256=(Get-FileHash $bundle).Hash.ToLowerInvariant();clock_profile='WINDOWS_STATUS_PROTECTED_REGISTRY_V1';enabled=$false}
  Write-Atomic $releasePath ($record|ConvertTo-Json -Depth 5)
  Write-Output "INSTALLED_DISABLED HEAD=$Head TREE=$Tree"
@@ -110,7 +111,7 @@ if($Action -eq 'BuildTask'){
  $worker=Join-Path $config.source 'scripts\ops24-worker.py'
  $command=[Security.SecurityElement]::Escape($config.python)
  $arguments=[Security.SecurityElement]::Escape('-I -B "'+$worker+'" Serve --root "'+$Root+'"')
- $sid=[Security.SecurityElement]::Escape($config.owner_sid)
+ $sid=[Security.SecurityElement]::Escape($config.worker_sid)
  $xml='<?xml version="1.0" encoding="UTF-16"?>'+
  '<Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">'+
  '<Triggers><BootTrigger><Enabled>true</Enabled></BootTrigger></Triggers>'+
