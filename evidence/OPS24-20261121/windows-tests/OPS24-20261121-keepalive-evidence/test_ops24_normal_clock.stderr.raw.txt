@@ -1,0 +1,12 @@
+test_binary_signature_acl_path_and_identity_checks (test_ops24_normal_clock.NormalClockTests.test_binary_signature_acl_path_and_identity_checks) ... ok
+test_gpo_override_cannot_be_ignored (test_ops24_normal_clock.NormalClockTests.test_gpo_override_cannot_be_ignored) ... ok
+test_mutable_registry_or_untrusted_owner_never_substitutes_rpc (test_ops24_normal_clock.NormalClockTests.test_mutable_registry_or_untrusted_owner_never_substitutes_rpc) ... ok
+test_refresh_uses_real_commands_by_default_but_fixture_cache_is_bounded (test_ops24_normal_clock.NormalClockTests.test_refresh_uses_real_commands_by_default_but_fixture_cache_is_bounded) ... ok
+test_stale_future_quorum_step_and_active_source_mismatch_remain_blocked (test_ops24_normal_clock.NormalClockTests.test_stale_future_quorum_step_and_active_source_mismatch_remain_blocked) ... ok
+test_step_between_cached_samples_is_not_hidden_by_refresh (test_ops24_normal_clock.NormalClockTests.test_step_between_cached_samples_is_not_hidden_by_refresh) ... ok
+test_verified_equivalent_retains_original_denials_and_numerical_policy (test_ops24_normal_clock.NormalClockTests.test_verified_equivalent_retains_original_denials_and_numerical_policy) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.023s
+
+OK

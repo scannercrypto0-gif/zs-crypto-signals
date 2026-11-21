@@ -1,0 +1,6 @@
+test_disabled_install_status_task_and_offline_restore_with_activation_hold (test_ops24_control.Ops24ControllerTests.test_disabled_install_status_task_and_offline_restore_with_activation_hold) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 11.509s
+
+OK

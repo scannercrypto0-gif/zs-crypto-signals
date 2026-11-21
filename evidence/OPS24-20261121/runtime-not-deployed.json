@@ -1,0 +1,19 @@
+{
+  "measured_utc": "2026-11-21T09:54:31.5021514Z",
+  "installed_head": "25210a1e152a92e0562e108f3d1fc16e4e1b61ab",
+  "tasks": [
+    {
+      "TaskName": "ZS-WindowsRunner-Independent-Simulation",
+      "state": "Disabled"
+    },
+    {
+      "TaskName": "ZS-WindowsRunner-OneShot-Diagnostic",
+      "state": "Disabled"
+    }
+  ],
+  "changes_to_installed_runtime": false,
+  "task_registered_or_enabled": false,
+  "independent_time": "NOT_PROVEN",
+  "real_reboot_test": "NOT_EXECUTED",
+  "soak_24h": "NOT_STARTED"
+}

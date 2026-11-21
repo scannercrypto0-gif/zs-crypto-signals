@@ -173,6 +173,2778 @@
       "local_path": "D:\\ZS-SMART-GATE\\data\\shadow-20261120-153000-38240\\time-stripchart.private.json",
       "retained": true,
       "sha256": "6b542eacad87d31cb62fe4ee2344bc4656dcc5e0601b3f52d0b4e45a00d0b657"
+    },
+    {
+      "bytes": 161,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\008efed8599471b39e5875dfac2f77d277bd3295d89a9a7e47a69fd839d6cd23.private",
+      "retained": true,
+      "sha256": "7993322628e25ff78586f2d3703f2052081af215f88c2c1472fb98131a7062c0"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\008efed8599471b39e5875dfac2f77d277bd3295d89a9a7e47a69fd839d6cd23.receipt.json",
+      "retained": true,
+      "sha256": "e27ec3627e2c015887e229609b55106989e72622883fb56fdda504251727d3b3"
+    },
+    {
+      "bytes": 170,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\028a3844b161481dc5a736066345fd6aa69e9612bb268b004b78321f327f6f6d.private",
+      "retained": true,
+      "sha256": "2456e519439b938ebae67c26a28a326e561c7d5af2ac8a61369718f055ecc9a7"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\028a3844b161481dc5a736066345fd6aa69e9612bb268b004b78321f327f6f6d.receipt.json",
+      "retained": true,
+      "sha256": "7ccd22056dc2f6564c5c951a2aa9f51bce22c5c7e9d3cf71945a9947adf39325"
+    },
+    {
+      "bytes": 3442,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\034dbe382aa3aa762d469638870ee328e18b9a313e4773569dd69cc9805d97cc.private",
+      "retained": true,
+      "sha256": "b67914cd52c7bae0f25c4d767d3705bb5106e7cd920fcc3e2dfdb273ceb87137"
+    },
+    {
+      "bytes": 3219,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\034dbe382aa3aa762d469638870ee328e18b9a313e4773569dd69cc9805d97cc.receipt.json",
+      "retained": true,
+      "sha256": "def0b9e75901677fc25e67f552019851fa9d9427b2b084b7a361c42187ee8897"
+    },
+    {
+      "bytes": 3517,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\03a0f54ac87e21efb1460a6c058cc5ffc4b668eff5e5f85975b1cf88db201d65.private",
+      "retained": true,
+      "sha256": "3fed27eda53c6fcfc6110698f5b64add143efcb5cc47451a4db0f7dcca9b5611"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\03a0f54ac87e21efb1460a6c058cc5ffc4b668eff5e5f85975b1cf88db201d65.receipt.json",
+      "retained": true,
+      "sha256": "e7d765a4cdaf9f94479b32b941fa95474f545e3c4d5b8d7ee44354c800e35a7f"
+    },
+    {
+      "bytes": 3491,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\044ef47659303e1f16c64caeb9eac9867a02357b71f6a263726a5be48dc843f9.private",
+      "retained": true,
+      "sha256": "2e810473c38ac020aeca63c32cdd6cee8807f3247fba49e86ecee144fc4bebe4"
+    },
+    {
+      "bytes": 3220,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\044ef47659303e1f16c64caeb9eac9867a02357b71f6a263726a5be48dc843f9.receipt.json",
+      "retained": true,
+      "sha256": "f9c021a27e32807bac009d155563f0c7ab1a66daf877f4d3f20ebe7973618338"
+    },
+    {
+      "bytes": 161,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\049b01a18a902506f1fbcd4f86d78f2649bd6b170ac1bc70654dc062c68b4679.private",
+      "retained": true,
+      "sha256": "0d2e4f03c801eaa24e4baba7adef68d815732991adb8cf7d4df9dee6c16927ee"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\049b01a18a902506f1fbcd4f86d78f2649bd6b170ac1bc70654dc062c68b4679.receipt.json",
+      "retained": true,
+      "sha256": "d0fafa0cb71a25a0fa8d3b4080154ff7f79d6f98a8878cb56bc8b892fb284ecf"
+    },
+    {
+      "bytes": 3557,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\064e4537f2e7c0c1077398bb83ed7096cca6aabdd7bc4abab208621fb98943c9.private",
+      "retained": true,
+      "sha256": "683e8af5169bb1ae7975a1ffdc11a539c2c494cee1867b9a6a0e3edf32e26a1b"
+    },
+    {
+      "bytes": 3220,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\064e4537f2e7c0c1077398bb83ed7096cca6aabdd7bc4abab208621fb98943c9.receipt.json",
+      "retained": true,
+      "sha256": "6f31aaed25fb54bf992051c6d50f17376f897295b98dfa3cab6f22abec2e0a44"
+    },
+    {
+      "bytes": 3459,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\068e966db8f62e404e0914460aeeb467230ab455ab996735ef993bbadf1251f5.private",
+      "retained": true,
+      "sha256": "5fce9f7bf07debe368c1510322c60782db425a70dc577553b47352f49e242d6b"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\068e966db8f62e404e0914460aeeb467230ab455ab996735ef993bbadf1251f5.receipt.json",
+      "retained": true,
+      "sha256": "e03508d8b86426f3088ac8904e104552d4ff8d976306c1fcac0e9095deb09753"
+    },
+    {
+      "bytes": 3350,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\06fe073463fd0454d41ec66ddd3f565e70bfdea0b1caf8575c28d08dfd754e89.private",
+      "retained": true,
+      "sha256": "ae8e1bef7d9821b858690aa696fb800e7f4a303f453ea65e25287ea11c8c127c"
+    },
+    {
+      "bytes": 3219,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\06fe073463fd0454d41ec66ddd3f565e70bfdea0b1caf8575c28d08dfd754e89.receipt.json",
+      "retained": true,
+      "sha256": "a7afc12587ba48e24b495a14c48611920fa6e0a0ff01ce484dabc2f1594b4338"
+    },
+    {
+      "bytes": 166,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\0782f0a39aba43a08c5e2deece3337250de1f3de94b5ee3b96566bc33baa0a91.private",
+      "retained": true,
+      "sha256": "5fc0b8145a3d2b19f0698166cafb086ea1284409188719e46503482cef63e46b"
+    },
+    {
+      "bytes": 3237,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\0782f0a39aba43a08c5e2deece3337250de1f3de94b5ee3b96566bc33baa0a91.receipt.json",
+      "retained": true,
+      "sha256": "4328c723ffeb8b6078268cc94439a9be9b6222b370681e04fca41956733d4c3d"
+    },
+    {
+      "bytes": 168,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\07e47394db1171d699ed914fabf40c824aa817b4cd78511a278d62ee07065de0.private",
+      "retained": true,
+      "sha256": "50a263248b11b144c14f3c2505390a8c36fa9e18fe8642b742c2761bb2fe841c"
+    },
+    {
+      "bytes": 3219,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\07e47394db1171d699ed914fabf40c824aa817b4cd78511a278d62ee07065de0.receipt.json",
+      "retained": true,
+      "sha256": "1e946ec8bdf4dbaf43ddad6b1bb5f59c1d2107cd5fee3a5ca7b1d8988e8538c1"
+    },
+    {
+      "bytes": 187,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\07ede702cc5b11c09535ff7eba66dcb842a5c945375167426fd2a18bffbb7dff.private",
+      "retained": true,
+      "sha256": "238a072befd23f6ec50a48ee875409322fd64418f05849db19b10a09416e8f15"
+    },
+    {
+      "bytes": 3215,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\07ede702cc5b11c09535ff7eba66dcb842a5c945375167426fd2a18bffbb7dff.receipt.json",
+      "retained": true,
+      "sha256": "77c9bacdc230cfb4a976f6b64500f30a0d920f6555c130b33bc1707b3a1044d2"
+    },
+    {
+      "bytes": 161,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\0c8306f26edac37f8921241faa88d92a7383868e5c2c4f98ba808a0679ec1233.private",
+      "retained": true,
+      "sha256": "8d38192e0e4af4e85e3f83010122d3e34b1cd02e8b198af7707043992e14d423"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\0c8306f26edac37f8921241faa88d92a7383868e5c2c4f98ba808a0679ec1233.receipt.json",
+      "retained": true,
+      "sha256": "89f2c6b184a28365a40d022445b10c47ddb8d80dabfc42bcc81017cc16e3243b"
+    },
+    {
+      "bytes": 164,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\0c96e2a4666d10dde21a17d4aaa46c9a784cba7135ce47800ff8aa761be89eaf.private",
+      "retained": true,
+      "sha256": "1b16e87ed4ed63126e26b91069b61469d212df0761bf5a167a7898c91b3275be"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\0c96e2a4666d10dde21a17d4aaa46c9a784cba7135ce47800ff8aa761be89eaf.receipt.json",
+      "retained": true,
+      "sha256": "164640e93d6320f172713c7b79c3b34a9b128a0a164783a3d2dccad719eefa85"
+    },
+    {
+      "bytes": 164,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\0ce9759017dbf2aecff133ff6e108929807b4723453205c3873d23067ff873c0.private",
+      "retained": true,
+      "sha256": "24be3e4017b8f4818305080d0acacef59f92fa7883abac8fdf119795ca98f9bf"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\0ce9759017dbf2aecff133ff6e108929807b4723453205c3873d23067ff873c0.receipt.json",
+      "retained": true,
+      "sha256": "d09add4f64eb40aa6b10a926ca2eb78e9df683145c55d9e7a7f4236047b94967"
+    },
+    {
+      "bytes": 169,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\0d5a6d096d73e5472989cb8f0a57a82b5148b1cdccfd931a76547e127aec2baa.private",
+      "retained": true,
+      "sha256": "f678d6960f30015916436ec2caf91fffab3e85305443a97a749547f5b2a92c46"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\0d5a6d096d73e5472989cb8f0a57a82b5148b1cdccfd931a76547e127aec2baa.receipt.json",
+      "retained": true,
+      "sha256": "779ebec809533eb2bbff2197aca58c49ff3f94938943ac109532607d07b97a83"
+    },
+    {
+      "bytes": 168,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\0ed137a3d7be8b1ee8e81b06eee40a02f0c916844f41406eb80cc366db0d5b6f.private",
+      "retained": true,
+      "sha256": "f75ba0bddc00063fe2642461b2e4a609fad14bed80bc3c409e3bb2e926d5311e"
+    },
+    {
+      "bytes": 3215,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\0ed137a3d7be8b1ee8e81b06eee40a02f0c916844f41406eb80cc366db0d5b6f.receipt.json",
+      "retained": true,
+      "sha256": "67b1575447c5cbbe9cbdce354671c9c5edf69fe2ca0e42212df29247e85f03b6"
+    },
+    {
+      "bytes": 163,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\0f529834f5fec21db821092c05312488fcbead240d6a4328bc57321fe0efc358.private",
+      "retained": true,
+      "sha256": "113415683b465afe0843a40c12f8a142c530f6aea2565168508fa8d4c6bf78e4"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\0f529834f5fec21db821092c05312488fcbead240d6a4328bc57321fe0efc358.receipt.json",
+      "retained": true,
+      "sha256": "a4c5749269b77f2ed9b69454cb0731dbe03a7c975f2032fb0ecdfe560e9d6356"
+    },
+    {
+      "bytes": 159,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\0fdaf36eddd1c0da8736de8e15dd4cfbb2fd6b96c9205ae6a78853df3799229b.private",
+      "retained": true,
+      "sha256": "97cc3a6cb3b63ef6fac956e00fbc1589de18b1effe66e18ee339ae214fb4d41a"
+    },
+    {
+      "bytes": 3235,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\0fdaf36eddd1c0da8736de8e15dd4cfbb2fd6b96c9205ae6a78853df3799229b.receipt.json",
+      "retained": true,
+      "sha256": "8a916ca654bb85d98e09c3512d3e9c189152c9019214daff6d063c191a67a696"
+    },
+    {
+      "bytes": 162,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\11304756163578636371fb8b57ea2adf712b39596e7c323526705d62701b59a4.private",
+      "retained": true,
+      "sha256": "d02d84ff444ee5ce3db3fd414b3063fe90430e439d8408690c996eda090f6f6e"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\11304756163578636371fb8b57ea2adf712b39596e7c323526705d62701b59a4.receipt.json",
+      "retained": true,
+      "sha256": "9bdb9b2590b1ce26c1e7982502d3d6c84c7489b9922a85871314ae3b97e1af75"
+    },
+    {
+      "bytes": 177,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\1185aa99a82fcd0e5bc3560960e79f52f38745950c8c8ae1e26e3b29973340d1.private",
+      "retained": true,
+      "sha256": "3f899f2e9d743765616235485f8afc59a534b473e40106f654e229d07fdfd271"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\1185aa99a82fcd0e5bc3560960e79f52f38745950c8c8ae1e26e3b29973340d1.receipt.json",
+      "retained": true,
+      "sha256": "1f541e5a4a42a288334db491a14b3dc993853acb912cfc546dc80fa529cb5078"
+    },
+    {
+      "bytes": 167,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\12042562e8b35b44d03d9289ad21d844f3506566beb4a3aa6d7f05e9e470d1b8.private",
+      "retained": true,
+      "sha256": "bc492a6eb3c69d8b420087589d1204d8dc489d14910865e594cdf1e707636332"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\12042562e8b35b44d03d9289ad21d844f3506566beb4a3aa6d7f05e9e470d1b8.receipt.json",
+      "retained": true,
+      "sha256": "3718c8424c674058b3b856492a95388629703e34077eba227025ae8defc35de7"
+    },
+    {
+      "bytes": 164,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\1260ee062801ed49653736d6ccd87555aea50b262e26f8f9bdd608372adda043.private",
+      "retained": true,
+      "sha256": "15c54d7eb237919285561296b32a64107b7c53fe5be03f7815aad0bbc5065a27"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\1260ee062801ed49653736d6ccd87555aea50b262e26f8f9bdd608372adda043.receipt.json",
+      "retained": true,
+      "sha256": "8fc276815192aab9d33876c25d545cfd6935426dfd01197c3d91f7ef6f93ea41"
+    },
+    {
+      "bytes": 165,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\131164dd5a1674070ef4d339f64783f5e880c8b774a9d33b132e2c3a72f17de8.private",
+      "retained": true,
+      "sha256": "ed342956f0b7d261e8c761afe731c6740f5ec58d79f54cb1f5d22838fb382f7e"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\131164dd5a1674070ef4d339f64783f5e880c8b774a9d33b132e2c3a72f17de8.receipt.json",
+      "retained": true,
+      "sha256": "24c17e9ce45894fdc5cb692c30836a54adf51a634f8f5f7c0f5943653ea99e37"
+    },
+    {
+      "bytes": 3490,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\13561886fcb866aef84953006c9739015061171f4c625f83bc8dea1c703ea960.private",
+      "retained": true,
+      "sha256": "a718475a42048c3d6699cb34eea35375891bcbcb648fcd01cc8fabe95487f99a"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\13561886fcb866aef84953006c9739015061171f4c625f83bc8dea1c703ea960.receipt.json",
+      "retained": true,
+      "sha256": "9c6bb3378a62e515033f56062310c325818590fe69c75bc8b4a19d3df69c3078"
+    },
+    {
+      "bytes": 159,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\1629cd309b9940c539550eabe527bac607017f12a23dfb1aa5892dfd35406a72.private",
+      "retained": true,
+      "sha256": "05f63334b06397215ff63e92f6542495c5111654cf292de7d09a25d6117172a2"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\1629cd309b9940c539550eabe527bac607017f12a23dfb1aa5892dfd35406a72.receipt.json",
+      "retained": true,
+      "sha256": "3a4b637c89ad6b6e3c1801fc68025d7e21a24a2c9c06e25f32eaa7794d8fbe5d"
+    },
+    {
+      "bytes": 3544,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\168a4c8c00fcec90f9a2f3b0095a1704fd0b2e182c35db1302f3c010f7cda1e4.private",
+      "retained": true,
+      "sha256": "508d189a9f9524cda92b2af05eab1dddda11ce7ae022ff1b6f73ea9ff532577f"
+    },
+    {
+      "bytes": 3219,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\168a4c8c00fcec90f9a2f3b0095a1704fd0b2e182c35db1302f3c010f7cda1e4.receipt.json",
+      "retained": true,
+      "sha256": "316296a0c05fc330424d6618d95c17e7ce660e94ea960707161f7cdc9171ebe4"
+    },
+    {
+      "bytes": 180,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\17221816832a0c408b363d2a7489e341f3c7d1fa4e7727b335fbcf7a1847746f.private",
+      "retained": true,
+      "sha256": "845e8c13d41653e64d101eedafb3ae6d12059525b4a2722fa7d0da725faaaba7"
+    },
+    {
+      "bytes": 3215,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\17221816832a0c408b363d2a7489e341f3c7d1fa4e7727b335fbcf7a1847746f.receipt.json",
+      "retained": true,
+      "sha256": "055e1d583c1dc2cc5b1d483fa9ed6bb72daf5769c8b8c92c8cda68a2c75de104"
+    },
+    {
+      "bytes": 171,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\17b271a16c240e287d4868162b33116cb66625fbd5b31cb04540c8eba4dc1475.private",
+      "retained": true,
+      "sha256": "b88147daf774022d77cce43988390f4e349359679e6cccbe7e84924c425c0daf"
+    },
+    {
+      "bytes": 3215,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\17b271a16c240e287d4868162b33116cb66625fbd5b31cb04540c8eba4dc1475.receipt.json",
+      "retained": true,
+      "sha256": "7e4e7e874499e5c4299e6f566da51c1e9606ea0dbd1feeafd5f38ac95e13801a"
+    },
+    {
+      "bytes": 166,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\193e2657b761fc5c9a4df76b1e59d6011e6fc44916ebf7fc7b3975fd6b7c07e7.private",
+      "retained": true,
+      "sha256": "0b74b3847d08d7ed70c1b519ea31528f8851865390e2b8cffbf230c91a4c68c5"
+    },
+    {
+      "bytes": 3215,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\193e2657b761fc5c9a4df76b1e59d6011e6fc44916ebf7fc7b3975fd6b7c07e7.receipt.json",
+      "retained": true,
+      "sha256": "f9b78ae86a8d933ba57a4107c57bc60476680a70c0748c9d3324614cb96c4f80"
+    },
+    {
+      "bytes": 173,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\1a0e01d34a19fc8cbc4ed5e42eea530eb259ab42f9ac393468f173b54f8e6c39.private",
+      "retained": true,
+      "sha256": "f5a1013cb27df198e7aa5297fbe5dd10272953137201628fa053c369ca4469e5"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\1a0e01d34a19fc8cbc4ed5e42eea530eb259ab42f9ac393468f173b54f8e6c39.receipt.json",
+      "retained": true,
+      "sha256": "f7475258145ac8c0973a4eca5cd1f18e2d59634481baae616a13c30518715477"
+    },
+    {
+      "bytes": 169,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\1a844935cb323b1a841f8e2a74d838fd36a7eb552674f33942cb5dd055b791a5.private",
+      "retained": true,
+      "sha256": "8103d4de0ec24227bc11d57cb36d5644b676f192c8736e1398bc77721476dfd7"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\1a844935cb323b1a841f8e2a74d838fd36a7eb552674f33942cb5dd055b791a5.receipt.json",
+      "retained": true,
+      "sha256": "bc139d6953b356cf839e9c2eb0ba2bc8ad18dbe499bbb3bebc3060bf5a8e289c"
+    },
+    {
+      "bytes": 3525,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\1c961cc44ddfb54153f7830ca5f5499381e63d00c83dec36d3c5d97009e06815.private",
+      "retained": true,
+      "sha256": "6658ed344a7fa43958bf8ab8f549e552d552b298689c04dc8bd4f64b1f89efd6"
+    },
+    {
+      "bytes": 3219,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\1c961cc44ddfb54153f7830ca5f5499381e63d00c83dec36d3c5d97009e06815.receipt.json",
+      "retained": true,
+      "sha256": "c3d95d65300f75953a1ca03b4aaac7c5b654f590c8616102720f008ee6cf1cee"
+    },
+    {
+      "bytes": 162,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\1dc1b3f0edf2cdd5ef1527cc3eaa991c354278f8aeede2f1d344e9c2a3fdf199.private",
+      "retained": true,
+      "sha256": "4f916f84174da694cf79d7191ab7e23e9092aa3ea455c69200782fd8e315548f"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\1dc1b3f0edf2cdd5ef1527cc3eaa991c354278f8aeede2f1d344e9c2a3fdf199.receipt.json",
+      "retained": true,
+      "sha256": "eeca8e20ec3a149f130e94fe30bd8b5a23d8b5bc4a5ab2ea4c83365f360dd479"
+    },
+    {
+      "bytes": 3477,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\1dd30561b27b11fa994c084069876e81084657efa1561f5ced174d371c162d74.private",
+      "retained": true,
+      "sha256": "fbef55e45b6009237c0eafa9387d2571fc725ced7983d5b838cf194dc62dce23"
+    },
+    {
+      "bytes": 3220,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\1dd30561b27b11fa994c084069876e81084657efa1561f5ced174d371c162d74.receipt.json",
+      "retained": true,
+      "sha256": "86b8d114d9baf33dcc0ee05c3777c052631c8212ff22f63365e06b9c38612ead"
+    },
+    {
+      "bytes": 164,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\1edc9f831952026daead0cefd9159fb3bf7299b01d6a9209600d32d19d216162.private",
+      "retained": true,
+      "sha256": "45caffb7bd016ce7982e1c2094b66d3541dd050f724656ce543468f0eebd0137"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\1edc9f831952026daead0cefd9159fb3bf7299b01d6a9209600d32d19d216162.receipt.json",
+      "retained": true,
+      "sha256": "3261dd1098018cf6761c93fc2f79f06ece4c0fc87a91daf3f072f16f6e8e4365"
+    },
+    {
+      "bytes": 165,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\2169bfa735fa7333275db6da77e425bafd72c6df0500f57a1a99f63c0749019f.private",
+      "retained": true,
+      "sha256": "70163fdc83a897358e597e9a01312c5db2f03846ea382677f7825e376e5cc129"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\2169bfa735fa7333275db6da77e425bafd72c6df0500f57a1a99f63c0749019f.receipt.json",
+      "retained": true,
+      "sha256": "de86141544d691838b2ca6dd49c606e131d34e7d912d0835aaceb1cb97bf5938"
+    },
+    {
+      "bytes": 173,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\23dfae38a855eb1b5fa72a36221da7c15f3769d468645e3c942fc4c2e04be8d1.private",
+      "retained": true,
+      "sha256": "091656107752c825cafc2fdb376763f8132a5274be0f74dd8c383b153dfa76e1"
+    },
+    {
+      "bytes": 3215,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\23dfae38a855eb1b5fa72a36221da7c15f3769d468645e3c942fc4c2e04be8d1.receipt.json",
+      "retained": true,
+      "sha256": "01fab11e61ad0c2b24051b03f0c39f6a2abc4e04c6b64205c1ab587cc69b8e86"
+    },
+    {
+      "bytes": 3434,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\242690c1b2b2980a1abac68bb6f7fcd77998ce6ab7d6f88cc127119dc2dadb13.private",
+      "retained": true,
+      "sha256": "f463316198cb8ea98f44314555381d700e7457cc6117b0bcf2a70af908038c18"
+    },
+    {
+      "bytes": 3220,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\242690c1b2b2980a1abac68bb6f7fcd77998ce6ab7d6f88cc127119dc2dadb13.receipt.json",
+      "retained": true,
+      "sha256": "aea65ca0fa93efd581d7a19958ee3b9fdd3ff43a9e0957187e40a00d8ed3be78"
+    },
+    {
+      "bytes": 164,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\2449c4a8c1dea4220ef4408c79bef287ce454c77c9d72aaab66755d344aa070b.private",
+      "retained": true,
+      "sha256": "148b03a5fc9f7ca105489cd1e1fdd9b3ec0214c3cd2654635fc5f7dede6412fb"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\2449c4a8c1dea4220ef4408c79bef287ce454c77c9d72aaab66755d344aa070b.receipt.json",
+      "retained": true,
+      "sha256": "1297daecaf5305a17251c56a49841ebe75f6988d41b6fc7f91424fe695189081"
+    },
+    {
+      "bytes": 1914125,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\24b6f1bccd9216fb652b86693b24f73c0774e416ccca31295191fe1e28b6157d.private",
+      "retained": true,
+      "sha256": "2e3fc9fd030ca3cac007cfe7292a796df1cbf8e019e0c4a4db36e93c894d3ac9"
+    },
+    {
+      "bytes": 3152,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\24b6f1bccd9216fb652b86693b24f73c0774e416ccca31295191fe1e28b6157d.receipt.json",
+      "retained": true,
+      "sha256": "267d59c0eaa515f9de634cf55da5a954590d838c554e3116006f3802b8d5c4ec"
+    },
+    {
+      "bytes": 168,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\264ed431e4cdb8cf28b6cf44649d397e24669e9418b20ce289528917e083342e.private",
+      "retained": true,
+      "sha256": "486a3c6121e4315842f3d26a9c585c46c75ab155f9a08fbbffee6ce8d263b1b7"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\264ed431e4cdb8cf28b6cf44649d397e24669e9418b20ce289528917e083342e.receipt.json",
+      "retained": true,
+      "sha256": "ac9d555cab8a7da4656242e1f1738d0567977af514369dc1d8b37d6dbfff067d"
+    },
+    {
+      "bytes": 173,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\272ff1cd3f227d6dfeece91cd28831872a989e91beaaf4a69944eaacf7d4f972.private",
+      "retained": true,
+      "sha256": "1bd85191588d12d6f662f96dd6a44eba9d29572bfc9e42efe0d404c556256709"
+    },
+    {
+      "bytes": 3233,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\272ff1cd3f227d6dfeece91cd28831872a989e91beaaf4a69944eaacf7d4f972.receipt.json",
+      "retained": true,
+      "sha256": "c3fed46180660b5faf91541b648038372ddfad1bb6ec3001c4ea019f754d7f0c"
+    },
+    {
+      "bytes": 168,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\284da088c98768b54207908aea2c8a5c4fb4ad10959aa225627054bc4e22e2f8.private",
+      "retained": true,
+      "sha256": "f273f968e96bea685c9877955fbe95c1f3713772b59a1f8e7b52e081e858991e"
+    },
+    {
+      "bytes": 3215,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\284da088c98768b54207908aea2c8a5c4fb4ad10959aa225627054bc4e22e2f8.receipt.json",
+      "retained": true,
+      "sha256": "a1ffbb50d8c48902b83dd9b0d07fbd4c74daabf3a828fcd4dc5c754ee07b913d"
+    },
+    {
+      "bytes": 3498,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\2b1b0e4759458827ba584837ee3506dcdc5280488bd3d4c175c1660ee61bce0c.private",
+      "retained": true,
+      "sha256": "00873674093e9047dc4843e1186b944e61e4a12e2d8202e4300c89b5e17d2eb2"
+    },
+    {
+      "bytes": 3219,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\2b1b0e4759458827ba584837ee3506dcdc5280488bd3d4c175c1660ee61bce0c.receipt.json",
+      "retained": true,
+      "sha256": "6e58df227ffd579377d533f37a2887a2cb6151878d23f3beb345ea9c60c3188f"
+    },
+    {
+      "bytes": 164,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\2cd6a54690b9e9a8e2331cf451898d72054994f9d566b5c64eae44a83e16d833.private",
+      "retained": true,
+      "sha256": "e3302d07030a9e6334da9505d5a1235f96f5ab5807965caaea57602d9ba3af7b"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\2cd6a54690b9e9a8e2331cf451898d72054994f9d566b5c64eae44a83e16d833.receipt.json",
+      "retained": true,
+      "sha256": "d1ce4737ad52ac93c46811eba7c3a2198704130f8d91dee7b3728241b8850ff4"
+    },
+    {
+      "bytes": 170,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\2d102ab66f92a4e3857746698e663b1e6b61476f6453951a04dc30959a223304.private",
+      "retained": true,
+      "sha256": "4ddf6c456c3cf6ccbb9350741c87565fda873259d764919f966918eb7b3988c9"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\2d102ab66f92a4e3857746698e663b1e6b61476f6453951a04dc30959a223304.receipt.json",
+      "retained": true,
+      "sha256": "e7d11921a0725d15187c6fa61fe6549a2db47a17dc756854faa74adef1f03b0e"
+    },
+    {
+      "bytes": 164,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\2f434a601370e058ff0f3ddc83eccdbffa12ad0c268a07da42e4468e3d412a1e.private",
+      "retained": true,
+      "sha256": "a32b996b95ec3be3a91f65c40b8b67ffc57d8174f7f0adb9f574922b872d2b1f"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\2f434a601370e058ff0f3ddc83eccdbffa12ad0c268a07da42e4468e3d412a1e.receipt.json",
+      "retained": true,
+      "sha256": "95a0f71527edb398cec57e88d0adf89d125fd76ae15def7c88904c4391577c59"
+    },
+    {
+      "bytes": 166,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\31604c249e86dd80c62c4501067936d7167fd3f86c4aea2c5b53c6290dbb428e.private",
+      "retained": true,
+      "sha256": "579f0194206545e61c98f1822489da420e9da5cf11be2c08aeeb2cd9a74ede74"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\31604c249e86dd80c62c4501067936d7167fd3f86c4aea2c5b53c6290dbb428e.receipt.json",
+      "retained": true,
+      "sha256": "810417210659f0224863620b719edf709072dc0c3390f5253282f87df6e3c333"
+    },
+    {
+      "bytes": 7095806,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\31a9d79de84867c884a86edd0784d5761028c13f44945ac06b63f133cf18d6f4.private",
+      "retained": true,
+      "sha256": "09f22b8095d0ab664b9984e2ab3eedf94dc74b2087f9b921cf3a643bfd43dddd"
+    },
+    {
+      "bytes": 3181,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\31a9d79de84867c884a86edd0784d5761028c13f44945ac06b63f133cf18d6f4.receipt.json",
+      "retained": true,
+      "sha256": "1064a83cd9868497f0f7e3838dc8cb376f42e294a8d6d0ff3b13fb25ed2c57f4"
+    },
+    {
+      "bytes": 165,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\325a3635a94c330b21824fe26143570d8c0b67c8c0550abb2642499229e3cd51.private",
+      "retained": true,
+      "sha256": "02abd341a57d8efef2ffd5a3fb56ecb005ddd4f0d5606939f5623effcfdba7c7"
+    },
+    {
+      "bytes": 3215,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\325a3635a94c330b21824fe26143570d8c0b67c8c0550abb2642499229e3cd51.receipt.json",
+      "retained": true,
+      "sha256": "440ffcb51ce2e138373a062d93757068aeed34d7f9bec103ada8e26261495fb3"
+    },
+    {
+      "bytes": 168,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\340f0315e4329aefb9d3942f59cdd4e6448904be4a65394b21a2d8b49db24d9c.private",
+      "retained": true,
+      "sha256": "7dd81d711a7eca748d9ee5d304cbedf286d63d3c053bb4e9b6edbc1a9a91565b"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\340f0315e4329aefb9d3942f59cdd4e6448904be4a65394b21a2d8b49db24d9c.receipt.json",
+      "retained": true,
+      "sha256": "c127f07533939d38b298514796efd007f55105dfffda023583b724357176d7bc"
+    },
+    {
+      "bytes": 3593,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\36c9e15afc91abc60293472db703109767a77265fb576baa246bbd53ded83bbf.private",
+      "retained": true,
+      "sha256": "55479234636f2cd1b31f2515c9234fb0492972717744f4c6d60d88992d68db76"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\36c9e15afc91abc60293472db703109767a77265fb576baa246bbd53ded83bbf.receipt.json",
+      "retained": true,
+      "sha256": "353ef5cfa41f099eb11948afd0b561a0f6503e84a3cb324a06be82e90f30b0fa"
+    },
+    {
+      "bytes": 161,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\36dba31fe6842dfdaa9b9ff6ba37c1e2df19b71bd5212c1036e4dbccb0ab88eb.private",
+      "retained": true,
+      "sha256": "bc9dfb00fb8ea9d23d62bd9ec70957a6f3a798b62fbbc0c39a6daf6cf8341ee1"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\36dba31fe6842dfdaa9b9ff6ba37c1e2df19b71bd5212c1036e4dbccb0ab88eb.receipt.json",
+      "retained": true,
+      "sha256": "4e8c1dc082023cd880389f7f395cee576f0bb35801aca2ea502c52fa330f1c48"
+    },
+    {
+      "bytes": 168,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\370265c63932733bb425f4bc5a6a15fd09f15b4b6296aa7cdffbc04ab7995c22.private",
+      "retained": true,
+      "sha256": "1b8e3abfdc9dff6ef4976241d50b90798f9d2488f10a231397693d9a9307aa18"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\370265c63932733bb425f4bc5a6a15fd09f15b4b6296aa7cdffbc04ab7995c22.receipt.json",
+      "retained": true,
+      "sha256": "9039dc67b38eeaf8dbbb70a7843037a7a47db924ce83b4bfae5699cdf2052f7e"
+    },
+    {
+      "bytes": 163,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\3810b7e794f16e1139be6beae7621028ce201962f8cb872091c9d031622fcb3a.private",
+      "retained": true,
+      "sha256": "f0ea6b77011c7cd5d6a7945412923b7c08fdaee5be372239d6f98d9317d896ca"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\3810b7e794f16e1139be6beae7621028ce201962f8cb872091c9d031622fcb3a.receipt.json",
+      "retained": true,
+      "sha256": "86e7af4712b3b0f9943ee0a60d72d05b155f394834af57e607eb58d941678723"
+    },
+    {
+      "bytes": 3340,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\3991196765b9d687e402c03e83b7ebc62f5e051e9df67cba6dc9b380928e85c7.private",
+      "retained": true,
+      "sha256": "f26898377954665d883a7eec2fa645e03ba13a01ffe81a4bb5d57e6a023cc342"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\3991196765b9d687e402c03e83b7ebc62f5e051e9df67cba6dc9b380928e85c7.receipt.json",
+      "retained": true,
+      "sha256": "790d5e974011b962116dece9a9aea0f52fd95a1f1385c7088a40e09e9c252d12"
+    },
+    {
+      "bytes": 164,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\3a88000a818e9085567a96cb5b89d9016b5caa8803573477c5402ce2779a5091.private",
+      "retained": true,
+      "sha256": "f62be4c68d235836782a9002105ba6fcac702b99730ad1084c07e6e83d0a7fa6"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\3a88000a818e9085567a96cb5b89d9016b5caa8803573477c5402ce2779a5091.receipt.json",
+      "retained": true,
+      "sha256": "8ee12dfedd725cde06daee7e151082cc4e7bb475558475ad02bdfd8e98cef2a3"
+    },
+    {
+      "bytes": 3381,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\3aad816bf2a53e27d3270937a220e4ea11d78a63545826bc6bb8236a8f8a7046.private",
+      "retained": true,
+      "sha256": "75a93d979f8b5ff572cb65fecd1aa39672489efe5fa90e9575894c683e9f19d5"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\3aad816bf2a53e27d3270937a220e4ea11d78a63545826bc6bb8236a8f8a7046.receipt.json",
+      "retained": true,
+      "sha256": "10accfba89d2c79aa6caf563862021a40f96fcc63dace879b98db56f8148fa56"
+    },
+    {
+      "bytes": 157,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\3b6782fca5c263029305d2f2041df007da1d325fca9848ad92dafa0bdc639f82.private",
+      "retained": true,
+      "sha256": "eac19450aafbdaac491049e748284d8b86be20cbca5ef2be5623b755d81df48d"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\3b6782fca5c263029305d2f2041df007da1d325fca9848ad92dafa0bdc639f82.receipt.json",
+      "retained": true,
+      "sha256": "98a7f1aeae8e76eee7d16636464f7c8d8cb9eebd795cad6b80c3eb271ec88662"
+    },
+    {
+      "bytes": 163,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\3cda2eecf2b705c010197909e6d4294fc255f246fddcc6d5cdd7530088b04b67.private",
+      "retained": true,
+      "sha256": "0df7503838717f380db29bebfee3a040df08e98fcba94f97e808f179890c11a4"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\3cda2eecf2b705c010197909e6d4294fc255f246fddcc6d5cdd7530088b04b67.receipt.json",
+      "retained": true,
+      "sha256": "10b636eeb6d1186dd8bd0a4d43cad02f2248caa6b5f9307848c96f25f268f79f"
+    },
+    {
+      "bytes": 3560,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\3ce6f0324ec701a882d27aacb171f23cde478fcdca8c93a29f1baeae718d18c6.private",
+      "retained": true,
+      "sha256": "559c859d40f5f8cc321b2f3b123d5dac50908bbbc725bcf8a539cc23413b5690"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\3ce6f0324ec701a882d27aacb171f23cde478fcdca8c93a29f1baeae718d18c6.receipt.json",
+      "retained": true,
+      "sha256": "b04ed6166ca8fe880a4a8f2f23635204b7c563d011119b43ad707aecd29b8d21"
+    },
+    {
+      "bytes": 167,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\3f14429fb6b6748bc3e6a054ce9a409c915c3249ec4e7a479b94fd4f5155dd7b.private",
+      "retained": true,
+      "sha256": "6e14e18bcc2c87b13508acbb79354458636838e58ced57fe4d391a990e0f2e52"
+    },
+    {
+      "bytes": 3215,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\3f14429fb6b6748bc3e6a054ce9a409c915c3249ec4e7a479b94fd4f5155dd7b.receipt.json",
+      "retained": true,
+      "sha256": "59519a38de51274a84ea1a593d16ec24a5eb5632c1df49d1a4e7fcdf744bee15"
+    },
+    {
+      "bytes": 3474,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\3fbbb80507a965be4b9f23c76b2c67164a01a160e643432cd9d86e29dbaf2301.private",
+      "retained": true,
+      "sha256": "dacac8b36f022676a6843e45c82f1436cc8218d273c6cfcbe72d7c8e716c6cf5"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\3fbbb80507a965be4b9f23c76b2c67164a01a160e643432cd9d86e29dbaf2301.receipt.json",
+      "retained": true,
+      "sha256": "4d3b5ff60febb23e78ff010a31c8e62e75d29c7a99dd27cb7807921c251a3cc1"
+    },
+    {
+      "bytes": 170,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\4067767ae57173e9063c889df38e1f86e9afad2f1137a390fd734efadd5c61aa.private",
+      "retained": true,
+      "sha256": "3be7aa095f54d005c1c9835ce6fbc10216dd52250a5ba38e9171287fc5f009ba"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\4067767ae57173e9063c889df38e1f86e9afad2f1137a390fd734efadd5c61aa.receipt.json",
+      "retained": true,
+      "sha256": "812905b49b2159c71d764b75d40a3ffe3cbc307cb4dcf02ae85ac547bdf1ef0a"
+    },
+    {
+      "bytes": 162,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\447d1e01ecfa55ceef70f7ef0baa64ae882633f410935cdcba490050ee1045b3.private",
+      "retained": true,
+      "sha256": "ab702fe479f7bcd8ffdac3617c890b31131f2783c450c0be9cf92390d43cf7a4"
+    },
+    {
+      "bytes": 3219,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\447d1e01ecfa55ceef70f7ef0baa64ae882633f410935cdcba490050ee1045b3.receipt.json",
+      "retained": true,
+      "sha256": "3a61fda0e06830758a01aa1b8c8c102e4ca0b728e20dd5c58a5b2ebff573509c"
+    },
+    {
+      "bytes": 3517,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\459de0ab87ce3b217570eb69229e79a7afceb05ce3c2c058a942b35b0a4b5a8d.private",
+      "retained": true,
+      "sha256": "38ef32226b1f852cccb478d518af8703dd1b2452fd4a4e0638398f91ba1caec5"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\459de0ab87ce3b217570eb69229e79a7afceb05ce3c2c058a942b35b0a4b5a8d.receipt.json",
+      "retained": true,
+      "sha256": "c81126449f14fd05a8303e46788ae4ec969a4cf0906376e3853eaa134e8b1326"
+    },
+    {
+      "bytes": 168,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\45ce40316f7a7ef9ccd6a924718b24a06a0e5d7f5f285238d9255ffaad03dad0.private",
+      "retained": true,
+      "sha256": "eb5f10285175cd4ae99bee401d81775448a1ebf001d599d2ba8a72d4b6440b18"
+    },
+    {
+      "bytes": 3215,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\45ce40316f7a7ef9ccd6a924718b24a06a0e5d7f5f285238d9255ffaad03dad0.receipt.json",
+      "retained": true,
+      "sha256": "6e0b602ff2d0e90564258879b8e7f86d6311d64333ca0e7c8c0e2797ddd823c8"
+    },
+    {
+      "bytes": 3477,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\45f517311e7a715998cd98064087321b758c9f71d7a0d1af0ff1bd1b8d6c0dcb.private",
+      "retained": true,
+      "sha256": "815dee24568940ad4f8243dd977c49b8ef623e6709d7247516725d1de10772dd"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\45f517311e7a715998cd98064087321b758c9f71d7a0d1af0ff1bd1b8d6c0dcb.receipt.json",
+      "retained": true,
+      "sha256": "419b210e9c9cf92ac9e5a289015dbaa15a134d19083046ec09f5da6239268a90"
+    },
+    {
+      "bytes": 169,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\47925078e043d226e2bbc6998fa4cbacb0cbad614da6cd09129bfef2892fead9.private",
+      "retained": true,
+      "sha256": "3b7775e511c9c60b1eb25a9c60345b846c19a98f72a13d62aeb196878d9633d0"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\47925078e043d226e2bbc6998fa4cbacb0cbad614da6cd09129bfef2892fead9.receipt.json",
+      "retained": true,
+      "sha256": "f15f9a7e1794c85f41688c5d8ff769ddfbf0f8c000032e4e263d921fdbb04317"
+    },
+    {
+      "bytes": 162,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\48f79521811a0abbca3eecd7e9af0f222e1c5b28ebcc415db0e8d543495eda67.private",
+      "retained": true,
+      "sha256": "6414d29d3596bf8e5dbc955949c704be186f771e1d02dff654ad55b6d18b8f36"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\48f79521811a0abbca3eecd7e9af0f222e1c5b28ebcc415db0e8d543495eda67.receipt.json",
+      "retained": true,
+      "sha256": "76043904c98ec676c13f5d88dadb7da7fc68b32eff5f868fdd3def9df8cabbdd"
+    },
+    {
+      "bytes": 3437,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\49b179191a392fbb4284cac66c05615b685c6536d8e35a8758ea0b6026feb7c4.private",
+      "retained": true,
+      "sha256": "c572e522a86e680131809964ebfd2c0403a31cbdb78360df817eb5fcca6565d8"
+    },
+    {
+      "bytes": 3220,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\49b179191a392fbb4284cac66c05615b685c6536d8e35a8758ea0b6026feb7c4.receipt.json",
+      "retained": true,
+      "sha256": "e18511bcc83735a65f2975fc7aae6ddb388af8c37a4a42b23256a0a8d8cdb93e"
+    },
+    {
+      "bytes": 172,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\4a649bfec56c5cb803c10de5923090744cb062e9e0467556f123b87168324144.private",
+      "retained": true,
+      "sha256": "1e4018650c0fb0201c90ae99ed31fd9a4949aa2a04b66a6e7ec87b71eeb5ccac"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\4a649bfec56c5cb803c10de5923090744cb062e9e0467556f123b87168324144.receipt.json",
+      "retained": true,
+      "sha256": "c8abe50792025e7da7fbdbb76b7dc387151939258b59e48d12ba03900a6fbb01"
+    },
+    {
+      "bytes": 3424,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\4dad2b3bc8b2b0f69dd33d27973e646e3abb1e05cd6c16b756c6e80eea2a00ff.private",
+      "retained": true,
+      "sha256": "18fb0c9e709fc6b041dca0daf7d39cac34fb1c3b351a31344b81396ca2036005"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\4dad2b3bc8b2b0f69dd33d27973e646e3abb1e05cd6c16b756c6e80eea2a00ff.receipt.json",
+      "retained": true,
+      "sha256": "f50ca6f9134df1a277b32a62b79297bdfcc6cd76addb853e16e4b0df61a2a27d"
+    },
+    {
+      "bytes": 171,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\4e091e43187a361f0334a97210831d1ed9b1b10c44a77cb378e4c9256491f924.private",
+      "retained": true,
+      "sha256": "eeb98b22796f3fbdadd730f7c06fa85f55d262c4ccfa26910c1ce2e8e96a58cb"
+    },
+    {
+      "bytes": 3234,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\4e091e43187a361f0334a97210831d1ed9b1b10c44a77cb378e4c9256491f924.receipt.json",
+      "retained": true,
+      "sha256": "13224aee53ad49cde1a5105eefb681152b7021838e8a82691753f1bac05e89f8"
+    },
+    {
+      "bytes": 169,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\4e7dbddcb8eaf6d3fea9e3ae7c7b7c6bcac51321c4d6e4d93f0bc8d875e7fdc7.private",
+      "retained": true,
+      "sha256": "3fa333565e39f7f86e03812b34a3bb23d0884d771adecf2272c67c38d8efb142"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\4e7dbddcb8eaf6d3fea9e3ae7c7b7c6bcac51321c4d6e4d93f0bc8d875e7fdc7.receipt.json",
+      "retained": true,
+      "sha256": "53b2b2e0890150c8ae60c76cdc5df53c7cc1ed7b085657cf00a19d3c3eb75d72"
+    },
+    {
+      "bytes": 165,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\4f6f498a57fd09d68028428360c810f33f8d311279d81350a503e2ac982f7f75.private",
+      "retained": true,
+      "sha256": "3425aa6ec6465385a7acb7d939e10df2872512d497a2efac59f91d4a8ba11dbd"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\4f6f498a57fd09d68028428360c810f33f8d311279d81350a503e2ac982f7f75.receipt.json",
+      "retained": true,
+      "sha256": "8982c6fe4b8454790db7b7bd1297955f5626c874031d4a12e3eb2424a83e6e95"
+    },
+    {
+      "bytes": 3578,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\4fa592267ca4619e8f61389ceacaf000564ddf55a6af198b512eab9d95ff7a52.private",
+      "retained": true,
+      "sha256": "b66c5a420ebbc877b8f2cf2fc618631f6a89f9e7e8363dafcdc36e0d0489f769"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\4fa592267ca4619e8f61389ceacaf000564ddf55a6af198b512eab9d95ff7a52.receipt.json",
+      "retained": true,
+      "sha256": "1c1a1f5efa5cd4ce774efea7ca6cb4a376af9a33b9a98e5917c803d05b24a9be"
+    },
+    {
+      "bytes": 176,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\4fe43e666c076c685f5138dc7e89afec4d4b4802abdf43f9cbc3dc80e41ca10c.private",
+      "retained": true,
+      "sha256": "585639796535d8c7c5f490925e59bffd36ba301848a84b80261c0a164a9373c2"
+    },
+    {
+      "bytes": 3234,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\4fe43e666c076c685f5138dc7e89afec4d4b4802abdf43f9cbc3dc80e41ca10c.receipt.json",
+      "retained": true,
+      "sha256": "715c71d00b2e03544f949fa4c9a8b0299ce2814fdd3ef575a073670beb4f6782"
+    },
+    {
+      "bytes": 168,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\55224d687e35284f23914d586790b272c1ecc7a67e9d9dcadc684d18bf6909a8.private",
+      "retained": true,
+      "sha256": "bca0147916d49f93296cd13ce78d4b924b9e61275fcb112bfb0a97272d767115"
+    },
+    {
+      "bytes": 3215,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\55224d687e35284f23914d586790b272c1ecc7a67e9d9dcadc684d18bf6909a8.receipt.json",
+      "retained": true,
+      "sha256": "8a212c8ab7003a2f7552640745e6b7fcbd6558f5e74e3a8e434f8bde014fc29b"
+    },
+    {
+      "bytes": 169,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\5b171830832c38c3a30f491d448b7244cd5a6d2b5736d37610ab7a915bb7811d.private",
+      "retained": true,
+      "sha256": "f71f53d99d9828733964d36ffe9c6b7faeb8a5c793f385359cd392ef8b5b3803"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\5b171830832c38c3a30f491d448b7244cd5a6d2b5736d37610ab7a915bb7811d.receipt.json",
+      "retained": true,
+      "sha256": "0c89785e58f18070127ca02efdc838f9fb6d73dbddb26194cc83e71876615436"
+    },
+    {
+      "bytes": 172,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\5d7c5041ab58d8cd027a9743a40cda482425f5d7465f10e8115f9eaa1d2fba9f.private",
+      "retained": true,
+      "sha256": "44c2efa128835dff6e901644ab61ecd0c4ced208f9a9ef8cc8b463b0f09f8fdb"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\5d7c5041ab58d8cd027a9743a40cda482425f5d7465f10e8115f9eaa1d2fba9f.receipt.json",
+      "retained": true,
+      "sha256": "17b6cc1389e21b569422326680f1653fdf6a68b7535cd0741aa1367531d2eaac"
+    },
+    {
+      "bytes": 164,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\5e7b486e05830613f4a56ebab6e9b4d5667e62d34301e6928eac728bc44f8332.private",
+      "retained": true,
+      "sha256": "de4f97d2a5e92b2f6a0d6e019177c44952257251f7a240fa2be9f619ea5d6277"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\5e7b486e05830613f4a56ebab6e9b4d5667e62d34301e6928eac728bc44f8332.receipt.json",
+      "retained": true,
+      "sha256": "a790ba08cfcf35296d28e08b9e362c8f4dceeb98fbf75de688ffc8dc3c1782d8"
+    },
+    {
+      "bytes": 172,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\5ef41ec20d153490c3e87723f69138f8884527ab1e7e054241a5a187e635c188.private",
+      "retained": true,
+      "sha256": "6a59f3e48927d5f6f3a195deb751fce29dee79b7b61f0077a3edef18d3b48ebf"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\5ef41ec20d153490c3e87723f69138f8884527ab1e7e054241a5a187e635c188.receipt.json",
+      "retained": true,
+      "sha256": "1e706ba07b0d8c0ff82112dfcd31678d8518eadadbf797c8e93f2cc0e57d7bed"
+    },
+    {
+      "bytes": 163,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\5fd77500e566ee8eaf71dd290085cf130f28e0704c8ca941d8fb64d5b3c6e215.private",
+      "retained": true,
+      "sha256": "f6ad826bf3b8c4e0331ae8cf785e407cddde353fc42799912c5d8e59e92764ef"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\5fd77500e566ee8eaf71dd290085cf130f28e0704c8ca941d8fb64d5b3c6e215.receipt.json",
+      "retained": true,
+      "sha256": "0a81f4261e7112f4c2df9e19b1e27781f26b71aebeb8df79d21b52ac3b9438d2"
+    },
+    {
+      "bytes": 170,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\612d6d484c34a8d9100aae9d62ff0cc4417f81d55b2c430f40bbdbd502a2d59e.private",
+      "retained": true,
+      "sha256": "a553db9ffd8dfadecb759a9d99c179d2096c432008933e4ff506fc30d2ab4ff7"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\612d6d484c34a8d9100aae9d62ff0cc4417f81d55b2c430f40bbdbd502a2d59e.receipt.json",
+      "retained": true,
+      "sha256": "db84b51bfbf50441d4d34522f4028ee836f944cb4a80091769639da277da53f0"
+    },
+    {
+      "bytes": 170,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\61c6ae6a7abe3e1fbd38e1ebd6593267a0021e06fd97db47e06c94f89cbe45cf.private",
+      "retained": true,
+      "sha256": "49cf6176ad142e2774118a2c4756e9a9dac96d1ec2016caf41e13b40adf4ceb8"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\61c6ae6a7abe3e1fbd38e1ebd6593267a0021e06fd97db47e06c94f89cbe45cf.receipt.json",
+      "retained": true,
+      "sha256": "7c87195edf632b986201ed01d530e955b1cca8522652b5c60592cf418ae72b01"
+    },
+    {
+      "bytes": 166,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\61d7fc24bb5db757a5d3629b66f681cdd50d94d1ee9d424fed2e2195043f30ce.private",
+      "retained": true,
+      "sha256": "96e5c6ea20c6ed9c261b6917f84af46e8559ee57e5107b744f370a985d5c4193"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\61d7fc24bb5db757a5d3629b66f681cdd50d94d1ee9d424fed2e2195043f30ce.receipt.json",
+      "retained": true,
+      "sha256": "737b253ed9a9f16563ab57de28f9aae5311d0558b9d38159246e9faaaa908dbd"
+    },
+    {
+      "bytes": 172,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\635bfd3280868ed09de1013b6d6466e9a3f5b59e85de97ed8bb2760af3def9aa.private",
+      "retained": true,
+      "sha256": "9777e24714c1537bef8b0b07f795ceafc89547c1dfc7bd770df2f7550cbafdd2"
+    },
+    {
+      "bytes": 3215,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\635bfd3280868ed09de1013b6d6466e9a3f5b59e85de97ed8bb2760af3def9aa.receipt.json",
+      "retained": true,
+      "sha256": "b9776c19d556648e5575edc307deccbc36e247115ac0a145d2296bde12e12489"
+    },
+    {
+      "bytes": 165,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\63a1d343fd0e23ca14d151a468205c886caef0d3544033d7e7fb28bf99aea832.private",
+      "retained": true,
+      "sha256": "49f8fe1576114180cefca9b112c476de86ce738d7ee35af3abe596cfdf96540d"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\63a1d343fd0e23ca14d151a468205c886caef0d3544033d7e7fb28bf99aea832.receipt.json",
+      "retained": true,
+      "sha256": "264a82c044f619e4f0d29ee20d8030bfe93464fadaf0600c035ced72f1420c7b"
+    },
+    {
+      "bytes": 169,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\643609ba4e75ed6ceef23f4e9e6e15d7fe0781cc71c9fdac6d5a758d6370baf8.private",
+      "retained": true,
+      "sha256": "460c00c834ff3301f0a9c1531de7a28b225008c26ec9ff5061b3527693fb3f64"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\643609ba4e75ed6ceef23f4e9e6e15d7fe0781cc71c9fdac6d5a758d6370baf8.receipt.json",
+      "retained": true,
+      "sha256": "6f43c470c661f80cdbf4ea66849dc666d5ef16299f491ec69a119405080566f0"
+    },
+    {
+      "bytes": 172,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\646d7531cdfc279335f414fe63c3760453d3621939e4f1b599911ae89b1d0919.private",
+      "retained": true,
+      "sha256": "bc7ace0cf3a09f08ed4485f788ed6d6a1eabf823ba98c300e1a798271fa7f91c"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\646d7531cdfc279335f414fe63c3760453d3621939e4f1b599911ae89b1d0919.receipt.json",
+      "retained": true,
+      "sha256": "ce54743b7f616b37094a97594e8ee43e75b150829fda266b854123c3187ce138"
+    },
+    {
+      "bytes": 3681,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\68df68e73c06784b0db000ffaaf44edfb5b3c7b4f26c2d745e570fcaf0e3f8bf.private",
+      "retained": true,
+      "sha256": "d4fe05c504c4d40b4fe7bdfc15266e50797e959613dbfff845c87bc6939b66cb"
+    },
+    {
+      "bytes": 3219,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\68df68e73c06784b0db000ffaaf44edfb5b3c7b4f26c2d745e570fcaf0e3f8bf.receipt.json",
+      "retained": true,
+      "sha256": "c3b7936a60d18d031e6e62e1c930ff18e46fc1040923172931023f6398742d43"
+    },
+    {
+      "bytes": 163,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\68fcfde95998ac55c9f6061bef49009933ff46b30ad8d499d8a12549b59d34a4.private",
+      "retained": true,
+      "sha256": "77e7f4e4f34b922554022a1ded3679f6ecf1d04dcb5528950d89cae5603526e3"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\68fcfde95998ac55c9f6061bef49009933ff46b30ad8d499d8a12549b59d34a4.receipt.json",
+      "retained": true,
+      "sha256": "1638894f5fc00c7c469b30ec980dddf0bb5d147263589bd0e36c1e7984536cc5"
+    },
+    {
+      "bytes": 168,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\764c98b1766d0c1efd6fd102d4325f5665b55d80ca2dc6e6a61cf6142f783d77.private",
+      "retained": true,
+      "sha256": "268973e6a092943e506490f11552fa88b7dfd495fc5a68772f736771285ddae6"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\764c98b1766d0c1efd6fd102d4325f5665b55d80ca2dc6e6a61cf6142f783d77.receipt.json",
+      "retained": true,
+      "sha256": "44af19313aaf14e4e92efd2cf7048192b6fe2878fb287334db139f7032081adc"
+    },
+    {
+      "bytes": 3626,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\765fbac10413f41f42ee403b411923db862544aaaf7c500b07b8055ebb779651.private",
+      "retained": true,
+      "sha256": "ebe65e38f5f07d282d0881f9e68bbd19ef438db1a856b567b33612ffa4f9e81f"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\765fbac10413f41f42ee403b411923db862544aaaf7c500b07b8055ebb779651.receipt.json",
+      "retained": true,
+      "sha256": "3840b49dd613325d7a03ec8c714c5527043d1119d76e4382e22b85b17dffc3e5"
+    },
+    {
+      "bytes": 163,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\7681a4b477fcca5e43dd398688cc2ecd8453e285bf94b77b71a60facdede657c.private",
+      "retained": true,
+      "sha256": "c029db2b9c72e6714370d557bba767cc4ba2c111250c43de708190af734762a8"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\7681a4b477fcca5e43dd398688cc2ecd8453e285bf94b77b71a60facdede657c.receipt.json",
+      "retained": true,
+      "sha256": "ec8e9b3f19cd092e581cf9660318e142a37e2df1f4f626cbe4149903fac8770f"
+    },
+    {
+      "bytes": 3473,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\769ff45b28737899fb98c6540110c4c61b88c0d24f1ae7adf712f452c8ac54ac.private",
+      "retained": true,
+      "sha256": "1f7ee8a3733dd2a9262280aa11b6c852032a810f4127e9f89777bc159c9c7dcf"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\769ff45b28737899fb98c6540110c4c61b88c0d24f1ae7adf712f452c8ac54ac.receipt.json",
+      "retained": true,
+      "sha256": "4bd81c525c31a0b8ebcdb31ea613e0b648d6bbfc87d229c6226bd15dc8732945"
+    },
+    {
+      "bytes": 3471,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\79a04495f19e25c415a38c1ff82b17e14845bacc68c3aad3c90f7906ecba7b09.private",
+      "retained": true,
+      "sha256": "cb9614402eacc8b01d4dabcdc0909ad2e50e1ce273a81f845fe4afa5f0cb2ebe"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\79a04495f19e25c415a38c1ff82b17e14845bacc68c3aad3c90f7906ecba7b09.receipt.json",
+      "retained": true,
+      "sha256": "74917115460bc7b90b6e8ccd8c70bca40a36e126138ff64d150168ab829613d4"
+    },
+    {
+      "bytes": 3449,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\7a0fbc5e445818815a3577ffcb7403b381fd6a25fff3fdb4ef9fece43c664304.private",
+      "retained": true,
+      "sha256": "92d122c6ae1a4bf6e4585920e2b93da556c9a21675a35e99187551cfacb38b22"
+    },
+    {
+      "bytes": 3219,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\7a0fbc5e445818815a3577ffcb7403b381fd6a25fff3fdb4ef9fece43c664304.receipt.json",
+      "retained": true,
+      "sha256": "af95f95d951145ac0a52adb89f2c6e8d1f122f4bc116d631a923b5ddf306508b"
+    },
+    {
+      "bytes": 175,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\7a58dd296d49a46885961533a42d9698fd6f5c094df60a5a4907378aedbdd647.private",
+      "retained": true,
+      "sha256": "0abc697f981fd4cf10842e3b3ced32590a70132edd5926385c504daf76048124"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\7a58dd296d49a46885961533a42d9698fd6f5c094df60a5a4907378aedbdd647.receipt.json",
+      "retained": true,
+      "sha256": "4cbf20e86184f800f9675c594e2974836dc6fb5ca326a1c5b82c2ce63bb7c7bf"
+    },
+    {
+      "bytes": 168,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\7c9e4fc31d78c0873ab17a554b2e0e2e506cdeb53ccd5d07ab908ce6a47f73b3.private",
+      "retained": true,
+      "sha256": "05c5c9f17ee3225c5af139590b5c4246f02482623b65bfffcd0d21d9205d9d0c"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\7c9e4fc31d78c0873ab17a554b2e0e2e506cdeb53ccd5d07ab908ce6a47f73b3.receipt.json",
+      "retained": true,
+      "sha256": "bd55d15e2db3f6dd82474038f6a1ae3dc87d715a1d6099b07c1145451025a29d"
+    },
+    {
+      "bytes": 3488,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\7d9c1f596d6d7de66a396337a3218213215e3bcd6ee26cbde78314cc28054970.private",
+      "retained": true,
+      "sha256": "0bb0f469712a387206aca31cb8f7df775265fb243e359ef5e682a7409c6b4d1a"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\7d9c1f596d6d7de66a396337a3218213215e3bcd6ee26cbde78314cc28054970.receipt.json",
+      "retained": true,
+      "sha256": "140c44f063fbe44c25b67df2b0fe9385930f7412c2eecdc1a909eb34b4d09ea1"
+    },
+    {
+      "bytes": 169,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\7e83fe2cebc3a74944c51198b66e592945bdba0a049548ac876b95740dffc9ea.private",
+      "retained": true,
+      "sha256": "75ec21cc57466614487f7388012588f9b2ead946733365edb888dd72b3cfb447"
+    },
+    {
+      "bytes": 3234,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\7e83fe2cebc3a74944c51198b66e592945bdba0a049548ac876b95740dffc9ea.receipt.json",
+      "retained": true,
+      "sha256": "63fa34bd67e786551eadc689ccde7c33f13bafec27ffd5a852cd032c6e3adfa8"
+    },
+    {
+      "bytes": 3540,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\7eb4b859f5766087ada8d378b5546bf07d8c5935cbaf1b015294e4c7655cd2c1.private",
+      "retained": true,
+      "sha256": "74a952eb66d1f605ae85dd9e22b19f5c17fe308439a2f8aa281d8bfa201c1952"
+    },
+    {
+      "bytes": 3219,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\7eb4b859f5766087ada8d378b5546bf07d8c5935cbaf1b015294e4c7655cd2c1.receipt.json",
+      "retained": true,
+      "sha256": "b0501e09f3e94f9148e099142acc161deba98ed388accf4e08078a9bad03cf29"
+    },
+    {
+      "bytes": 171,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\7f0fb85db009ce8e86c48e9038e08f1ab4bc252bc45e3f206fae65a964bd4b54.private",
+      "retained": true,
+      "sha256": "2e9c5c808245b56b71d6dd77b4108bddecb6a55ff8c428f39bc155f214a05fca"
+    },
+    {
+      "bytes": 3215,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\7f0fb85db009ce8e86c48e9038e08f1ab4bc252bc45e3f206fae65a964bd4b54.receipt.json",
+      "retained": true,
+      "sha256": "0214c791d4307f600fc8fec4a46a97d0494b3b79dd52a6621f2f39412341ac31"
+    },
+    {
+      "bytes": 172,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\801155843a6696e1fcecfb24058abda7d34e712f7738b487dce0d1e561620946.private",
+      "retained": true,
+      "sha256": "fb4cab7229de20e4cccd1d341c6ce09abcac9d753d1e26a238f1a2683c2d4b92"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\801155843a6696e1fcecfb24058abda7d34e712f7738b487dce0d1e561620946.receipt.json",
+      "retained": true,
+      "sha256": "99669bbb0664ebdcb9c0cd7176df7f448bd52d47a32d9cb1946690f62fce42cc"
+    },
+    {
+      "bytes": 3604,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\80b0d7dba2ad770b9d1a2718277f6088ccd6c4493e43f80a4aab54afac5c5179.private",
+      "retained": true,
+      "sha256": "d4c8ac347f82b6cf9dd8c77280094cd26279d44c6ba30318f995ed91a0720b9b"
+    },
+    {
+      "bytes": 3219,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\80b0d7dba2ad770b9d1a2718277f6088ccd6c4493e43f80a4aab54afac5c5179.receipt.json",
+      "retained": true,
+      "sha256": "3b26207f24a3f979af8f44a604c147f3a6f8f3918fa7bd782ce3ce96087a7a8f"
+    },
+    {
+      "bytes": 161,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\80d71ea9a06c9e62de937c5b80ad4443175866bf91012d4a792a3c151187afc6.private",
+      "retained": true,
+      "sha256": "6a3af0b20527a24400928e3c81894598e41d1cfa66fcea1ffd65066e25d41fad"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\80d71ea9a06c9e62de937c5b80ad4443175866bf91012d4a792a3c151187afc6.receipt.json",
+      "retained": true,
+      "sha256": "180472ce065ad0088ec713f9140d0808ffed45e8bd6d3f57bc9ad20c2f410e81"
+    },
+    {
+      "bytes": 169,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\82f66c28ec1903c3678440db680f159a144d7038aa6192441ccc4e13a298d8cb.private",
+      "retained": true,
+      "sha256": "bc5b5de7b78df0a239a425376908ad4ce9dfcadeff7e87f0ddaf8e3662426945"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\82f66c28ec1903c3678440db680f159a144d7038aa6192441ccc4e13a298d8cb.receipt.json",
+      "retained": true,
+      "sha256": "624a1a72afb747d25a50226d62c179826a31eaacaa0d5030d0d65d41617e5e25"
+    },
+    {
+      "bytes": 166,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\8324714ff7412a4d1aa0bd641bc0aee0d62f8848b136009dfc0ccb50bed7ece2.private",
+      "retained": true,
+      "sha256": "71d61b927f43795ed0a1b6c09cbd1d8990e3198bbb709f4ab545b336e9d3fa02"
+    },
+    {
+      "bytes": 3226,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\8324714ff7412a4d1aa0bd641bc0aee0d62f8848b136009dfc0ccb50bed7ece2.receipt.json",
+      "retained": true,
+      "sha256": "a167d72894d37a6a1541947a3acfc6281599b01bc81ab4a5cf970381b9bf2aa2"
+    },
+    {
+      "bytes": 164,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\83cd932e188dd5b0020a1ffaa9b8384a8f37574e5630e455979c0e26bc276c3f.private",
+      "retained": true,
+      "sha256": "54dfa64339709522d07fb5d1f79ede45aab1293b01ad33bd6e9cfc84d398ff70"
+    },
+    {
+      "bytes": 3219,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\83cd932e188dd5b0020a1ffaa9b8384a8f37574e5630e455979c0e26bc276c3f.receipt.json",
+      "retained": true,
+      "sha256": "f6312bfa563a42011c7d422cadb72d01b23b2427cc9a3d785e12b9c23d0bf114"
+    },
+    {
+      "bytes": 158,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\86b5cbb7047fad9e95cf531b04f8a9164c639ff0539036fac58ba6d122176683.private",
+      "retained": true,
+      "sha256": "3950cd6f984a846df0dc6e14dd8bda42819578e130d6e182f57f7c4916ffaeb6"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\86b5cbb7047fad9e95cf531b04f8a9164c639ff0539036fac58ba6d122176683.receipt.json",
+      "retained": true,
+      "sha256": "4ef149895ae69faa759289e008ee0c74aa38967aef22fabd8b3f754db82e2a14"
+    },
+    {
+      "bytes": 3509,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\87d648271cbc7f28ad8d233162ee36283b3a2b71314096d656375bdb7db8e5c7.private",
+      "retained": true,
+      "sha256": "d16c88a09066c48c25b0d90e5396ecb7d81e8f93354547c661eedb1683276e2b"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\87d648271cbc7f28ad8d233162ee36283b3a2b71314096d656375bdb7db8e5c7.receipt.json",
+      "retained": true,
+      "sha256": "82c817baafc3508cf47792a98c9eecc714512d8432710a66706118e21aecefae"
+    },
+    {
+      "bytes": 166,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\889bcfa60dc0d22bf600bdf3364316715ce1fe17600030f67d13bd944d92e12f.private",
+      "retained": true,
+      "sha256": "f79108bc1f169fe923be7609ebaf75bf0f58f27c7d2d5792aac53ae77d0cd85c"
+    },
+    {
+      "bytes": 3215,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\889bcfa60dc0d22bf600bdf3364316715ce1fe17600030f67d13bd944d92e12f.receipt.json",
+      "retained": true,
+      "sha256": "278e4a221455f28bc078b7570ab13e44e66b14052aaa19e9dd0ecf3158736c7b"
+    },
+    {
+      "bytes": 166,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\8cf11fa695554a32e7d54a7d01dc5e36e3bb00e87c5d12dfb7f309287ea8d4b1.private",
+      "retained": true,
+      "sha256": "05e66f0be591b8aeebd0606c322018d8e8c7fe21970da837d488bb6657ea60ec"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\8cf11fa695554a32e7d54a7d01dc5e36e3bb00e87c5d12dfb7f309287ea8d4b1.receipt.json",
+      "retained": true,
+      "sha256": "86acd2c72f4548816f309c84ac1d98245f105bcca0ce1f62229034d6e7beece7"
+    },
+    {
+      "bytes": 163,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\8d0d17ba9c686aa0176b74308093b2f7531400f2e51ed5749f7639b072a294ee.private",
+      "retained": true,
+      "sha256": "da05de141c32498260f430dd835c201b6188badcd91f3d0417b117acc8af8a4e"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\8d0d17ba9c686aa0176b74308093b2f7531400f2e51ed5749f7639b072a294ee.receipt.json",
+      "retained": true,
+      "sha256": "fbb974a37a7e889153c7f747c311a2af0c7c03fb6f8807c96829a7ce8468faf2"
+    },
+    {
+      "bytes": 175,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\8d97ff2b844140c09188175fa9afd26d9468a2fc7d39b6ca2507a16e04be445a.private",
+      "retained": true,
+      "sha256": "a262b6df34fa31e9131b881621e6a3664db2ae02904d9e27b36ae0f21609f7eb"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\8d97ff2b844140c09188175fa9afd26d9468a2fc7d39b6ca2507a16e04be445a.receipt.json",
+      "retained": true,
+      "sha256": "969e88a98865d31f9a1c7a9ad6f87d2cd3993ba394698d6b7ee73c928db6091e"
+    },
+    {
+      "bytes": 171,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\8e396b252d46154f59eacbb5a96ac49b2471cc998d96a2aa8a33739d755907b1.private",
+      "retained": true,
+      "sha256": "c268a668f00005b07036c40ce7d53887f3c0a512eea966773010a4a6c41f34ce"
+    },
+    {
+      "bytes": 3215,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\8e396b252d46154f59eacbb5a96ac49b2471cc998d96a2aa8a33739d755907b1.receipt.json",
+      "retained": true,
+      "sha256": "9dc067ed2fa7b6aedf0242864bb3dd3785564343f54a5e783c553757ef4f6de7"
+    },
+    {
+      "bytes": 170,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\8e8b2f8dad378414d14c7eca51edfe82d7190e51530a64ac2db75052d357f18a.private",
+      "retained": true,
+      "sha256": "ad542036072ee926d77d2be2ac1aa75adb96ee56dac3f90a3055128df3dacff7"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\8e8b2f8dad378414d14c7eca51edfe82d7190e51530a64ac2db75052d357f18a.receipt.json",
+      "retained": true,
+      "sha256": "6966b8b958bc82530aba8621ec19d9e84a4b4408e3446570e5a6f6bc04ca3db5"
+    },
+    {
+      "bytes": 154,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\8efe397cc514ee843ab2a613031d1fa8a5092610a45a1b7917b85edaa4bc6b29.private",
+      "retained": true,
+      "sha256": "095c296a2af46872191719e2356d59ac9c8847425b48e0559a69af2e68449eac"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\8efe397cc514ee843ab2a613031d1fa8a5092610a45a1b7917b85edaa4bc6b29.receipt.json",
+      "retained": true,
+      "sha256": "6df888386a77e9b009327b13c5534151388b979ecd05dbd905bc67287888abd9"
+    },
+    {
+      "bytes": 162,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\9106bd91fa9af74c6a420275c064531e5e17b65a73078726bd2bf7ca383685cf.private",
+      "retained": true,
+      "sha256": "ce88201b5910552b0a2b2603de11afb442e7b173b6f24618ef6dc299bb7a0165"
+    },
+    {
+      "bytes": 3219,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\9106bd91fa9af74c6a420275c064531e5e17b65a73078726bd2bf7ca383685cf.receipt.json",
+      "retained": true,
+      "sha256": "48318a6a1d2adfe06fc118342e337ffff2b6477857dd20465461180fae34c680"
+    },
+    {
+      "bytes": 167,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\970bc58e49415678cd424d88a316a79468fed03b2d8c0a9fbf67e094564529c2.private",
+      "retained": true,
+      "sha256": "39c6da5d3423440c41f078a545a9cd58963199c1d3dd855d667abbc1a4c657ca"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\970bc58e49415678cd424d88a316a79468fed03b2d8c0a9fbf67e094564529c2.receipt.json",
+      "retained": true,
+      "sha256": "aa146937c79a8764f6ceab59c0812a7f583209a3008aec9c8c82d14e353ff5a7"
+    },
+    {
+      "bytes": 165,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\97b0eeff7733564d6e55e3434ddfe2cd191dd7b5742bc208e10a7266ace922df.private",
+      "retained": true,
+      "sha256": "5c3a3bd41b4ed84624bb5aeb59e55bafdf1e80508cf2baa468edc6e3dd1c8f46"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\97b0eeff7733564d6e55e3434ddfe2cd191dd7b5742bc208e10a7266ace922df.receipt.json",
+      "retained": true,
+      "sha256": "7f175bab15a15aa6f7084da3c4a7fba1a1e72beda0c75d18bc31d3bbebcad2ea"
+    },
+    {
+      "bytes": 3806,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\982be5bf03568f108498345980e432726f0582c057322a1880f454e9c3c5402c.private",
+      "retained": true,
+      "sha256": "c3bc745506da3335cb6c64bddf597f6a483f3c0026a89149130d2fe7404fd993"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\982be5bf03568f108498345980e432726f0582c057322a1880f454e9c3c5402c.receipt.json",
+      "retained": true,
+      "sha256": "ccbfcd0cb38a417e7a0fa832f2b33259aa37dddee96e46f0719f5a1cd022efdc"
+    },
+    {
+      "bytes": 165,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\99595ca5342ea00d242ff5b031b56a03f3b62a5baf38494dffc895e7e2f8b945.private",
+      "retained": true,
+      "sha256": "a381e2138b018cd1b48b042fb5ed06361d5361ad71277e5b1d409531b7fb75de"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\99595ca5342ea00d242ff5b031b56a03f3b62a5baf38494dffc895e7e2f8b945.receipt.json",
+      "retained": true,
+      "sha256": "3afe12f7cc38f1d07e6617fea0d4670ecdb3983ce4fc381b50d979fb3510031e"
+    },
+    {
+      "bytes": 162,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\9a551ff537fb344d2270e456db4550e4dd49d9af834bfb8111f92bd1a0efeb8b.private",
+      "retained": true,
+      "sha256": "ff046be1227f8273fa9d48ffc554f86cff011880968aeb61792b4c21233bd45d"
+    },
+    {
+      "bytes": 3219,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\9a551ff537fb344d2270e456db4550e4dd49d9af834bfb8111f92bd1a0efeb8b.receipt.json",
+      "retained": true,
+      "sha256": "432c1347ec39d3efd3fff19117d54c4508e1ee3c96783d52a43d5483b780bb59"
+    },
+    {
+      "bytes": 3431,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\9ab10dbae3162e2ae1c97c80decde0a82becceeee192cef6b466904f0ebe0fb5.private",
+      "retained": true,
+      "sha256": "7feb9f4257a0b324ddab7b23834408a8eea41aaffb35824232d9d1aab731501e"
+    },
+    {
+      "bytes": 3219,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\9ab10dbae3162e2ae1c97c80decde0a82becceeee192cef6b466904f0ebe0fb5.receipt.json",
+      "retained": true,
+      "sha256": "492fd3238271c7d812cf00ab8e3588ff4b399e8171dcba84e6e1c9f5d35f9f55"
+    },
+    {
+      "bytes": 166,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\9b61fed91f4ac479f9a75c152d06eecb81eed67840808434a55e14358dff2f9a.private",
+      "retained": true,
+      "sha256": "2d8b29a91f92d4bb4e6dbd912c3f04fff6c80c3086b5f4280159d44b8b584206"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\9b61fed91f4ac479f9a75c152d06eecb81eed67840808434a55e14358dff2f9a.receipt.json",
+      "retained": true,
+      "sha256": "e4a23f1efe0d1ab31027f59b06b0be9091ecca03fab0ea6003a58e043e84c41a"
+    },
+    {
+      "bytes": 174,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\9c31674a4ec785c9e2977c49f275795a349fd9ba2ccdeb50d179a94df3a6c808.private",
+      "retained": true,
+      "sha256": "f0d43688f4d7d6bc438a3190b9ce3a96cfb32b68962b9b482b87f0c1e73e5d77"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\9c31674a4ec785c9e2977c49f275795a349fd9ba2ccdeb50d179a94df3a6c808.receipt.json",
+      "retained": true,
+      "sha256": "37dba2a327ce25d0d9a468c01f87b35dc5713a52d34e42858b3c706c793f676e"
+    },
+    {
+      "bytes": 3299,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\9c5e5d68454f12f573ba242187e072d1f2ef680a79d05a2593cebc14de430436.private",
+      "retained": true,
+      "sha256": "bbda5cc99906e90273bcac03579207d44175c3c0a83d5991d60b97efeafc9c30"
+    },
+    {
+      "bytes": 3220,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\9c5e5d68454f12f573ba242187e072d1f2ef680a79d05a2593cebc14de430436.receipt.json",
+      "retained": true,
+      "sha256": "2ff8dfb1c05cb4433a1f10a471b2409ac377e0b24a33c0d7cd0f4bda8feb42f3"
+    },
+    {
+      "bytes": 166,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\9d0270cc86ee8a1fcb5f3a75cb0f42c91f9a4bcdcb1b1f6a5d3eb22874afd307.private",
+      "retained": true,
+      "sha256": "ef03bb5d2c27414e2e1a791d9692dcba424f9fbe71e719c3507b59914aa4b5a6"
+    },
+    {
+      "bytes": 3215,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\9d0270cc86ee8a1fcb5f3a75cb0f42c91f9a4bcdcb1b1f6a5d3eb22874afd307.receipt.json",
+      "retained": true,
+      "sha256": "4957008621e323c446a720f739a45c3b3833e1a76cd910c1669b29156de590fa"
+    },
+    {
+      "bytes": 167,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\9d1eced51d0646904413a56634ea3ebc5737b111a4497a8c77a4667613bde0ac.private",
+      "retained": true,
+      "sha256": "87ea4080517b1ac2227d4f25ad8dfb889bffe7424a7e256ac11da36a3b0bbf1a"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\9d1eced51d0646904413a56634ea3ebc5737b111a4497a8c77a4667613bde0ac.receipt.json",
+      "retained": true,
+      "sha256": "19e061b77bd5c19784d8b6fc3def195cf67fd71d627cf80b7351061152f8a05d"
+    },
+    {
+      "bytes": 166,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\9d9120e4f2e6dc98fefe463d22d8867a6588155478737e8d0012af3ba1fa8200.private",
+      "retained": true,
+      "sha256": "fec0008f238d7fecb6677ff4f9bfabd2df858360d45c1a9d049120386819ba42"
+    },
+    {
+      "bytes": 3215,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\9d9120e4f2e6dc98fefe463d22d8867a6588155478737e8d0012af3ba1fa8200.receipt.json",
+      "retained": true,
+      "sha256": "d99edee99c70308b9ad160b4c25bf9f84a114750a558f3a8b52366a0695bfb4f"
+    },
+    {
+      "bytes": 3453,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\9e559e150e4d63ccd89886de9894667f9c7bd7507e5ea69e4dc27beb88efe21f.private",
+      "retained": true,
+      "sha256": "e5a5abebaa0c09d9cd72c22ce6dbdf7954f82d287ed20bee68c2e7ec3d3bc213"
+    },
+    {
+      "bytes": 3219,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\9e559e150e4d63ccd89886de9894667f9c7bd7507e5ea69e4dc27beb88efe21f.receipt.json",
+      "retained": true,
+      "sha256": "5ccf89f14a045dc8794d11ea019fa1345e9fcc60a9ecb8c96d488c5565a7e3ad"
+    },
+    {
+      "bytes": 162,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\9e8a7d2f7387bed09b3082b45540dc34cb9bf6ae00785d912cb0390c0c7d9086.private",
+      "retained": true,
+      "sha256": "69d712c291b48263792e0242d6622ccb4b4f95ff94ef7c7065f778517d27a3db"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\9e8a7d2f7387bed09b3082b45540dc34cb9bf6ae00785d912cb0390c0c7d9086.receipt.json",
+      "retained": true,
+      "sha256": "239ee5c3174a6f2c3eba78d4f5d3b1354fbdc9154e28af73d2b9fea1e3807b2c"
+    },
+    {
+      "bytes": 3307,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\9f08ad5a9a6d7e829c94aa7d64d52594d9b701330238fe15eb1d4e3b071cc686.private",
+      "retained": true,
+      "sha256": "816416bee8f2f26d7137ef5dbffbd8c5c8470d8fad77a5e22b8527b79b8bb078"
+    },
+    {
+      "bytes": 3219,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\9f08ad5a9a6d7e829c94aa7d64d52594d9b701330238fe15eb1d4e3b071cc686.receipt.json",
+      "retained": true,
+      "sha256": "6a9ef325a15b6d4cf7cf78f4df0656a54f5844ea6f6aca9edc911aadf7973677"
+    },
+    {
+      "bytes": 164,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\9f3d5783fce46d694948a1f85597a9362788077f8c2d6c828ffc8446e51089e6.private",
+      "retained": true,
+      "sha256": "0be14c6dd87f04a02e7719250968e99fd5ff2790a657c000f88c861165be9ce4"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\9f3d5783fce46d694948a1f85597a9362788077f8c2d6c828ffc8446e51089e6.receipt.json",
+      "retained": true,
+      "sha256": "f15e31e240f0c587bb7783181b406cfd8b764a6e4a99c7a54d5fbfc6c7bb753d"
+    },
+    {
+      "bytes": 3499,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\a135873b48792155d6f051c7f35c097c253c3389fc92c3374c3410488ff6d622.private",
+      "retained": true,
+      "sha256": "a150aa4ba41ea0dd1492d55345046f779ada87fd44aa7b1d8913d1651c3ae449"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\a135873b48792155d6f051c7f35c097c253c3389fc92c3374c3410488ff6d622.receipt.json",
+      "retained": true,
+      "sha256": "d1f9d19f27b160da483abfc3647b5658a24f053c77340197624f5c0d34f110f4"
+    },
+    {
+      "bytes": 3437,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\a2ee0cf91026ebac02e7734468dd8e0d8e7637b95ff6d8152e46bafc7360b211.private",
+      "retained": true,
+      "sha256": "a505a223ae20e9ba19fc79143951372b7e819f9145be9ec3086778d56b7f6467"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\a2ee0cf91026ebac02e7734468dd8e0d8e7637b95ff6d8152e46bafc7360b211.receipt.json",
+      "retained": true,
+      "sha256": "6390d896493568f4c124719cbe717dcc1b5c68f2495c3ba2b38bc65004ec299e"
+    },
+    {
+      "bytes": 166,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\a36a0bc9ad25ccff8212625ac39ecb9d900ecb8e84e62a728a73912095e64c6c.private",
+      "retained": true,
+      "sha256": "7c5a51f8a107c4f65a23199e7714f18f78dc3326569e545044286bc43c8dd206"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\a36a0bc9ad25ccff8212625ac39ecb9d900ecb8e84e62a728a73912095e64c6c.receipt.json",
+      "retained": true,
+      "sha256": "cfd4749e25f003280dce36e42942532279b57cbea98fa2fab0777778d6eb1476"
+    },
+    {
+      "bytes": 164,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\a37d91ae2f7547e890b0b0a0e1a8a3e9e82756750bde2a87440908de6d911809.private",
+      "retained": true,
+      "sha256": "69188717fe0d543c6bcf3af4d3ac49c29cfddc6f188edb09cdf57dc1b0105dd4"
+    },
+    {
+      "bytes": 3215,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\a37d91ae2f7547e890b0b0a0e1a8a3e9e82756750bde2a87440908de6d911809.receipt.json",
+      "retained": true,
+      "sha256": "646f22721c85039a84d877a20605b33d77341acaa11b974a1fc90a96dbfa4168"
+    },
+    {
+      "bytes": 168,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\a6750ed2c5d9822d72cfc8ce7af9718d4ce2145cf966f143657824885ecaa2d6.private",
+      "retained": true,
+      "sha256": "a67097f46fa7c46e38e07019b0058d6eb3c13b5576d5fbc39a67f2f35f8310bf"
+    },
+    {
+      "bytes": 3214,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\a6750ed2c5d9822d72cfc8ce7af9718d4ce2145cf966f143657824885ecaa2d6.receipt.json",
+      "retained": true,
+      "sha256": "b1ca48aace91c0a84052d1ed6692822564741bf5cc44d21c4544903ef6b627c9"
+    },
+    {
+      "bytes": 162,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\acdb59b5b72ce29f47768eaa6a24b0b7a1f60f299de75e0f1a482ca94a66b430.private",
+      "retained": true,
+      "sha256": "28541a9558813f7c70a399497505bf80619d38a1516a269b362b45efc2b4200f"
+    },
+    {
+      "bytes": 3234,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\acdb59b5b72ce29f47768eaa6a24b0b7a1f60f299de75e0f1a482ca94a66b430.receipt.json",
+      "retained": true,
+      "sha256": "02664b057d600234f5560808ef82fd8db487e4889b643f0f804eb01e57cdb494"
+    },
+    {
+      "bytes": 159,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\acf2e3a68d3384f87dd76067a4f553fe7963b9a8a23c001288195f557f381620.private",
+      "retained": true,
+      "sha256": "616f6de6710d416f386a709dc1eb4e7a99528505a9b169673e24da60c8d0280e"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\acf2e3a68d3384f87dd76067a4f553fe7963b9a8a23c001288195f557f381620.receipt.json",
+      "retained": true,
+      "sha256": "c4e32c5eb76395f81a87eaaec8af6c7f2e27b33cc3ef2123395906d259e6622b"
+    },
+    {
+      "bytes": 3518,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\ae093e8bdb9a06b15d53f2314a47bd923d5a554bfe335e6af010e8ee6151e11f.private",
+      "retained": true,
+      "sha256": "05dac772101268162488cacabe9184b577962449fb3f95ab124cafb5a78d4349"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\ae093e8bdb9a06b15d53f2314a47bd923d5a554bfe335e6af010e8ee6151e11f.receipt.json",
+      "retained": true,
+      "sha256": "4a036d1cf990ddc4c807f2337ce6a8a4a5d03e349973fae78e760ab2177a9a8b"
+    },
+    {
+      "bytes": 3415,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\ae09f2a3122c89ca86f8e0b6a4c375c3a5993dfdbed025148e3337c1b2d35d9a.private",
+      "retained": true,
+      "sha256": "d6b81c97c5108c610d1e0a0376613bb8662cd12acbed9435efd138b1b5602c6a"
+    },
+    {
+      "bytes": 3219,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\ae09f2a3122c89ca86f8e0b6a4c375c3a5993dfdbed025148e3337c1b2d35d9a.receipt.json",
+      "retained": true,
+      "sha256": "05315ea5da19dbe73548b46eee9f8ad318cdb1f02389b8930e6bdf69ebaab5cb"
+    },
+    {
+      "bytes": 166,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\aeb2bb8ae5a106b69f32cc32bb948c9423cf620cdde7173c82c4ffd8dbda230f.private",
+      "retained": true,
+      "sha256": "df705afb699f8d15c451b5f4cff8ee2e501731a049deb32b7083fba5fda9be42"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\aeb2bb8ae5a106b69f32cc32bb948c9423cf620cdde7173c82c4ffd8dbda230f.receipt.json",
+      "retained": true,
+      "sha256": "ad68f2f71758e44806ba5552639cda2fa322b6ef5f0d15e9357dede27b13f881"
+    },
+    {
+      "bytes": 3417,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\af341ecec345e7b9f4d6c823d550ea013ead0359bb5aae1232fd3175ef8174cd.private",
+      "retained": true,
+      "sha256": "ce830bb1e482989c65878aae588b396d9a9e88388e20c7a4900c2e6754fc79f9"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\af341ecec345e7b9f4d6c823d550ea013ead0359bb5aae1232fd3175ef8174cd.receipt.json",
+      "retained": true,
+      "sha256": "7391cbbca9172a85b3cd3eceae1717f7bd21d08562fcf79a1186b7ce12ffe20e"
+    },
+    {
+      "bytes": 165,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\b47c6b75fad417d314023cc4e502330ac4219dd4fd548046b56a40b659f896bd.private",
+      "retained": true,
+      "sha256": "4da99931b7d9dafc684efdcdbaa9959571b3d200003e3c5f859b28a416ff986d"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\b47c6b75fad417d314023cc4e502330ac4219dd4fd548046b56a40b659f896bd.receipt.json",
+      "retained": true,
+      "sha256": "1100efe78c817acb72ef0b4f5fc15985e140e8f5817336512fad05975e0360a5"
+    },
+    {
+      "bytes": 171,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\b7d3cf1935f58845b11cd8d9ef4063745c04bc82bef47a18d2d7b71edcdf5739.private",
+      "retained": true,
+      "sha256": "7e6dac95b309332bc4530a58e2f65b0071f39283d185325dcface04a47c3e999"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\b7d3cf1935f58845b11cd8d9ef4063745c04bc82bef47a18d2d7b71edcdf5739.receipt.json",
+      "retained": true,
+      "sha256": "bcd0de752974fe21585dee7761262cb8c8dcbf226d8af183ac16ce067c31fcd2"
+    },
+    {
+      "bytes": 3648,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\b859cf41bfde0bc2d20d82d87e7f4a3cbd2b436e3db7ebbac62176e53ace7400.private",
+      "retained": true,
+      "sha256": "29db164f84f917285f208d5d68414e9b92e401abd847b292bed3a3a6eb135d62"
+    },
+    {
+      "bytes": 3238,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\b859cf41bfde0bc2d20d82d87e7f4a3cbd2b436e3db7ebbac62176e53ace7400.receipt.json",
+      "retained": true,
+      "sha256": "dcc1ef9ed397d9c3c5acceb226c4e70eeb26c3a898785dc9f2c7615da4a97d24"
+    },
+    {
+      "bytes": 166,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\b891a0225088d0706e993d158b4c0b6b2ba115fd04168635b5e4db42b98b2f51.private",
+      "retained": true,
+      "sha256": "4e894a495203994b248d0a7475872a2ff9a9d47d02f1d5ce0169ac174deca338"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\b891a0225088d0706e993d158b4c0b6b2ba115fd04168635b5e4db42b98b2f51.receipt.json",
+      "retained": true,
+      "sha256": "f30e0485cefb2c1e5277846dfbe0d80b76511b0e7f9c35b1c559924e7376a626"
+    },
+    {
+      "bytes": 171,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\b8af5548e17f1410a833a5fc82832186090fe112a04f5434c6877284ea62d424.private",
+      "retained": true,
+      "sha256": "4d7262a562f898dca98b969897abed041168f7fe468270edf7d23016a4b71a8c"
+    },
+    {
+      "bytes": 3215,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\b8af5548e17f1410a833a5fc82832186090fe112a04f5434c6877284ea62d424.receipt.json",
+      "retained": true,
+      "sha256": "5350c471a828da1e2b3557abc9ee3cd98281ddf50472d37c353cd911839aa914"
+    },
+    {
+      "bytes": 185,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\b99d1048a088175a98a7ab82966ffcdec1e0407854c85f7373ac3eb867ca699e.private",
+      "retained": true,
+      "sha256": "95f1e1d738915e1021425d3ee7e235b8735c23fca66600f681bd986b8b684436"
+    },
+    {
+      "bytes": 3215,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\b99d1048a088175a98a7ab82966ffcdec1e0407854c85f7373ac3eb867ca699e.receipt.json",
+      "retained": true,
+      "sha256": "475386d99e843f1beadb4b1d3133e3f6ff5db0d337616f1e93ae2421341059e5"
+    },
+    {
+      "bytes": 3411,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\ba59ec2512eb95b85e89159d352b414ef90a0506917d58262229f8394252a30f.private",
+      "retained": true,
+      "sha256": "34d65be41e0832d5c0567afc13bbd7472d633d360e6ce4defcaf9353fda25471"
+    },
+    {
+      "bytes": 3235,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\ba59ec2512eb95b85e89159d352b414ef90a0506917d58262229f8394252a30f.receipt.json",
+      "retained": true,
+      "sha256": "7c8658f15d6b29b9fb103ac70c8b02c1ef81a31600b18b3749b59659b700edf7"
+    },
+    {
+      "bytes": 170,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\bce2dee453567d36de24df8a3f43eb5fc6324d0059276ea95d5236927a96c248.private",
+      "retained": true,
+      "sha256": "ed4e1a2158856ceed5d892940b0412510039c1a09fcacbfd9370ed501ce41e37"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\bce2dee453567d36de24df8a3f43eb5fc6324d0059276ea95d5236927a96c248.receipt.json",
+      "retained": true,
+      "sha256": "7e197ce6ea020683d178b4fb8f834843f9a86a19e36d102abd8fd1333cb9f741"
+    },
+    {
+      "bytes": 170,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\bcf44f08cd4a268140b8fb24904c502efbb7ca916724ae37f35e92bd76fd1b3e.private",
+      "retained": true,
+      "sha256": "45629d27676d7387b02dde35b95e6641d6dceb006e66807388c4fd355eea7d86"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\bcf44f08cd4a268140b8fb24904c502efbb7ca916724ae37f35e92bd76fd1b3e.receipt.json",
+      "retained": true,
+      "sha256": "c92a1dcfaf1d0e25b14cb17c3a4961311ac4670b9532ee3f1dc3af10cf87fb16"
+    },
+    {
+      "bytes": 165,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\be4b8a70fa70e0b9fdb88367ae84b335d33c4a8cc53ed9d70c4763d7b89a639c.private",
+      "retained": true,
+      "sha256": "a3a63f45fc5fadb53972367892ed1ec11883d6c1f27d011f831078cd1f51f2c2"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\be4b8a70fa70e0b9fdb88367ae84b335d33c4a8cc53ed9d70c4763d7b89a639c.receipt.json",
+      "retained": true,
+      "sha256": "864f577177a027eee3b7eaa3375ea46ad9504c94658d5ba6298be1fac965aa98"
+    },
+    {
+      "bytes": 168,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\bf326fec81c990c9e3940141709ca0ce766b826680fcb07dda37e13158663027.private",
+      "retained": true,
+      "sha256": "8932fbb20893a8fc1b561fc04be8ffde321604084d0ee6c4d2184316ca7a6ff4"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\bf326fec81c990c9e3940141709ca0ce766b826680fcb07dda37e13158663027.receipt.json",
+      "retained": true,
+      "sha256": "aca1046f0fa41afaddec8a4baacd709421fccdebf22d7907581abe6f614ce536"
+    },
+    {
+      "bytes": 970752,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\budget.sqlite",
+      "retained": true,
+      "sha256": "1ea1ac1b2ed3eed01bae5271087f4d6d6388aef65512d41cc1b0dc4ea9882dc7"
+    },
+    {
+      "bytes": 161,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\c06672d7b60ec45af420f7f768873759985e7052862d1385ae2669cc0df6c246.private",
+      "retained": true,
+      "sha256": "bc9bd030e6c4a2a255f0da14a02d907e71cb048159b2b08e770163dbb9e75567"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\c06672d7b60ec45af420f7f768873759985e7052862d1385ae2669cc0df6c246.receipt.json",
+      "retained": true,
+      "sha256": "786867ab9b8586c9120334d516a23609f11a6297639efcdab7eab39b67f04479"
+    },
+    {
+      "bytes": 3431,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\c201d40e69d4a5b825a1cbd08e2299636c728506c8239a538224823ed7e1ecd9.private",
+      "retained": true,
+      "sha256": "1523cb4a313e4193183e15e387b60fb2db6e813748da34c34c6c2934add8b6c5"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\c201d40e69d4a5b825a1cbd08e2299636c728506c8239a538224823ed7e1ecd9.receipt.json",
+      "retained": true,
+      "sha256": "57b94652d8636cca1fbee172d0d8b164d2a8d1a4671f1c4ae0610f4dc614922b"
+    },
+    {
+      "bytes": 3498,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\c22af0f43d4e93ed7f117f04ddbec8f91bb58eb190028015331981a40181edaa.private",
+      "retained": true,
+      "sha256": "5121775238c794ad08d6035f83fa1d7e7fdc4c90b7f1196edb14f8a9607a2528"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\c22af0f43d4e93ed7f117f04ddbec8f91bb58eb190028015331981a40181edaa.receipt.json",
+      "retained": true,
+      "sha256": "67daf6694a21194290c775ef8c0045a1db232cc80fe1523608142fded361afbd"
+    },
+    {
+      "bytes": 173,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\c266374e57a10470d40daab40ac14419f827d722a2bd548c737e1d4244671e37.private",
+      "retained": true,
+      "sha256": "c420adf77f22305973e1bb274134d9166638d90352269c5533cb02da8870af45"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\c266374e57a10470d40daab40ac14419f827d722a2bd548c737e1d4244671e37.receipt.json",
+      "retained": true,
+      "sha256": "580ca0af072191accb16e5e0a8547c8202c365e79af12d01ea72efc9e177258f"
+    },
+    {
+      "bytes": 166,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\c2b37233ff60ed64740a133b081cddce396adcd39ffd9037d19c70a9e1f49fae.private",
+      "retained": true,
+      "sha256": "e8a6c67a9c512283f52d70046b0b292c47bcdbd428772df7b109cd164e3144e4"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\c2b37233ff60ed64740a133b081cddce396adcd39ffd9037d19c70a9e1f49fae.receipt.json",
+      "retained": true,
+      "sha256": "3ed6cf0cbef050be826e11ada095656249a450949b939f17732dcc8071d5c707"
+    },
+    {
+      "bytes": 165,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\c3b4959bf28753133a23bc7e3f806bdb49e0b95a0ded109dcb95102936e4e785.private",
+      "retained": true,
+      "sha256": "7b156ba6c6f25bf22c0732178d0061a0893b16ddc3bf813e183d15850b020630"
+    },
+    {
+      "bytes": 3219,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\c3b4959bf28753133a23bc7e3f806bdb49e0b95a0ded109dcb95102936e4e785.receipt.json",
+      "retained": true,
+      "sha256": "3ed34a87f39e4db5126d081d2a270800ee54efe78d14f2949fae1723582365e9"
+    },
+    {
+      "bytes": 3478,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\c3ede8a02269febd461f5ab428b62621c31b675a2bb37037218fddc11a88049a.private",
+      "retained": true,
+      "sha256": "a212a2fbedb2389ca1675b9961c8525021d300d951a47614a92f06d67044d44b"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\c3ede8a02269febd461f5ab428b62621c31b675a2bb37037218fddc11a88049a.receipt.json",
+      "retained": true,
+      "sha256": "735717370f6be9b6c1b9aa6bd5b5fd87feeb6a2aa903cc6cf455d90d2f3b6472"
+    },
+    {
+      "bytes": 3535,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\c82f901dc6323dff8137d47480a88a7c33643355924a7b837efbac3d08819a8f.private",
+      "retained": true,
+      "sha256": "86b9c2fdd06bc6d0ad69257a270cf82554c2c070a53afccec048bf85abe52ae8"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\c82f901dc6323dff8137d47480a88a7c33643355924a7b837efbac3d08819a8f.receipt.json",
+      "retained": true,
+      "sha256": "741a77fe33d364f24bfc2074ecc857ce081cc0e753bd750b2b7e218ef2535899"
+    },
+    {
+      "bytes": 159,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\caf4240895904fa0659b9e8e46387d0eac35fa0805db6637a7a7121540dc4bfc.private",
+      "retained": true,
+      "sha256": "d5b623f928243d202f61d14f4956faf688482f985daba12cbd6d876eed814bd5"
+    },
+    {
+      "bytes": 3219,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\caf4240895904fa0659b9e8e46387d0eac35fa0805db6637a7a7121540dc4bfc.receipt.json",
+      "retained": true,
+      "sha256": "e3926765764c2d94577bcbcbfc92191c05cdfcac81ebde2fed74f26149285fff"
+    },
+    {
+      "bytes": 163,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\cba64e2d63dd4cf6be9baa73ec40273e9bb2715489eb83de59e93474a4a4128a.private",
+      "retained": true,
+      "sha256": "be602666bdecc898a49a3ebfd80f76bbba73b832e2b18eea641c8418cb033bb2"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\cba64e2d63dd4cf6be9baa73ec40273e9bb2715489eb83de59e93474a4a4128a.receipt.json",
+      "retained": true,
+      "sha256": "bb347206e786a3bdf44278254082296303753c7bca08a54dfda300317fcc492e"
+    },
+    {
+      "bytes": 3467,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\cbdfc2f654da1afda9a1f0c1fc8764c99aedc5dd22b09422998023bc039a4302.private",
+      "retained": true,
+      "sha256": "de59f90633183ef28dd0d5f538e6fc0e5ee0bb45a694f2dfab09f11fc480954c"
+    },
+    {
+      "bytes": 3220,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\cbdfc2f654da1afda9a1f0c1fc8764c99aedc5dd22b09422998023bc039a4302.receipt.json",
+      "retained": true,
+      "sha256": "354019c4f59c46926cd7e69791c3e59e61199abfe172cd28348d38c13789800f"
+    },
+    {
+      "bytes": 164,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\cc02102984b22ddc79d8d4b964de9670517161bf030ea61580ae3a7f73f7dd7c.private",
+      "retained": true,
+      "sha256": "4de20005bc425f4255c385d06777ff37c0d604a184e6d93723b88e0b8abc8662"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\cc02102984b22ddc79d8d4b964de9670517161bf030ea61580ae3a7f73f7dd7c.receipt.json",
+      "retained": true,
+      "sha256": "2805050d49e7f8a793c39bc3d5aceece561c6066db79d98304b23499a1dfca66"
+    },
+    {
+      "bytes": 173,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\cc2732b4bae68df7528e62ef37e320cde04ab6706e0cbec3d24162f75bd982e9.private",
+      "retained": true,
+      "sha256": "d686737ebd5cff4ba5e550c9cb12bdad7c68d04a1ccdfbb3104d7641a00cb936"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\cc2732b4bae68df7528e62ef37e320cde04ab6706e0cbec3d24162f75bd982e9.receipt.json",
+      "retained": true,
+      "sha256": "4de0e4a2ee02881b4470888ce1cae7527a7e1a6e1d454a72b37ead05fa1ec7e6"
+    },
+    {
+      "bytes": 173,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\cce4e03eb9359d7e02e5631f1460b5316f090d61fff1e1316aced14e923a1a30.private",
+      "retained": true,
+      "sha256": "df9b1e2480b8ab2637d12e9f123172a6b09cf4983ecad04f5147e910baab53a2"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\cce4e03eb9359d7e02e5631f1460b5316f090d61fff1e1316aced14e923a1a30.receipt.json",
+      "retained": true,
+      "sha256": "dc17e7311fed464026ada369ba07c0e510923705be76da23c073ac94daed0826"
+    },
+    {
+      "bytes": 160,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\cebfc66d21ff8a9ee9cf85f9214bc98ee06c7b716ca6fdbfed4b032fdcbd6eb3.private",
+      "retained": true,
+      "sha256": "802dd039a4ebccaba1a6a0407ee488487d44dd5b4b9ba3dd4c2d07a47c80086b"
+    },
+    {
+      "bytes": 3219,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\cebfc66d21ff8a9ee9cf85f9214bc98ee06c7b716ca6fdbfed4b032fdcbd6eb3.receipt.json",
+      "retained": true,
+      "sha256": "24356e86b4984ea3a36567bd50be65db70706ed43736fbcd7efeea0ea4aedd30"
+    },
+    {
+      "bytes": 13478,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\clock-4622fd7f139b1bca706881bd98407e8f6267a79ee4ea73ec9aa8eb9dc56d7e9d.private.json",
+      "retained": true,
+      "sha256": "4622fd7f139b1bca706881bd98407e8f6267a79ee4ea73ec9aa8eb9dc56d7e9d"
+    },
+    {
+      "bytes": 13478,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\clock-7ce3b858c1b5767a55297101fc91e5b400cf110f96f4255cd991945ab6fc8ed4.private.json",
+      "retained": true,
+      "sha256": "7ce3b858c1b5767a55297101fc91e5b400cf110f96f4255cd991945ab6fc8ed4"
+    },
+    {
+      "bytes": 13489,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\clock-f8c1bd93a95101aa8c88163a07268ae644fcee8397b1179d8ba74670f03e3287.private.json",
+      "retained": true,
+      "sha256": "f8c1bd93a95101aa8c88163a07268ae644fcee8397b1179d8ba74670f03e3287"
+    },
+    {
+      "bytes": 165,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\d0392e5421c1a82f8c6eac3b585086adab09ed0bcb406c30549b99af80e1c22d.private",
+      "retained": true,
+      "sha256": "9714a4eceacc395fb22ada9ab903dc7fe114df61adfd173d9560b483363e42d5"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\d0392e5421c1a82f8c6eac3b585086adab09ed0bcb406c30549b99af80e1c22d.receipt.json",
+      "retained": true,
+      "sha256": "6852947ba02f47c7531b2a7ac7280fc7269e23e61e26f01a9e6d7873136f276e"
+    },
+    {
+      "bytes": 155,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\d044a51526c898865b464f7d6013a8fefa944f646a49330925b4e055983eec34.private",
+      "retained": true,
+      "sha256": "e0b19adf41e4c05559e6ca55828b31c05888c36d0694fcfed606a361266c8fb4"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\d044a51526c898865b464f7d6013a8fefa944f646a49330925b4e055983eec34.receipt.json",
+      "retained": true,
+      "sha256": "844990771b0483c91da77df07ec3df7bce1649e1b02175dd3bb7f4146773124b"
+    },
+    {
+      "bytes": 160,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\d284e8ba050e02ea5a98e34d78c02151a94a759b85916e92a97a48d73a5d9041.private",
+      "retained": true,
+      "sha256": "22dde5bdc74bfce53db09bb2e52b8f0ff58e79f9c8903b3f5d468bc5a965fd1b"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\d284e8ba050e02ea5a98e34d78c02151a94a759b85916e92a97a48d73a5d9041.receipt.json",
+      "retained": true,
+      "sha256": "eac23fd73f9d8e9b22eb556790c83b67de274245788ba476aaa82fe5be63485f"
+    },
+    {
+      "bytes": 174,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\d37e45c2b580b03fb8f6def187db285a3f34761b952ec015d52ef36aff3cbaec.private",
+      "retained": true,
+      "sha256": "bb546272a86cf749fa4c07a82dc31b84253c46d74d7e80224f0cdf33e30c1d55"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\d37e45c2b580b03fb8f6def187db285a3f34761b952ec015d52ef36aff3cbaec.receipt.json",
+      "retained": true,
+      "sha256": "5110ce8474e67590bf384baaa21cdc9bd6b08132dd9162b4a54500a0b99255ae"
+    },
+    {
+      "bytes": 172,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\d3880f446479ebf001af39437d1d502337e35d9b285c4e78b9fddc9a3efba844.private",
+      "retained": true,
+      "sha256": "58fede950b87213622d936b2c7495dd4783409223597ee081dbecc4296617606"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\d3880f446479ebf001af39437d1d502337e35d9b285c4e78b9fddc9a3efba844.receipt.json",
+      "retained": true,
+      "sha256": "71c10395b480fbb7f42cae4ec4c509b26b35be20e478e8a2cea3c13f35e36300"
+    },
+    {
+      "bytes": 168,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\d4d599ea3d8aeaf8e4a9443648e3786e61c22608a92d40bca58b1a243202baf3.private",
+      "retained": true,
+      "sha256": "05258a5b462cd172429f4c3cba532713c4e527961ae27f1c1332fe43b80dfdd5"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\d4d599ea3d8aeaf8e4a9443648e3786e61c22608a92d40bca58b1a243202baf3.receipt.json",
+      "retained": true,
+      "sha256": "8cc1d1370292de7a0678b2d270eef14c184c248aad2900c8933012990f56363c"
+    },
+    {
+      "bytes": 168,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\d61100681d58e05003a98ce8d04de811ec4cd8fa0cef717fa85a314534058b5d.private",
+      "retained": true,
+      "sha256": "7ab2bce0ba519e65fbe8bb781d8346738a3d35d9db2db0192d3f0eb342309c45"
+    },
+    {
+      "bytes": 3215,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\d61100681d58e05003a98ce8d04de811ec4cd8fa0cef717fa85a314534058b5d.receipt.json",
+      "retained": true,
+      "sha256": "ef8d4b5fe141c79be75ab9f26792c4ed7df0367c941e7e16c8a455115de98638"
+    },
+    {
+      "bytes": 159,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\d88ec153df2bf574986f3f95c282d46e117ab94da08e79d03237453e1eb4bbfc.private",
+      "retained": true,
+      "sha256": "b70e442de48562b4b885c7865e3099de7623404078b2f5705341a600ee140930"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\d88ec153df2bf574986f3f95c282d46e117ab94da08e79d03237453e1eb4bbfc.receipt.json",
+      "retained": true,
+      "sha256": "8ac4e302117aa220d07eb31f2c059f718d314e470303473fa843173a84526c61"
+    },
+    {
+      "bytes": 174,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\d8cb6e43f4c225cbb7d4faf3dcde5f7cf6258d876fe69d92fb5e033ba6eb46e7.private",
+      "retained": true,
+      "sha256": "fe4fe9efd67a3d1c245f3a847d069f58d6ae7eb21669612036a7ccaa7d8079bb"
+    },
+    {
+      "bytes": 3233,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\d8cb6e43f4c225cbb7d4faf3dcde5f7cf6258d876fe69d92fb5e033ba6eb46e7.receipt.json",
+      "retained": true,
+      "sha256": "e6f42228b13d37da8abef75097d01d224e95b5948d255a38bd87f794765868e8"
+    },
+    {
+      "bytes": 167,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\da6aff69d4afa2648b9942e9d42694dabe8252b0f945046047d191aa142091d6.private",
+      "retained": true,
+      "sha256": "9cac730b5fd3bb72240b3204958079b35ec41d75e1c9b4ae77d901d097241daf"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\da6aff69d4afa2648b9942e9d42694dabe8252b0f945046047d191aa142091d6.receipt.json",
+      "retained": true,
+      "sha256": "51e01b2196163e63ca07802ccfe8ad62c0ebcf1ed20562c9852be2b1cd129394"
+    },
+    {
+      "bytes": 168,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\dbff6e6e2a7143e47c938e23eb0dbceb8104bb6a9b9b2f1cb45941d10de48fe1.private",
+      "retained": true,
+      "sha256": "ba5445b67072c8e85ecd606194a67eb9d9e5683fb8c6dca82f04dcbab206cdb1"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\dbff6e6e2a7143e47c938e23eb0dbceb8104bb6a9b9b2f1cb45941d10de48fe1.receipt.json",
+      "retained": true,
+      "sha256": "b18bc8c386055d527fa9eea11ab87a7d5c10eabfc664db34be6ee830ef09d3dd"
+    },
+    {
+      "bytes": 181,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\dc32f895d26b30ec8fbf3c7ad623b1909206d3ed05be8ace61828d17355ad258.private",
+      "retained": true,
+      "sha256": "2bb28180c4a2f23aa0a77b37133f6731d27b0cc0281c1f3eccfaa8fc2ad8b6a0"
+    },
+    {
+      "bytes": 3215,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\dc32f895d26b30ec8fbf3c7ad623b1909206d3ed05be8ace61828d17355ad258.receipt.json",
+      "retained": true,
+      "sha256": "f3d56437bbfe7526e8e83221bc0039443290c87a3b8ecaa91abf1223077573c8"
+    },
+    {
+      "bytes": 171,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\dc57f6b1e736e838f08973486acf9427586fa9c4380aa37c865fe6d67309215c.private",
+      "retained": true,
+      "sha256": "49da601c2703d95e2f0aee63795f6b0b806ac6649a5c6772c198c45d8a9e0971"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\dc57f6b1e736e838f08973486acf9427586fa9c4380aa37c865fe6d67309215c.receipt.json",
+      "retained": true,
+      "sha256": "dd8f64844c2c6ca4820e3197b4a185ec82812c5b354813ea1821d89ff83b91f7"
+    },
+    {
+      "bytes": 164,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\de2878a1b63fdc584cbb84df2472e2b5739398effd810788edaef5e0e367e8fd.private",
+      "retained": true,
+      "sha256": "521d81579c8e665a6893cfc519843f46a2e894bdf5716f31793198ac9b5f773a"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\de2878a1b63fdc584cbb84df2472e2b5739398effd810788edaef5e0e367e8fd.receipt.json",
+      "retained": true,
+      "sha256": "fc56a93f47643bea363317d156175aeaba179111d0acc9a0f565851feceb74c0"
+    },
+    {
+      "bytes": 157,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\de7ce650cd6a31a04440bc9ca62e85096b5db9729cc2cd43c7ea7cf611b37a50.private",
+      "retained": true,
+      "sha256": "c9a577eeb0517e7f11484913004741f48712c08ceded75d5946676e00581c6ec"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\de7ce650cd6a31a04440bc9ca62e85096b5db9729cc2cd43c7ea7cf611b37a50.receipt.json",
+      "retained": true,
+      "sha256": "01becadb8ab249bcdf9168b571aa5392313052cdc48662a677208e23623564a4"
+    },
+    {
+      "bytes": 169,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\df5088d8efffd3585f0eea4e2b28268c9d4a1e0ac872d779fcc37dbb2a0c7250.private",
+      "retained": true,
+      "sha256": "b99e089f2761a0b27b6d13ebe4ea9744cf27289597c4f4a6d3cb1f3e89dba4b8"
+    },
+    {
+      "bytes": 3215,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\df5088d8efffd3585f0eea4e2b28268c9d4a1e0ac872d779fcc37dbb2a0c7250.receipt.json",
+      "retained": true,
+      "sha256": "8c11aaf117873820a82da8f874b12952fda0856e89df53a584270bb52e869283"
+    },
+    {
+      "bytes": 432555,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\e1998a7c2d47b535ca01e80b5bc6a3f8ad5cbf3a42c8ecca39cab376a56534aa.private",
+      "retained": true,
+      "sha256": "e6602214a3acff2f9bfd8d0796ff8dd5431a7b39f7087245bfe153a3e3c61986"
+    },
+    {
+      "bytes": 3157,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\e1998a7c2d47b535ca01e80b5bc6a3f8ad5cbf3a42c8ecca39cab376a56534aa.receipt.json",
+      "retained": true,
+      "sha256": "2f149ca7e966a841a2c7e4935b6a27ae7fe9cd3059ec7f440e459d3c23878200"
+    },
+    {
+      "bytes": 162,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\e2eeba9b163787fbe545d41a1872731e7dadd51ff3499f600c2bf112a143be6e.private",
+      "retained": true,
+      "sha256": "a1ea94d7e37890db356c498e07b1a15e66da5b51578bcc94067b6f6e889e8229"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\e2eeba9b163787fbe545d41a1872731e7dadd51ff3499f600c2bf112a143be6e.receipt.json",
+      "retained": true,
+      "sha256": "b44e7fb0b1f0b6714154b5fcebf0e7dfae0e5b289b1944c3fead785c97c20cc5"
+    },
+    {
+      "bytes": 173,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\e35e279576ee014a0a890c336578ab0ecf76b691b7cca0d9ac4bc77d0847dbe2.private",
+      "retained": true,
+      "sha256": "b894f63102ea06408d960c8d922d4cdc7d86d5a86e3bf5e72133fba785efa354"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\e35e279576ee014a0a890c336578ab0ecf76b691b7cca0d9ac4bc77d0847dbe2.receipt.json",
+      "retained": true,
+      "sha256": "586d4e942955f4051cbd12f4e9805f0aaec180bb434e04174160f587251a3edb"
+    },
+    {
+      "bytes": 171,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\e3e992b603ad12d2dbebc27ec942a21d810d01c141f652efdade83c63e6cecff.private",
+      "retained": true,
+      "sha256": "2f36de53fa27f8bdc4a2a0ac8dcfa4a0303f685e13bfdc05ede89b0d59682f85"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\e3e992b603ad12d2dbebc27ec942a21d810d01c141f652efdade83c63e6cecff.receipt.json",
+      "retained": true,
+      "sha256": "615d21310952a61a0603b7c65dbc983f8ab192194eb1486a9e4ec4661b9ef68e"
+    },
+    {
+      "bytes": 164,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\e5c4ef68c4794d561f2932367364e139179bf1b0fbc5ad383aa0ab48a0087122.private",
+      "retained": true,
+      "sha256": "458fd3228de10c0596afe32c8b09332e579999cb23d99fa46b808d460b4ac06e"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\e5c4ef68c4794d561f2932367364e139179bf1b0fbc5ad383aa0ab48a0087122.receipt.json",
+      "retained": true,
+      "sha256": "c556254a7d1430efe5d7b943353ee4e74fd1a3879251e9b99c7a50496c87f42c"
+    },
+    {
+      "bytes": 178,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\e6583e1936fd226303ba2f8b1c73c0f352e3a7c89ad11a609ed1c708c3d2e109.private",
+      "retained": true,
+      "sha256": "1c80c6499eeb6a581b030fb6669e23a68765d6d8cc9ec8a6db339a778088719e"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\e6583e1936fd226303ba2f8b1c73c0f352e3a7c89ad11a609ed1c708c3d2e109.receipt.json",
+      "retained": true,
+      "sha256": "b7fa810403449ca4332b1016a8904732ba18d76f5d6b360f093e3dd14252b8c0"
+    },
+    {
+      "bytes": 167,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\e6914645c84425f6abb91a1c4eba3a955ae3ce2cb384e93eef75ade3b277919d.private",
+      "retained": true,
+      "sha256": "4d88d16bf8cf539e2847fc79cfce20fbaf84106161630b81c363f87d1e807bf1"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\e6914645c84425f6abb91a1c4eba3a955ae3ce2cb384e93eef75ade3b277919d.receipt.json",
+      "retained": true,
+      "sha256": "9522ea9b08da88ca24b6bb708b788fecd43cd470b52e3d353bff6a78e5e71187"
+    },
+    {
+      "bytes": 166,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\e80227540671bd0327f41d2f6350fd10159298ffa7fd2695708599c84020d854.private",
+      "retained": true,
+      "sha256": "e8655fbf7c0b68e09b68627c1e6955ef1af26a83e1d0f383fbfbbd468597acbd"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\e80227540671bd0327f41d2f6350fd10159298ffa7fd2695708599c84020d854.receipt.json",
+      "retained": true,
+      "sha256": "4d06745fdb1d78a075f69ad078869273f5b4ec2040e6f35253077d066205bc39"
+    },
+    {
+      "bytes": 169,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\e8190bf08c2aade9f7bb2f233dd0cf6e827c4a04c0e0832d26b26f1b7afbdad3.private",
+      "retained": true,
+      "sha256": "c4e64c48c1612be13bc41346677bbac9ca3615baf325c7c23afc8cf79c2f55f1"
+    },
+    {
+      "bytes": 3236,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\e8190bf08c2aade9f7bb2f233dd0cf6e827c4a04c0e0832d26b26f1b7afbdad3.receipt.json",
+      "retained": true,
+      "sha256": "c472e563fdffc104030fe1478a03873bde959e9f0cb4c1c809f460016d864a5a"
+    },
+    {
+      "bytes": 162,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\e88ea4c319a7f6c2a4ca4c3439a02c41550693b1f582138c48cc3789978a8a69.private",
+      "retained": true,
+      "sha256": "2f9cbfad323bdf58bb91f66883fb230afb64e6b46a45b64d87bddbd40a00c611"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\e88ea4c319a7f6c2a4ca4c3439a02c41550693b1f582138c48cc3789978a8a69.receipt.json",
+      "retained": true,
+      "sha256": "4c2507975d62fb3a5518abaff747d1e5f1fb1544567a41d75f539effa3650fdc"
+    },
+    {
+      "bytes": 166,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\ea295e9d5e2de1223b001a8aa317d5a6b90bf805f8d5eb371810ea61890d041a.private",
+      "retained": true,
+      "sha256": "e5dd1d49058fc8285933005f6d18b4c638438babe422f8117039994f5ecf5a10"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\ea295e9d5e2de1223b001a8aa317d5a6b90bf805f8d5eb371810ea61890d041a.receipt.json",
+      "retained": true,
+      "sha256": "4de08c5c2a38f0b0dc700f4f9a33fe7d770ee34ae8eba4677da9abe52f107734"
+    },
+    {
+      "bytes": 174,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\ea8e4992af5bb1bed37005c2f6dc65f4047c104aa2ba058fda626a8f4b2e3635.private",
+      "retained": true,
+      "sha256": "2c61bdf65de0d58ecdf615c924247d9ac260bc1c4770ae93bb4441e8d59cb40e"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\ea8e4992af5bb1bed37005c2f6dc65f4047c104aa2ba058fda626a8f4b2e3635.receipt.json",
+      "retained": true,
+      "sha256": "97f32475664e784a491d053599a5efb4fc244b3f658a1d21028300b919d39a36"
+    },
+    {
+      "bytes": 165,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\ec34c721897e6856c59d1214c343ed707e88631fbc04de8720b11503d705afd3.private",
+      "retained": true,
+      "sha256": "9052f36711fc0f04f42dcfcff3a985f903e4e5cfb3d51f258454a72a826336fc"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\ec34c721897e6856c59d1214c343ed707e88631fbc04de8720b11503d705afd3.receipt.json",
+      "retained": true,
+      "sha256": "be11e5a6b41491ad138a09b0c3939a57b03536f43bc1037cd638a184f9b18062"
+    },
+    {
+      "bytes": 3482,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\ed09c1ce64fe1c3a1eddf768eda1dfdd38fbbfe9a2038d1ccfa3f200ef7454ff.private",
+      "retained": true,
+      "sha256": "a4aad8718a8076e0298f5c2dba68fe023ba931716e37ccc58a45fa2fd413fe06"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\ed09c1ce64fe1c3a1eddf768eda1dfdd38fbbfe9a2038d1ccfa3f200ef7454ff.receipt.json",
+      "retained": true,
+      "sha256": "1d980c44fcfc2368b49ed5ea96ada1eb14957eb77d49af55cb826a3378704c0c"
+    },
+    {
+      "bytes": 3604,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\ee44613b952285fb10612b1e9788ed35c19f96f3f6da150edf799b62636dc226.private",
+      "retained": true,
+      "sha256": "e28e9b1fb24ed2ce86e8dfa6a1c211dc9efb3325872cb620130b8a2259016e75"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\ee44613b952285fb10612b1e9788ed35c19f96f3f6da150edf799b62636dc226.receipt.json",
+      "retained": true,
+      "sha256": "95da101438a3303423896d688ae89f8dbada5ee0da135dd02667c37737f5a85b"
+    },
+    {
+      "bytes": 169,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\efdaf42f597d520c7495abb4682cd8d520a0684cbef198d921f40a577fd25c2a.private",
+      "retained": true,
+      "sha256": "38837a625fdf286f7042ad52ff9fc10c3a8309662cd8c6a29a5c54661a4b2f80"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\efdaf42f597d520c7495abb4682cd8d520a0684cbef198d921f40a577fd25c2a.receipt.json",
+      "retained": true,
+      "sha256": "a8c6a373dd3cd3f9d501b4f1a1e1c185629577720f7d7b0775cfb5adab491c0e"
+    },
+    {
+      "bytes": 180,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\f02175eca9c50d612b96cee8d5b0d169af1a2c3eaa2d19c237dff2725a954f20.private",
+      "retained": true,
+      "sha256": "5933984b8e97aa1916c7f20188e417f970e791442f6a6e0e06fee237ed99e700"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\f02175eca9c50d612b96cee8d5b0d169af1a2c3eaa2d19c237dff2725a954f20.receipt.json",
+      "retained": true,
+      "sha256": "3ad7880378c9e18d46ed1747db1f5c47cdcf8a09ea3b1d0a120c4ff773a8c723"
+    },
+    {
+      "bytes": 174,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\f08b2ae13564671d9ca6f6a19a956257873457e924975eaab448189abc170094.private",
+      "retained": true,
+      "sha256": "f8ed153c16e3cdf7cd05777d2bcde406d93de59efdf8426dbee4bbdcb5cfe9a9"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\f08b2ae13564671d9ca6f6a19a956257873457e924975eaab448189abc170094.receipt.json",
+      "retained": true,
+      "sha256": "e9b6bb05909900b90f302dc8f153fb59298d5881c658ee008e8cca49473473f4"
+    },
+    {
+      "bytes": 164,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\f11049d1852b741692af9d5a1b8b52bec688ad6c8f57ba61e701445263b967bd.private",
+      "retained": true,
+      "sha256": "e5d505c64fac9aa6dc1a0a85b46b2c1911e4b792611dec0ae0cfc0a8e9c8cca3"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\f11049d1852b741692af9d5a1b8b52bec688ad6c8f57ba61e701445263b967bd.receipt.json",
+      "retained": true,
+      "sha256": "d93c3a6d7ae9dc184ae5ac3c54013d4ffa3830a805abaf26dc009ee4a3e9c38e"
+    },
+    {
+      "bytes": 162,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\f48406eb5f76980450091a4a2b28c0acbf020861776103d36d97216b22ebf8c1.private",
+      "retained": true,
+      "sha256": "c027b8c249a3ab66dd5da610c33924dd22a4456f62e0d109394c918c1330b760"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\f48406eb5f76980450091a4a2b28c0acbf020861776103d36d97216b22ebf8c1.receipt.json",
+      "retained": true,
+      "sha256": "ab1098dbef06fecaa9d575fef567a1df0a13f02006ff6cd8531486bd901b5393"
+    },
+    {
+      "bytes": 163,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\f4b374d2547ff2057209748e81f5a734bd7e1ec28b89a98ade876f98fa1b9028.private",
+      "retained": true,
+      "sha256": "0ac9b9e3f139c76582887fd33232019fc996222ba4c4746dc8df8b9995c9c5ba"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\f4b374d2547ff2057209748e81f5a734bd7e1ec28b89a98ade876f98fa1b9028.receipt.json",
+      "retained": true,
+      "sha256": "9a72d8d9769772870935d6dbed46aed2ba15bd5f66c2bd4fb8d56d34c216d12f"
+    },
+    {
+      "bytes": 3472,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\f611db16df9dec37c02a32e8df05ff0c176a4537d92112730369aadfef3d0f96.private",
+      "retained": true,
+      "sha256": "99bb577ec9f33a6f8aefa3cc4dd149a2bf100e448aadbffedfbd650616ff0442"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\f611db16df9dec37c02a32e8df05ff0c176a4537d92112730369aadfef3d0f96.receipt.json",
+      "retained": true,
+      "sha256": "c57950d419c77177b612f0f8ffca2f58412aa25cf259583f97f6356f13d62af2"
+    },
+    {
+      "bytes": 169,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\f69a0fa13d4baacf832de0c8e85c0ad91b594fde9fa05507db93b1b412dc8db3.private",
+      "retained": true,
+      "sha256": "76e1b6a7cf26696eca06f23acde6b7d8b38859944a021911cc66f8cd74b59f1d"
+    },
+    {
+      "bytes": 3216,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\f69a0fa13d4baacf832de0c8e85c0ad91b594fde9fa05507db93b1b412dc8db3.receipt.json",
+      "retained": true,
+      "sha256": "7e400e0af4c2f3f87634d523e15799d176a9ad14b9c546dd3f5608ee644dcae3"
+    },
+    {
+      "bytes": 160,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\f71d40259f2f204e19c45cdd2e3003b46e01ca4eb08c2c33682b3a3e24a001ba.private",
+      "retained": true,
+      "sha256": "8af65786618aecc0de03aae8d5bd096a9e348fd953057299619c0c2ed282b4ad"
+    },
+    {
+      "bytes": 3215,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\f71d40259f2f204e19c45cdd2e3003b46e01ca4eb08c2c33682b3a3e24a001ba.receipt.json",
+      "retained": true,
+      "sha256": "fdfd22a3d7a9c49b4c21ff7783e80a4ddcae868ad8d1d28a71bf4a1a2a115c64"
+    },
+    {
+      "bytes": 3458,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\f84acb1cb68c9fb6b539f1ce2b6b78f78799fdd3b09cd5bb6758f912d2c641f7.private",
+      "retained": true,
+      "sha256": "f2f5d4ed039e094a7f6d3562a9b050c7795c1d7125fbf93beeb09cc6c58fe957"
+    },
+    {
+      "bytes": 3219,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\f84acb1cb68c9fb6b539f1ce2b6b78f78799fdd3b09cd5bb6758f912d2c641f7.receipt.json",
+      "retained": true,
+      "sha256": "c8e7405e5754154a006319eb9234adda7fb85369c745a290cfed29b6b2ff4bc9"
+    },
+    {
+      "bytes": 176,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\f880f2f0363e8de8c0564ed4c2a65fb6d8e54fe5fe0dbc56f51057865617af3a.private",
+      "retained": true,
+      "sha256": "e9e424702c4746f67411bfc9ebd71ec007a937d2cd52544d5920996e655338f1"
+    },
+    {
+      "bytes": 3215,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\f880f2f0363e8de8c0564ed4c2a65fb6d8e54fe5fe0dbc56f51057865617af3a.receipt.json",
+      "retained": true,
+      "sha256": "85b971c3fc532e5bab1e188ead596164652462c1cafb1b4e19288870841db876"
+    },
+    {
+      "bytes": 3576,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\f895e4fd3f9d8d04214a71908a6ed58993596bedd04bb18523d560d083c2aeb0.private",
+      "retained": true,
+      "sha256": "19d0b490a06fc349dd2ca2fc840bb8412b853702bac4cd3b60bfb72997fdd397"
+    },
+    {
+      "bytes": 3228,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\f895e4fd3f9d8d04214a71908a6ed58993596bedd04bb18523d560d083c2aeb0.receipt.json",
+      "retained": true,
+      "sha256": "93e6ad94908593852e7e8f99cf48004fa94abeef3c4fd86da89482605b9e73bd"
+    },
+    {
+      "bytes": 3510,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\f93135f6cfa9ed5a468c2eaec12f346edba069e5d5c819fc82479eea8924c0e6.private",
+      "retained": true,
+      "sha256": "8009895f976fcf3d66d527aca35007b31e3c19639547ba83b0daf4f588edf04f"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\f93135f6cfa9ed5a468c2eaec12f346edba069e5d5c819fc82479eea8924c0e6.receipt.json",
+      "retained": true,
+      "sha256": "32144c03930e541d69d6834ec1bb18779cb1ab482647afe6d6e048dc4e96751d"
+    },
+    {
+      "bytes": 169,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\fa12618cd651d55adf3de0c4b3fb33870f8183c465e484d286cfa16c6257ecfe.private",
+      "retained": true,
+      "sha256": "2342c3a8d5f1cd9d15cfe30322482334bcbeada54473084c9ae31b9cf0f24097"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\fa12618cd651d55adf3de0c4b3fb33870f8183c465e484d286cfa16c6257ecfe.receipt.json",
+      "retained": true,
+      "sha256": "f530201c772f729e0c95c430ac60570a02121e4ec8ff8761cff37f0ed4dac7ea"
+    },
+    {
+      "bytes": 171,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\faa620a3a083c7f23116c8e0a797c8e1211b3c1b0ef9c1ebe793cb82f20db19a.private",
+      "retained": true,
+      "sha256": "4391540c9d708f2d6506bf360d9dd699ad1f1dc06223f8538f8a717bdccc6740"
+    },
+    {
+      "bytes": 3236,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\faa620a3a083c7f23116c8e0a797c8e1211b3c1b0ef9c1ebe793cb82f20db19a.receipt.json",
+      "retained": true,
+      "sha256": "818c4310464c1ba82be7810f8e428890fc257ab0a5fa104c05dd65c70951cb46"
+    },
+    {
+      "bytes": 3548,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\faba5658c182f3c277daaaea1c7bd25a9a831822fb8bafdd30c5a7de68897bda.private",
+      "retained": true,
+      "sha256": "45a512e9d747bc468880537170e76d115a503a1857ec16528b5bb54e00293122"
+    },
+    {
+      "bytes": 3220,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\faba5658c182f3c277daaaea1c7bd25a9a831822fb8bafdd30c5a7de68897bda.receipt.json",
+      "retained": true,
+      "sha256": "f03e99ab1fa9fee4abdb7f8a27da59b24836f663b3def62924cebf2bc2299fa5"
+    },
+    {
+      "bytes": 171,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\fbca524d6c1c1a11430ec7e3659f5453dc0f1a9babbbbcc6cf3a21a0a4ccecdf.private",
+      "retained": true,
+      "sha256": "3e8beaeaab1ff742de7ae883c030b4249dafd53d89c770a89a8c6afb6ed68a3f"
+    },
+    {
+      "bytes": 3214,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\fbca524d6c1c1a11430ec7e3659f5453dc0f1a9babbbbcc6cf3a21a0a4ccecdf.receipt.json",
+      "retained": true,
+      "sha256": "58cea2b94e82592cef520c500591227db23b91b846bdcdf8b49f471097c86962"
+    },
+    {
+      "bytes": 165,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\fcabfbfc9501321d27e9c494c749a626d217df51e43317998d90806f5ed41815.private",
+      "retained": true,
+      "sha256": "d107abbbeb1418e6d619389540df6178c8400db062d313110082cc8592cdb073"
+    },
+    {
+      "bytes": 3219,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\fcabfbfc9501321d27e9c494c749a626d217df51e43317998d90806f5ed41815.receipt.json",
+      "retained": true,
+      "sha256": "4e4af821f01bd47e63a2454754d492f1cac87d50126fe949bd9aeb5f6cd4de71"
+    },
+    {
+      "bytes": 159,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\fcdf9fdee189ad0a08e01a14eb2b8b3b3e9c396e5898cecc8811736490606bc7.private",
+      "retained": true,
+      "sha256": "57f62fb2c6546e7dac7cbe3352f88a8ca46378b421f0436c7abd1edb021c2385"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\fcdf9fdee189ad0a08e01a14eb2b8b3b3e9c396e5898cecc8811736490606bc7.receipt.json",
+      "retained": true,
+      "sha256": "a1ca5c0c901f00a6c2579364a877e8b9e1795f41117ff09dc2c9f7eca675e653"
+    },
+    {
+      "bytes": 3850,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\fd54ad3220c00dfa8d67e2621376da5543bf93f10d1849cba355edaa6029f73e.private",
+      "retained": true,
+      "sha256": "5a5ce1355c9dc6dd17af8aa097dffae4339aafc2c2d10529a122f573e4d6b019"
+    },
+    {
+      "bytes": 3217,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\fd54ad3220c00dfa8d67e2621376da5543bf93f10d1849cba355edaa6029f73e.receipt.json",
+      "retained": true,
+      "sha256": "72260bb1f3c6b8e2ce3f17cf8820fce273c73029a28bf69c6f39be23a016425f"
+    },
+    {
+      "bytes": 165,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\fe5d4513a2e321eea739c77bab208f9f0c1a7998934f1c3e666f0c1953cfb206.private",
+      "retained": true,
+      "sha256": "c1e7f2982ac575141fa0d75a517248f7b7cdad772bc031f41fb36a981e364a04"
+    },
+    {
+      "bytes": 3218,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\fe5d4513a2e321eea739c77bab208f9f0c1a7998934f1c3e666f0c1953cfb206.receipt.json",
+      "retained": true,
+      "sha256": "486a7a699e54a8b20f2dd97e913b6410b8e89c9312e2210ededb06566c843021"
+    },
+    {
+      "bytes": 1527310,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\inventory.private.json",
+      "retained": true,
+      "sha256": "2fac2171497be561f0862e4e48b2305e65e7a3f678fa23433707429d38753d3f"
+    },
+    {
+      "bytes": 10078,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\research-intake.json",
+      "retained": true,
+      "sha256": "928f1764f3f91910253ea17fcfbd1f795ed708fc2196843d25dbf6a781ccf310"
+    },
+    {
+      "bytes": 90179,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\result.json",
+      "retained": true,
+      "sha256": "f41849b30f1667b067cc923601b0f32b939e6df25bd81a9fb163cd9fece996e2"
+    },
+    {
+      "bytes": 65,
+      "local_path": "D:\\ZS-SMART-GATE\\validation\\OPS24-20261121-full-market\\result.sha256",
+      "retained": true,
+      "sha256": "2eb46e1c0a4f3a85ee2ae88c6daabee15f5d33020e64ddf75acf93abb51ed462"
     }
   ],
   "policy": "Original market bodies retained privately; no secrets or full market body redistribution in this packet"

@@ -1,14 +1,14 @@
-# OPS24 acceptance evidence â€” scope and exclusions
+# OPS24 acceptance evidence — scope and exclusions
 
 Implementation PR: #76; governance PR: #75 (untouched).
-Code HEAD fda01bb5317ef2ed12697d3e6993796b2ae52d42; TREE 2594b47632100b561dff0a0f4309e1779d91dde7.
+Code HEAD 8c52be6f9c5d7a49af19bf68b1d8d50bd63a5b72; TREE dcf6a9b1abc2a62c9b91891e605dfcbdccf2bd98.
 Windows11 normal token, Python3.12.10, native PowerShell5.1.26100.9818. Installed runtime remains 25210a1e152a92e0562e108f3d1fc16e4e1b61ab, disabled. Main remains7b7bb0e.
 
 ## Original tests and reconstruction
 
-- windows-tests/OPS24-20261121-pinned-evidence/acceptance.json: final39 tests, zero failures/errors/skips/Python network attempts, clean exact release. Includes single historical CLOCK74 regression only.
-- windows-tests/OPS24-20261121-github-reproduction/acceptance.json: same39 cases reproduced in a fresh private GitHub clone, same HEAD/TREE. No local source worktree dependency.
-- Other windows-tests directories and historical-iterations hold original earlier test outputs, each retaining their actual head and counts (30,34,35,37,38). They are not extra independent evidence for scientific performance. Failures encountered during normal-clock investigation remain in clock-provenance rather than being erased.
+- windows-tests/OPS24-20261121-keepalive-fixed-evidence/acceptance.json: final41 tests, zero failures/errors/skips/Python network attempts, clean exact release. Includes single historical CLOCK74 regression only.
+- windows-tests/OPS24-20261121-github-final-reproduction/acceptance.json: same41 cases reproduced in a fresh private GitHub clone, same HEAD/TREE. No local source worktree dependency.
+- Other windows-tests directories and historical-iterations hold original earlier test outputs, each retaining their actual head and counts (30,34,35,37,38,39). They are not extra independent evidence for scientific performance. The initial keepalive transport test exposed an origin-pin mismatch (1 failure/1 error); the fixed final41 result is authoritative. Failures encountered during normal-clock investigation remain in clock-provenance rather than being erased.
 - Controller tests actually ran PowerShell disabled install/status/XML/restore/reinstall/rollback in isolated temporary D roots. No task was registered/enabled. Supervisor network/restart/breaker cases are fixtures, not a real reboot or 24h service trial.
 - CI: no checks/workflow configured for this branch. Windows receipts are the acceptance evidence; no CI PASS claim.
 

@@ -1,0 +1,104 @@
+[
+  {
+    "requirement": "A1 dynamic eligible inventory",
+    "code": "ops24_source.discover/scan; marketwide_research.inventory",
+    "test": "test_dynamic_budget_all_pairs_and_shared_final_decision",
+    "status": "SYNTHETIC_PASS_LIVE_RESULT_SEPARATE"
+  },
+  {
+    "requirement": "A2 shared atomic quota/body/inflight ledger",
+    "code": "ops24_budget.Budget",
+    "test": "test_atomic_inflight_reservations_do_not_oversubscribe; test_server_quota_is_adopted_conservatively",
+    "status": "PASS_TARGETED"
+  },
+  {
+    "requirement": "A3 four closed frames / common final D",
+    "code": "ops24_source.scan; marketwide_research.evaluate",
+    "test": "test_all_inputs_rechecked_at_final_decision_and_invalid_pair_partial; test_final_decision_rechecks_oldest_market_and_candle_input",
+    "status": "PASS_TARGETED_LIVE_RESULT_SEPARATE"
+  },
+  {
+    "requirement": "A4 no ban/unknown retry",
+    "code": "ops24_budget; ops24_source.public_get",
+    "test": "test_ban_and_rate_limit_stop_without_retry; test_timeout_never_reissues_and_records_unknown; test_https_unknown_ack_is_not_retried_by_transport",
+    "status": "PASS_TARGETED"
+  },
+  {
+    "requirement": "A5 TLS reuse/no redirect",
+    "code": "ops24_source.public_get",
+    "test": "test_https_transport_reuses_thread_connection_and_never_follows_redirect",
+    "status": "PASS_TARGETED_LIVE_TIMING_SEPARATE"
+  },
+  {
+    "requirement": "A6 crash recovery/hash/idempotence",
+    "code": "ops24_budget.reconcile; ops24_source.scan",
+    "test": "test_complete_receive_before_crash_can_reconcile_without_second_http; test_result_replay_is_idempotent_and_hash_checked",
+    "status": "PASS_TARGETED"
+  },
+  {
+    "requirement": "B1 normal-token clock equivalent",
+    "code": "ops24_normal_clock.NormalClock",
+    "test": "test_ops24_normal_clock seven cases plus actual raw provenance",
+    "status": "ENGINEERING_PROFILE_PM_REVIEW_PENDING"
+  },
+  {
+    "requirement": "B2 disabled normal-token singleton/STOP",
+    "code": "ops24_runtime.supervisor; ops24-worker.py",
+    "test": "test_elevated_worker_is_rejected; test_disabled_or_missing_activation_never_runs; test_stop_and_singleton_hold_and_restart_slots",
+    "status": "PASS_FIXTURES_NO_SERVICE_DEPLOYMENT"
+  },
+  {
+    "requirement": "B3 disabled install/XML/bundle restore/rollback",
+    "code": "ops24-windows.ps1",
+    "test": "test_disabled_install_status_task_and_offline_restore_with_activation_hold",
+    "status": "PASS_ACTUAL_ISOLATED_WINDOWS_CONTROLLER"
+  },
+  {
+    "requirement": "B4 288/48 slots/uptime/breaker",
+    "code": "ops24_runtime.RuntimeJournal",
+    "test": "test_planned_24h_is_not_elapsed_proof_and_enumerates_all_slots; test_elapsed_wall_time_does_not_replace_observed_process_uptime; test_circuit_breaker_and_ban_require_explicit_recovery",
+    "status": "PASS_FIXTURES_24H_NOT_STARTED"
+  },
+  {
+    "requirement": "B5 protected release activation",
+    "code": "ops24-worker.activation",
+    "test": "test_reviewed_proof_from_another_release_cannot_enable_current_code; test_unreviewed_activation_cannot_be_replaced_by_bare_flags",
+    "status": "PASS_TARGETED_ACTUAL_APPROVALS_NOT_CREATED"
+  },
+  {
+    "requirement": "B6 reboot/logoff/network real service",
+    "code": "disabled task deployment not activated",
+    "test": "No actual reboot/logoff performed",
+    "status": "NOT_PROVEN_REQUIRES_GATED_DEPLOYMENT"
+  },
+  {
+    "requirement": "C1 original-source research replay",
+    "code": "ops24_science.intake/legacy_research_replay",
+    "test": "test_science_intake_replays_original_bytes_without_qualification; test_legacy_replay_is_a_new_offline_calculation_not_a_rewrite",
+    "status": "SOURCE_REPLAY_ONLY_SCIENCE_NOT_APPROVED"
+  },
+  {
+    "requirement": "C2 DEV/OOS/forward/cost/precision/recall",
+    "code": "existing development-only policies retained",
+    "test": "No qualified independent longitudinal outcome dataset in this capture",
+    "status": "NOT_APPROVED_NO_WINNER_CLAIM"
+  },
+  {
+    "requirement": "C3 Telegram/SQL/trading",
+    "code": "No sender/provisioning/trading implementation activated",
+    "test": "No new external delivery test",
+    "status": "OUT_OF_THIS_SCOPE_SQL_DEFERRED_TRADING_NONE"
+  },
+  {
+    "requirement": "D1 GitHub source reproduction",
+    "code": "fresh final-source clone",
+    "test": "41/41 Windows tests same HEAD/TREE",
+    "status": "PASS"
+  },
+  {
+    "requirement": "D2 GitHub receipt hash readback",
+    "code": "privacy-screened evidence branch",
+    "test": "fresh remote clone SHA256SUMS verification recorded in handoff",
+    "status": "FINAL_READBACK_REQUIRED"
+  }
+]

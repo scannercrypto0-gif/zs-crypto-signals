@@ -39,5 +39,5 @@ for p in OUT.rglob('*'):
 if findings:raise RuntimeError(json.dumps(findings))
 dump(OUT/'screening.json',dict(status='PASS_AUTOMATED_SCREEN_AND_ALLOWLIST',repo_visibility='private',secrets_uploaded=False,market_raw_bodies_uploaded=False,notes='Only selected nonsecret receipts/reports/clock OS provenance; built-in Windows service SIDs are public OS identities. Historical attempts are labelled separately.',findings=[]))
 rows=[dict(path=p.relative_to(OUT).as_posix(),bytes=p.stat().st_size,sha256=sha(p.read_bytes())) for p in sorted(OUT.rglob('*')) if p.is_file() and p.name!='SHA256SUMS.json']
-dump(OUT/'SHA256SUMS.json',dict(schema='zs.ops24.evidence-hashes.v1',source_head='fda01bb5317ef2ed12697d3e6993796b2ae52d42',source_tree='2594b47632100b561dff0a0f4309e1779d91dde7',files=rows))
+dump(OUT/'SHA256SUMS.json',dict(schema='zs.ops24.evidence-hashes.v1',source_head='8c52be6f9c5d7a49af19bf68b1d8d50bd63a5b72',source_tree='dcf6a9b1abc2a62c9b91891e605dfcbdccf2bd98',files=rows))
 print(json.dumps(dict(files=len(rows),bytes=sum(r['bytes'] for r in rows),hash_manifest_sha256=sha((OUT/'SHA256SUMS.json').read_bytes()),screen='PASS')))

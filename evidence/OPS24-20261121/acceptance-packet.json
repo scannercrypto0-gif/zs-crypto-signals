@@ -1,0 +1,309 @@
+{
+  "ci": "NO_CHECKS_CONFIGURED_NO_CI_PASS_CLAIM",
+  "deployment": {
+    "installed_runtime_unchanged": true,
+    "main_changed": false,
+    "pr75_changed": false,
+    "pr76_draft": true,
+    "real_reboot_executed": false,
+    "soak_started": false,
+    "task_enabled": false,
+    "task_registered": false
+  },
+  "full_market": {
+    "boundary_ms": 1795255200000,
+    "budget": {
+      "active": 0,
+      "bytes": 9666506,
+      "cycle": "cb0bac89a7da52b3b24425e676f5ca52bbc8e08a91f2db0f279d29fe763bfbdd",
+      "effective_weight_limit": 5500,
+      "halt": null,
+      "id": 1,
+      "policy": "e176128207cf65a18d7e9d338255bce97c5806a921a8ba756e61cb093097d93f",
+      "request_cap": 227,
+      "requests": 227,
+      "reserved": 0,
+      "started": 879267.921,
+      "used": 2036,
+      "wall": 1795255202.396825,
+      "weight": 552,
+      "weight_cap": 552
+    },
+    "decision_at": "2026-11-21T10:01:01.771674Z",
+    "discovered": 3751,
+    "eligible": 56,
+    "head": "8c52be6f9c5d7a49af19bf68b1d8d50bd63a5b72",
+    "inventory_id": "7820b6db7876ee7fa9b2302a8e0927af9926703557dcf43a80e60b33de37ef5c",
+    "metrics": {
+      "capture_seconds": 59.48499999998603,
+      "known_transport_attempts": 227,
+      "mean_request_seconds": 0.27029074889867843,
+      "p95_request_seconds": 0.281,
+      "requests_measured": 227,
+      "unresolved_requests": 0
+    },
+    "missing": 0,
+    "stop": null,
+    "transport_profile": "REST_HTTPS_KEEPALIVE_THREAD_LOCAL_V1",
+    "tree": "dcf6a9b1abc2a62c9b91891e605dfcbdccf2bd98",
+    "validated": 56
+  },
+  "github_evidence_sync": "READBACK_VERIFICATION_REPORTED_IN_HANDOFF_COMMENT",
+  "github_reproduction": {
+    "clean": true,
+    "errors": 0,
+    "failures": 0,
+    "finished_utc": "2026-11-21T09:54:03.5944614Z",
+    "head": "8c52be6f9c5d7a49af19bf68b1d8d50bd63a5b72",
+    "network_attempts": 0,
+    "powershell": "5.1.26100.9818",
+    "python": "3.12.10",
+    "schema": "zs.ops24.windows-acceptance.v1",
+    "skipped": 0,
+    "started_utc": "2026-11-21T09:53:28.9820970Z",
+    "success": true,
+    "suites": [
+      {
+        "exit": 0,
+        "result": {
+          "duration_seconds": 11.297,
+          "errors": 0,
+          "failures": 0,
+          "network_scope": "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS",
+          "passed": 24,
+          "python_network_attempts": 0,
+          "skipped": 0,
+          "success": true,
+          "suite": "test_ops24",
+          "tests": 24
+        },
+        "stderr_sha256": "462425b98727172bc768cbcc575a593b7752d2170fed20150c0ccaa4d73ca568",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "suite": "test_ops24"
+      },
+      {
+        "exit": 0,
+        "result": {
+          "duration_seconds": 8.625,
+          "errors": 0,
+          "failures": 0,
+          "network_scope": "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS",
+          "passed": 8,
+          "python_network_attempts": 0,
+          "skipped": 0,
+          "success": true,
+          "suite": "test_ops24_runtime",
+          "tests": 8
+        },
+        "stderr_sha256": "7ce76225222a100dc76afd8c5299c847f8f3c26a5d47f9fa3029442a3b011eb7",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "suite": "test_ops24_runtime"
+      },
+      {
+        "exit": 0,
+        "result": {
+          "duration_seconds": 0.282,
+          "errors": 0,
+          "failures": 0,
+          "network_scope": "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS",
+          "passed": 7,
+          "python_network_attempts": 0,
+          "skipped": 0,
+          "success": true,
+          "suite": "test_ops24_normal_clock",
+          "tests": 7
+        },
+        "stderr_sha256": "fd925a88017857b5f1497da0e609710adeb38f7d98597deda475b9bca0f498c5",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "suite": "test_ops24_normal_clock"
+      },
+      {
+        "exit": 0,
+        "result": {
+          "duration_seconds": 11.141,
+          "errors": 0,
+          "failures": 0,
+          "network_scope": "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS",
+          "passed": 1,
+          "python_network_attempts": 0,
+          "skipped": 0,
+          "success": true,
+          "suite": "test_ops24_control",
+          "tests": 1
+        },
+        "stderr_sha256": "d3b608b5db0d4179bb5980997012ff3be661e3aeb4df2e6f624e5ad02b235f9e",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "suite": "test_ops24_control"
+      },
+      {
+        "exit": 0,
+        "result": {
+          "duration_seconds": 0.407,
+          "errors": 0,
+          "failures": 0,
+          "network_scope": "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS",
+          "passed": 1,
+          "python_network_attempts": 0,
+          "skipped": 0,
+          "success": true,
+          "suite": "test_marketwide_capture.MarketCaptureTests.test_exact_eleventh_http_receipt_accepted_twelfth_forbidden",
+          "tests": 1
+        },
+        "stderr_sha256": "fc4ff484292095526d02f5c8b8908d16ef82150d8d9b7f113c651bb4e834c109",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "suite": "test_marketwide_capture.MarketCaptureTests.test_exact_eleventh_http_receipt_accepted_twelfth_forbidden"
+      }
+    ],
+    "tests": 41,
+    "tree": "dcf6a9b1abc2a62c9b91891e605dfcbdccf2bd98"
+  },
+  "governance_pr": 75,
+  "head": "8c52be6f9c5d7a49af19bf68b1d8d50bd63a5b72",
+  "implementation_pr": 76,
+  "live_effects": {
+    "discovery_prior_calls": 3,
+    "source_scope": "ONE_BOUNDED_PUBLIC_SPOT_SNAPSHOT",
+    "sql_writes": 0,
+    "telegram_calls": 0,
+    "trading_orders": 0
+  },
+  "matrices": {
+    "ENGINEERING": "PASS_TARGETED_WINDOWS_41_REVIEW_PENDING",
+    "FULL_MARKET": "MARKET_COVERAGE_VERIFIED",
+    "QV1": "SCIENCE_NOT_APPROVED",
+    "SQL": "DEFERRED",
+    "STABILITY_24H": "NOT_STARTED_NOT_PROVEN",
+    "TELEGRAM_E2E": "NOT_EXECUTED_NO_NEW_PERMISSION",
+    "TRADING": "NONE"
+  },
+  "next_gates": [
+    "INDEPENDENT_PM_EXACT_CODE_CLOCK_PROFILE_AND_WINDOWS_EVIDENCE_REVIEW",
+    "ACTUAL_LEAST_PRIVILEGE_TASK_LOGOFF_REBOOT_STOP_DEPLOYMENT_PROOF",
+    "SEPARATE_OWNER_EXACT_HEAD_MERGE_DEPLOYMENT_APPROVAL",
+    "ONLY_THEN_FINITE_24H_READ_ONLY_SOAK_288_HEALTH_48_BOUNDARIES"
+  ],
+  "operational_clock": {
+    "independent_cryptographic_utc": "NOT_PROVEN",
+    "independent_profile_review": "PENDING_PM",
+    "max_conditional_uncertainty_seconds": 0.11109340000000001,
+    "max_sync_age_seconds": 139.0042951,
+    "original_rpc_failures_retained": true,
+    "profile": "WINDOWS_STATUS_PROTECTED_REGISTRY_V1",
+    "statuses": [
+      "OPERATIONAL_TIME_ACCEPTED",
+      "OPERATIONAL_TIME_ACCEPTED",
+      "OPERATIONAL_TIME_ACCEPTED"
+    ],
+    "witnesses": 3
+  },
+  "schema": "ZS_P0_OPS_FULL_MARKET_24H_ENGINEERING_PACKET_001",
+  "tree": "dcf6a9b1abc2a62c9b91891e605dfcbdccf2bd98",
+  "windows": {
+    "clean": true,
+    "errors": 0,
+    "failures": 0,
+    "finished_utc": "2026-11-21T09:53:05.9827369Z",
+    "head": "8c52be6f9c5d7a49af19bf68b1d8d50bd63a5b72",
+    "network_attempts": 0,
+    "powershell": "5.1.26100.9818",
+    "python": "3.12.10",
+    "schema": "zs.ops24.windows-acceptance.v1",
+    "skipped": 0,
+    "started_utc": "2026-11-21T09:52:30.7668161Z",
+    "success": true,
+    "suites": [
+      {
+        "exit": 0,
+        "result": {
+          "duration_seconds": 11.687,
+          "errors": 0,
+          "failures": 0,
+          "network_scope": "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS",
+          "passed": 24,
+          "python_network_attempts": 0,
+          "skipped": 0,
+          "success": true,
+          "suite": "test_ops24",
+          "tests": 24
+        },
+        "stderr_sha256": "a79379742312699198ebe3440214024667409d53c7a61e8ab78f971594798c7a",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "suite": "test_ops24"
+      },
+      {
+        "exit": 0,
+        "result": {
+          "duration_seconds": 8.516,
+          "errors": 0,
+          "failures": 0,
+          "network_scope": "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS",
+          "passed": 8,
+          "python_network_attempts": 0,
+          "skipped": 0,
+          "success": true,
+          "suite": "test_ops24_runtime",
+          "tests": 8
+        },
+        "stderr_sha256": "d654f86667b9aa71381d5fb309726ac32b838216507b28c0e52d082e7b85da9a",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "suite": "test_ops24_runtime"
+      },
+      {
+        "exit": 0,
+        "result": {
+          "duration_seconds": 0.203,
+          "errors": 0,
+          "failures": 0,
+          "network_scope": "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS",
+          "passed": 7,
+          "python_network_attempts": 0,
+          "skipped": 0,
+          "success": true,
+          "suite": "test_ops24_normal_clock",
+          "tests": 7
+        },
+        "stderr_sha256": "4a2074cfc4b5b1be078b17d3c10f812241091c3c4afb131cef190b58aa010c69",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "suite": "test_ops24_normal_clock"
+      },
+      {
+        "exit": 0,
+        "result": {
+          "duration_seconds": 11.562,
+          "errors": 0,
+          "failures": 0,
+          "network_scope": "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS",
+          "passed": 1,
+          "python_network_attempts": 0,
+          "skipped": 0,
+          "success": true,
+          "suite": "test_ops24_control",
+          "tests": 1
+        },
+        "stderr_sha256": "661924bb7ea5c5187c14c991ca59a80ac7e3a0d74f7f37ce270ed490c41aaf8d",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "suite": "test_ops24_control"
+      },
+      {
+        "exit": 0,
+        "result": {
+          "duration_seconds": 0.328,
+          "errors": 0,
+          "failures": 0,
+          "network_scope": "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS",
+          "passed": 1,
+          "python_network_attempts": 0,
+          "skipped": 0,
+          "success": true,
+          "suite": "test_marketwide_capture.MarketCaptureTests.test_exact_eleventh_http_receipt_accepted_twelfth_forbidden",
+          "tests": 1
+        },
+        "stderr_sha256": "a0c97a662dc0b656dc8577608aeead81293c9ded5b3da2434e5d0403a242e5af",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "suite": "test_marketwide_capture.MarketCaptureTests.test_exact_eleventh_http_receipt_accepted_twelfth_forbidden"
+      }
+    ],
+    "tests": 41,
+    "tree": "dcf6a9b1abc2a62c9b91891e605dfcbdccf2bd98"
+  }
+}
