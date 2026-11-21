@@ -1,0 +1,87 @@
+{
+  "schema": "zs.ops77.clock-diagnostic.v1",
+  "source_head": "8acea8a86f6d9d86f664af7f488fd7f7b7e404a5",
+  "source_tree": "7ac2612914c7b7bda97b09296d905dad751dfb77",
+  "files": [
+    {
+      "path": "OPS77-clock-diagnostic-tests/test_ops24_control.json",
+      "bytes": 274,
+      "sha256": "07ca784e90684121ed5c4ba89c89c9500b11b27bebb0283bd12b50cff0d8b28c"
+    },
+    {
+      "path": "OPS77-clock-diagnostic-tests/test_ops24_control.stderr.raw.txt",
+      "bytes": 1420,
+      "sha256": "5b441d09332bebe848590e99ffe8c892476a192fcd07c6eeb30dd1640a5e3ff8"
+    },
+    {
+      "path": "OPS77-clock-diagnostic-tests/test_ops24_control.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-clock-diagnostic-tests/test_ops24_normal_clock.json",
+      "bytes": 278,
+      "sha256": "8a4cf6333111626cb84181bb84ae6f2818501d98b5dcb3ebb651026fafe447d4"
+    },
+    {
+      "path": "OPS77-clock-diagnostic-tests/test_ops24_normal_clock.stderr.raw.txt",
+      "bytes": 1507,
+      "sha256": "638530335116def0c8bdb98c44dc796c6c3aa94d7696e509dd582ea240154074"
+    },
+    {
+      "path": "OPS77-clock-diagnostic-tests/test_ops24_normal_clock.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-clock-diagnostic-reproduction/test_ops24_control.json",
+      "bytes": 274,
+      "sha256": "7aa0a26b911156319731428d6e8ed6dd7324141bb3b2a4c4623c6cc8380a2e78"
+    },
+    {
+      "path": "OPS77-clock-diagnostic-reproduction/test_ops24_control.stderr.raw.txt",
+      "bytes": 1420,
+      "sha256": "f457608b6d013430794d1fc867e332513da045d5b9461f5df9a37a8d26f005fe"
+    },
+    {
+      "path": "OPS77-clock-diagnostic-reproduction/test_ops24_control.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-clock-diagnostic-reproduction/test_ops24_normal_clock.json",
+      "bytes": 278,
+      "sha256": "c761652a9849a198dbc7e03739f5bdc8fdb174f9d41b7ef64e486f91345d9e0b"
+    },
+    {
+      "path": "OPS77-clock-diagnostic-reproduction/test_ops24_normal_clock.stderr.raw.txt",
+      "bytes": 1507,
+      "sha256": "d1f47ee42ba0c26a968a22764d33d3c6eb16e74157fadf9214e5c86a402e9e1a"
+    },
+    {
+      "path": "OPS77-clock-diagnostic-reproduction/test_ops24_normal_clock.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "original-attempt/task-probe-report.json",
+      "bytes": 1129,
+      "sha256": "28eec2ec10ab90215b4a1d143c1af7e551070af9496637200ba2f2ced0ec0eec"
+    },
+    {
+      "path": "original-attempt/task.stdout.raw.txt",
+      "bytes": 72,
+      "sha256": "891837c0fc5942a7b0c4180ef95b78faa8fc03ca7fb5a01ffd42ca6dcd9f433a"
+    },
+    {
+      "path": "original-attempt/task.stderr.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "original-attempt/task.exit.txt",
+      "bytes": 1,
+      "sha256": "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35"
+    }
+  ]
+}
