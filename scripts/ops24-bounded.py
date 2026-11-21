@@ -8,7 +8,7 @@ import sys
 import time
 
 from zs_smart_gate.ops24_budget import Budget, Hold
-from zs_smart_gate.ops24_clock import check_clock, is_admin
+from zs_smart_gate.ops24_clock import check_clock, is_admin, protected_authority
 from zs_smart_gate.ops24_runtime import resources
 from zs_smart_gate.ops24_source import Client, atomic, discover, scan
 from zs_smart_gate.ops_windows_watchdog import START, run_tree
@@ -46,10 +46,15 @@ def main():
     code_tree=subprocess.check_output(["git","-C",str(source),"rev-parse","HEAD^{tree}"],text=True).strip()
     cycle=digest(canonical([code_head,code_tree,args.boundary])) if args.cycle_child else "discovery-"+str(time.time_ns())
     budget=Budget(output,cycle)
+    if args.runtime_root:
+        protected_authority(args.runtime_root)
     started_cpu=time.process_time()
+    clock_proof=[None]
     def healthy():
         try:
-            resources(output)
+            resource=resources(args.runtime_root or output)
+            if resource["disk_bytes"]+2*16*1024*1024+65536>1024*1024*1024:
+                return False
             if time.process_time()-started_cpu>60:
                 return False
             if args.runtime_root:
@@ -60,12 +65,14 @@ def main():
                 head=subprocess.check_output(["git","-C",str(source),"rev-parse","HEAD"],text=True).strip()
                 tree=subprocess.check_output(["git","-C",str(source),"rev-parse","HEAD^{tree}"],text=True).strip()
                 config=json.loads((root/"release.json").read_bytes())
-                check_clock(json.loads((root/"clock.json").read_bytes()),
+                envelope=json.loads((root/"clock.json").read_bytes())
+                clock_proof[0]=check_clock(envelope,
                     (root/"authority.public.pem").read_bytes(),config["authority_sha256"],head=head,tree=tree)
+                atomic(output/("clock-"+clock_proof[0]["witness_sha256"]+".private.json"),canonical(envelope))
             return True
         except (Hold,OSError,ValueError,KeyError):
             return False
-    client=Client(budget,guard=healthy)
+    client=Client(budget,guard=healthy,clock_receipt=lambda:clock_proof[0])
     if args.observe_source:
         result=dict(head=code_head,tree=code_tree,time_trust="HOST_TIME_CONDITIONAL_UNVERIFIED",status="SOURCE_OBSERVATION_PENDING",full_market="BLOCKED_CLOCK_WITNESS_NOT_DEPLOYED",
                     live_e2e="NOT_PROVEN",qualified_signals=0,telegram_calls=0,sql_writes=0)

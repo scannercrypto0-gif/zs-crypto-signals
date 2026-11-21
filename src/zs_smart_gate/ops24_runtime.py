@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import shutil
 import sqlite3
+import uuid
 import time
 
 from .ops24_budget import Hold
@@ -22,6 +23,8 @@ class RuntimeJournal:
                 CREATE TABLE IF NOT EXISTS windows(id TEXT PRIMARY KEY,start INTEGER,end INTEGER,release TEXT);
                 CREATE TABLE IF NOT EXISTS slots(window TEXT,kind TEXT,at INTEGER,state TEXT,payload BLOB,sha TEXT,
                     PRIMARY KEY(window,kind,at));
+                CREATE TABLE IF NOT EXISTS sessions(
+                    id TEXT PRIMARY KEY,window TEXT,wall REAL,mono REAL,last REAL,closed INTEGER);
                 CREATE TABLE IF NOT EXISTS control(id INTEGER PRIMARY KEY, failures INTEGER, retry_at REAL, halt TEXT);
                 INSERT OR IGNORE INTO control VALUES(1,0,0,NULL);
             """)
@@ -59,6 +62,16 @@ class RuntimeJournal:
             if changed!=1:
                 raise Hold("SLOT_REPLAY_OR_CONFLICT")
 
+    def start_session(self, window, wall, mono):
+        identity=uuid.uuid4().hex
+        with closing(self.open()) as db:
+            db.execute("INSERT INTO sessions VALUES(?,?,?,?,?,0)",(identity,window,wall,mono,mono))
+        return identity
+
+    def heartbeat(self, session, mono, *, closed=False):
+        with closing(self.open()) as db:
+            db.execute("UPDATE sessions SET last=?,closed=? WHERE id=? AND closed=0",(mono,int(closed),session))
+
     def missed(self, window, now):
         # Never change a started/unknown operation into an unattempted slot.
         with closing(self.open()) as db:
@@ -81,15 +94,25 @@ class RuntimeJournal:
             start,end,release = db.execute("SELECT start,end,release FROM windows WHERE id=?",(window,)).fetchone()
             rows = list(db.execute("SELECT kind,at,state,payload,sha FROM slots WHERE window=? ORDER BY at,kind",(window,)))
             control = db.execute("SELECT failures,retry_at,halt FROM control").fetchone()
+            sessions=list(db.execute("SELECT wall,mono,last,closed FROM sessions WHERE window=?",(window,)))
         slots=[]
         for kind,at,state,raw,pin in rows:
             if raw is not None and digest(raw)!=pin:
                 raise Hold("RUNTIME_JOURNAL_CORRUPTION")
             slots.append(dict(kind=kind,at=at,state=state,payload=json.loads(raw) if raw else None))
-        complete = now>=end and all(s["state"]=="PASS" for s in slots)
+        observed=0
+        for session_wall,session_mono,last,closed in sessions:
+            first=session_mono+max(0,start-session_wall)
+            final=min(last,session_mono+max(0,end-session_wall))
+            observed+=max(0,final-first)
+        observed=min(86400,observed)
+        complete = now>=end and observed>=86400 and all(s["state"]=="PASS" for s in slots)
         return dict(window=window,start=start,end=end,release=release,
                     elapsed_seconds=max(0,min(now,end)-start),planned_health=288,planned_boundaries=48,
                     slots=slots,complete_elapsed=now>=end,
+                    observed_uptime_lower_bound_seconds=observed,
+                    unobserved_seconds_upper_bound=max(0,min(now,end)-start-observed),
+                    unclosed_sessions=sum(not row[3] for row in sessions),
                     stability="24H_COMPLETE" if complete else "24H_STABILITY_NOT_PROVEN",
                     breaker=dict(failures=control[0],retry_at=control[1],halt=control[2]))
 
@@ -131,14 +154,19 @@ def supervisor(root, window, *, activation, run_cycle, clock, wall=time.time, sl
     with process_lock(root/"lock") as owned:
         if not owned:
             raise Hold("SINGLETON_ALREADY_RUNNING")
+        session=journal.start_session(window,wall(),time.monotonic())
         while True:
             current=wall()
+            journal.heartbeat(session,time.monotonic())
             report=journal.report(window,current)
             if current>=report["end"]:
-                return report
+                journal.missed(window,current)
+                journal.heartbeat(session,time.monotonic(),closed=True)
+                return journal.report(window,current)
             if (root/"STOP_REQUESTED").exists() or (root/"DISABLED").exists() or not activation():
                 atomic(root/"stopped.json",canonical(dict(at=current,reason="OPERATOR_STOP_OR_ACTIVATION_REVOKED")))
-                return report
+                journal.heartbeat(session,time.monotonic(),closed=True)
+                return journal.report(window,current)
             journal.missed(window,current)
             report=journal.report(window,current)
             for slot in report["slots"]:

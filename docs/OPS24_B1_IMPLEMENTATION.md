@@ -29,7 +29,7 @@ Estimated quota is not proof of current IP headroom. The first exchangeInfo must
 
 ops24_clock verifies RSA3072+ signatures against a pinned public key, binds HEAD/TREE and the owner-approved operational clock policy, re-assesses signed Windows Time observations, and limits witness age to 30s. Invalid signatures, future/stale data, wrong code/key/source/policy and wall/monotonic/boot changes cause HOLD. This does not prove independent cryptographic UTC for signal science.
 
-The administrator-only collect function executes only the fixed Windows Time command list. No signing key, privileged recurring publisher, certificate or trust directory is provisioned in this package. The publisher's code/import chain, admin-only private key, parent directory ACLs and unmodifiable worker public-key pin need security review and owner-Windows deployment proof. A JSON accepted flag alone is insufficient. G2 remains OPEN.
+The administrator-only collect function executes only the fixed Windows Time command list. No signing key, privileged recurring publisher, certificate or trust directory is provisioned in this package. The publisher's code/import chain, admin-only private key, parent directory ACLs and unmodifiable worker public-key pin need security review. The worker checks admin/SYSTEM ownership and denies nonprivileged mutation rights along that trust chain; a writable pin is refused. These checks and owner-Windows deployment proof. A JSON accepted flag alone is insufficient. G2 remains OPEN.
 
 InstallDisabled creates a disabled release pointer and SHA-checked Git bundle. BuildTask emits disabled S4U/LeastPrivilege/IgnoreNew XML, uniquely named per owned root. Register/Enable refuse a missing protected authority and require signed proof hashes for engineering, full-market, normal-worker, stop/rollback and owner merge gates. No bare enable flag starts a worker.
 
@@ -37,7 +37,7 @@ Stop/Disable have independent markers. Upgrade requires disabled state and an ex
 
 ## Stability and science
 
-The frozen 24h journal enumerates 288 health slots and 48 half-hour opportunities with PLANNED/CLAIMED/PASS/PARTIAL/HOLD/MISSED states and payload hashes. Unknown reservations survive restart. Three failures latch a breaker; bans and unknown requests require explicit recovery. CPU/memory/disk, queue completion, clock, quota, missed slots and corruption affect status. No 24h completion follows from simulating slots or merely running a process.
+The frozen 24h journal enumerates 288 health slots and 48 half-hour opportunities with PLANNED/CLAIMED/PASS/PARTIAL/HOLD/MISSED states and payload hashes. Unknown reservations survive restart. Three failures latch a breaker; bans and unknown requests require explicit recovery. Monotonic session heartbeats supply an observed uptime lower bound and an unobserved-time upper bound. A complete wall-clock window and fixture PASS slots without observed sessions cannot pass 24h stability. CPU/memory/disk, queue completion, clock, quota, missed slots and corruption affect status. No 24h completion follows from simulating slots or merely running a process.
 
 ops24_science verifies original bodies, reconstructs common-decision inputs and replays directional outputs. It does not mutate real qualification registries or invent outcomes. Existing hypotheses remain development-only. Independent PIT, preregistered DEV/OOS/forward, costs, sample size and directional scientific acceptance remain open; precision/recall/calibration/after-cost returns stay unavailable without eligible outcomes.
 

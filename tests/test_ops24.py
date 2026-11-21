@@ -284,3 +284,36 @@ class Ops24RuntimeTests(unittest.TestCase):
             self.assertEqual(result["validated"],0)
             self.assertEqual(result["coverage"],"MARKET_COVERAGE_PARTIAL")
             self.assertTrue(all(row["state"]=="DATA_INVALID" for row in result["rows"]))
+
+    def test_science_intake_replays_original_bytes_without_qualification(self):
+        from zs_smart_gate.ops24_science import intake
+        with tempfile.TemporaryDirectory() as folder:
+            market=FakeMarket(3)
+            client=Client(Budget(folder,"cycle"),get=market.get,guard=lambda:True,stamp=market.stamp)
+            result=scan(client,boundary_ms=market.boundary,wall=lambda:market.epoch,stamp=market.stamp)
+            report=intake(folder)
+            self.assertEqual(report["events"],3)
+            self.assertEqual(report["signals_created"],0)
+            self.assertFalse(report["up_qualified"])
+            self.assertFalse(report["down_qualified"])
+            self.assertIsNone(report["precision"])
+            self.assertIsNone(report["return_after_costs"])
+            first=next(Path(folder).glob("*.private"))
+            first.write_bytes(b"corruption")
+            with self.assertRaises(Hold):
+                intake(folder)
+
+    def test_receive_and_final_clock_fingerprints_are_retained(self):
+        with tempfile.TemporaryDirectory() as folder:
+            market=FakeMarket(2)
+            proof=dict(status="SYNTHETIC_TEST_CLOCK",witness_sha256="a"*64)
+            client=Client(Budget(folder,"cycle"),get=market.get,guard=lambda:True,
+                          stamp=market.stamp,clock_receipt=lambda:proof)
+            result=scan(client,boundary_ms=market.boundary,wall=lambda:market.epoch,stamp=market.stamp)
+            self.assertEqual(result["decision_clock"],proof)
+            self.assertEqual(result["metrics"]["requests_measured"],11)
+            self.assertGreaterEqual(result["metrics"]["p95_request_seconds"],0)
+            for path in Path(folder).glob("*.receipt.json"):
+                receipt=json.loads(path.read_bytes())
+                self.assertEqual(receipt["started_clock"],proof)
+                self.assertEqual(receipt["received_clock"],proof)

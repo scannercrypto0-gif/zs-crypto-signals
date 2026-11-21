@@ -1,7 +1,9 @@
 """B1 source acquisition: bounded concurrency, one inventory/boundary/decision."""
 from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
+from contextlib import closing
 from datetime import datetime, timezone
 import json
+import math
 import os
 from pathlib import Path
 import time
@@ -47,8 +49,9 @@ def public_get(path, params, timeout, limit):
 
 
 class Client:
-    def __init__(self, budget, *, get=public_get, guard=lambda: False, stamp=now):
+    def __init__(self, budget, *, get=public_get, guard=lambda: False, stamp=now, clock_receipt=lambda: None):
         self.budget, self.transport, self.guard, self.stamp = budget, get, guard, stamp
+        self.clock_receipt=clock_receipt
 
     def get(self, path, params):
         if not self.guard():
@@ -57,7 +60,8 @@ class Client:
         if cached is not None:
             raw = (self.budget.root/(key+".private")).read_bytes()
             return {**cached, "payload": json.loads(raw)}
-        receipt = dict(path=path,params=params,started_at=self.stamp())
+        receipt = dict(path=path,params=params,started_at=self.stamp(),started_mono_ns=time.monotonic_ns(),
+                       started_clock=self.clock_receipt())
         try:
             status, headers, raw = self.transport(
                 path, params, max(.001,min(self.budget.policy.request_timeout,self.budget.remaining())),limit)
@@ -67,7 +71,7 @@ class Client:
         except (OSError, TimeoutError):
             self.budget.finish(key,limit,receipt,reason="TRANSPORT_UNKNOWN_NO_REISSUE")
             raise Hold("TRANSPORT_UNKNOWN_NO_REISSUE") from None
-        receipt.update(received_at=self.stamp(),http_status=status,body_bytes=len(raw),
+        receipt.update(received_at=self.stamp(),received_mono_ns=time.monotonic_ns(),http_status=status,body_bytes=len(raw),
                        body_sha256=digest(raw))
         atomic(self.budget.root/(key+".private"), raw)
         header = next((v for k,v in headers.items() if k.lower()=="x-mbx-used-weight-1m"), None)
@@ -99,6 +103,7 @@ class Client:
                 self.budget.adopt_server_limit(limits[0])
             except (Hold,ValueError,KeyError,TypeError):
                 reason="UNVERIFIED_SERVER_RATE_LIMIT"
+        receipt["received_clock"]=self.clock_receipt()
         atomic(self.budget.root/(key+".receipt.json"),canonical(receipt))
         self.budget.finish(key,limit,receipt,reason=reason)
         return {**receipt,"payload":payload}
@@ -191,6 +196,7 @@ def scan(client, *, boundary_ms, wall=time.time, stamp=now):
                 r["source_validated"] for r in rows) else "DATA_INVALID",directions=rows,
                 input_sha256=digest(canonical(packet))))
         result["decision_at"] = decision
+        result["decision_clock"]=client.clock_receipt()
         result["validated"] = sum(row["state"]=="VALIDATED" for row in result["rows"])
         result["missing"] = len(eligible)-result["validated"]
         result["coverage"] = ("MARKET_COVERAGE_VERIFIED" if
@@ -208,6 +214,14 @@ def scan(client, *, boundary_ms, wall=time.time, stamp=now):
     result["expected_symbols"] = [row["symbol"] for row in eligible]
     result["received_symbols"] = sorted(packets)
     result["budget"] = budget.state()
+    with closing(budget.open()) as db:
+        audited=[json.loads(row[0]) for row in db.execute("SELECT receipt FROM requests WHERE receipt IS NOT NULL")]
+    latency=sorted((r["received_mono_ns"]-r["started_mono_ns"])/1e9 for r in audited
+                   if "received_mono_ns" in r and "started_mono_ns" in r)
+    result["metrics"]=dict(requests_measured=len(latency),
+        mean_request_seconds=sum(latency)/len(latency) if latency else None,
+        p95_request_seconds=latency[math.ceil(.95*len(latency))-1] if latency else None,
+        capture_seconds=budget.mono()-result["budget"]["started"])
     atomic(result_path,canonical(result))
     atomic(pin_path,(digest(canonical(result))+"\n").encode())
     return result

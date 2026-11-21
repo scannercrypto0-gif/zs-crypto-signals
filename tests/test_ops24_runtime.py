@@ -142,3 +142,25 @@ class Ops24SupervisorTests(unittest.TestCase):
             (root/"authority.public.pem").write_text("untrusted")
             with self.assertRaisesRegex(Hold,"PROTECTED_CLOCK_DEPLOYMENT"):
                 module["activation"](root,"a"*40,"b"*40)
+
+    def test_worker_writable_authority_is_not_trusted(self):
+        from zs_smart_gate.ops24_clock import protected_authority
+        with tempfile.TemporaryDirectory(dir="D:/ZS-SMART-GATE/temp") as folder:
+            root=Path(folder)
+            (root/"release.json").write_text("{}")
+            (root/"authority.public.pem").write_text("synthetic untrusted key")
+            with self.assertRaisesRegex(Hold,"TRUST_ACL_NOT_PROVEN"):
+                protected_authority(root)
+
+    def test_elapsed_wall_time_does_not_replace_observed_process_uptime(self):
+        with tempfile.TemporaryDirectory() as folder:
+            journal=RuntimeJournal(folder)
+            window=journal.plan(1800,"head")
+            report=journal.report(window,1800)
+            for row in report["slots"]:
+                journal.reserve(window,row["kind"],row["at"])
+                journal.finish(window,row["kind"],row["at"],"PASS",{})
+            # No actual session ran for 24h; completed fixture slots alone fail.
+            report=journal.report(window,1800+86400)
+            self.assertEqual(report["observed_uptime_lower_bound_seconds"],0)
+            self.assertEqual(report["stability"],"24H_STABILITY_NOT_PROVEN")

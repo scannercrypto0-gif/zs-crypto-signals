@@ -7,10 +7,10 @@ import subprocess
 import sys
 import time
 
-from zs_smart_gate.ops24_budget import Budget, Hold
-from zs_smart_gate.ops24_clock import check_clock, is_admin, verify_envelope
+from zs_smart_gate.ops24_budget import Hold
+from zs_smart_gate.ops24_clock import check_clock, is_admin, verify_envelope, protected_authority
 from zs_smart_gate.ops24_runtime import RuntimeJournal, supervisor
-from zs_smart_gate.ops24_source import Client, atomic, scan
+from zs_smart_gate.ops24_source import atomic
 from zs_smart_gate.stage05_contracts import canonical, digest
 
 
@@ -29,6 +29,7 @@ def activation(root, head, tree):
         raise Hold("PROTECTED_CLOCK_DEPLOYMENT_PENDING")
     if config.get("head")!=head or config.get("tree")!=tree:
         raise Hold("INSTALLED_RELEASE_PIN_MISMATCH")
+    protected_authority(root)
     permit=verify_envelope(json.loads((root/"activation.json").read_bytes()),pem,pin)
     if (permit.get("schema")!="zs.ops24.activation.v1" or permit.get("head")!=head
             or permit.get("tree")!=tree or permit.get("purpose")!="READ_ONLY_RESEARCH_24H"

@@ -91,3 +91,51 @@ def collect(private_key_path, output, *, head, tree):
     envelope = sign(payload,key)
     atomic(output,canonical(envelope))
     return dict(status=result["status"],witness_sha256=digest(canonical(envelope)))
+
+
+def protected_authority(root):
+    """Check the Windows ownership/DACL chain before trusting a deployment pin."""
+    import subprocess
+    root=Path(root).resolve()
+    if os.name!="nt" or root.drive.upper()!="D:":
+        raise Hold("PROTECTED_CLOCK_TRUST_NOT_PROVEN")
+    script=r"""
+$ErrorActionPreference='Stop'
+try {
+ $paths=@((Join-Path $env:OPS24_TRUST_ROOT 'release.json'),(Join-Path $env:OPS24_TRUST_ROOT 'authority.public.pem'))
+ $allowed=@('S-1-5-18','S-1-5-32-544')
+ foreach($file in $paths) {
+  $item=Get-Item -LiteralPath $file -Force
+  if($item.Attributes -band [IO.FileAttributes]::ReparsePoint){exit 70}
+  $acl=Get-Acl -LiteralPath $file
+  $owner=$acl.GetOwner([Security.Principal.SecurityIdentifier]).Value
+  if($owner -notin $allowed){exit 70}
+  foreach($rule in $acl.GetAccessRules($true,$true,[Security.Principal.SecurityIdentifier])){
+   if($rule.AccessControlType -eq 'Allow' -and $rule.IdentityReference.Value -notin $allowed -and
+      ([int64]$rule.FileSystemRights -band 0x000D0156)){exit 70}
+  }
+ }
+ $dir=[IO.Path]::GetFullPath($env:OPS24_TRUST_ROOT)
+ while($dir){
+  $item=Get-Item -LiteralPath $dir -Force
+  if($item.Attributes -band [IO.FileAttributes]::ReparsePoint){exit 70}
+  $acl=Get-Acl -LiteralPath $dir
+  if($acl.GetOwner([Security.Principal.SecurityIdentifier]).Value -notin $allowed){exit 70}
+  foreach($rule in $acl.GetAccessRules($true,$true,[Security.Principal.SecurityIdentifier])){
+   if($rule.AccessControlType -eq 'Allow' -and $rule.IdentityReference.Value -notin $allowed -and
+      ([int64]$rule.FileSystemRights -band 0x000D0040)){exit 70}
+  }
+  $next=Split-Path $dir -Parent
+  if(-not $next -or $next -eq $dir){break}
+  $dir=$next
+ }
+ exit 0
+}catch{exit 71}
+"""
+    result=subprocess.run(
+        [str(Path(os.environ["SystemRoot"])/"System32"/"WindowsPowerShell"/"v1.0"/"powershell.exe"),
+         "-NoProfile","-NonInteractive","-Command",script],
+        env={**os.environ,"OPS24_TRUST_ROOT":str(root)},capture_output=True,timeout=10,
+        creationflags=subprocess.CREATE_NO_WINDOW)
+    if result.returncode!=0:
+        raise Hold("PROTECTED_CLOCK_TRUST_ACL_NOT_PROVEN")
