@@ -31,3 +31,10 @@ No claim of endless operation follows from a finite24h journal. Actual48 source 
 ## Current science/delivery boundary
 
 Clock bounded operational equivalence is accepted by PM; independent cryptographic UTC is not proved. A real source/candidate replay is not qualified signal science. This OPS24 release cannot send Telegram, SQL or trading. Issue77 owner-private TEST delivery and real Stage00-13 adapters are a coordinated separate integration scope; true production alerts require independent directional scientific GO and actual route/ACK/recovery proof. Existing synthetic Stage13 is preserved and cannot be relabelled LIVE.
+
+
+## Actual scheduler diagnostic and profile-independent toolchain
+
+Normal-user registration initially returned0x80070005. The owner's elevated isolated probe registered and launched a least-privilege task, but Scheduler event201 recorded0x80070002 and no Python probe; that is NOT a successful worker or reboot test. The diagnostic is retained, not reclassified as a clock defect. New task diagnostics capture direct stdout/stderr/exit/LastTaskResult before cleanup.
+
+A stdlib-only D-local Python3.12.10 runtime is copied byte-for-byte from the existing installed PSF-signed3.12.10 executable/libraries (no new download, site-packages, registry edit or venv mutation). Its2126-file manifest contains original/copy SHA256; native Python signature is Valid/PSF. All executable/stdlib prefixes were actually verified under D. Original Windows runtime and Python remain untouched. Worker startup also uses the absolute hash-pinned installed Git binary; task XML declares its working directory and isolated Python mode, rather than inheriting the Codex environment. A finite diagnostic wrapper writes original native output to D, without a persistent elevated process.

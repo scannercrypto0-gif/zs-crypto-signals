@@ -36,7 +36,7 @@ if(-not(Test-Path $source)){
 }
 $controller=Join-Path $source 'scripts\ops24-windows.ps1'
 & $controller -Action InstallDisabled -Root $Root -Source $source -Head $head -Tree $tree
-$python='D:\ZS-SMART-GATE\.venv\Scripts\python.exe'
+$python='D:\ZS-SMART-GATE\runtime\python-3.12.10-ops77\python.exe'
 $decision=Join-Path $Root ('standing-'+[guid]::NewGuid().ToString('N')+'.json')
 & $python -B (Join-Path $source 'scripts\ops24-standing-release.py') --head $windows.head --tree $tree --windows $WindowsEvidence --source-proof $SourceEvidence --output $decision
 if($LASTEXITCODE -ne 0){throw 'GENUINE_REVIEW_OR_WINDOWS_SOURCE_EVIDENCE_PENDING'}

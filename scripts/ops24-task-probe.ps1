@@ -1,7 +1,8 @@
 <# Isolated finite Windows Task Scheduler probe: normal token, zero market/Telegram/SQL. #>
 [CmdletBinding()]
 param([Parameter(Mandatory=$true)][string]$Source,[Parameter(Mandatory=$true)][string]$Head,
- [Parameter(Mandatory=$true)][string]$Tree,[Parameter(Mandatory=$true)][string]$Root)
+ [Parameter(Mandatory=$true)][string]$Tree,[Parameter(Mandatory=$true)][string]$Root,
+ [string]$Python='D:\ZS-SMART-GATE\runtime\python-3.12.10-ops77\python.exe')
 $ErrorActionPreference='Stop';Set-StrictMode -Version Latest
 if($PSVersionTable.PSVersion.Major -ne 5 -or $PSVersionTable.PSVersion.Minor -ne 1){throw 'POWERSHELL_51_REQUIRED'}
 foreach($p in @($Source,$Root)){if(-not [IO.Path]::GetFullPath($p).StartsWith('D:\ZS-SMART-GATE\',[StringComparison]::OrdinalIgnoreCase)){throw 'D_OWNED_ROOT_REQUIRED'}}
@@ -12,12 +13,18 @@ $controller=Join-Path $Source 'scripts\ops24-windows.ps1'
 $task='ZS-OPS24-IsolatedProbe-'+[guid]::NewGuid().ToString('N')
 $record=[ordered]@{schema='zs.ops24.task-probe-driver.v2';head=$Head;tree=$Tree;task=$task;origin='ACTUAL_WINDOWS_SCHEDULER';market_calls=0;telegram_calls=0;sql_writes=0;registered=$false;probe_observed=$false;cleanup=$false;real_reboot='NOT_EXECUTED';real_logoff='NOT_EXECUTED'}
 try{
- & $controller -Action InstallDisabled -Root $Root -Source $Source -Head $Head -Tree $Tree
+ & $controller -Action InstallDisabled -Root $Root -Source $Source -Head $Head -Tree $Tree -Python $Python
  if($LASTEXITCODE -ne 0){throw 'DISABLED_INSTALL_FAILED'}
  & $controller -Action BuildTask -Root $Root
  $xmlPath=Join-Path $Root 'worker.disabled.xml'
  $xml=(Get-Content $xmlPath -Raw).Replace(' Serve --root ',' Probe --root ').Replace('<ExecutionTimeLimit>PT25H</ExecutionTimeLimit>','<ExecutionTimeLimit>PT30S</ExecutionTimeLimit>')
  if(-not $xml.Contains(' Probe --root ')-or -not $xml.Contains('<RunLevel>LeastPrivilege</RunLevel>')){throw 'PROBE_TASK_XML_INVALID'}
+ $systemPowerShell=Join-Path ([Environment]::SystemDirectory) 'WindowsPowerShell\v1.0\powershell.exe'
+ $entry=Join-Path $Source 'scripts\ops24-task-entry.ps1'
+ $command=[Security.SecurityElement]::Escape($systemPowerShell)
+ $arguments=[Security.SecurityElement]::Escape('-NoProfile -NonInteractive -ExecutionPolicy Bypass -File "'+$entry+'" -Action Probe -Root "'+$Root+'"')
+ $xml=[regex]::Replace($xml,'<Command>[^<]+</Command>',('<Command>'+$command+'</Command>'))
+ $xml=[regex]::Replace($xml,'<Arguments>[^<]+</Arguments>',('<Arguments>'+$arguments+'</Arguments>'))
  $record.xml_sha256=[BitConverter]::ToString([Security.Cryptography.SHA256]::Create().ComputeHash([Text.Encoding]::Unicode.GetBytes($xml))).Replace('-','').ToLowerInvariant()
  Register-ScheduledTask -TaskName $task -Xml $xml -ErrorAction Stop|Out-Null
  $record.registered=$true
@@ -25,6 +32,15 @@ try{
  Start-ScheduledTask -TaskName $task
  $deadline=[DateTime]::UtcNow.AddSeconds(35)
  while([DateTime]::UtcNow -lt $deadline -and -not(Test-Path (Join-Path $Root 'probe.json'))){Start-Sleep -Milliseconds 250}
+ while([DateTime]::UtcNow -lt $deadline -and (Get-ScheduledTask -TaskName $task).State -eq 'Running'){Start-Sleep -Milliseconds 100}
+ $info=Get-ScheduledTaskInfo -TaskName $task
+ $record.last_task_result=$info.LastTaskResult
+ $record.last_run_utc=$info.LastRunTime.ToUniversalTime().ToString('o')
+ $record.python=$Python
+ foreach($stream in @('stdout','stderr')){
+  $path=Join-Path $Root ('task.'+$stream+'.raw.txt')
+  if(Test-Path $path){$record[($stream+'_sha256')]=(Get-FileHash $path).Hash.ToLowerInvariant()}
+ }
  if(-not(Test-Path (Join-Path $Root 'probe.json'))){throw 'ACTUAL_SCHEDULED_PROBE_NOT_OBSERVED'}
  $probe=Get-Content (Join-Path $Root 'probe.json') -Raw|ConvertFrom-Json
  $record.probe_observed=$true

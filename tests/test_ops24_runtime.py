@@ -127,7 +127,11 @@ class Ops24SupervisorTests(unittest.TestCase):
             root=Path(folder)
             head=subprocess.check_output(['git','-C',str(ROOT),'rev-parse','HEAD'],text=True).strip()
             tree=subprocess.check_output(['git','-C',str(ROOT),'rev-parse','HEAD^{tree}'],text=True).strip()
-            (root/'release.json').write_text(json.dumps(dict(head=head,tree=tree)))
+            import shutil
+            from zs_smart_gate.stage05_contracts import digest
+            git=shutil.which('git')
+            (root/'release.json').write_text(json.dumps(dict(head=head,tree=tree,
+                git_executable=git,git_sha256=digest(Path(git).read_bytes()))))
             process=subprocess.Popen([sys.executable,'-B',str(ROOT/'scripts/ops24-worker.py'),'Serve','--root',str(root)],
                 stdout=subprocess.PIPE,stderr=subprocess.PIPE,creationflags=subprocess.CREATE_NO_WINDOW)
             try:

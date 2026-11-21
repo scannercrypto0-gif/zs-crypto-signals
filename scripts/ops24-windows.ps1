@@ -7,7 +7,7 @@ param(
  [string]$Source,
  [string]$Head,
  [string]$Tree,
- [string]$Python='D:\ZS-SMART-GATE\.venv\Scripts\python.exe'
+ [string]$Python='D:\ZS-SMART-GATE\runtime\python-3.12.10-ops77\python.exe'
 )
 $ErrorActionPreference='Stop'
 if($Action -eq 'Start'){$Action='Enable'}
@@ -56,7 +56,8 @@ if($Action -eq 'InstallDisabled'){
  $bundle=Join-Path $Root ('source-'+$Head+'.bundle')
  if(-not(Test-Path -LiteralPath $bundle)){Invoke-Git -Values @('-C',$Source,'bundle','create',$bundle,'HEAD')}
  $owner=[Security.Principal.WindowsIdentity]::GetCurrent().User.Value
- $record=[ordered]@{schema='zs.ops24.disabled-release.v1';head=$Head;tree=$Tree;source=$Source;python=$Python;owner_sid=$owner;
+ $gitExecutable=(Get-Command git -CommandType Application -ErrorAction Stop).Source
+ $record=[ordered]@{schema='zs.ops24.disabled-release.v1';git_executable=$gitExecutable;git_sha256=(Get-FileHash $gitExecutable).Hash.ToLowerInvariant();head=$Head;tree=$Tree;source=$Source;python=$Python;owner_sid=$owner;
    bundle=$bundle;bundle_sha256=(Get-FileHash $bundle).Hash.ToLowerInvariant();clock_profile='WINDOWS_STATUS_PROTECTED_REGISTRY_V1';enabled=$false}
  Write-Atomic $releasePath ($record|ConvertTo-Json -Depth 5)
  Write-Output "INSTALLED_DISABLED HEAD=$Head TREE=$Tree"
@@ -108,7 +109,7 @@ if($Action -in @('Verify','Health','Evidence')){
 if($Action -eq 'BuildTask'){
  $worker=Join-Path $config.source 'scripts\ops24-worker.py'
  $command=[Security.SecurityElement]::Escape($config.python)
- $arguments=[Security.SecurityElement]::Escape('-B "'+$worker+'" Serve --root "'+$Root+'"')
+ $arguments=[Security.SecurityElement]::Escape('-I -B "'+$worker+'" Serve --root "'+$Root+'"')
  $sid=[Security.SecurityElement]::Escape($config.owner_sid)
  $xml='<?xml version="1.0" encoding="UTF-16"?>'+
  '<Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">'+
@@ -117,7 +118,7 @@ if($Action -eq 'BuildTask'){
  '<Settings><MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy><DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>'+
  '<StopIfGoingOnBatteries>false</StopIfGoingOnBatteries><Enabled>false</Enabled><Hidden>true</Hidden>'+
  '<ExecutionTimeLimit>PT25H</ExecutionTimeLimit></Settings>'+
- '<Actions Context="Owner"><Exec><Command>'+$command+'</Command><Arguments>'+$arguments+'</Arguments></Exec></Actions></Task>'
+ '<Actions Context="Owner"><Exec><Command>'+$command+'</Command><Arguments>'+$arguments+'</Arguments><WorkingDirectory>'+[Security.SecurityElement]::Escape($config.source)+'</WorkingDirectory></Exec></Actions></Task>'
  [IO.File]::WriteAllText((Join-Path $Root 'worker.disabled.xml'),$xml,[Text.Encoding]::Unicode)
  Write-Output 'TASK_XML_DISABLED_LEAST_PRIVILEGE_S4U_REVIEW_REQUIRED'
  return

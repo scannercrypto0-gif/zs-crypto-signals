@@ -16,7 +16,7 @@ if($Dependencies -and -not($Dependencies -match '^[dD]:\\')){throw 'D_DEPENDENCI
 $head=(& git -C $Source rev-parse HEAD|Out-String).Trim()
 $tree=(& git -C $Source rev-parse 'HEAD^{tree}'|Out-String).Trim()
 if($head -cne $ExpectedHead -or $tree -cne $ExpectedTree -or (& git -C $Source status --porcelain)){throw 'SOURCE_PIN_OR_CLEAN_MISMATCH'}
-$python='D:\ZS-SMART-GATE\.venv\Scripts\python.exe'
+$python='D:\ZS-SMART-GATE\runtime\python-3.12.10-ops77\python.exe'
 if(((& $python -c 'import platform; print(platform.python_version())')|Out-String).Trim() -cne '3.12.10'){throw 'PYTHON_31210_REQUIRED'}
 if(Test-Path $Output){throw 'FRESH_OUTPUT_REQUIRED'}
 New-Item -ItemType Directory -Path $Output|Out-Null

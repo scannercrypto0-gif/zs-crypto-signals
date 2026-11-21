@@ -18,10 +18,10 @@ from zs_smart_gate.ops24_source import atomic
 from zs_smart_gate.stage05_contracts import canonical, digest
 
 
-def release(source):
-    if subprocess.check_output(["git","-C",str(source),"status","--porcelain"],text=True).strip():
+def release(source,git="git"):
+    if subprocess.check_output([git,"-C",str(source),"status","--porcelain"],text=True).strip():
         raise Hold("RELEASE_CHECKOUT_DIRTY")
-    return tuple(subprocess.check_output(["git","-C",str(source),"rev-parse",value],text=True).strip()
+    return tuple(subprocess.check_output([git,"-C",str(source),"rev-parse",value],text=True).strip()
                  for value in ("HEAD","HEAD^{tree}"))
 
 
@@ -66,7 +66,11 @@ def main():
             dict(status="DISABLED_OR_NOT_STARTED",stability="24H_STABILITY_NOT_PROVEN")))
         return 0
     source=Path(__file__).resolve().parents[1]
-    head,tree=release(source)
+    installed=json.loads((root/'release.json').read_bytes())
+    git=Path(installed['git_executable'])
+    if not git.is_absolute() or digest(git.read_bytes())!=installed['git_sha256']:
+        raise Hold('PINNED_GIT_TOOLCHAIN_UNVERIFIED')
+    head,tree=release(source,str(git))
     if args.action in ('Probe','Health'):
         from zs_smart_gate.ops24_runtime import resources
         from zs_smart_gate.ops24_normal_clock import system_directory
