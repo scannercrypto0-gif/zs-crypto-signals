@@ -100,6 +100,14 @@ class Intervals:
         now=self.wall()
         with closing(self.open()) as db:
             db.execute('BEGIN IMMEDIATE')
+            # Interrupted reservations become durable unknowns, never free retries.
+            stale=list(db.execute("SELECT token FROM intents WHERE state='RESERVED' AND issued+?<?",(120,now)))
+            if stale:
+                db.executemany("UPDATE intents SET state='UNKNOWN' WHERE token=?",[(r[0],) for r in stale])
+                longest=db.execute('SELECT COALESCE(MAX(seconds),60) FROM limits').fetchone()[0]
+                db.execute('UPDATE control SET until=?,reason=? WHERE id=1',(now+longest+self.timeout+2,'UNKNOWN_READ_COOLDOWN'))
+                db.commit()
+                raise QuotaHold('UNKNOWN_READ_COOLDOWN')
             ctl=db.execute('SELECT * FROM control').fetchone()
             if ctl['reason'] and (ctl['until'] is None or now<ctl['until']):
                 raise QuotaHold(ctl['reason'])
@@ -151,6 +159,9 @@ class Intervals:
         with closing(self.open()) as db:
             db.execute('BEGIN IMMEDIATE')
             intent=db.execute('SELECT * FROM intents WHERE token=?',(token,)).fetchone()
+            if intent is not None and intent['state']=='COMPLETE' and intent['receipt']==digest(canonical(receipt)):
+                db.commit()
+                return  # Explicit same-byte reconciliation after a cycle commit crash.
             if intent is None or intent['state'] not in ('RESERVED','UNKNOWN'):
                 raise QuotaHold('INTERVAL_INTENT_CONFLICT')
             status=receipt.get('http_status')

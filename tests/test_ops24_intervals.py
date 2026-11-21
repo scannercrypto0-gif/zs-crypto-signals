@@ -142,3 +142,25 @@ class AdaptiveIntervalsTests(unittest.TestCase):
             q.reserve('missing','klines',2)
             with self.assertRaises(QuotaHold):q.complete('missing',dict(http_status=200),{})
             with self.assertRaises(QuotaHold):q.complete('missing',dict(http_status=200),{'X-MBX-USED-WEIGHT-1D':'1'})
+
+    def test_crashed_reserved_intent_becomes_unknown_not_free_capacity(self):
+        with tempfile.TemporaryDirectory() as root:
+            q,clock=self.make(root)
+            q.reserve('crashed','klines',2)
+            clock[0]+=130
+            with self.assertRaisesRegex(QuotaHold,'UNKNOWN_READ_COOLDOWN'):
+                q.reserve('restart','klines',2)
+            self.assertEqual(q.report()['unknown'],1)
+            clock[0]+=71
+            q.reserve('new-window','klines',2)
+            with self.assertRaises(QuotaHold):q.reserve('crashed','klines',2)
+
+    def test_same_byte_commit_reconciliation_does_not_double_charge(self):
+        with tempfile.TemporaryDirectory() as root:
+            q,_=self.make(root)
+            q.reserve('ack','klines',2)
+            receipt=dict(http_status=200,http_attempted=True)
+            q.complete('ack',receipt,{'X-MBX-USED-WEIGHT-1M':'20'})
+            before=q.report()
+            q.complete('ack',receipt,{'X-MBX-USED-WEIGHT-1M':'20'})
+            self.assertEqual(before,q.report())

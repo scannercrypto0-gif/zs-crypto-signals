@@ -80,14 +80,19 @@ class RuntimeJournal:
                 ((kind='health' AND at+300<=?) OR (kind='boundary' AND at+90<?))""",
                 (window,now,now))
 
-    def breaker(self, *, now, success, hard_reason=None):
+    def breaker(self, *, now, success, hard_reason=None, provider_until=None):
         with closing(self.open()) as db:
             failures,_,halt = db.execute("SELECT failures,retry_at,halt FROM control").fetchone()
             failures = 0 if success else failures+1
             halt = halt or hard_reason or ("CIRCUIT_BREAKER" if failures>=3 else None)
-            retry = now+(0 if success else min(300,5*(3**min(failures-1,4))))
+            retry = max(provider_until or 0,now+(0 if success else min(300,5*(3**min(failures-1,4)))))
             db.execute("UPDATE control SET failures=?,retry_at=?,halt=? WHERE id=1",(failures,retry,halt))
             return dict(failures=failures,retry_at=retry,halt=halt)
+
+    def resume_after_backoff(self, now):
+        with closing(self.open()) as db:
+            # Only a timed circuit/backoff is cleared. STOP and indefinite bans are not.
+            db.execute("UPDATE control SET failures=0,halt=NULL WHERE id=1 AND retry_at<=? AND halt='CIRCUIT_BREAKER'",(now,))
 
     def report(self, window, now):
         with closing(self.open()) as db:
@@ -168,6 +173,7 @@ def supervisor(root, window, *, activation, run_cycle, clock, wall=time.time, sl
                 journal.heartbeat(session,time.monotonic(),closed=True)
                 return journal.report(window,current)
             journal.missed(window,current)
+            journal.resume_after_backoff(current)
             report=journal.report(window,current)
             for slot in report["slots"]:
                 if slot["state"]!="PLANNED" or not slot["at"]<=current<slot["at"]+(300 if slot["kind"]=="health" else 90):
@@ -187,8 +193,12 @@ def supervisor(root, window, *, activation, run_cycle, clock, wall=time.time, sl
                         payload=run_cycle(slot["at"])
                         state="PASS" if payload.get("coverage")=="MARKET_COVERAGE_VERIFIED" else "PARTIAL"
                         reason=payload.get("stop")
-                        hard=reason if reason and ("HTTP_429" in reason or "HTTP_418" in reason or "UNKNOWN" in reason) else None
-                        journal.breaker(now=wall(),success=state=="PASS",hard_reason=hard)
+                        quota=payload.get('budget',{}).get('provider_intervals',{}).get('control',{})
+                        provider_reason=quota.get('reason')
+                        provider_until=quota.get('until')
+                        hard=reason if provider_reason and provider_until is None else None
+                        journal.breaker(now=wall(),success=state=="PASS",hard_reason=hard,
+                                        provider_until=provider_until)
                     journal.finish(window,slot["kind"],slot["at"],state,payload)
                 except Hold as exc:
                     journal.finish(window,slot["kind"],slot["at"],"HOLD",dict(reason=str(exc)))

@@ -108,3 +108,40 @@ class Ops24SupervisorTests(unittest.TestCase):
         with self.assertRaisesRegex(Hold,'STANDING_RELEASE_SCOPE_OR_PIN_INVALID'):
             verify_cached(dict(schema='zs.ops24.standing-authority.v2',head='old',tree='old'),
                           head='new',tree='new')
+
+    def test_timed_breaker_resumes_but_stop_and_unknown_ban_do_not(self):
+        with tempfile.TemporaryDirectory() as root:
+            journal=RuntimeJournal(root)
+            for _ in range(3):last=journal.breaker(now=10,success=False)
+            journal.resume_after_backoff(last['retry_at']-1)
+            with closing(journal.open()) as db:self.assertEqual(db.execute('SELECT halt FROM control').fetchone()[0],'CIRCUIT_BREAKER')
+            journal.resume_after_backoff(last['retry_at']+1)
+            with closing(journal.open()) as db:self.assertIsNone(db.execute('SELECT halt FROM control').fetchone()[0])
+            journal.breaker(now=1000,success=False,hard_reason='PROVIDER_418_UNKNOWN_EXPIRY')
+            journal.resume_after_backoff(100000)
+            with closing(journal.open()) as db:self.assertEqual(db.execute('SELECT halt FROM control').fetchone()[0],'PROVIDER_418_UNKNOWN_EXPIRY')
+
+    def test_startup_network_or_missing_receipt_hold_stops_without_market(self):
+        import sys,time
+        with tempfile.TemporaryDirectory(dir='D:/ZS-SMART-GATE/temp') as folder:
+            root=Path(folder)
+            head=subprocess.check_output(['git','-C',str(ROOT),'rev-parse','HEAD'],text=True).strip()
+            tree=subprocess.check_output(['git','-C',str(ROOT),'rev-parse','HEAD^{tree}'],text=True).strip()
+            (root/'release.json').write_text(json.dumps(dict(head=head,tree=tree)))
+            process=subprocess.Popen([sys.executable,'-B',str(ROOT/'scripts/ops24-worker.py'),'Serve','--root',str(root)],
+                stdout=subprocess.PIPE,stderr=subprocess.PIPE,creationflags=subprocess.CREATE_NO_WINDOW)
+            try:
+                until=time.monotonic()+12
+                while not (root/'status.json').exists() and time.monotonic()<until and process.poll() is None:
+                    time.sleep(.1)
+                self.assertTrue((root/'status.json').exists())
+                report=json.loads((root/'status.json').read_bytes())
+                self.assertEqual(report['status'],'STARTUP_HOLD')
+                self.assertEqual(report['scope'],'READ_ONLY_NO_MARKET_ACTIVITY')
+                (root/'STOP_REQUESTED').write_text('emergency stop')
+                stdout,stderr=process.communicate(timeout=5)
+                self.assertEqual(process.returncode,2,stderr.decode(errors='replace'))
+                self.assertIn(b'OPERATOR_STOP_OR_DISABLED',stdout)
+                self.assertFalse((root/'cycles').exists())
+            finally:
+                if process.poll() is None:process.kill();process.communicate()

@@ -87,7 +87,26 @@ def main():
               for p in root.rglob('*.json') if p.name not in ('release.json','standing-authority.json')]
         print(json.dumps(dict(head=head,tree=tree,files=rows,scope='LOCAL_HASH_INDEX_NO_SECRET_CONTENT')))
         return 0
-    permit,config,_=activation(root,head,tree)
+    if args.action=='Serve':
+        failures=0
+        while True:
+            if (root/'STOP_REQUESTED').exists() or (root/'DISABLED').exists():
+                raise Hold('OPERATOR_STOP_OR_DISABLED')
+            try:
+                permit,config,_=activation(root,head,tree)
+                break
+            except (OSError,Hold,subprocess.TimeoutExpired) as exc:
+                reason=str(exc) if isinstance(exc,Hold) else 'RELEASE_NETWORK_OR_RECEIPT_UNAVAILABLE'
+                # No market/Telegram work occurs while startup authority is unavailable.
+                atomic(root/'status.json',canonical(dict(status='STARTUP_HOLD',reason=reason,
+                    scope='READ_ONLY_NO_MARKET_ACTIVITY',retry_seconds=min(300,5*(2**min(failures,6))))))
+                failures+=1
+                for _ in range(min(300,5*(2**min(failures-1,6)))):
+                    if (root/'STOP_REQUESTED').exists() or (root/'DISABLED').exists():
+                        raise Hold('OPERATOR_STOP_OR_DISABLED')
+                    time.sleep(1)
+    else:
+        permit,config,_=activation(root,head,tree)
     start=permit["start_epoch"]
     if type(start) is not int or start%1800 or not start-1800<=time.time()<start+86400:
         raise Hold("ACTIVATION_WINDOW_INVALID")
