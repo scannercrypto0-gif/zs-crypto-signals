@@ -38,7 +38,7 @@ _connections=threading.local()
 def public_get(path, params, timeout, limit):
     """One TLS connection per worker; no redirect, proxy or application retry."""
     origin=urlsplit(BASE)
-    if origin.scheme!="https" or origin.hostname!="api.binance.com" or origin.port is not None:
+    if origin.scheme!="https" or origin.hostname!="data-api.binance.vision" or origin.port is not None:
         raise Hold("UNAPPROVED_SOURCE_ORIGIN")
     connection=getattr(_connections,"connection",None)
     if connection is None:
