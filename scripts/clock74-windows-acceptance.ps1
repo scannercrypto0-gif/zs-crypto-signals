@@ -6,7 +6,7 @@ No install, restore of the active runtime, service change or market invocation.
 param(
   [Parameter(Mandatory=$true)][string]$ExpectedHead,
   [Parameter(Mandatory=$true)][string]$ExpectedTree,
-  [string]$Source=(Split-Path $PSScriptRoot -Parent),
+  [string]$Source='',
   [string]$Output,
   [string]$Python='D:\ZS-SMART-GATE\.venv\Scripts\python.exe'
 )
@@ -15,6 +15,7 @@ Set-StrictMode -Version Latest
 if($PSVersionTable.PSVersion.Major -ne 5 -or $PSVersionTable.PSVersion.Minor -ne 1){
   throw 'WINDOWS_POWERSHELL_51_REQUIRED'
 }
+if(-not $Source){$Source=Split-Path $PSScriptRoot -Parent}
 $owned='D:\ZS-SMART-GATE\'
 foreach($value in @($Source,$Python)){
   if(-not [IO.Path]::GetFullPath($value).StartsWith($owned,[StringComparison]::OrdinalIgnoreCase)){
