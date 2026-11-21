@@ -1261,6 +1261,11 @@
       "sha256": "db1133d91b629fb0a960c29602f25bd8b445dc9678fd4895a8aa3eee58d02893"
     },
     {
+      "bytes": 1106,
+      "path": "execution-helpers/ops24-verify-evidence.py",
+      "sha256": "512e5a4070e157fcda4c5fa8e3adfb5ea0e4118bd5d016dd60be6394f23171c9"
+    },
+    {
       "bytes": 3,
       "path": "historical-iterations/OPS24-20261121-accepted-driver.exit.txt",
       "sha256": "13bf7b3039c63bf5a50491fa3cfd8eb4e699d1ba1436315aef9cbe5711530354"
