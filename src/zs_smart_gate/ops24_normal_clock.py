@@ -155,7 +155,7 @@ def assess_normal(observations, profile, age):
             "blockers":blockers,"original_rpc_blockers":retained,
             "observation_profile":PROFILE,"provenance_sha256":digest(canonical(profile)),
             "rpc_exit_codes":{name:observations[name]["exit"] for name in COMMANDS},
-            "equivalence_review":"ENGINEERING_PROFILE_PENDING_INDEPENDENT_PM_REVIEW"}
+            "equivalence_review":"BOUNDED_PROFILE_ACCEPTED_PM_REVIEW_6004705942_CURRENT_PROVENANCE_RECHECKED"}
 
 
 class NormalClock:

@@ -2,6 +2,7 @@
 [CmdletBinding()]
 param([Parameter(Mandatory=$true)][string]$Source,[Parameter(Mandatory=$true)][string]$Head,
  [Parameter(Mandatory=$true)][string]$Tree,[Parameter(Mandatory=$true)][string]$Root,
+ [ValidateSet('Probe','Health')][string]$ProbeAction='Probe',
  [string]$WorkerSid='',
  [string]$Python='D:\ZS-SMART-GATE\runtime\python-3.12.10-ops77\python.exe')
 $ErrorActionPreference='Stop';Set-StrictMode -Version Latest
@@ -27,7 +28,8 @@ try{
  $systemPowerShell=Join-Path ([Environment]::SystemDirectory) 'WindowsPowerShell\v1.0\powershell.exe'
  $entry=Join-Path $Source 'scripts\ops24-task-entry.ps1'
  $command=[Security.SecurityElement]::Escape($systemPowerShell)
- $arguments=[Security.SecurityElement]::Escape('-NoProfile -NonInteractive -ExecutionPolicy Bypass -File "'+$entry+'" -Action Probe -Root "'+$Root+'"')
+ $arguments=[Security.SecurityElement]::Escape('-NoProfile -NonInteractive -ExecutionPolicy Bypass -File "'+$entry+'" -Action '+$ProbeAction+' -Root "'+$Root+'"')
+ if($ProbeAction -eq 'Health'){$xml=$xml.Replace('<ExecutionTimeLimit>PT30S</ExecutionTimeLimit>','<ExecutionTimeLimit>PT90S</ExecutionTimeLimit>')}
  $xml=[regex]::Replace($xml,'<Command>[^<]+</Command>',('<Command>'+$command+'</Command>'))
  $xml=[regex]::Replace($xml,'<Arguments>[^<]+</Arguments>',('<Arguments>'+$arguments+'</Arguments>'))
  $record.xml_sha256=[BitConverter]::ToString([Security.Cryptography.SHA256]::Create().ComputeHash([Text.Encoding]::Unicode.GetBytes($xml))).Replace('-','').ToLowerInvariant()
@@ -35,7 +37,7 @@ try{
  $record.registered=$true
  Enable-ScheduledTask -TaskName $task|Out-Null
  Start-ScheduledTask -TaskName $task
- $deadline=[DateTime]::UtcNow.AddSeconds(35)
+ $deadline=[DateTime]::UtcNow.AddSeconds($(if($ProbeAction -eq 'Health'){85}else{35}))
  while([DateTime]::UtcNow -lt $deadline -and -not(Test-Path (Join-Path $Root 'probe.json'))){Start-Sleep -Milliseconds 250}
  while([DateTime]::UtcNow -lt $deadline -and (Get-ScheduledTask -TaskName $task).State -eq 'Running'){Start-Sleep -Milliseconds 100}
  $info=Get-ScheduledTaskInfo -TaskName $task
@@ -51,6 +53,10 @@ try{
  $record.probe_observed=$true
  $record.probe_sha256=(Get-FileHash (Join-Path $Root 'probe.json')).Hash.ToLowerInvariant()
  $record.normal_token=$probe.normal_token
+ if($ProbeAction -eq 'Health'){
+  $record.clock_status=$probe.clock.assessment.status
+  if($record.clock_status -cne 'OPERATIONAL_TIME_ACCEPTED'){throw 'STANDARD_ROLE_CLOCK_HOLD'}
+ }
  $record.actual_session=$probe.windows.session
  $record.boot_utc=$probe.windows.boot_utc
  if(-not $probe.normal_token -or $probe.head -cne $Head -or $probe.tree -cne $Tree){throw 'NORMAL_SCHEDULED_TOKEN_OR_PIN_MISMATCH'}

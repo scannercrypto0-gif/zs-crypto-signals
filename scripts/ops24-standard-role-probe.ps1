@@ -33,7 +33,7 @@ $ownerSid=$identity.User.Value
 foreach($folder in @($Source,'D:\ZS-SMART-GATE\runtime\python-3.12.10-ops77')){
  $null=Set-ZsOwnedReadOnlyTree -Root $folder -WorkerSid $workerSid
 }
-& (Join-Path $Source 'scripts\ops24-task-probe.ps1') -Source $Source -Head $Head -Tree $Tree -Root $Root -WorkerSid $workerSid
+& (Join-Path $Source 'scripts\ops24-task-probe.ps1') -Source $Source -Head $Head -Tree $Tree -Root $Root -WorkerSid $workerSid -ProbeAction Health
 $code=$LASTEXITCODE
 # Only public role facts are printed. SID/account credentials stay local.
 [ordered]@{schema='zs.ops24.standard-role-setup.v1';worker_is_local_standard_account=$true;admin_membership=$false;password_exported=$false;market_calls=0;telegram_calls=0;task_probe_exit=$code;head=$Head;tree=$Tree}|ConvertTo-Json
