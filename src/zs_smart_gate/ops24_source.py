@@ -3,16 +3,16 @@ from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from contextlib import closing
 from datetime import datetime, timezone
 import json
+import http.client
+import ssl
+import threading
 import math
 import os
 from pathlib import Path
 import time
-from urllib.error import HTTPError, URLError
-from urllib.parse import urlencode
-from urllib.request import ProxyHandler, Request, build_opener
+from urllib.parse import urlencode,urlsplit
 
 from .binance_live import BASE
-from .e2e51 import NoRedirect
 from .marketwide_research import FRAMES, inventory, packet_from_receipts, evaluate
 from .stage05_contracts import canonical, digest
 from .ops24_budget import Budget, Hold
@@ -32,19 +32,33 @@ def atomic(path, data):
     os.replace(temp, path)
 
 
+_connections=threading.local()
+
+
 def public_get(path, params, timeout, limit):
-    url = BASE+"/api/v3/"+path+("?" + urlencode(params) if params else "")
+    """One TLS connection per worker; no redirect, proxy or application retry."""
+    origin=urlsplit(BASE)
+    if origin.scheme!="https" or origin.hostname!="api.binance.com" or origin.port is not None:
+        raise Hold("UNAPPROVED_SOURCE_ORIGIN")
+    connection=getattr(_connections,"connection",None)
+    if connection is None:
+        connection=http.client.HTTPSConnection(origin.hostname,timeout=timeout,
+                                               context=ssl.create_default_context())
+        _connections.connection=connection
+    connection.timeout=timeout
+    if connection.sock is not None:
+        connection.sock.settimeout(timeout)
+    target="/api/v3/"+path+("?"+urlencode(params) if params else "")
     try:
-        with build_opener(ProxyHandler({}), NoRedirect()).open(
-                Request(url, headers={"Accept": "application/json", "Cache-Control": "no-cache"}),
-                timeout=timeout) as response:
-            return response.status, dict(response.headers), response.read(limit+1)
-    except HTTPError as exc:
-        headers = dict(exc.headers)
-        code = exc.code
-        exc.close()
-        return code, headers, b""
-    except (URLError, TimeoutError, OSError):
+        connection.request("GET",target,headers={"Accept":"application/json","Cache-Control":"no-cache"})
+        response=connection.getresponse()
+        raw=response.read(limit+1)
+        status,headers=response.status,dict(response.getheaders())
+        if len(raw)>limit or response.will_close:
+            connection.close()
+        return status,headers,raw
+    except (http.client.HTTPException,TimeoutError,OSError):
+        connection.close()
         raise Hold("TRANSPORT_UNKNOWN_NO_REISSUE") from None
 
 
@@ -124,7 +138,7 @@ def discover(client):
 def scan(client, *, boundary_ms, wall=time.time, stamp=now, release=None):
     """Cohort freeze before candles, complete revalidation at a common decision."""
     budget = client.budget
-    result = dict(version=budget.policy.version,policy_sha256=budget.policy.sha256,
+    result = dict(transport_profile="REST_HTTPS_KEEPALIVE_THREAD_LOCAL_V1",version=budget.policy.version,policy_sha256=budget.policy.sha256,
                   head=release["head"] if release else None,tree=release["tree"] if release else None,
                   boundary_ms=boundary_ms,scope="SHADOW_RESEARCH_ONLY",
                   coverage="BLOCKED",qualification="QV1_REAL_POLICY_BLOCKED",
