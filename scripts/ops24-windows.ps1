@@ -1,7 +1,7 @@
 <# OPS24 disabled-first controller. Runtime activation has separate reviewed gates. #>
 [CmdletBinding()]
 param(
- [ValidateSet('InstallDisabled','BuildTask','Status','Stop','Disable','Restore','Rollback','Register','Enable')]
+ [ValidateSet('InstallDisabled','BuildTask','Status','Stop','Disable','Restore','Rollback','Register','Enable','Verify','Start','Health','Evidence')]
  [string]$Action='Status',
  [string]$Root='D:\ZS-SMART-GATE\ops24',
  [string]$Source,
@@ -10,6 +10,7 @@ param(
  [string]$Python='D:\ZS-SMART-GATE\.venv\Scripts\python.exe'
 )
 $ErrorActionPreference='Stop'
+if($Action -eq 'Start'){$Action='Enable'}
 Set-StrictMode -Version Latest
 if($PSVersionTable.PSVersion.Major -ne 5){throw 'WINDOWS_POWERSHELL_51_REQUIRED'}
 $owned='D:\ZS-SMART-GATE\'
@@ -98,6 +99,12 @@ if($Action -eq 'Restore'){
  Write-Output "OFFLINE_RESTORE_VERIFIED HEAD=$($config.head) TREE=$($config.tree) PATH=$target"
  return
 }
+if($Action -in @('Verify','Health','Evidence')){
+ $worker=Join-Path $config.source 'scripts\ops24-worker.py'
+ & $config.python -B $worker $Action --root $Root
+ if($LASTEXITCODE -ne 0){throw 'TECHNICAL_RELEASE_OR_HEALTH_GATE_HOLD'}
+ return
+}
 if($Action -eq 'BuildTask'){
  $worker=Join-Path $config.source 'scripts\ops24-worker.py'
  $command=[Security.SecurityElement]::Escape($config.python)
@@ -117,7 +124,12 @@ if($Action -eq 'BuildTask'){
 }
 # Registration/enablement remains a genuine gate until normal-worker deployment,
 # reviewed full-market evidence and owner merge approval are installed.
-if(-not(Test-Path (Join-Path $Root 'activation.json'))){throw 'REVIEWED_ACTIVATION_GATES_PENDING'}
+if(-not(Test-Path (Join-Path $Root 'standing-authority.json'))){throw 'STANDING_REVIEWED_RELEASE_EVIDENCE_PENDING'}
+if($Action -eq 'Enable' -and -not(Test-Path (Join-Path $Root 'window.json'))){
+ $now=[DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
+ $boundary=[long]([Math]::Floor($now/1800)+1)*1800
+ Write-Atomic (Join-Path $Root 'window.json') (@{start_epoch=$boundary;seconds=86400;origin='AUTOMATIC_STANDING_READ_ONLY_WINDOW';planned_only=$true}|ConvertTo-Json)
+}
 $worker=Join-Path $config.source 'scripts\ops24-worker.py'
 & $config.python -B $worker Validate --root $Root
 if($LASTEXITCODE -ne 0){throw 'REVIEWED_ACTIVATION_NOT_VALID'}
@@ -129,6 +141,7 @@ if($Action -eq 'Register'){
  return
 }
 if($Action -eq 'Enable'){
+ if(-not(Test-Path (Join-Path $Root 'window.json'))){throw 'AUTOMATIC_FINITE_WINDOW_NOT_COMPOSED'}
  Remove-Item -LiteralPath (Join-Path $Root 'STOP_REQUESTED') -ErrorAction SilentlyContinue
  Remove-Item -LiteralPath (Join-Path $Root 'DISABLED')
  Enable-ScheduledTask -TaskName $task|Out-Null

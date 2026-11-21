@@ -60,7 +60,7 @@ def main():
     code_head=subprocess.check_output(["git","-C",str(source),"rev-parse","HEAD"],text=True).strip()
     code_tree=subprocess.check_output(["git","-C",str(source),"rev-parse","HEAD^{tree}"],text=True).strip()
     cycle=digest(canonical([code_head,code_tree,args.boundary])) if (args.cycle_child or args.full_market_preflight) else "discovery-"+str(time.time_ns())
-    budget=Budget(output,cycle)
+    budget=Budget(output,cycle,quota_root=(args.runtime_root/"provider-quota") if args.runtime_root else None)
     from zs_smart_gate.ops24_normal_clock import NormalClock
     normal_clock=NormalClock()
     started_cpu=time.process_time()
@@ -98,7 +98,11 @@ def main():
     def healthy():
         with health_lock:
             return healthy_unlocked()
-    client=Client(budget,guard=healthy,clock_receipt=lambda:clock_proof[0])
+    def capacity():
+        sample=resources(args.runtime_root or output)
+        memory=max(1,(512*1024*1024-sample['working_set_bytes'])//(16*1024*1024))
+        return min(memory,max(1,(os.cpu_count() or 1)*2),budget.policy.max_bytes//(budget.policy.candle_body+1))
+    client=Client(budget,guard=healthy,clock_receipt=lambda:clock_proof[0],capacity=capacity)
     if args.observe_source:
         result=dict(head=code_head,tree=code_tree,time_trust="HOST_TIME_CONDITIONAL_UNVERIFIED",status="SOURCE_OBSERVATION_PENDING",full_market="BLOCKED_CLOCK_WITNESS_NOT_DEPLOYED",
                     live_e2e="NOT_PROVEN",qualified_signals=0,telegram_calls=0,sql_writes=0)

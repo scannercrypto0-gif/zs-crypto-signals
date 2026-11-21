@@ -77,8 +77,8 @@ class Ops24SupervisorTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             root=Path(folder)
             (root/"release.json").write_text(json.dumps(dict(head="a"*40,tree="b"*40)))
-            (root/"activation.json").write_text(json.dumps(dict(enabled=True)))
-            with self.assertRaisesRegex(Hold,"ACTIVATION_SCOPE_INVALID"):
+            (root/"standing-authority.json").write_text(json.dumps(dict(enabled=True)))
+            with self.assertRaisesRegex(Hold,"STANDING_RELEASE_SCOPE_OR_PIN_INVALID"):
                 module["activation"](root,"a"*40,"b"*40)
 
     def test_elapsed_wall_time_does_not_replace_observed_process_uptime(self):
@@ -103,20 +103,8 @@ class Ops24SupervisorTests(unittest.TestCase):
                 self.assertEqual(process.returncode,0,process.stderr)
                 self.assertIn("usage:",process.stdout)
 
-    def test_reviewed_proof_from_another_release_cannot_enable_current_code(self):
-        from zs_smart_gate.stage05_contracts import canonical,digest
-        module=runpy.run_path(str(ROOT/"scripts"/"ops24-worker.py"))
-        with tempfile.TemporaryDirectory() as folder:
-            root=Path(folder)
-            (root/"proofs").mkdir()
-            raw=canonical(dict(head="c"*40,tree="d"*40,accepted=True))
-            (root/"proofs"/"engineering.json").write_bytes(raw)
-            (root/"release.json").write_text(json.dumps(dict(head="a"*40,tree="b"*40,
-                owner_sid="S-1-5-21-123")))
-            (root/"activation.json").write_text(json.dumps(dict(schema="zs.ops24.activation.v1",
-                head="a"*40,tree="b"*40,purpose="READ_ONLY_RESEARCH_24H",seconds=86400,
-                pm_review_url="https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/51",
-                proofs=dict(engineering=dict(sha256=digest(raw))))))
-            with patch("subprocess.check_output",return_value='"owner","S-1-5-21-123"'):
-                with self.assertRaisesRegex(Hold,"ACTIVATION_PROOF_RELEASE_MISMATCH"):
-                    module["activation"](root,"a"*40,"b"*40)
+    def test_standing_release_from_another_head_is_refused_before_network(self):
+        from zs_smart_gate.ops24_authority import verify_cached
+        with self.assertRaisesRegex(Hold,'STANDING_RELEASE_SCOPE_OR_PIN_INVALID'):
+            verify_cached(dict(schema='zs.ops24.standing-authority.v2',head='old',tree='old'),
+                          head='new',tree='new')

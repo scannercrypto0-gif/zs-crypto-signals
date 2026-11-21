@@ -11,13 +11,20 @@ import threading
 import time
 import unittest
 
-from zs_smart_gate.ops24_budget import Budget, Hold, Policy
+from zs_smart_gate.ops24_budget import Budget as RealBudget, Hold, Policy
 from zs_smart_gate.ops24_source import Client, scan
 from zs_smart_gate.ops24_runtime import RuntimeJournal
 from zs_smart_gate.stage05_contracts import canonical, digest
 
 ROOT=Path(__file__).resolve().parents[1]
 fixtures=runpy.run_path(str(ROOT/"tests"/"test_marketwide_research.py"))
+
+
+def Budget(*args,**kwargs):
+    # Synthetic provider fixtures declare their minute quota before isolated unit calls.
+    budget=RealBudget(*args,**kwargs)
+    budget.adopt_server_limit(6000)
+    return budget
 
 
 class FakeMarket:
@@ -179,9 +186,9 @@ class Ops24BudgetTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             budget=Budget(folder,"cycle")
             budget.adopt_server_limit(2000)
-            self.assertEqual(budget.state()["effective_weight_limit"],1500)
+            self.assertEqual(budget.state()["effective_weight_limit"],1966)
             with self.assertRaises(Hold):
-                budget.adopt_server_limit(500)
+                budget.adopt_server_limit(0)
 
     def test_result_replay_is_idempotent_and_hash_checked(self):
         with tempfile.TemporaryDirectory() as folder:

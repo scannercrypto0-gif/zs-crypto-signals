@@ -63,9 +63,10 @@ def public_get(path, params, timeout, limit):
 
 
 class Client:
-    def __init__(self, budget, *, get=public_get, guard=lambda: False, stamp=now, clock_receipt=lambda: None):
+    def __init__(self, budget, *, get=public_get, guard=lambda: False, stamp=now, clock_receipt=lambda: None, capacity=lambda:2):
         self.budget, self.transport, self.guard, self.stamp = budget, get, guard, stamp
         self.clock_receipt=clock_receipt
+        self.capacity=capacity
 
     def get(self, path, params):
         if not self.guard():
@@ -115,14 +116,12 @@ class Client:
             reason, payload = "INVALID_JSON", None
         if reason is None and path=="exchangeInfo":
             try:
-                limits=[r["limit"] for r in payload["rateLimits"]
-                        if r["rateLimitType"]=="REQUEST_WEIGHT" and r["interval"]=="MINUTE"
-                        and r["intervalNum"]==1]
-                if len(limits)!=1:
-                    raise Hold("UNVERIFIED_SERVER_RATE_LIMIT")
-                self.budget.adopt_server_limit(limits[0])
-            except (Hold,ValueError,KeyError,TypeError):
+                self.budget.adopt_limits(payload['rateLimits'])
+            except Hold as exc:
+                reason=str(exc)
+            except (ValueError,KeyError,TypeError):
                 reason="UNVERIFIED_SERVER_RATE_LIMIT"
+        receipt["rate_headers"]={k:v for k,v in headers.items() if k.lower().startswith("x-mbx-used-") or k.lower() in ("retry-after","date")}
         receipt["received_clock"]=self.clock_receipt()
         atomic(self.budget.root/(key+".receipt.json"),canonical(receipt))
         self.budget.finish(key,limit,receipt,reason=reason)
@@ -155,7 +154,7 @@ def scan(client, *, boundary_ms, wall=time.time, stamp=now, release=None):
         age = wall()-boundary_ms/1000
         if not 0<=age<=budget.policy.freshness_seconds:
             raise Hold("BOUNDARY_ENTRY_EXPIRED")
-        _, snapshot = discover(client)
+        discovery, snapshot = discover(client)
         inventory_path = budget.root/"inventory.private.json"
         if inventory_path.exists():
             frozen = json.loads(inventory_path.read_bytes())
@@ -171,6 +170,17 @@ def scan(client, *, boundary_ms, wall=time.time, stamp=now, release=None):
         if not eligible:
             raise Hold("EMPTY_ELIGIBLE_SCOPE")
         budget.freeze_universe(len(eligible))
+        # Use warm persistent-connection latency, not the initial TLS setup.
+        warm=[(r['received_mono_ns']-r['started_mono_ns'])/1e9 for r in discovery[1:]
+              if 'received_mono_ns' in r and 'started_mono_ns' in r]
+        estimate=max(warm,default=1)
+        remaining=min(budget.remaining(),budget.policy.freshness_seconds-(wall()-boundary_ms/1000))-15
+        needed=max(2,math.ceil(4*len(eligible)*estimate/max(1,remaining)))
+        chosen=min(client.capacity(),needed,budget.policy.max_bytes//(budget.policy.candle_body+1))
+        budget.set_workers(chosen)
+        result['worker_selection']=dict(chosen=chosen,needed=needed,warm_latency_seconds=estimate,
+                                        available_causal_seconds=remaining)
+
         def fetch(item):
             receipts = []
             for frame,period in FRAMES.items():
@@ -181,14 +191,14 @@ def scan(client, *, boundary_ms, wall=time.time, stamp=now, release=None):
                     endTime=str(end-1),limit="22" if frame=="5m" else "1")))
             return packet_from_receipts(item,receipts,boundary_ms=boundary_ms,decision_at=stamp(),
                 scope="PUBLIC_SPOT_CONDITIONAL_RESEARCH",clock_status="OPERATIONAL_TIME_ACCEPTED")
-        with ThreadPoolExecutor(max_workers=budget.policy.workers) as pool:
+        with ThreadPoolExecutor(max_workers=chosen) as pool:
             queue = iter(eligible)
             pending = {}
             def submit():
                 item = next(queue,None)
                 if item is not None and not budget.state()["halt"]:
                     pending[pool.submit(fetch,item)] = item["symbol"]
-            for _ in range(budget.policy.workers):
+            for _ in range(chosen):
                 submit()
             while pending:
                 done,_ = wait(pending,return_when=FIRST_COMPLETED)

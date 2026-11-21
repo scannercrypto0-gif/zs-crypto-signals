@@ -39,7 +39,7 @@ class Ops24ControllerTests(unittest.TestCase):
             self.assertTrue(json.loads(status.stdout)["disabled"])
             blocked=run("Register")
             self.assertNotEqual(blocked.returncode,0)
-            self.assertIn("REVIEWED_ACTIVATION_GATES",blocked.stderr.decode(errors="replace"))
+            self.assertIn("STANDING_REVIEWED_RELEASE_EVIDENCE",blocked.stderr.decode(errors="replace"))
             restored=run("Restore")
             self.assertEqual(restored.returncode,0,restored.stderr.decode(errors="replace"))
             self.assertIn("OFFLINE_RESTORE_VERIFIED",restored.stdout.decode(errors="replace"))
