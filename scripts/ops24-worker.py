@@ -54,7 +54,7 @@ def main():
     owned=Path("D:/ZS-SMART-GATE").resolve()
     if os.name!="nt" or sys.version_info[:3]!=(3,12,10) or owned not in root.parents:
         parser.error("Windows 3.12.10 / owned D: root required")
-    if is_admin():
+    if is_admin() and args.action not in ("Status","Stop","Disable","Validate","Verify","Evidence"):
         raise Hold("NORMAL_USER_TOKEN_REQUIRED")
     if args.action in ("Stop","Disable"):
         root.mkdir(parents=True,exist_ok=True)

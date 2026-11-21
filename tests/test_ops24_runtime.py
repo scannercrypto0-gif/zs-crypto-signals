@@ -96,7 +96,7 @@ class Ops24SupervisorTests(unittest.TestCase):
 
     def test_entrypoints_resolve_checkout_without_caller_pythonpath(self):
         import sys
-        for name in ("ops24-worker.py","ops24-bounded.py","ops24-science-replay.py"):
+        for name in ("ops24-worker.py","ops24-bounded.py","ops24-science-replay.py","ops24-standing-release.py","ops24-release-verify.py"):
             process=subprocess.run([sys.executable,"-E","-B",str(ROOT/"scripts"/name),"--help"],
                 capture_output=True,text=True,timeout=15)
             with self.subTest(script=name):

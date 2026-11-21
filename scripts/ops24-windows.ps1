@@ -131,8 +131,12 @@ if($Action -eq 'Enable' -and -not(Test-Path (Join-Path $Root 'window.json'))){
  Write-Atomic (Join-Path $Root 'window.json') (@{start_epoch=$boundary;seconds=86400;origin='AUTOMATIC_STANDING_READ_ONLY_WINDOW';planned_only=$true}|ConvertTo-Json)
 }
 $worker=Join-Path $config.source 'scripts\ops24-worker.py'
-& $config.python -B $worker Validate --root $Root
-if($LASTEXITCODE -ne 0){throw 'REVIEWED_ACTIVATION_NOT_VALID'}
+if($Action -eq 'Register'){
+ & $config.python -B (Join-Path $config.source 'scripts\ops24-release-verify.py') (Join-Path $Root 'standing-authority.json')
+}else{
+ & $config.python -B $worker Validate --root $Root
+}
+if($LASTEXITCODE -ne 0){throw 'REVIEWED_RELEASE_OR_ACTUAL_DEPLOYMENT_GATE_HOLD'}
 if($Action -eq 'Register'){
  $xmlPath=Join-Path $Root 'worker.disabled.xml'
  if(-not(Test-Path $xmlPath)){throw 'BUILD_DISABLED_TASK_FIRST'}
