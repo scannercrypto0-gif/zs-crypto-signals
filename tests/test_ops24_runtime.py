@@ -149,3 +149,25 @@ class Ops24SupervisorTests(unittest.TestCase):
                 self.assertFalse((root/'cycles').exists())
             finally:
                 if process.poll() is None:process.kill();process.communicate()
+
+    def test_probe_uses_pinned_git_in_minimal_service_environment(self):
+        import sys,shutil,os
+        from zs_smart_gate.stage05_contracts import digest
+        with tempfile.TemporaryDirectory(dir='D:/ZS-SMART-GATE/temp') as folder:
+            root=Path(folder)
+            git=shutil.which('git')
+            (root/'release.json').write_text(json.dumps(dict(git_executable=git,
+                 git_sha256=digest(Path(git).read_bytes()))))
+            # This is a service-environment simulation, NOT an actual logoff.
+            env=dict(SystemRoot=os.environ['SystemRoot'],WINDIR=os.environ['SystemRoot'],
+                 PATH=os.environ['SystemRoot']+'\\System32',TEMP='D:/ZS-SMART-GATE/temp',
+                 TMP='D:/ZS-SMART-GATE/temp',USERPROFILE=os.environ['SystemRoot']+'\\System32\\config\\systemprofile')
+            process=subprocess.run([sys.executable,'-I','-B',str(ROOT/'scripts/ops24-worker.py'),
+                 'Probe','--root',str(root)],env=env,capture_output=True,timeout=25,
+                 creationflags=subprocess.CREATE_NO_WINDOW)
+            self.assertEqual(process.returncode,0,process.stderr.decode(errors='replace'))
+            report=json.loads((root/'probe.json').read_bytes())
+            self.assertTrue(report['normal_token'])
+            self.assertEqual(report['market_calls'],0)
+            self.assertEqual(report['telegram_calls'],0)
+            self.assertTrue(report['head'])

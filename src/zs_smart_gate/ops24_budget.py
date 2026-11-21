@@ -9,7 +9,7 @@ import time
 from .stage05_contracts import canonical, digest
 from .ops24_intervals import Intervals,QuotaHold
 
-VERSION = "ZS_OPS24_B1_REST_V2_ADAPTIVE"
+VERSION = "ZS_OPS24_B1_REST_V2_1_ADAPTIVE"
 WEIGHTS = {"exchangeInfo": 20, "ticker/24hr": 80, "ticker/bookTicker": 4, "klines": 2}
 
 

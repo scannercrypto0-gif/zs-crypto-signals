@@ -164,3 +164,26 @@ class AdaptiveIntervalsTests(unittest.TestCase):
             before=q.report()
             q.complete('ack',receipt,{'X-MBX-USED-WEIGHT-1M':'20'})
             self.assertEqual(before,q.report())
+
+    def test_millisecond_header_bursts_are_metered_over_a_full_second(self):
+        with tempfile.TemporaryDirectory() as root:
+            q,clock=self.make(root)
+            self.measure(q,clock)
+            observed=8
+            for i in range(4):
+                q.reserve('burst'+str(i),'klines',2)
+                observed+=22
+                clock[0]+=.01
+                q.complete('burst'+str(i),dict(http_status=200),{'X-MBX-USED-WEIGHT-1M':str(observed)})
+            self.assertLessEqual(max(r['jump'] for r in q.report()['buckets']),80)
+            q.reserve('legal-after-known-80-point-burst','klines',2)
+            self.assertLess(max(r['charged'] for r in q.report()['buckets']),200)
+
+    def test_large_true_shared_ip_burst_still_fails_closed(self):
+        with tempfile.TemporaryDirectory() as root:
+            q,clock=self.make(root)
+            self.measure(q,clock)
+            q.reserve('real-large-burst','klines',2)
+            clock[0]+=.001
+            q.complete('real-large-burst',dict(http_status=200),{'X-MBX-USED-WEIGHT-1M':'4000'})
+            with self.assertRaises(QuotaHold):q.reserve('unsafe','klines',2)

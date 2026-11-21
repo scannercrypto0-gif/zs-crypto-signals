@@ -14,7 +14,7 @@ import time
 
 from .stage05_contracts import canonical,digest
 
-VERSION='ZS_REST_ADAPTIVE_INTERVALS_V2'
+VERSION='ZS_REST_ADAPTIVE_INTERVALS_V2_1'
 SECONDS={'SECOND':1,'MINUTE':60,'HOUR':3600,'DAY':86400}
 LETTERS={'s':1,'m':60,'h':3600,'d':86400}
 # Official Spot REST reference inspected 2026-11-21; no zero-cost REST route.
@@ -35,6 +35,7 @@ class Intervals:
             CREATE TABLE IF NOT EXISTS limits(kind TEXT,seconds INTEGER,cap INTEGER,PRIMARY KEY(kind,seconds));
             CREATE TABLE IF NOT EXISTS buckets(kind TEXT,seconds INTEGER,epoch INTEGER,charged INTEGER,
               observed INTEGER,samples INTEGER,first REAL,last REAL,jump REAL,PRIMARY KEY(kind,seconds,epoch));
+            CREATE TABLE IF NOT EXISTS usage_events(kind TEXT,seconds INTEGER,epoch INTEGER,at REAL,delta INTEGER);
             CREATE TABLE IF NOT EXISTS intents(token TEXT PRIMARY KEY,route TEXT,weight INTEGER,state TEXT,windows BLOB,issued REAL,receipt TEXT);
             CREATE TABLE IF NOT EXISTS control(id INTEGER PRIMARY KEY,until REAL,reason TEXT,metadata TEXT);
             INSERT OR IGNORE INTO control VALUES(1,0,NULL,NULL);
@@ -184,12 +185,19 @@ class Intervals:
                     for other in db.execute("SELECT windows FROM intents WHERE state='RESERVED' AND token!=?",(token,)):
                         pending+=sum(cost for k,s,e,cost in json.loads(other[0]) if (k,s,e)==(kind,seconds,epoch))
                     delta=max(0,used-row['observed']-max(0,row['charged']-row['observed']))
-                    velocity=delta/max(.001,now-row['last']) if row['samples'] else 0
+                    # Do not extrapolate a single response race over milliseconds.
+                    # Sum unexplained consumption over a full sliding second, with
+                    # retained high-water reservations and a decaying prior bound.
+                    unexplained=delta if row['samples'] else 0
+                    db.execute('INSERT INTO usage_events VALUES(?,?,?,?,?)',(kind,seconds,epoch,now,unexplained))
+                    recent=db.execute('SELECT COALESCE(SUM(delta),0) FROM usage_events WHERE kind=? AND seconds=? AND epoch=? AND at>=?',
+                                      (kind,seconds,epoch,now-1)).fetchone()[0]
+                    velocity=max(recent,row['jump']*math.exp(-max(0,now-row['last'])))
                     charged=max(row['charged'],used+pending)
                     db.execute('''INSERT INTO buckets VALUES(?,?,?,?,?,?,?,?,?)
                       ON CONFLICT(kind,seconds,epoch) DO UPDATE SET charged=excluded.charged,
                       observed=MAX(observed,excluded.observed),samples=samples+1,last=excluded.last,
-                      jump=MAX(jump*.9,excluded.jump)''',
+                      jump=excluded.jump''',
                       (kind,seconds,epoch,charged,used,1,row['first'],now,velocity))
             missing=[(k,s) for k,s,_ in confirmed if k=='REQUEST_WEIGHT' and (k,s) not in {(k,s) for k,s,_ in parsed}]
             if status==200 and missing:
