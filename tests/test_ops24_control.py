@@ -61,3 +61,14 @@ class Ops24ControllerTests(unittest.TestCase):
              capture_output=True,timeout=15,creationflags=subprocess.CREATE_NO_WINDOW)
         self.assertNotEqual(result.returncode,0)
         self.assertIn(b'REQUIRES_ADMIN',result.stderr)
+
+    def test_service_account_description_fits_actual_windows_parameter_limit(self):
+        import re
+        source=(ROOT/'scripts/ops24-standard-role-probe.ps1').read_text(encoding='utf-8-sig')
+        marker=re.search(r"\$marker='([^']+)'",source)[1]
+        command="(Get-Command New-LocalUser).Parameters['Description'].Attributes | Where-Object {$_ -is [System.Management.Automation.ValidateLengthAttribute]} | Select-Object -ExpandProperty MaxLength"
+        result=subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-Command',command],
+                 capture_output=True,text=True,timeout=15,creationflags=subprocess.CREATE_NO_WINDOW)
+        self.assertEqual(result.returncode,0,result.stderr)
+        maximum=int(result.stdout.strip())
+        self.assertLessEqual(len(marker),maximum)

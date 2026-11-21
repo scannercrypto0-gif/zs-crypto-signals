@@ -10,7 +10,7 @@ if(((& git -C $Source rev-parse HEAD)|Out-String).Trim() -cne $Head -or ((& git 
 $env:PSModuleAnalysisCachePath='D:\ZS-SMART-GATE\temp\ps-module-analysis-cache'
 $env:TEMP='D:\ZS-SMART-GATE\temp';$env:TMP=$env:TEMP
 $name='ZS_SG_Research'
-$marker='ZS SMART GATE dedicated standard-user public-read-only worker'
+$marker='ZS SMART GATE read-only standard worker'
 $user=Get-LocalUser -Name $name -ErrorAction SilentlyContinue
 if($user -and $user.Description -cne $marker){throw 'EXISTING_NONPROJECT_ACCOUNT_MUST_NOT_BE_MODIFIED'}
 if(-not $user){
