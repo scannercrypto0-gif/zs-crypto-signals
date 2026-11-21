@@ -1,0 +1,6 @@
+test_exact_eleventh_http_receipt_accepted_twelfth_forbidden (test_marketwide_capture.MarketCaptureTests.test_exact_eleventh_http_receipt_accepted_twelfth_forbidden) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.100s
+
+OK

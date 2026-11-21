@@ -1,0 +1,39 @@
+{
+  "calibration": null,
+  "candidate_counts_by_direction": {
+    "DOWN": {},
+    "UP": {}
+  },
+  "dataset_id_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "dev": "SOURCE_INTAKE_ONLY",
+  "development_hypotheses_sha256": "e663c733fc12becbe26f7ce0581c3b2ca4de865e0121059576e4a53c622bdb9e",
+  "down_real_science_decision": "NOT_QUALIFIED",
+  "eligible_cost_model": "NOT_ADOPTED",
+  "event_count": 0,
+  "forward": "NOT_OBSERVED",
+  "frozen_hypotheses": "DEVELOPMENT_HYPOTHESES_ONLY_NOT_SCIENTIFICALLY_REGISTERED",
+  "manifest_chain_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "manifests": 0,
+  "n_required": null,
+  "normalizers_12": "UNREVIEWED",
+  "oos": "NOT_OPENED_NO_PREREGISTRATION",
+  "pit_d1_d5": "UNREVIEWED",
+  "precision": null,
+  "qualification_registry_modified": false,
+  "recall": null,
+  "receipt_sha256": "121e593786d1b92e09b78144de6b90a3d7dcfa91ff13259e902b88c42d88f54f",
+  "rejected_manifests": [],
+  "return_after_costs": null,
+  "schema": "zs.order007.up-down-source-intake.v1",
+  "scientific_blockers": [
+    "INDEPENDENT_SOURCE_AND_CLOCK_WITNESS_PENDING",
+    "D1_D5_PIT_AND_12_NORMALIZERS_NOT_APPROVED",
+    "FROZEN_SCIENTIFIC_N_REQUIRED_AND_THRESHOLDS_ABSENT",
+    "UNCHANGED_HOLDOUT_OOS_AND_FORWARD_OUTCOMES_ABSENT"
+  ],
+  "signals_created": 0,
+  "source_authenticity": "PUBLIC_SOURCE_CAPTURE_SELF_ATTESTED_REVIEW_REQUIRED",
+  "status": "SCIENCE_NOT_APPROVED",
+  "symbol_count": 0,
+  "up_real_science_decision": "NOT_QUALIFIED"
+}

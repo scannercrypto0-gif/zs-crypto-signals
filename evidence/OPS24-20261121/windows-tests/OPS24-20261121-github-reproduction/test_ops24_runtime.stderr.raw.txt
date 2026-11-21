@@ -1,0 +1,13 @@
+test_disabled_or_missing_activation_never_runs (test_ops24_runtime.Ops24SupervisorTests.test_disabled_or_missing_activation_never_runs) ... ok
+test_elapsed_wall_time_does_not_replace_observed_process_uptime (test_ops24_runtime.Ops24SupervisorTests.test_elapsed_wall_time_does_not_replace_observed_process_uptime) ... ok
+test_elevated_worker_is_rejected (test_ops24_runtime.Ops24SupervisorTests.test_elevated_worker_is_rejected) ... ok
+test_entrypoints_resolve_checkout_without_caller_pythonpath (test_ops24_runtime.Ops24SupervisorTests.test_entrypoints_resolve_checkout_without_caller_pythonpath) ... ok
+test_one_mock_cycle_has_health_and_boundary_without_24h_claim (test_ops24_runtime.Ops24SupervisorTests.test_one_mock_cycle_has_health_and_boundary_without_24h_claim) ... ok
+test_reviewed_proof_from_another_release_cannot_enable_current_code (test_ops24_runtime.Ops24SupervisorTests.test_reviewed_proof_from_another_release_cannot_enable_current_code) ... ok
+test_stop_and_singleton_hold_and_restart_slots (test_ops24_runtime.Ops24SupervisorTests.test_stop_and_singleton_hold_and_restart_slots) ... ok
+test_unreviewed_activation_cannot_be_replaced_by_bare_flags (test_ops24_runtime.Ops24SupervisorTests.test_unreviewed_activation_cannot_be_replaced_by_bare_flags) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 9.336s
+
+OK

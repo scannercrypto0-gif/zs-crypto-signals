@@ -1,0 +1,16 @@
+{
+  "reviewed_date": "2026-11-21",
+  "source_policy": "ZS_OPS24_B1_REST_V1",
+  "market_reference": "https://developers.binance.com/en/docs/catalog/core-trading-spot-trading/api/rest-api/market",
+  "general_reference": "https://developers.binance.com/en/docs/catalog/core-trading-spot-trading/api/rest-api/general",
+  "discovery_estimated_weights": {
+    "exchangeInfo": 20,
+    "ticker/24hr_all": 80,
+    "ticker/bookTicker_all": 4
+  },
+  "per_symbol_frames": 4,
+  "kline_weight_per_call": 2,
+  "limit_authority": "actual exchangeInfo REQUEST_WEIGHT MINUTE and response X-MBX-USED-WEIGHT-1M; do not assume spare capacity",
+  "execution_effects": "public GET/time only; no paid services, Telegram, SQL or trading",
+  "repo_visibility_checked": "private"
+}

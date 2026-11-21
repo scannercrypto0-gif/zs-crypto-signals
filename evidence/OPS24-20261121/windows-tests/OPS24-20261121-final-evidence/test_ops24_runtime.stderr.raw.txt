@@ -1,0 +1,17 @@
+test_modified_witness_wrong_key_and_scope_fail (test_ops24_runtime.Ops24ClockTests.test_modified_witness_wrong_key_and_scope_fail) ... ok
+test_normal_worker_verifies_operational_only_signed_observations (test_ops24_runtime.Ops24ClockTests.test_normal_worker_verifies_operational_only_signed_observations) ... ok
+test_stale_future_step_and_reboot_witness_are_held (test_ops24_runtime.Ops24ClockTests.test_stale_future_step_and_reboot_witness_are_held) ... ok
+test_unprivileged_publisher_refused_before_key_or_command_access (test_ops24_runtime.Ops24ClockTests.test_unprivileged_publisher_refused_before_key_or_command_access) ... ok
+test_valid_signature_does_not_make_bad_clock_observations_valid (test_ops24_runtime.Ops24ClockTests.test_valid_signature_does_not_make_bad_clock_observations_valid) ... ok
+test_disabled_or_missing_activation_never_runs (test_ops24_runtime.Ops24SupervisorTests.test_disabled_or_missing_activation_never_runs) ... ok
+test_elapsed_wall_time_does_not_replace_observed_process_uptime (test_ops24_runtime.Ops24SupervisorTests.test_elapsed_wall_time_does_not_replace_observed_process_uptime) ... ok
+test_elevated_worker_is_rejected (test_ops24_runtime.Ops24SupervisorTests.test_elevated_worker_is_rejected) ... ok
+test_one_mock_cycle_has_health_and_boundary_without_24h_claim (test_ops24_runtime.Ops24SupervisorTests.test_one_mock_cycle_has_health_and_boundary_without_24h_claim) ... ok
+test_signed_activation_cannot_be_replaced_by_bare_flags (test_ops24_runtime.Ops24SupervisorTests.test_signed_activation_cannot_be_replaced_by_bare_flags) ... ok
+test_stop_and_singleton_hold_and_restart_slots (test_ops24_runtime.Ops24SupervisorTests.test_stop_and_singleton_hold_and_restart_slots) ... ok
+test_worker_writable_authority_is_not_trusted (test_ops24_runtime.Ops24SupervisorTests.test_worker_writable_authority_is_not_trusted) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 7.326s
+
+OK

@@ -1,0 +1,1 @@
+{"counts":{"DOWN":{"NO_TRIGGER":2},"UP":{"NO_TRIGGER":2}},"original_live_outcome_unchanged":true,"science":"NOT_APPROVED","scope":"NEW_OFFLINE_CALCULATION_FROM_ORIGINAL_RECORDED_BODIES"}

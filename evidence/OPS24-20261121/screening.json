@@ -1,0 +1,8 @@
+{
+  "findings": [],
+  "market_raw_bodies_uploaded": false,
+  "notes": "Only selected nonsecret receipts/reports/clock OS provenance; built-in Windows service SIDs are public OS identities. Historical attempts are labelled separately.",
+  "repo_visibility": "private",
+  "secrets_uploaded": false,
+  "status": "PASS_AUTOMATED_SCREEN_AND_ALLOWLIST"
+}

@@ -1,0 +1,10 @@
+Get-AuthenticodeSignature : The 'Get-AuthenticodeSignature' command was found in the module 
+'Microsoft.PowerShell.Security', but the module could not be loaded. For more information, run 'Import-Module 
+Microsoft.PowerShell.Security'.
+At line:28 char:13
++  $signature=Get-AuthenticodeSignature -LiteralPath $file
++             ~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (Get-AuthenticodeSignature:String) [], ParentContainsErrorRecordExceptio 
+   n
+    + FullyQualifiedErrorId : CouldNotAutoloadMatchingModule
+ 

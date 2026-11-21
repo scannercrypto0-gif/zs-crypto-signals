@@ -1,0 +1,211 @@
+{
+    "elevated":  false,
+    "registry":  [
+                     {
+                         "path":  "SYSTEM\\CurrentControlSet\\Services\\W32Time",
+                         "rules":  [
+                                       {
+                                           "sid":  "S-1-5-18",
+                                           "rights":  268435456,
+                                           "type":  "Allow",
+                                           "propagation":  2
+                                       },
+                                       {
+                                           "sid":  "S-1-5-18",
+                                           "rights":  983103,
+                                           "type":  "Allow",
+                                           "propagation":  0
+                                       },
+                                       {
+                                           "sid":  "S-1-5-19",
+                                           "rights":  -2147483648,
+                                           "type":  "Allow",
+                                           "propagation":  2
+                                       },
+                                       {
+                                           "sid":  "S-1-5-19",
+                                           "rights":  131097,
+                                           "type":  "Allow",
+                                           "propagation":  0
+                                       },
+                                       {
+                                           "sid":  "S-1-5-20",
+                                           "rights":  131097,
+                                           "type":  "Allow",
+                                           "propagation":  0
+                                       },
+                                       {
+                                           "sid":  "S-1-5-20",
+                                           "rights":  -2147483648,
+                                           "type":  "Allow",
+                                           "propagation":  2
+                                       },
+                                       {
+                                           "sid":  "S-1-5-32-544",
+                                           "rights":  983103,
+                                           "type":  "Allow",
+                                           "propagation":  0
+                                       },
+                                       {
+                                           "sid":  "S-1-5-32-544",
+                                           "rights":  268435456,
+                                           "type":  "Allow",
+                                           "propagation":  2
+                                       },
+                                       {
+                                           "sid":  "S-1-5-32-545",
+                                           "rights":  -2147483648,
+                                           "type":  "Allow",
+                                           "propagation":  2
+                                       },
+                                       {
+                                           "sid":  "S-1-5-32-545",
+                                           "rights":  131097,
+                                           "type":  "Allow",
+                                           "propagation":  0
+                                       },
+                                       {
+                                           "sid":  "S-1-5-32-556",
+                                           "rights":  131097,
+                                           "type":  "Allow",
+                                           "propagation":  0
+                                       },
+                                       {
+                                           "sid":  "S-1-5-32-556",
+                                           "rights":  -2147483648,
+                                           "type":  "Allow",
+                                           "propagation":  2
+                                       },
+                                       {
+                                           "sid":  "S-1-5-80-3169285310-278349998-1452333686-3865143136-4212226833",
+                                           "rights":  196639,
+                                           "type":  "Allow",
+                                           "propagation":  0
+                                       },
+                                       {
+                                           "sid":  "S-1-5-80-3169285310-278349998-1452333686-3865143136-4212226833",
+                                           "rights":  -1073676288,
+                                           "type":  "Allow",
+                                           "propagation":  2
+                                       }
+                                   ],
+                         "values":  {
+                                        "ServiceDll":  null,
+                                        "NtpServer":  null,
+                                        "Type":  32,
+                                        "ImagePath":  "C:\\WINDOWS\\system32\\svchost.exe -k LocalService"
+                                    },
+                         "owner":  "S-1-5-18"
+                     },
+                     {
+                         "path":  "SYSTEM\\CurrentControlSet\\Services\\W32Time\\Parameters",
+                         "rules":  [
+                                       {
+                                           "sid":  "S-1-5-18",
+                                           "rights":  268435456,
+                                           "type":  "Allow",
+                                           "propagation":  2
+                                       },
+                                       {
+                                           "sid":  "S-1-5-18",
+                                           "rights":  983103,
+                                           "type":  "Allow",
+                                           "propagation":  0
+                                       },
+                                       {
+                                           "sid":  "S-1-5-19",
+                                           "rights":  -2147483648,
+                                           "type":  "Allow",
+                                           "propagation":  2
+                                       },
+                                       {
+                                           "sid":  "S-1-5-19",
+                                           "rights":  131097,
+                                           "type":  "Allow",
+                                           "propagation":  0
+                                       },
+                                       {
+                                           "sid":  "S-1-5-20",
+                                           "rights":  131097,
+                                           "type":  "Allow",
+                                           "propagation":  0
+                                       },
+                                       {
+                                           "sid":  "S-1-5-20",
+                                           "rights":  -2147483648,
+                                           "type":  "Allow",
+                                           "propagation":  2
+                                       },
+                                       {
+                                           "sid":  "S-1-5-32-544",
+                                           "rights":  983103,
+                                           "type":  "Allow",
+                                           "propagation":  0
+                                       },
+                                       {
+                                           "sid":  "S-1-5-32-544",
+                                           "rights":  268435456,
+                                           "type":  "Allow",
+                                           "propagation":  2
+                                       },
+                                       {
+                                           "sid":  "S-1-5-32-545",
+                                           "rights":  -2147483648,
+                                           "type":  "Allow",
+                                           "propagation":  2
+                                       },
+                                       {
+                                           "sid":  "S-1-5-32-545",
+                                           "rights":  131097,
+                                           "type":  "Allow",
+                                           "propagation":  0
+                                       },
+                                       {
+                                           "sid":  "S-1-5-32-556",
+                                           "rights":  131097,
+                                           "type":  "Allow",
+                                           "propagation":  0
+                                       },
+                                       {
+                                           "sid":  "S-1-5-32-556",
+                                           "rights":  -2147483648,
+                                           "type":  "Allow",
+                                           "propagation":  2
+                                       },
+                                       {
+                                           "sid":  "S-1-5-80-3169285310-278349998-1452333686-3865143136-4212226833",
+                                           "rights":  196639,
+                                           "type":  "Allow",
+                                           "propagation":  0
+                                       },
+                                       {
+                                           "sid":  "S-1-5-80-3169285310-278349998-1452333686-3865143136-4212226833",
+                                           "rights":  -1073676288,
+                                           "type":  "Allow",
+                                           "propagation":  2
+                                       }
+                                   ],
+                         "values":  {
+                                        "ServiceDll":  "C:\\WINDOWS\\system32\\w32time.dll",
+                                        "NtpServer":  "time.cloudflare.com,0x8",
+                                        "Type":  "NTP",
+                                        "ImagePath":  null
+                                    },
+                         "owner":  "S-1-5-18"
+                     }
+                 ],
+    "signatures":  [
+                       {
+                           "signer":  "CN=Microsoft Windows, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+                           "status":  "Valid",
+                           "sha256":  "e81bcc55d0ed5d744b2f23417e9b2706e17a1c02a340503887679f54005570e5",
+                           "file":  "w32tm.exe"
+                       },
+                       {
+                           "signer":  "CN=Microsoft Windows, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+                           "status":  "Valid",
+                           "sha256":  "38c2efef83c2becb913d820b02fb16e987eccebf06ae4072093632b4c3bcc2ab",
+                           "file":  "w32time.dll"
+                       }
+                   ]
+}
