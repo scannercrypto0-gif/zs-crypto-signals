@@ -1,4 +1,4 @@
-# P0-OPS-FULL-MARKET-24H-001 â€” B1 engineering package
+# P0-OPS-FULL-MARKET-24H-001 — B1 engineering package
 
 Authority: Issue51 comments 7059836760/7059859495; PM governance Draft PR75. Base main: 7b7bb0ebdf0bb601cf1f468c0146c784cb8e0a5f, TREE ac9b9fd8b0c7801183589b027cba1082d616f32b. Isolated D: worktree; installed runtime and root MASTER/README/CLOCK74 preserved. This package does not start a service.
 
@@ -16,6 +16,8 @@ Authority: Issue51 comments 7059836760/7059859495; PM governance Draft PR75. Bas
 | Resource caps | 512MiB working set, 1GiB spool, 512MiB minimum free, 60 CPU-seconds/capture | Caps HOLD and retain originals; no deleting evidence to manufacture uptime. |
 | Effects | SHADOW/RESEARCH_ONLY, null signal IDs | No Telegram sender, operational archive, SQL or trading path. |
 | B2 fallback | Separately reviewed streaming/cache contract if B1 cannot meet timing | Not implemented/activated; no covert freshness increase. |
+
+HTTPS uses a verified TLS connection per worker (REST_HTTPS_KEEPALIVE_THREAD_LOCAL_V1), reused across its requests, without proxies, redirect following or application retries. Unknown acknowledgements stop rather than triggering a transparent resend. Live latency must still be measured.
 
 ## Source and causal contract
 

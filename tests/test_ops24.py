@@ -371,3 +371,33 @@ class Ops24RuntimeTests(unittest.TestCase):
             with closing(budget.open()) as db:
                 receipt=json.loads(db.execute("SELECT receipt FROM requests").fetchone()[0])
             self.assertFalse(receipt["http_attempted"])
+
+    def test_https_transport_reuses_thread_connection_and_never_follows_redirect(self):
+        from unittest.mock import patch,MagicMock
+        from zs_smart_gate import ops24_source as source
+        connection=MagicMock()
+        response=connection.getresponse.return_value
+        response.status=302
+        response.will_close=False
+        response.read.return_value=b""
+        response.getheaders.return_value=[("Location","https://other.example")]
+        with patch.object(source._connections,"connection",None,create=True), \
+             patch.object(source.http.client,"HTTPSConnection",return_value=connection) as factory:
+            self.assertEqual(source.public_get("exchangeInfo",{},8,1024)[0],302)
+            source.public_get("ticker/24hr",{},8,1024)
+            self.assertEqual(factory.call_count,1)
+            self.assertEqual(connection.request.call_count,2)
+            self.assertTrue(all(row.args[0]=="GET" for row in connection.request.call_args_list))
+            self.assertEqual(factory.call_args.kwargs["context"].verify_mode,2)
+            self.assertTrue(factory.call_args.kwargs["context"].check_hostname)
+
+    def test_https_unknown_ack_is_not_retried_by_transport(self):
+        from unittest.mock import patch,MagicMock
+        from zs_smart_gate import ops24_source as source
+        connection=MagicMock()
+        connection.request.side_effect=source.http.client.RemoteDisconnected()
+        with patch.object(source._connections,"connection",connection,create=True):
+            with self.assertRaisesRegex(Hold,"TRANSPORT_UNKNOWN_NO_REISSUE"):
+                source.public_get("exchangeInfo",{},8,1024)
+        self.assertEqual(connection.request.call_count,1)
+        connection.close.assert_called_once()
