@@ -28,10 +28,10 @@ $users=Get-LocalGroup -SID 'S-1-5-32-545'
 if(-not(Get-LocalGroupMember -Group $users|Where-Object{$_.SID.Value -eq $user.SID.Value})){Add-LocalGroupMember -Group $users -Member $user}
 $workerSid=$user.SID.Value
 $ownerSid=$identity.User.Value
-# Give the app account read/execute only on this immutable source and D runtime.
+# Native DACL-only helper retains explicit owner access on every file.
+. (Join-Path $Source 'scripts\ops24-owned-acl.ps1')
 foreach($folder in @($Source,'D:\ZS-SMART-GATE\runtime\python-3.12.10-ops77')){
- & icacls.exe $folder /inheritance:r /grant:r ('*'+$ownerSid+':(OI)(CI)F') '*S-1-5-18:(OI)(CI)F' '*S-1-5-32-544:(OI)(CI)F' ('*'+$workerSid+':(OI)(CI)RX') /T /C /Q 1>$null
- if($LASTEXITCODE -ne 0){throw 'WORKER_READ_EXECUTE_ACL_FAILED'}
+ $null=Set-ZsOwnedReadOnlyTree -Root $folder -WorkerSid $workerSid
 }
 & (Join-Path $Source 'scripts\ops24-task-probe.ps1') -Source $Source -Head $Head -Tree $Tree -Root $Root -WorkerSid $workerSid
 $code=$LASTEXITCODE

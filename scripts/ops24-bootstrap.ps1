@@ -34,8 +34,11 @@ if(-not(Test-Path $source)){
  & git -C $source checkout --detach $head
  if($LASTEXITCODE -ne 0){throw 'EXACT_RELEASE_CHECKOUT_FAILED'}
 }
+$role=Get-LocalUser -Name 'ZS_SG_Research' -ErrorAction SilentlyContinue
+if(-not $role -or $role.Description -cne 'ZS SMART GATE read-only standard worker'){throw 'ONE_TIME_STANDARD_ROLE_SETUP_PENDING'}
+$workerSid=$role.SID.Value
 $controller=Join-Path $source 'scripts\ops24-windows.ps1'
-& $controller -Action InstallDisabled -Root $Root -Source $source -Head $head -Tree $tree
+& $controller -Action InstallDisabled -Root $Root -Source $source -Head $head -Tree $tree -WorkerSid $workerSid
 $python='D:\ZS-SMART-GATE\runtime\python-3.12.10-ops77\python.exe'
 $decision=Join-Path $Root ('standing-'+[guid]::NewGuid().ToString('N')+'.json')
 & $python -B (Join-Path $source 'scripts\ops24-standing-release.py') --head $windows.head --tree $tree --windows $WindowsEvidence --source-proof $SourceEvidence --output $decision
@@ -45,6 +48,9 @@ $releasePath=Join-Path $Root 'release.json'
 $config=Get-Content $releasePath -Raw|ConvertFrom-Json
 $config|Add-Member -NotePropertyName standing_authority_sha256 -NotePropertyValue (Get-FileHash (Join-Path $Root 'standing-authority.json')).Hash.ToLowerInvariant() -Force
 [IO.File]::WriteAllText($releasePath,($config|ConvertTo-Json -Depth 8),[Text.UTF8Encoding]::new($false))
+ . (Join-Path $source 'scripts\ops24-owned-acl.ps1')
+Set-ZsWorkerStateRoot -Root $Root -WorkerSid $workerSid
+$null=Set-ZsOwnedReadOnlyTree -Root $source -WorkerSid $workerSid
 & $controller -Action BuildTask -Root $Root
 & $controller -Action Register -Root $Root
 if(-not(Test-Path (Join-Path $Root 'deployment-proof.json'))){Write-Output 'RELEASE_INSTALLED_TASK_DISABLED_ACTUAL_G3_PROOF_PENDING';return}

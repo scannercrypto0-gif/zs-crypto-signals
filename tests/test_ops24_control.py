@@ -72,3 +72,17 @@ class Ops24ControllerTests(unittest.TestCase):
         self.assertEqual(result.returncode,0,result.stderr)
         maximum=int(result.stdout.strip())
         self.assertLessEqual(len(marker),maximum)
+
+    def test_owned_dacl_repair_keeps_file_contents_and_explicit_owner_rights(self):
+        with tempfile.TemporaryDirectory(dir='D:/ZS-SMART-GATE/temp') as folder:
+            root=Path(folder);data=root/'nested'/'input.txt';data.parent.mkdir();data.write_bytes(b'original source bytes')
+            helper=ROOT/'scripts/ops24-owned-acl.ps1'
+            command=". '"+str(helper)+"'; [ZsOwnedDacl]::Set('"+str(data)+"','D:P'); $null=Set-ZsOwnedReadOnlyTree -Root '"+str(root)+"' -WorkerSid 'S-1-5-32-545'; $a=Get-Acl -LiteralPath '"+str(data)+"'; @{rules=@($a.Access).Count;owner_full=@($a.Access|Where-Object {$_.FileSystemRights -eq 'FullControl' -and $_.InheritanceFlags -eq 'None'}).Count;contents=[IO.File]::ReadAllText('"+str(data)+"')}|ConvertTo-Json -Compress"
+            process=subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-Command',command],
+                capture_output=True,text=True,timeout=30,creationflags=subprocess.CREATE_NO_WINDOW,
+                env={**__import__('os').environ,'TEMP':'D:/ZS-SMART-GATE/temp','TMP':'D:/ZS-SMART-GATE/temp'})
+            self.assertEqual(process.returncode,0,process.stderr)
+            proof=json.loads(process.stdout)
+            self.assertGreaterEqual(proof['rules'],4)
+            self.assertGreaterEqual(proof['owner_full'],3)
+            self.assertEqual(proof['contents'],'original source bytes')

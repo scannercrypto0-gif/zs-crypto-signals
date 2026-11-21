@@ -17,25 +17,8 @@ try{
  & $controller -Action InstallDisabled -Root $Root -Source $Source -Head $Head -Tree $Tree -Python $Python -WorkerSid $WorkerSid
  if($LASTEXITCODE -ne 0){throw 'DISABLED_INSTALL_FAILED'}
  if($WorkerSid){
-  # State files may be written; release configuration is separately read-only.
-  $acl=New-Object Security.AccessControl.DirectorySecurity
-  $owner=[Security.Principal.WindowsIdentity]::GetCurrent().User
-  $acl.SetOwner($owner);$acl.SetAccessRuleProtection($true,$false)
-  foreach($sid in @($owner.Value,'S-1-5-18','S-1-5-32-544')){
-   $acl.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new([Security.Principal.SecurityIdentifier]::new($sid),'FullControl','ContainerInherit,ObjectInherit','None','Allow'))
-  }
-  $worker=[Security.Principal.SecurityIdentifier]::new($WorkerSid)
-  $acl.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new($worker,'ReadAndExecute,Write','None','None','Allow'))
-  $acl.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new($worker,'Modify','ContainerInherit,ObjectInherit','InheritOnly','Allow'))
-  [IO.Directory]::SetAccessControl($Root,$acl)
-  foreach($name in @('release.json','DISABLED','STOP_REQUESTED')){
-   $path=Join-Path $Root $name
-   $file=New-Object Security.AccessControl.FileSecurity
-   $file.SetOwner($owner);$file.SetAccessRuleProtection($true,$false)
-   foreach($sid in @($owner.Value,'S-1-5-18','S-1-5-32-544')){$file.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new([Security.Principal.SecurityIdentifier]::new($sid),'FullControl','Allow'))}
-   $file.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new($worker,'ReadAndExecute','Allow'))
-   [IO.File]::SetAccessControl($path,$file)
-  }
+  . (Join-Path $Source 'scripts\ops24-owned-acl.ps1')
+  Set-ZsWorkerStateRoot -Root $Root -WorkerSid $WorkerSid
  }
  & $controller -Action BuildTask -Root $Root
  $xmlPath=Join-Path $Root 'worker.disabled.xml'
