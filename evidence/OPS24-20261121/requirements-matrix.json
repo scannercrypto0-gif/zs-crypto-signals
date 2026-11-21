@@ -3,7 +3,7 @@
     "requirement": "A1 dynamic eligible inventory",
     "code": "ops24_source.discover/scan; marketwide_research.inventory",
     "test": "test_dynamic_budget_all_pairs_and_shared_final_decision",
-    "status": "SYNTHETIC_PASS_LIVE_RESULT_SEPARATE"
+    "status": "PASS_TARGETED_AND_ONE_BOUNDED_56_OF_56_SNAPSHOT"
   },
   {
     "requirement": "A2 shared atomic quota/body/inflight ledger",
@@ -15,7 +15,7 @@
     "requirement": "A3 four closed frames / common final D",
     "code": "ops24_source.scan; marketwide_research.evaluate",
     "test": "test_all_inputs_rechecked_at_final_decision_and_invalid_pair_partial; test_final_decision_rechecks_oldest_market_and_candle_input",
-    "status": "PASS_TARGETED_LIVE_RESULT_SEPARATE"
+    "status": "PASS_TARGETED_AND_ONE_BOUNDED_56_OF_56_SNAPSHOT"
   },
   {
     "requirement": "A4 no ban/unknown retry",
@@ -27,7 +27,7 @@
     "requirement": "A5 TLS reuse/no redirect",
     "code": "ops24_source.public_get",
     "test": "test_https_transport_reuses_thread_connection_and_never_follows_redirect",
-    "status": "PASS_TARGETED_LIVE_TIMING_SEPARATE"
+    "status": "PASS_TARGETED_AND_ONE_BOUNDED_56_OF_56_SNAPSHOT"
   },
   {
     "requirement": "A6 crash recovery/hash/idempotence",
@@ -92,7 +92,7 @@
   {
     "requirement": "D1 GitHub source reproduction",
     "code": "fresh final-source clone",
-    "test": "41/41 Windows tests same HEAD/TREE",
+    "test": "41/41 Windows tests same final HEAD/TREE",
     "status": "PASS"
   },
   {

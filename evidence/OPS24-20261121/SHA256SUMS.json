@@ -1196,6 +1196,11 @@
       "sha256": "2eb46e1c0a4f3a85ee2ae88c6daabee15f5d33020e64ddf75acf93abb51ed462"
     },
     {
+      "bytes": 55174,
+      "path": "bounded-full-market-resources.json",
+      "sha256": "2961095bcb1883b410356e5610707a2de217cf26b96591c9ea6741a31eabb132"
+    },
+    {
       "bytes": 14466,
       "path": "clock-provenance/clock-equivalence.private.json",
       "sha256": "d592d01cf51df7ab9dd1f2618f366f31c64ba123a81bf0d6f2a60a8bedbc46a7"
@@ -1221,6 +1226,11 @@
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
+      "bytes": 2745,
+      "path": "execution-helpers/ops24-build-packet.py",
+      "sha256": "10fd8b1f115540643a07403827dd69ecd22d708768caed2e68de7c005f2381b0"
+    },
+    {
       "bytes": 3589,
       "path": "execution-helpers/ops24-collect-evidence.py",
       "sha256": "2c2299c473bee46dcf9ae63c3ab227841c7a8f613fdedee76848cda5f786984e"
@@ -1239,6 +1249,11 @@
       "bytes": 1779,
       "path": "execution-helpers/ops24-normal-clock-inspect.ps1",
       "sha256": "8d820bbf6b1bfa3a7f9dd9ac30b12d8796b1334df0b6ec0fd480f8ef48a05b82"
+    },
+    {
+      "bytes": 1636,
+      "path": "execution-helpers/ops24-observe-resources.ps1",
+      "sha256": "c98ec18c692d9be71986dac501aaeb44ac66aee738c21847bb7065154cb39983"
     },
     {
       "bytes": 1298,
@@ -1366,14 +1381,14 @@
       "sha256": "8087b783d4be51792ee93b986f44a08a599af3b0882884ebbd00913f2607865b"
     },
     {
-      "bytes": 4000,
+      "bytes": 5482,
       "path": "README.md",
-      "sha256": "e3504b3a0f54b013f9e0eba3b94d04aa2f8764fec5a6f38b2bb30c73cf84dd14"
+      "sha256": "6a5d1515254e2eed005271271eac8464193268761ccb668a555e1381c6f876b4"
     },
     {
-      "bytes": 4689,
+      "bytes": 4733,
       "path": "requirements-matrix.json",
-      "sha256": "980debdcd422173aba4188dbe0b1af4ac85a99cd03d6b755571e8353f90950dc"
+      "sha256": "7c51c8126d46e5ea1d04204587fa4d67de69466acd8722f270098ec971282c98"
     },
     {
       "bytes": 530,
