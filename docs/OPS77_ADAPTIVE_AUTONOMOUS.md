@@ -93,3 +93,26 @@ Task failure receipts now retain sanitized scheduler event IDs and ResultCode.
 Reference: https://learn.microsoft.com/windows/security/threat-protection/security-policy-settings/log-on-as-a-batch-job
 Native compilation/nonadmin rejection tests do not establish actual LSA grant or
 scheduled execution; those require the administrator-run pinned probe.
+
+## Actual standard worker starts, then native clock provenance HOLD
+
+8c8c84b Windows attempt added batch-logon right, registered and started the task
+at 2026-11-21T14:00:26Z. Worker exit 2 stdout was
+NORMAL_CLOCK_OS_PROVENANCE_UNAVAILABLE; stderr was empty. This is a real
+scheduled process launch, NOT clock acceptance or complete probe success.
+Native inspect() previously discarded its child stderr. Health now preserves
+native stdout/stderr/exit/hashes on D and records the actual normal-token probe
+before rethrowing the clock failure. No failed witness is accepted.
+
+The previous diagnostic account now has an OS profile. Its password and profile
+are not reset or deleted. A single reusable ZS_SG_Worker role is provisioned for
+subsequent probes, with its credential saved only as Windows CurrentUser DPAPI
+CLIXML in D:\ZS-SMART-GATE\secrets\ops77-worker\account.clixml. Owner/System/Admin
+only ACL; worker cannot read the credential. Never publish this secret or its
+ciphertext. Existing-account credentials are loaded, never reset. Missing or
+orphan credentials cause HOLD. This supersedes the earlier diagnostic-only
+no-password-file implementation; plaintext is still never written/exported.
+New public receipts say plaintext_password_exported=false and explicitly
+identify the local DPAPI store. The old account remains untouched for evidence.
+Actual native clock failure root cause remains unestablished until its retained
+child error is observed. No live calls, review or scientific GO is inferred.

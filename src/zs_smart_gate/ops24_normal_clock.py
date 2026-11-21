@@ -73,12 +73,22 @@ def system_directory():
     return Path(buffer.value)
 
 
-def inspect():
+def inspect(*, diagnostic_root=None):
     binary=system_directory()/"WindowsPowerShell"/"v1.0"/"powershell.exe"
     result=subprocess.run([str(binary),"-NoProfile","-NonInteractive","-ExecutionPolicy","Bypass","-Command",INSPECT],
                           env={**os.environ,"PSModulePath":str(system_directory()/"WindowsPowerShell"/"v1.0"/"Modules")},
                           capture_output=True,timeout=20,creationflags=subprocess.CREATE_NO_WINDOW)
     if result.returncode!=0:
+        if diagnostic_root is not None:
+            from .ops24_source import atomic
+            root=Path(diagnostic_root).resolve()
+            if Path('D:/ZS-SMART-GATE').resolve() not in root.parents:
+                raise Hold('D_OWNED_DIAGNOSTIC_ROOT_REQUIRED')
+            atomic(root/'clock-provenance.stdout.raw.txt',result.stdout)
+            atomic(root/'clock-provenance.stderr.raw.txt',result.stderr)
+            atomic(root/'clock-provenance.failure.json',canonical(dict(
+                exit_code=result.returncode,stdout_sha256=digest(result.stdout),
+                stderr_sha256=digest(result.stderr),status='PROVENANCE_COLLECTION_FAILED')))
         raise Hold("NORMAL_CLOCK_OS_PROVENANCE_UNAVAILABLE")
     return json.loads(result.stdout)
 

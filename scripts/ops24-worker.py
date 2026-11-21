@@ -90,8 +90,13 @@ def main():
                     pid=os.getpid(),normal_token=not is_admin(),measured_utc=time.time(),
                     windows=observed,resources=resources(root),market_calls=0,telegram_calls=0,sql_writes=0)
         if args.action=='Health':
-            from zs_smart_gate.ops24_normal_clock import NormalClock
-            report['clock']=NormalClock().refresh()
+            from zs_smart_gate.ops24_normal_clock import NormalClock,inspect
+            try:
+                report['clock']=NormalClock(provenance=lambda:inspect(diagnostic_root=root)).refresh()
+            except (Hold,OSError,ValueError,KeyError,subprocess.TimeoutExpired) as exc:
+                report['clock']={'assessment':{'status':'BLOCKED'},'failure':str(exc) if isinstance(exc,Hold) else type(exc).__name__}
+                atomic(root/'probe.json',canonical(report))
+                raise
         atomic(root/'probe.json',canonical(report))
         print(json.dumps(dict(status='ACTUAL_NORMAL_USER_PROBE_RECORDED',head=head,tree=tree)))
         return 0

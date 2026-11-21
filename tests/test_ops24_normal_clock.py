@@ -43,6 +43,19 @@ def observations():
 
 
 class NormalClockTests(unittest.TestCase):
+    def test_failed_native_inspection_preserves_raw_diagnostics_without_acceptance(self):
+        import tempfile
+        import subprocess
+        from pathlib import Path
+        from zs_smart_gate.ops24_normal_clock import inspect
+        with tempfile.TemporaryDirectory(dir='D:/ZS-SMART-GATE/temp') as folder:
+            with patch('zs_smart_gate.ops24_normal_clock.subprocess.run',return_value=
+                       subprocess.CompletedProcess([],1,b'partial native output',b'fixture permission failure')):
+                with self.assertRaisesRegex(Hold,'NORMAL_CLOCK_OS_PROVENANCE_UNAVAILABLE'):
+                    inspect(diagnostic_root=folder)
+            self.assertEqual((Path(folder)/'clock-provenance.stderr.raw.txt').read_bytes(),b'fixture permission failure')
+            self.assertEqual((Path(folder)/'clock-provenance.stdout.raw.txt').read_bytes(),b'partial native output')
+
     def test_verified_equivalent_retains_original_denials_and_numerical_policy(self):
         result=assess_normal(observations(),profile(),10)
         self.assertEqual(result["status"],"OPERATIONAL_TIME_ACCEPTED")

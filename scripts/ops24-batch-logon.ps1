@@ -44,9 +44,10 @@ public static class ZsBatchLogon {
 "@
 }
 function Enable-ZsProjectBatchLogon {
+ param([ValidateSet('ZS_SG_Research','ZS_SG_Worker')][string]$Name='ZS_SG_Research')
  $id=[Security.Principal.WindowsIdentity]::GetCurrent()
  if(-not([Security.Principal.WindowsPrincipal]::new($id).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))){throw 'BATCH_LOGON_SETUP_REQUIRES_ADMIN'}
- $user=Get-LocalUser -Name 'ZS_SG_Research' -ErrorAction Stop
+ $user=Get-LocalUser -Name $Name -ErrorAction Stop
  if($user.Description -cne 'ZS SMART GATE read-only standard worker'){throw 'PROJECT_ROLE_MARKER_REQUIRED'}
  if(Get-LocalGroupMember -SID 'S-1-5-32-544'|Where-Object {$_.SID.Value -eq $user.SID.Value}){throw 'STANDARD_PROJECT_ACCOUNT_REQUIRED'}
  $added=[ZsBatchLogon]::Ensure($user.SID.Value)
