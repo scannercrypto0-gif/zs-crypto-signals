@@ -50,6 +50,8 @@ $workerSid=$user.SID.Value
 $ownerSid=$identity.User.Value
 . (Join-Path $Source 'scripts\ops24-batch-logon.ps1')
 Enable-ZsProjectBatchLogon -Name $name|ConvertTo-Json -Compress
+. (Join-Path $Source 'scripts\ops24-service-read.ps1')
+Enable-ZsProjectClockServiceRead -BackupRoot $vault|ConvertTo-Json -Compress
 # Native DACL-only helper retains explicit owner access on every file.
 . (Join-Path $Source 'scripts\ops24-owned-acl.ps1')
 foreach($folder in @($Source,'D:\ZS-SMART-GATE\runtime\python-3.12.10-ops77')){

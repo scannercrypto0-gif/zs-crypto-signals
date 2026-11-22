@@ -232,3 +232,34 @@ SDK references:
 https://learn.microsoft.com/en-us/windows/win32/api/wintrust/ns-wintrust-wintrust_catalog_info
 https://learn.microsoft.com/en-us/windows/win32/api/mscat/nf-mscat-cryptcatadmincalchashfromfilehandle2
 https://learn.microsoft.com/en-us/windows/win32/api/wintrust/nf-wintrust-winverifytrust
+
+## Actual 28b5b2a result: signature gate passed, service-read access still denied
+
+Actual scheduled Password Health finished worker exit 0 with normal_token=true.
+The explicit catalog member/signature/protected-store verification passed in
+session 0. Clock remained BLOCKED because sc.exe query W32Time and w32tm status
+returned AccessDenied. Four stripchart samples succeeded (maximum absolute
+observed offset 0.0220374s), but service state/source/last-sync/root dispersion
+were unavailable; no total uncertainty or clock acceptance is inferred.
+
+Prepare only SERVICE_QUERY_CONFIG | SERVICE_QUERY_STATUS | READ_CONTROL
+(0x20005) for the dedicated nonadmin ZS_SG_Worker SID on W32Time. Native service
+DACL helper adds missing allow bits, preserving existing ACEs/denies, owner and
+SACL. No SERVICE_START/STOP/CHANGE_CONFIG/USER_DEFINED_CONTROL, deletion,
+WRITE_DAC/WRITE_OWNER rights are granted to the worker. Administrator setup is
+required by Windows. No grant has actually run in the normal agent session.
+
+A protected original DACL backup remains in the owner-only D credential vault;
+only before/after hashes and nonsensitive scope are reported publicly. Existing
+backup is not overwritten. No other service or SCM policy modified. Denies are
+not removed; a higher policy can still block and must remain HOLD. Idempotent
+setup checks the actual resulting allow mask, not fabricated query outcomes.
+Actual query/clock success still requires the next standard scheduled probe.
+
+Pure descriptor tests compile native helper and prove added bits are read-only,
+original denied stop ACE/old allow ACE/owner/group/audit remain, and repeat is
+byte-identical. Normal caller mutation is rejected before OS changes. No actual
+Windows service security is modified by these tests. This patch leaves clock
+math and catalog verifier blobs unchanged; accepted tests are not rerun broadly.
+
+Reference: https://learn.microsoft.com/en-us/windows/win32/services/service-security-and-access-rights
