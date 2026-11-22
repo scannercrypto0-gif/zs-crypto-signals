@@ -132,10 +132,12 @@ def main():
             guard();result=bridge.poll_once();replies.extend(result['replies'])
             save('pilot-status.json',dict(head=args.head,counts=counts,replies=replies,
                 signal_id=None,signal_dispatch='BLOCKED_QUALIFIED_VERIFIER_UNAVAILABLE',archive=archive))
-            if len(replies)>=2 or result['status']!='ACCEPTED':break
+            observed={row['destination_label'] for row in replies if row['status']=='ACCEPTED'}
+            if observed=={'A','B'} or result['status']!='ACCEPTED':break
             time.sleep(3)
         save('pilot-final.json',dict(head=args.head,counts=counts,replies=replies,
             qualified_signal_sent=False,production=False,continuous=False,
+            accepted_interactive_routes=sorted({row['destination_label'] for row in replies if row['status']=='ACCEPTED'}),
             status='FINITE_RESEARCH_COMPLETED_NOT_SIGNAL_ACCEPTANCE'))
     return 0
 

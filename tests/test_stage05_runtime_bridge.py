@@ -54,6 +54,7 @@ class BridgeTests(unittest.TestCase):
         result = self.bridge().poll_once()
         self.assertEqual([r['status'] for r in result['replies']], ['ACCEPTED','ACCEPTED'])
         self.assertEqual({row[0] for row in self.fake.sends}, {101,202})
+        self.assertEqual({r['destination_label'] for r in result['replies']},{'A','B'})
 
     def test_cross_account_or_third_account_never_receives_reply(self):
         cross = self.inbound(101,1);cross['message']['chat']['id']=202
@@ -92,3 +93,18 @@ class BridgeTests(unittest.TestCase):
         bridge=self.bridge();bridge.poll_once()
         self.fake.updates[0]['message']['text']='ETHUSDT'
         with self.assertRaisesRegex(ContractError,'UPDATE_CONFLICT'):bridge.poll_once()
+
+    def test_old_or_future_human_messages_are_not_replied_to(self):
+        old=self.inbound(101,1);old['message']['date']-=121
+        future=self.inbound(202,2);future['message']['date']+=5
+        self.fake.updates=(old,future)
+        self.assertEqual(self.bridge().poll_once()['replies'],[])
+        self.assertEqual(self.fake.sends,[])
+
+    def test_reply_limit_keeps_later_updates_unacknowledged(self):
+        self.fake.updates=(self.inbound(101,1),self.inbound(202,2))
+        first=self.bridge().poll_once(max_replies=1)
+        self.assertEqual([r['destination_label'] for r in first['replies']],['A'])
+        second=self.bridge().poll_once(max_replies=1)
+        self.assertEqual([r['destination_label'] for r in second['replies']],['B'])
+        self.assertEqual(len(self.fake.sends),2)

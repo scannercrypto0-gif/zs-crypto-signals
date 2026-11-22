@@ -95,13 +95,15 @@ class TelegramBridge:
         self._fresh(event)
         return self.upstream.snapshot(*ref, symbol)
 
-    def poll_once(self):
+    def poll_once(self, *, max_replies=2):
         """Advance acknowledgment only after a durable terminal per-update record.
 
         An uncertain send is terminal for automatic retry, not successful delivery.
         The existing outbox claim survives crashes before ingress commit.
         """
         self._guard()
+        if type(max_replies) is not int or not 1 <= max_replies <= 2:
+            raise ContractError('BRIDGE_REPLY_BATCH_LIMIT_INVALID')
         with closing(self._db()) as db:
             offset = db.execute('SELECT COALESCE(MAX(update_id)+1,0) FROM ingress').fetchone()[0]
         result = self.transports['INTERACTIVE'].get_updates(offset=offset, **self.opts)
@@ -115,6 +117,8 @@ class TelegramBridge:
             raise ContractError('BRIDGE_UPDATE_ID_INVALID')
         replies = []
         for update in sorted(rows, key=lambda row: row['update_id']):
+            if len(replies) >= max_replies:
+                break  # Leave later updates unacknowledged for the next bounded poll.
             self._guard()
             uid = update['update_id']
             pin = digest(canonical(update))
@@ -147,7 +151,8 @@ class TelegramBridge:
                             config=self.config, store=self.store, clock=self.clock, simulation=self.simulation,
                             transport=self.transports['INTERACTIVE'], reply_to=message['message_id'], **self.opts)
                         state = receipt['status']
-                        replies.append(dict(status=state, delivery_id=receipt['delivery_id']))
+                        replies.append(dict(status=state, delivery_id=receipt['delivery_id'],
+                            destination_label='A' if str(chat['id']) == self.config.signals_chat_a else 'B'))
             with closing(self._db()) as db, db:
                 db.execute('INSERT INTO ingress VALUES(?,?,?)', (uid, pin, state))
         return dict(status='ACCEPTED', processed=len(rows), replies=replies)
