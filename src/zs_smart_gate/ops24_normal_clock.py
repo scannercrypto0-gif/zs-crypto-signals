@@ -47,8 +47,12 @@ $base.Dispose()
 $system32=[Environment]::SystemDirectory
 $sidText=''
 foreach($service in @('W32Time','autotimesvc')){
- $sidText+=(& (Join-Path $system32 'sc.exe') showsid $service|Out-String)
- if($LASTEXITCODE -ne 0){throw 'SERVICE_SID_QUERY_FAILED'}
+ # Native account translation does not require opening the Service Control
+ # Manager. Microsoft documents NT SERVICE\SvcName for service SID lookup.
+ $account=[Security.Principal.NTAccount]::new('NT SERVICE',$service)
+ $sid=$account.Translate([Security.Principal.SecurityIdentifier]).Value
+ if($sid -notmatch '^S-1-5-80-(\d+-){4}\d+$'){throw 'SERVICE_SID_QUERY_FAILED'}
+ $sidText+=$sid+"`n"
 }
 $signatures=@()
 foreach($name in @('sc.exe','w32tm.exe','w32time.dll','svchost.exe','autotimesvc.dll')){

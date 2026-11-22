@@ -43,6 +43,18 @@ def observations():
 
 
 class NormalClockTests(unittest.TestCase):
+    def test_native_service_account_translation_matches_original_sc_sid(self):
+        import subprocess,json,re
+        command="$ErrorActionPreference='Stop'; $rows=@();foreach($n in @('W32Time','autotimesvc')){$sid=([Security.Principal.NTAccount]::new('NT SERVICE',$n)).Translate([Security.Principal.SecurityIdentifier]).Value;$old=(& ($env:SystemRoot+'\\System32\\sc.exe') showsid $n|Out-String);if($LASTEXITCODE -ne 0){throw 'COMPARISON_SC_FAILED'};$rows+=@{name=$n;translated=$sid;original=$old}};$rows|ConvertTo-Json -Compress"
+        result=subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-Command',command],capture_output=True,text=True,timeout=20,creationflags=subprocess.CREATE_NO_WINDOW)
+        self.assertEqual(result.returncode,0,result.stderr)
+        rows=json.loads(result.stdout)
+        self.assertEqual(len(rows),2)
+        for row in rows:
+            self.assertRegex(row['translated'],r'^S-1-5-80-(\d+-){4}\d+$')
+            self.assertIn(row['translated'],re.findall(r'S-1-5-80-(?:\d+-){4}\d+',row['original']))
+        self.assertNotEqual(rows[0]['translated'],rows[1]['translated'])
+
     def test_failed_native_inspection_preserves_raw_diagnostics_without_acceptance(self):
         import tempfile
         import subprocess

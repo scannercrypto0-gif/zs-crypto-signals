@@ -116,3 +116,19 @@ New public receipts say plaintext_password_exported=false and explicitly
 identify the local DPAPI store. The old account remains untouched for evidence.
 Actual native clock failure root cause remains unestablished until its retained
 child error is observed. No live calls, review or scientific GO is inferred.
+
+## 2026-11-22: scheduled normal-token provenance failure isolated
+
+Actual 8acea8a scheduled Health produced normal_token=true and session 0, but
+clock BLOCKED. Retained native stderr establishes SERVICE_SID_QUERY_FAILED at
+sc.exe showsid. No signature/registry/time check had been accepted by fallback.
+Replace only this identity-lookup operation with OS NTAccount translation of
+NT SERVICE\W32Time and NT SERVICE\autotimesvc, Microsoft's documented service
+name-to-SID mechanism. Keep exact service SID shape/distinctness, registry ACL,
+binary signatures, source and numerical clock limits. Do not grant SCM access
+or administrative membership to the worker. The original sc.exe binary remains
+included in integrity checks; historical receipts remain unchanged.
+Native comparison tests verify translated SIDs match actual original sc.exe
+showsid on the normal operator. Actual S4U worker Health still needs execution;
+operator comparison is not evidence of acceptance under the worker identity.
+Reference: https://learn.microsoft.com/en-us/windows/win32/api/winsvc/ns-winsvc-service_sid_info
