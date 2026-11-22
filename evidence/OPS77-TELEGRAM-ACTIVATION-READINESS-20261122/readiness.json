@@ -1,0 +1,24 @@
+{
+  "schema": "zs.ops77.telegram-activation-readiness.v1",
+  "at_utc": "2026-11-22T11:35:39.7702530Z",
+  "request": "OWNER_REQUESTED_THREE_BOT_ACTIVATION",
+  "head": "809a8c19814e48c1ae77984ea216a88d2430b773",
+  "local_secret_files_present": 8,
+  "secret_values_read_or_published": false,
+  "credential_validity": "NOT_RETESTED",
+  "runtime_scope": "DEPLOYMENT_RECOVERY_NO_MARKET_V1",
+  "runtime_stop": "GRACEFUL_STOP_CONFIRMED",
+  "telegram_adapter_in_current_ops24_serve": "NOT_IMPLEMENTED",
+  "latest_observed_clock": "BLOCKED",
+  "qualified_production_signal": "NOT_PROVEN",
+  "activation": "NOT_ACTIVATED_TECHNICAL_GATES_OPEN",
+  "bot_roles": {
+    "interactive": "ALLOWLISTED_QUERY_REPLY_ACCOUNT_A_ONLY",
+    "archive": "MATCHING_DATA_DOCUMENT",
+    "signals": "QUALIFIED_SIGNAL_ONLY"
+  },
+  "external_api_calls": 0,
+  "merge": false,
+  "production": false,
+  "note": "Owner authorization accepted; remaining issues are implementation/time/qualification evidence, not another permission request. Existing successful connectivity not repeated. No fabricated signal or test promoted to production."
+}
