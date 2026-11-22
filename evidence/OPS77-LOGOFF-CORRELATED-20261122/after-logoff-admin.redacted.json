@@ -1,0 +1,70 @@
+{
+  "schema": "zs.ops77.actual-owner-recovery-audit.v1",
+  "step": "after_logoff",
+  "head": "2f39c1ba4c8777d7d5345834a7146c8a10d2a1d4",
+  "tree": "1faff74fbe8d3dc0158c25afd547af2239e28bdc",
+  "utc": "2026-11-22T10:59:38.077515Z",
+  "boot_utc": "2026-11-11T05:45:30.500786Z",
+  "task_state": "Running",
+  "task_logon": "Password",
+  "last_result": 267009,
+  "last_run_utc": "2026-11-22T10:15:12Z",
+  "security_status": "BOUNDED_OWNER_EVENTS_READ_NOT_AN_AUTOMATIC_LOGOFF_PASS",
+  "owner_security_events": [
+    {
+      "id": 4624,
+      "native_event_sha256": "3fe1d7aab24ff1e9da84154bf2dac508d23b54c82fd46c054e71b4cd6cd870e8",
+      "target_logon_id": "0x6c2e6730",
+      "subject_logon_id": "0x3e7",
+      "utc": "2026-11-22T10:43:36.3091569Z",
+      "logon_type": "2"
+    },
+    {
+      "id": 4624,
+      "native_event_sha256": "c82a574f95d14d7c391923794837c3d77eca1a829c4821685ffb9968a2d0adc0",
+      "target_logon_id": "0x6c2e66ee",
+      "subject_logon_id": "0x3e7",
+      "utc": "2026-11-22T10:43:36.3091276Z",
+      "logon_type": "2"
+    },
+    {
+      "id": 4647,
+      "native_event_sha256": "a81b9d90a0bc1f7bc5334956418cefe31f676712aff1e854a6769a03b1a98ae3",
+      "target_logon_id": "0xbaead",
+      "subject_logon_id": null,
+      "utc": "2026-11-22T10:43:20.6572741Z",
+      "logon_type": null
+    }
+  ],
+  "acceptance": "NOT_AUTOMATIC_REQUIRES_RECEIPT_CORRELATION",
+  "serve_status_sha256": "4440c30c9756349cb58de85bd7b1eca4cde659436bcaf594235ab52341db4ee3",
+  "serve_status": {
+    "at": 1795345174.7037368,
+    "clock": {
+      "status": "OPERATIONAL_TIME_ACCEPTED",
+      "witness_sha256": "1e3c4db470b24d3269214c39634d42a51da5aa81f002c5457486ad7b586a9892"
+    },
+    "expires_epoch": 1795428907,
+    "head": "2f39c1ba4c8777d7d5345834a7146c8a10d2a1d4",
+    "market_calls": 0,
+    "resources": {
+      "cpu_seconds": 5.5625,
+      "disk_bytes": 5460684,
+      "disk_free_bytes": 170897604608,
+      "working_set_bytes": 18194432
+    },
+    "schema": "zs.ops77.serve-recovery-status.v1",
+    "scope": "DEPLOYMENT_RECOVERY_NO_MARKET_V1",
+    "session": "2b73f7057caa4334a4d322525a553ceb",
+    "sql_writes": 0,
+    "stability": "RECOVERY_VALIDATION_ONLY_NOT_24H_MARKET_SOAK",
+    "telegram_calls": 0,
+    "tree": "1faff74fbe8d3dc0158c25afd547af2239e28bdc",
+    "windows": {
+      "boot_utc": "2026-11-11T05:45:30.500786Z",
+      "normal_token": true,
+      "pid": 24736,
+      "session": 0
+    }
+  }
+}

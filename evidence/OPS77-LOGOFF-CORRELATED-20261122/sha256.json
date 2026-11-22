@@ -1,0 +1,17 @@
+[
+  {
+    "bytes": 9,
+    "file": ".gitattributes",
+    "sha256": "8b9c3028d6467ff3be7c793141927841d70f47f52d0590677438f488ca154992"
+  },
+  {
+    "bytes": 2485,
+    "file": "after-logoff-admin.redacted.json",
+    "sha256": "7091a45096fd292470f98d28098cb33532332387d208bbba9e8888563f044200"
+  },
+  {
+    "bytes": 1648,
+    "file": "before-reboot.redacted.json",
+    "sha256": "7ca5bb0c36cbb9a3c56f89d9f0785e3d7d1baf8f199acc12e2b243f1c24d331b"
+  }
+]
