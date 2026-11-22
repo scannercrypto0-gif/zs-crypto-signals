@@ -1,0 +1,12 @@
+{
+  "suite": "test_ops24_control",
+  "tests": 8,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "passed": 8,
+  "success": true,
+  "duration_seconds": 18.765,
+  "python_network_attempts": 0,
+  "network_scope": "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS"
+}

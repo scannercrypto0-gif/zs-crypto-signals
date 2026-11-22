@@ -1,0 +1,13 @@
+test_batch_logon_native_helper_compiles_and_refuses_nonadmin_mutation (test_ops24_control.Ops24ControllerTests.test_batch_logon_native_helper_compiles_and_refuses_nonadmin_mutation) ... ok
+test_disabled_install_status_task_and_offline_restore_with_activation_hold (test_ops24_control.Ops24ControllerTests.test_disabled_install_status_task_and_offline_restore_with_activation_hold) ... ok
+test_other_user_s4u_registration_passes_transient_credentials (test_ops24_control.Ops24ControllerTests.test_other_user_s4u_registration_passes_transient_credentials) ... ok
+test_other_user_s4u_without_credentials_is_rejected_before_registration (test_ops24_control.Ops24ControllerTests.test_other_user_s4u_without_credentials_is_rejected_before_registration) ... ok
+test_owned_dacl_repair_keeps_file_contents_and_explicit_owner_rights (test_ops24_control.Ops24ControllerTests.test_owned_dacl_repair_keeps_file_contents_and_explicit_owner_rights) ... ok
+test_password_task_uses_matching_standard_principal_and_rejects_other_modes (test_ops24_control.Ops24ControllerTests.test_password_task_uses_matching_standard_principal_and_rejects_other_modes) ... ok
+test_service_account_description_fits_actual_windows_parameter_limit (test_ops24_control.Ops24ControllerTests.test_service_account_description_fits_actual_windows_parameter_limit) ... ok
+test_standard_role_setup_cannot_self_elevate_from_normal_operator (test_ops24_control.Ops24ControllerTests.test_standard_role_setup_cannot_self_elevate_from_normal_operator) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 18.358s
+
+OK

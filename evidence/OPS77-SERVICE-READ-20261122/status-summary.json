@@ -1,0 +1,55 @@
+{
+  "schema": "zs.ops77.service-read-status.v1",
+  "signature_provenance": "ACTUAL_SCHEDULED_MEMBER_PROOF_PASS",
+  "clock": "BLOCKED_SERVICE_AND_STATUS_ACCESS_DENIED",
+  "native_members": [
+    {
+      "file": "sc.exe",
+      "native_code": 0,
+      "catalog_status": "Valid"
+    },
+    {
+      "file": "w32tm.exe",
+      "native_code": 0,
+      "catalog_status": "Valid"
+    },
+    {
+      "file": "w32time.dll",
+      "native_code": 0,
+      "catalog_status": "Valid"
+    },
+    {
+      "file": "autotimesvc.dll",
+      "native_code": 0,
+      "catalog_status": "Valid"
+    }
+  ],
+  "actual_clock_blockers": [
+    "SERVICE_COMMAND_FAILED",
+    "STATUS_COMMAND_FAILED",
+    "SERVICE_NOT_RUNNING",
+    "SOURCE_NOT_ALLOWLISTED",
+    "SYNC_STATUS_UNVERIFIED",
+    "SYNC_FRESHNESS_UNVERIFIED_OR_STALE",
+    "CONDITIONAL_UNCERTAINTY_UNVERIFIED_OR_HIGH"
+  ],
+  "actual_service_exit": 5,
+  "actual_status_exit": 2147942405,
+  "successful_samples": 4,
+  "max_observed_abs_offset_s": 0.0220374,
+  "total_uncertainty_s": null,
+  "service_read_grant": "IMPLEMENTED_NOT_YET_APPLIED",
+  "service_mask": 131077,
+  "unchanged_clock_verifier_blobs": {
+    "src/zs_smart_gate/ops24_normal_clock.py": {
+      "accepted_signature_head_blob": "2343959176a2fd30816667a33d98390a699f3bb2",
+      "current_blob": "2343959176a2fd30816667a33d98390a699f3bb2",
+      "identical": true
+    },
+    "src/zs_smart_gate/ops24_catalog.py": {
+      "accepted_signature_head_blob": "b1d3c4a62521ce39457cb180f4115d21a1aff866",
+      "current_blob": "b1d3c4a62521ce39457cb180f4115d21a1aff866",
+      "identical": true
+    }
+  }
+}

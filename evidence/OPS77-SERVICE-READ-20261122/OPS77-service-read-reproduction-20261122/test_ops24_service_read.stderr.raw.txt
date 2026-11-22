@@ -1,0 +1,7 @@
+test_additive_read_preserves_owner_group_audit_denies_and_is_idempotent (test_ops24_service_read.ServiceReadTests.test_additive_read_preserves_owner_group_audit_denies_and_is_idempotent) ... ok
+test_normal_operator_cannot_mutate_service_security (test_ops24_service_read.ServiceReadTests.test_normal_operator_cannot_mutate_service_security) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 2.704s
+
+OK
