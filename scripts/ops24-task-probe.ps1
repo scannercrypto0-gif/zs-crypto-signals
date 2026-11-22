@@ -5,6 +5,7 @@ param([Parameter(Mandatory=$true)][string]$Source,[Parameter(Mandatory=$true)][s
  [ValidateSet('Probe','Health')][string]$ProbeAction='Probe',
  [string]$WorkerSid='',
  [PSCredential]$WorkerCredential,
+ [ValidateSet('S4U','Password')][string]$TaskLogonType='S4U',
  [string]$Python='D:\ZS-SMART-GATE\runtime\python-3.12.10-ops77\python.exe')
 $ErrorActionPreference='Stop';Set-StrictMode -Version Latest
 if($PSVersionTable.PSVersion.Major -ne 5 -or $PSVersionTable.PSVersion.Minor -ne 1){throw 'POWERSHELL_51_REQUIRED'}
@@ -33,9 +34,16 @@ try{
  if($ProbeAction -eq 'Health'){$xml=$xml.Replace('<ExecutionTimeLimit>PT30S</ExecutionTimeLimit>','<ExecutionTimeLimit>PT90S</ExecutionTimeLimit>')}
  $xml=[regex]::Replace($xml,'<Command>[^<]+</Command>',('<Command>'+$command+'</Command>'))
  $xml=[regex]::Replace($xml,'<Arguments>[^<]+</Arguments>',('<Arguments>'+$arguments+'</Arguments>'))
+ if($TaskLogonType -eq 'Password'){
+  if(-not $WorkerSid -or -not $WorkerCredential){throw 'PASSWORD_TASK_REQUIRES_MANAGED_WORKER_CREDENTIAL'}
+  $xml=$xml.Replace('<LogonType>S4U</LogonType>','<LogonType>Password</LogonType>')
+ }
+ $record.logon_type=$TaskLogonType
+ $record.credential_storage=if($TaskLogonType -eq 'Password'){'WINDOWS_TASK_SCHEDULER_PROTECTED_CREDENTIAL'}else{'S4U_NO_TASK_PASSWORD'}
+ [IO.File]::WriteAllText((Join-Path $Root 'probe.registered.xml'),$xml,[Text.Encoding]::Unicode)
  $record.xml_sha256=[BitConverter]::ToString([Security.Cryptography.SHA256]::Create().ComputeHash([Text.Encoding]::Unicode.GetBytes($xml))).Replace('-','').ToLowerInvariant()
  . (Join-Path $Source 'scripts\ops24-register-probe.ps1')
- Register-ZsIsolatedProbe -TaskName $task -Xml $xml -WorkerSid $WorkerSid -WorkerCredential $WorkerCredential
+ Register-ZsIsolatedProbe -TaskName $task -Xml $xml -WorkerSid $WorkerSid -WorkerCredential $WorkerCredential -LogonType $TaskLogonType
  $record.registered=$true
  Enable-ScheduledTask -TaskName $task|Out-Null
  Start-ScheduledTask -TaskName $task

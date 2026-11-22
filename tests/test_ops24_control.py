@@ -9,6 +9,13 @@ ROOT=Path(__file__).resolve().parents[1]
 
 
 class Ops24ControllerTests(unittest.TestCase):
+    def test_password_task_uses_matching_standard_principal_and_rejects_other_modes(self):
+        helper=ROOT/'scripts/ops24-register-probe.ps1'
+        command=". '"+str(helper)+"'; $ErrorActionPreference='Stop';$id=[Security.Principal.WindowsIdentity]::GetCurrent();$s=ConvertTo-SecureString 'fixture-only' -AsPlainText -Force;$c=[PSCredential]::new($id.Name,$s);$script:count=0;function Register-ScheduledTask {param($TaskName,$Xml,$User,$Password,$ErrorAction) if($Password -cne 'fixture-only'){throw 'MISSING_CREDENTIAL'};$script:count++};foreach($case in @(@('Password','LeastPrivilege'),@('S4U','LeastPrivilege'),@('Password','HighestAvailable'))){$x='<Task><Principals><Principal><UserId>'+$id.User.Value+'</UserId><LogonType>'+$case[0]+'</LogonType><RunLevel>'+$case[1]+'</RunLevel></Principal></Principals></Task>';try{Register-ZsIsolatedProbe -TaskName test -Xml $x -WorkerSid $id.User.Value -WorkerCredential $c -LogonType Password;if($case[0] -ne 'Password' -or $case[1] -ne 'LeastPrivilege'){throw 'UNSAFE_CASE_ACCEPTED'}}catch{if($_.Exception.Message -cne 'ISOLATED_TASK_PRINCIPAL_MISMATCH'){throw}}};if($script:count -ne 1){throw 'REGISTRATION_COUNT_INVALID'};try{Register-ZsIsolatedProbe -TaskName test -Xml '<Task/>' -LogonType Password;throw 'MISSING_ROLE_ACCEPTED'}catch{if($_.Exception.Message -cne 'PASSWORD_TASK_REQUIRES_MANAGED_WORKER_CREDENTIAL'){throw}};$s.Dispose();'PASSWORD_STANDARD_MODE_GUARDS_PASS'"
+        process=subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-Command',command],capture_output=True,text=True,timeout=20,creationflags=subprocess.CREATE_NO_WINDOW)
+        self.assertEqual(process.returncode,0,process.stderr)
+        self.assertEqual(process.stdout.strip(),'PASSWORD_STANDARD_MODE_GUARDS_PASS')
+
     def test_batch_logon_native_helper_compiles_and_refuses_nonadmin_mutation(self):
         helper=ROOT/'scripts/ops24-batch-logon.ps1'
         command=". '"+str(helper)+"'; if(-not ('ZsBatchLogon' -as [type])){throw 'NATIVE_HELPER_NOT_COMPILED'}; try{Enable-ZsProjectBatchLogon; exit 9}catch{if($_.Exception.Message -cne 'BATCH_LOGON_SETUP_REQUIRES_ADMIN'){throw}; 'NATIVE_COMPILED_NONADMIN_REJECTED'}"

@@ -55,7 +55,7 @@ Enable-ZsProjectBatchLogon -Name $name|ConvertTo-Json -Compress
 foreach($folder in @($Source,'D:\ZS-SMART-GATE\runtime\python-3.12.10-ops77')){
  $null=Set-ZsOwnedReadOnlyTree -Root $folder -WorkerSid $workerSid
 }
-& (Join-Path $Source 'scripts\ops24-task-probe.ps1') -Source $Source -Head $Head -Tree $Tree -Root $Root -WorkerSid $workerSid -WorkerCredential $credential -ProbeAction Health
+& (Join-Path $Source 'scripts\ops24-task-probe.ps1') -Source $Source -Head $Head -Tree $Tree -Root $Root -WorkerSid $workerSid -WorkerCredential $credential -TaskLogonType Password -ProbeAction Health
 $code=$LASTEXITCODE
 }finally{$credential=$null;$secure.Dispose()}
 # Only public role facts are printed. SID/account credentials stay local.

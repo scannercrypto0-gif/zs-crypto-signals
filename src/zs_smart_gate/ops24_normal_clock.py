@@ -59,7 +59,7 @@ foreach($name in @('sc.exe','w32tm.exe','w32time.dll','svchost.exe','autotimesvc
  $file=Join-Path $system32 $name
  $signature=Get-AuthenticodeSignature -LiteralPath $file
  $acl=Get-Acl -LiteralPath $file
- $signatures+=@{file=$name;status=$signature.Status.ToString();status_message=$signature.StatusMessage;signer=$signature.SignerCertificate.Subject;
+ $signatures+=@{file=$name;status=$signature.Status.ToString();status_message=$signature.StatusMessage;signature_type=$signature.SignatureType.ToString();signer=$signature.SignerCertificate.Subject;
   sha256=(Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash.ToLowerInvariant();
   owner=$acl.GetOwner([Security.Principal.SecurityIdentifier]).Value;
   rules=@($acl.GetAccessRules($true,$true,[Security.Principal.SecurityIdentifier])|ForEach-Object{

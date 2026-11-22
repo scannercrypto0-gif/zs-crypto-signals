@@ -153,3 +153,34 @@ made zero market/Telegram/SQL calls; no elevated credentials were used. Actual
 S4U status messages therefore still require the administrator registration path.
 Source account/DPAPI credential remains unchanged. Do not weaken signature checks
 or claim cache warming, trust repair or equivalence on this evidence alone.
+
+## 2026-11-22: exact S4U signature results and controlled Password comparison
+
+2d39930 actual scheduled profile retained four NotSigned results (sc.exe,
+w32tm.exe, w32time.dll, autotimesvc.dll), empty signer fields, and svchost.exe
+Valid/Microsoft Windows Publisher. The same files validate in credential-
+authenticated direct standard-user inspection. Native normal-operator query
+reports Catalog signatures for all five. This establishes a logon-context
+validation difference, NOT that system binaries are unsigned/tampered, and NOT
+an exact diagnosis of the internal catalog/RPC/crypto failure.
+
+Use the existing managed standard worker credential for a finite scheduled
+Password-logon comparison. Preserve LeastPrivilege, normal-token guard, actual
+registry/signature/SID/source and numerical clock gates. Password-logon requires
+Windows Task Scheduler to retain its protected account credential during task
+registration; this is OS configuration (C permitted), not plaintext project
+storage. The owner-DPAPI project credential remains on D, no reset/export.
+The actual probe XML is preserved locally and its hash/logon type recorded;
+the disabled installation template remains S4U historical/deployment template.
+Only the isolated finite probe selects Password; production bootstrap is NOT
+silently changed or enabled. Cleanup unregisters the finite task. No claim that
+all scheduler-managed secret remnants are independently proven erased.
+
+The comparison requires actual administrator registration. It is not a proven
+fix until the same-user scheduled Password result is observed. Never ignore
+NotSigned, accept operator witness as S4U proof, or install new trust roots.
+The verifier still rejects any invalid binary signature. Additional receipt
+SignatureType is informational, not an alternative acceptance criterion.
+Microsoft references:
+https://learn.microsoft.com/en-us/windows/win32/taskschd/taskschedulerschema-logontype-principaltype-element
+https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.security/get-authenticodesignature
