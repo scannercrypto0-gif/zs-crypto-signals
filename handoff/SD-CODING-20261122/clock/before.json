@@ -1,0 +1,13 @@
+{
+    "schema":  "zs.ops77.clock-tuning.v1",
+    "head":  "0263c7819c3004a91a79563f1f24f47c609b539d",
+    "utc":  "2026-11-22T12:05:02.0040497Z",
+    "values":  {
+                   "UpdateInterval":  360000,
+                   "MinPollInterval":  6,
+                   "MaxPollInterval":  8,
+                   "FrequencyCorrectRate":  4
+               },
+    "service_start_mode":  "Auto",
+    "service_was_running":  true
+}

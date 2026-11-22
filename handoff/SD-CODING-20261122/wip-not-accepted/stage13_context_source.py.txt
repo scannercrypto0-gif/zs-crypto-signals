@@ -1,0 +1,110 @@
+"""Versioned 128-bar actual-source context; original request params are retained.
+
+Same frozen DEV detector, no statistical policy GO, signal IDs, order or sender.
+"""
+from dataclasses import asdict
+from datetime import timedelta
+from decimal import Decimal
+import json
+from pathlib import Path
+from contextlib import closing
+import sqlite3
+
+from .core import MarketSnapshot,check_eligibility
+from .marketwide_research import FRAMES,POLICY_SHA256,DETECTOR_SHA256,STRATEGIES,_predicate
+from .mtf_contracts import ReconciliationTolerance,reconcile
+from .stage03b1_live import parse_kline
+from .stage05_contracts import canonical,digest,parse_utc,ContractError
+from .stage13_real_source import CapturedMarket,SCOPE
+
+VERSION='ZS_STAGE13_REAL_CONTEXT_128_V1'
+PROFILE=dict(version=VERSION,frames=list(FRAMES),requested_closed_bars=128,
+    minimum_core_5m=22,max_decision_age_seconds=90,scope='RESEARCH_ONLY',hypothesis_sha256=POLICY_SHA256)
+PROFILE_SHA=digest(canonical(PROFILE))
+
+
+def context_packet(item,receipts,boundary_ms,decision_at):
+    decision=parse_utc(decision_at)
+    if not 0<=(decision.timestamp()*1000-boundary_ms)/1000<=90:
+        raise ContractError('CONTEXT_CAUSAL_WINDOW_EXPIRED')
+    if len(receipts)!=4 or {r['params'].get('interval') for r in receipts}!=set(FRAMES):
+        raise ContractError('CONTEXT_FOUR_FRAMES_REQUIRED')
+    windows={};actual=[]
+    for receipt in receipts:
+        params=receipt['params'];frame=params['interval'];period=FRAMES[frame]
+        expected=dict(symbol=item['symbol'],interval=frame,endTime=str(boundary_ms//period*period-1),limit='128')
+        if receipt['path']!='klines' or params!=expected or not 1<=len(receipt['payload'])<=128:
+            raise ContractError('CONTEXT_ORIGINAL_REQUEST_OR_LENGTH_INVALID')
+        received=parse_utc(receipt['received_at'])
+        if received>decision:raise ContractError('CONTEXT_POST_DECISION_RECEIPT')
+        bars=tuple(parse_kline(raw,frame,received) for raw in receipt['payload'])
+        if any(not all(getattr(b,k).is_finite() for k in ('open','high','low','close','base_volume','quote_volume')) or b.errors_at(decision) for b in bars):
+            raise ContractError('CONTEXT_INVALID_OR_OPEN_BAR')
+        if any(a.close_at!=b.open_at for a,b in zip(bars,bars[1:])):
+            raise ContractError('CONTEXT_GAP_OR_DUPLICATE')
+        if int(bars[-1].close_at.timestamp()*1000)!=boundary_ms//period*period:
+            raise ContractError('CONTEXT_CLOSED_ANCHOR_MISMATCH')
+        windows[frame]=bars
+        actual.append({k:v for k,v in receipt.items() if k!='payload'})
+    if len(windows['5m'])<22:raise ContractError('CONTEXT_CORE_22_BAR_HISTORY_MISSING')
+    parent=windows['30m'][-1]
+    children=tuple(b for b in windows['5m'] if parent.open_at<=b.open_at and b.close_at<=parent.close_at)
+    if reconcile(parent,children,decision,tolerance=ReconciliationTolerance(0,0,0,'EXACT_BINANCE_SPOT')).status!='PASS':
+        raise ContractError('CONTEXT_30M_5M_RECONCILIATION_FAILED')
+    market=MarketSnapshot(**{**item['market'],'observed_at':parse_utc(item['market']['observed_at'])})
+    if market.symbol!=item['symbol'] or check_eligibility(market,decision) or not 0<=(decision-market.observed_at).total_seconds()<=90:
+        raise ContractError('CONTEXT_INVENTORY_STALE_OR_INELIGIBLE')
+    packet=dict(version=VERSION,profile_sha256=PROFILE_SHA,symbol=item['symbol'],boundary_ms=boundary_ms,
+        decision_at=decision_at,source_scope=SCOPE,market=item['market'],
+        source_manifest_sha256=digest(canonical(actual)),history_counts={f:len(b) for f,b in windows.items()},
+        source_bodies={r['params']['interval']:r['body_sha256'] for r in receipts},
+        core_5m_closes=[str(b.close) for b in windows['5m'][-22:]])
+    directions=[];bars=windows['5m'][-22:]
+    for direction in STRATEGIES:
+        before=_predicate(bars[:-1],direction);current=_predicate(bars[1:],direction)
+        trigger=current and not before
+        directions.append(dict(direction=direction,status='CANDIDATE_SHADOW_ONLY' if trigger else 'NO_TRIGGER',
+            source_validated=True,detector_trigger=trigger,signal_id=None,publishable=False,
+            qualification='QV1_REAL_POLICY_BLOCKED',direction_policy_sha256=None,
+            policy_sha256=POLICY_SHA256,detector_sha256=DETECTOR_SHA256,
+            source_manifest_sha256=packet['source_manifest_sha256'],input_sha256=digest(canonical(packet)),
+            event_id=digest(canonical([VERSION,item['symbol'],boundary_ms,direction])),strategy=STRATEGIES[direction]))
+    return packet,directions
+
+
+class CapturedContext(CapturedMarket):
+    def verify(self):
+        raw=(self.root/'result.json').read_bytes()
+        if digest(raw)!=self.pin or (self.root/'result.sha256').read_text().strip()!=self.pin:
+            raise ContractError('CONTEXT_RESULT_HASH_MISMATCH')
+        self.result=json.loads(raw);r=self.result
+        if (r.get('version')!=VERSION or r.get('profile_sha256')!=PROFILE_SHA or r.get('signal_ids')!=[]
+                or r.get('scope')!='SHADOW_RESEARCH_ONLY' or r.get('telegram_calls')!=0 or r.get('sql_writes')!=0):
+            raise ContractError('CONTEXT_RESEARCH_SCOPE_INVALID')
+        witness=r['decision_clock']['witness_sha256']
+        clock_raw=(self.root/('clock-'+witness+'.private.json')).read_bytes()
+        clock=json.loads(clock_raw)
+        if digest(clock_raw)!=witness or clock['assessment']['status']!='OPERATIONAL_TIME_ACCEPTED':
+            raise ContractError('CONTEXT_OPERATIONAL_CLOCK_RECORD_INVALID')
+        self.clock_evidence='ORIGINAL_UPSTREAM_OPERATIONAL_WITNESS_HASH_CHECKED_NOT_REATTESTED'
+        self.snapshot=json.loads((self.root/'inventory.private.json').read_bytes())
+        if self.snapshot['snapshot_sha256']!=r['inventory_id']:raise ContractError('CONTEXT_INVENTORY_MISMATCH')
+        self.receipts=[]
+        with closing(sqlite3.connect(self.root/'budget.sqlite')) as db:
+            for key,state,pin,meta in db.execute('SELECT key,state,body_sha,receipt FROM requests'):
+                if state!='COMMITTED':continue
+                if len(key)!=64 or any(c not in '0123456789abcdef' for c in key):raise ContractError('CONTEXT_PATH_INVALID')
+                body=(self.root/(key+'.private')).read_bytes();receipt=json.loads(meta)
+                if digest(body)!=pin or receipt['body_sha256']!=pin:raise ContractError('CONTEXT_SOURCE_BODY_HASH_MISMATCH')
+                self.receipts.append({**receipt,'payload':json.loads(body)})
+        self.packets={}
+        for row in r['rows']:
+            if row['state']!='VALIDATED':continue
+            item=next(item for item in self.snapshot['rows'] if item['symbol']==row['symbol'])
+            receipts=[v for v in self.receipts if v['path']=='klines' and v['params']['symbol']==row['symbol']]
+            packet,directions=context_packet(item,receipts,r['boundary_ms'],r['decision_at'])
+            if digest(canonical(packet))!=row['input_sha256'] or directions!=row['directions']:
+                raise ContractError('CONTEXT_ORIGINAL_COMMON_DECISION_REPLAY_MISMATCH')
+            self.packets[row['symbol']]=packet
+        self.decision=parse_utc(r['decision_at'])
+        return self

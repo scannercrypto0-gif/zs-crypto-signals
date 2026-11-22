@@ -1,0 +1,58 @@
+diff --git a/src/zs_smart_gate/stage07_intraday.py b/src/zs_smart_gate/stage07_intraday.py
+index 4d48aed..5a2c216 100644
+--- a/src/zs_smart_gate/stage07_intraday.py
++++ b/src/zs_smart_gate/stage07_intraday.py
+@@ -83,12 +83,34 @@ def _div(n: Decimal, d: Decimal) -> Decimal | None:
+ 
+ 
+ def evaluate_window(window: ResearchWindow, *, decision_at: datetime) -> dict:
++    """Historical synthetic API stays synthetic-only."""
++    if isinstance(window,ResearchWindow) and window.source_scope!='SYNTHETIC_TEST_ONLY':
++        return _failed('RESEARCH_IDENTITY_OR_SCOPE_INVALID')
++    return _compute_window(window,decision_at=decision_at)
++
++
++def evaluate_captured_window(capture, symbol: str, direction: str) -> dict:
++    """Actual hash-checked receipt replay; no qualified identity/score or future labels."""
++    from .stage13_real_source import CapturedMarket
++    if not isinstance(capture,CapturedMarket):
++        return _failed('ORIGINAL_CAPTURE_REQUIRED')
++    capture.verify()
++    window=capture.intraday_window(symbol,direction)
++    result=_compute_window(window,decision_at=capture.decision)
++    result.update(source_scope=window.source_scope,source_capture_sha256=capture.pin,
++                  clock_evidence=capture.clock_evidence,independent_science='NOT_APPROVED')
++    result.pop('result_sha256',None)
++    result['result_sha256']=digest(canonical(result))
++    return result
++
++
++def _compute_window(window: ResearchWindow, *, decision_at: datetime) -> dict:
+     """No future bars in inputs; conservative fail-closed source/clock validation."""
+     decision = utc(decision_at)
+     if not isinstance(window, ResearchWindow):
+         return _failed("RESEARCH_WINDOW_TYPE_REQUIRED")
+     if (not isinstance(window.symbol, str) or not SYMBOL.fullmatch(window.symbol) or window.direction not in ("UP", "DOWN")
+-            or window.source_scope != "SYNTHETIC_TEST_ONLY"
++            or window.source_scope not in ("SYNTHETIC_TEST_ONLY","RECORDED_PUBLIC_SOURCE_RESEARCH")
+             or not isinstance(window.source_manifest_sha256, str)
+             or len(window.source_manifest_sha256) != 64
+             or any(ch not in "0123456789abcdef" for ch in window.source_manifest_sha256)):
+@@ -105,7 +127,7 @@ def evaluate_window(window: ResearchWindow, *, decision_at: datetime) -> dict:
+             or len(window.history_5m) < 6):
+         return _failed("SIX_CHILDREN_AND_PRIOR_5M_REQUIRED", event_id=key)
+     source = parent.source_id
+-    if not source.startswith("SYNTHETIC:"):
++    if not (source.startswith("SYNTHETIC:") or (window.source_scope=="RECORDED_PUBLIC_SOURCE_RESEARCH" and source=="BINANCE:SPOT:PUBLIC_KLINES")):
+         return _failed("UNVERIFIED_SOURCE", event_id=key)
+     if not _finite_bar(parent):
+         return _failed("NONFINITE_PARENT_VALUE", event_id=key)
+@@ -123,7 +145,7 @@ def evaluate_window(window: ResearchWindow, *, decision_at: datetime) -> dict:
+                                   or window.comparison_15m[0].open_at != parent.open_at
+                                   or window.comparison_15m[-1].close_at != parent.close_at):
+         return _failed("COMPARISON_15M_NOT_FULL_PARENT", event_id=key)
+-    exact = ReconciliationTolerance(ZERO, ZERO, ZERO, "S07_EXACT_SYNTHETIC_ONLY")
++    exact = ReconciliationTolerance(ZERO, ZERO, ZERO, "S07_EXACT_SAME_SOURCE_RESEARCH_ONLY")
+     if reconcile(parent, window.children, decision, tolerance=exact).status != "PASS":
+         return _failed("PARENT_CHILD_RECONCILIATION_FAILED", event_id=key)
+ 

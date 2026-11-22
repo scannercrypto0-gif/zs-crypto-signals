@@ -1,0 +1,18 @@
+{
+    "schema":  "zs.ops77.clock-tuning-receipt.v1",
+    "action":  "Apply",
+    "head":  "0263c7819c3004a91a79563f1f24f47c609b539d",
+    "utc":  "2026-11-22T12:05:05.8934067Z",
+    "values":  {
+                   "UpdateInterval":  100,
+                   "MinPollInterval":  6,
+                   "MaxPollInterval":  6,
+                   "FrequencyCorrectRate":  2
+               },
+    "clock_acceptance":  "NOT_MEASURED",
+    "source_unchanged":  true,
+    "limits_unchanged":  true,
+    "market_calls":  0,
+    "telegram_calls":  0,
+    "reference":  "https://learn.microsoft.com/en-us/windows-server/networking/windows-time-service/configuring-systems-for-high-accuracy"
+}

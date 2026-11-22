@@ -1,0 +1,57 @@
+[
+  {
+    "file": ".gitattributes",
+    "bytes": 9,
+    "sha256": "8b9c3028d6467ff3be7c793141927841d70f47f52d0590677438f488ca154992"
+  },
+  {
+    "file": "clock/apply.json",
+    "bytes": 696,
+    "sha256": "d30f0d5c4c11bfe31f8fc21068c18bb74e1bc55c405a6ec36715763a06a983af"
+  },
+  {
+    "file": "clock/before.json",
+    "bytes": 438,
+    "sha256": "39fb435806e3267b14d15e6f868b6f14de630a070d797d7ef1088d9647742f8e"
+  },
+  {
+    "file": "clock/normal-assessment.json",
+    "bytes": 1545,
+    "sha256": "27f842e6a5b2a057968f7e029e3aabd5c0b31fde4ef5096dacf75fa1a8990c47"
+  },
+  {
+    "file": "HANDOFF.md",
+    "bytes": 22008,
+    "sha256": "b1dedea59f89c358eeab7b6b4c06c10066c0bf641756a6b8a97165f85bb7bc2a"
+  },
+  {
+    "file": "tasks-observation.json",
+    "bytes": 741,
+    "sha256": "489f058798ab28a35b4da304e4136d35420dbf65724005ba87639737b796433a"
+  },
+  {
+    "file": "wip-not-accepted/stage05_runtime_bridge.py.txt",
+    "bytes": 7965,
+    "sha256": "c3aa9f306e9ab2dc0150923307eeecb511f67ba334962a39a5e8abb73690ca25"
+  },
+  {
+    "file": "wip-not-accepted/stage07_intraday.patch",
+    "bytes": 3505,
+    "sha256": "2bcc2846b6303f1910735890cecb78369142ac62648e3e95e3e32af94fa75aab"
+  },
+  {
+    "file": "wip-not-accepted/stage13_context_source.py.txt",
+    "bytes": 7176,
+    "sha256": "e5dd58bb75e6622b45dfad2da872cf9b6bd4bb3dd28b918d91902118d070edb1"
+  },
+  {
+    "file": "wip-not-accepted/stage13_real_source.py.txt",
+    "bytes": 5678,
+    "sha256": "76ef2b947266213a6f0abfe305e5390401ed997ceacd6d4293719f7fb5955226"
+  },
+  {
+    "file": "wip-not-accepted/test_stage05_runtime_bridge.py.txt",
+    "bytes": 4569,
+    "sha256": "1d1fae7f1b4a2ba0bf11ebfc3e79f39d373ac0ac17bdda6ba685092d4bd0b701"
+  }
+]

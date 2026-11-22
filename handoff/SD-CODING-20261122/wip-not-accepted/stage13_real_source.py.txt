@@ -1,0 +1,99 @@
+"""Read original public-source capture bytes for descriptive Stage00-13 replay.
+
+This does not attest an exchange publication time, qualify a policy or authorize
+production sends. A captured receipt's operational-clock claim is preserved,
+not silently upgraded to independent scientific time.
+"""
+from contextlib import closing
+from datetime import datetime,timezone
+import json
+from pathlib import Path
+import re
+import sqlite3
+
+from .marketwide_research import packet_from_receipts,evaluate,FRAMES
+from .stage03b1_live import parse_kline
+from .stage05_contracts import ContractError,canonical,digest,parse_utc
+
+SCOPE='RECORDED_PUBLIC_SOURCE_RESEARCH'
+
+
+class CapturedMarket:
+    def __init__(self,root,expected_sha256):
+        self.root=Path(root).resolve()
+        self.pin=expected_sha256
+        self.verify()
+
+    def verify(self):
+        raw=(self.root/'result.json').read_bytes()
+        if digest(raw)!=self.pin or (self.root/'result.sha256').read_text().strip()!=self.pin:
+            raise ContractError('CAPTURE_RESULT_HASH_MISMATCH')
+        self.result=json.loads(raw)
+        r=self.result
+        if (r.get('scope')!='SHADOW_RESEARCH_ONLY' or r.get('signal_ids')!=[]
+                or r.get('telegram_calls')!=0 or r.get('sql_writes')!=0
+                or not re.fullmatch('[a-f0-9]{40}',r.get('head',''))
+                or r.get('qualification')!='QV1_REAL_POLICY_BLOCKED'):
+            raise ContractError('RESEARCH_CAPTURE_SCOPE_INVALID')
+        clock=r.get('decision_clock')
+        if not isinstance(clock,dict) or not re.fullmatch('[a-f0-9]{64}',clock.get('witness_sha256','')):
+            raise ContractError('CAPTURE_CLOCK_RECEIPT_REQUIRED')
+        witness=(self.root/('clock-'+clock['witness_sha256']+'.private.json')).read_bytes()
+        if digest(witness)!=clock['witness_sha256']:
+            raise ContractError('CAPTURE_CLOCK_HASH_MISMATCH')
+        observed=json.loads(witness)
+        if (observed.get('profile')!='WINDOWS_STATUS_PROTECTED_REGISTRY_V1'
+                or observed.get('assessment',{}).get('status')!='OPERATIONAL_TIME_ACCEPTED'
+                or observed['assessment'].get('blockers')!=[]):
+            raise ContractError('CAPTURE_UPSTREAM_OPERATIONAL_TIME_NOT_ACCEPTED')
+        self.clock_evidence='ORIGINAL_UPSTREAM_OPERATIONAL_WITNESS_HASH_CHECKED_NOT_REATTESTED'
+        self.snapshot=json.loads((self.root/'inventory.private.json').read_bytes())
+        if self.snapshot['snapshot_sha256']!=r['inventory_id']:
+            raise ContractError('CAPTURE_INVENTORY_IDENTITY_MISMATCH')
+        self.receipts=[]
+        with closing(sqlite3.connect(self.root/'budget.sqlite')) as db:
+            for key,state,pin,receipt in db.execute('SELECT key,state,body_sha,receipt FROM requests'):
+                if state!='COMMITTED':continue
+                if not re.fullmatch('[a-f0-9]{64}',key):raise ContractError('CAPTURE_PATH_INVALID')
+                body=(self.root/(key+'.private')).read_bytes()
+                entry=json.loads(receipt)
+                if digest(body)!=pin or entry['body_sha256']!=pin or entry.get('http_status')!=200:
+                    raise ContractError('CAPTURE_ORIGINAL_RESPONSE_HASH_MISMATCH')
+                if parse_utc(entry['received_at'])>parse_utc(r['decision_at']):
+                    raise ContractError('POST_DECISION_INPUT_FORBIDDEN')
+                self.receipts.append({**entry,'payload':json.loads(body)})
+        self.packets={}
+        for row in r['rows']:
+            if row['state']!='VALIDATED':continue
+            item=next(item for item in self.snapshot['rows'] if item['symbol']==row['symbol'])
+            receipts=[entry for entry in self.receipts if entry['path']=='klines' and entry['params'].get('symbol')==row['symbol']]
+            if len(receipts)!=4:raise ContractError('CAPTURE_FOUR_FRAMES_REQUIRED')
+            packet=packet_from_receipts(item,receipts,boundary_ms=r['boundary_ms'],decision_at=r['decision_at'],
+                scope='PUBLIC_SPOT_CONDITIONAL_RESEARCH',clock_status='OPERATIONAL_TIME_ACCEPTED')
+            if digest(canonical(packet))!=row['input_sha256'] or evaluate(packet)!=row['directions']:
+                raise ContractError('CAPTURE_COMMON_DECISION_REPLAY_MISMATCH')
+            self.packets[row['symbol']]=packet
+        self.decision=parse_utc(r['decision_at'])
+        return self
+
+    def bars(self,symbol,frame):
+        if symbol not in self.packets:raise ContractError('ASSET_SOURCE_UNAVAILABLE')
+        receipts=[r for r in self.receipts if r['path']=='klines' and r['params'].get('symbol')==symbol and r['params'].get('interval')==frame]
+        if len(receipts)!=1:raise ContractError('SOURCE_FRAME_NOT_UNIQUE')
+        receipt=receipts[0]
+        bars=tuple(parse_kline(row,frame,parse_utc(receipt['received_at'])) for row in receipt['payload'])
+        if any(bar.errors_at(self.decision) for bar in bars):raise ContractError('SOURCE_BAR_TIME_OR_VALUE_INVALID')
+        return bars
+
+    def intraday_window(self,symbol,direction):
+        from .stage07_intraday import ResearchWindow
+        bars=self.bars(symbol,'5m');parent=self.bars(symbol,'30m')[-1]
+        children=tuple(bar for bar in bars if parent.open_at<=bar.open_at and bar.close_at<=parent.close_at)
+        history=tuple(bar for bar in bars if bar.close_at<=parent.open_at)
+        return ResearchWindow(symbol,direction,parent,children,history,
+             source_manifest_sha256=self.packets[symbol]['source_manifest_sha256'],source_scope=SCOPE)
+
+    def context_series(self,symbol,frame):
+        from .stage11_market_context import series
+        bars=self.bars(symbol,frame)
+        return series(bars,bars[0].source_id,frame,self.decision)
