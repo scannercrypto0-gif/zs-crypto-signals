@@ -1,0 +1,12 @@
+{
+  "schema": "zs.ops77.actual-serve-observation.v1",
+  "observed_utc": "2026-11-22T10:17:33.9125722Z",
+  "head": "2f39c1ba4c8777d7d5345834a7146c8a10d2a1d4",
+  "state": "Running",
+  "logon": "Password",
+  "run_level": "Limited",
+  "last_result": 267009,
+  "logoff": "NOT_EXECUTED",
+  "reboot": "NOT_EXECUTED",
+  "market_soak": "NOT_STARTED"
+}

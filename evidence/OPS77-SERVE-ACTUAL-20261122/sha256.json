@@ -1,0 +1,17 @@
+[
+  {
+    "bytes": 9,
+    "file": ".gitattributes",
+    "sha256": "8b9c3028d6467ff3be7c793141927841d70f47f52d0590677438f488ca154992"
+  },
+  {
+    "bytes": 740,
+    "file": "serve-status.json",
+    "sha256": "e9d09caef06c172627d969630e7a4801cca142e30eb4d0141397ea0aef620a15"
+  },
+  {
+    "bytes": 355,
+    "file": "task-observation.json",
+    "sha256": "ac87921004501a26ba403c9d8ae3ecad420a6065fb1c10dc8f5e4bfe432ba62c"
+  }
+]
