@@ -141,9 +141,11 @@ def bind_catalogs(profile,map_path):
     if mapping.get('schema') not in ('zs.ops24.catalog-map.v1','zs.ops24.catalog-map.v2') or mapping.get('scope')!='DISCOVERY_ONLY_NOT_ACCEPTANCE':
         raise Hold('CATALOG_MAP_UNQUALIFIED')
     cache={}
+    bound_all=mapping['schema']=='zs.ops24.catalog-map.v2'
+    if bound_all:profile['catalog_contract']='RELEASE_BOUND_ALL_BINARIES_V2'
     for row in profile['signatures']:
         # Never substitute for HashMismatch/NotTrusted/unknown failures.
-        if row['status']!='NotSigned':
+        if row['status']!='NotSigned' and not (bound_all and row['status']=='Valid'):
             continue
         item=mapping['files'][row['file']]
         if item['file_sha256']!=row['sha256']:
@@ -168,9 +170,9 @@ def microsoft_signer(value):
 
 
 def signature_verified(row):
-    if row['status']=='Valid':
+    if row['status']=='Valid' and 'explicit_catalog' not in row:
         return microsoft_signer(row['signer'])
-    if row['status']!='NotSigned':
+    if row['status'] not in ('NotSigned','Valid') or (row['status']=='Valid' and not microsoft_signer(row['signer'])):
         return False
     proof=row.get('explicit_catalog',{})
     if (proof.get('version')!='WINDOWS_EXPLICIT_CATALOG_MEMBER_V1'
@@ -207,6 +209,8 @@ def verify_provenance(profile):
     if set(signatures)!={"sc.exe","w32tm.exe","w32time.dll","svchost.exe","autotimesvc.dll"}:
         raise Hold("SYSTEM_BINARY_SET_UNVERIFIED")
     for row in signatures.values():
+        if profile.get('catalog_contract')=='RELEASE_BOUND_ALL_BINARIES_V2' and 'explicit_catalog' not in row:
+            raise Hold('RELEASE_CATALOG_MEMBER_PROOF_MISSING')
         if (not signature_verified(row)
                 or not re.fullmatch(r"[a-f0-9]{64}",row["sha256"])):
             raise Hold("SYSTEM_BINARY_SIGNATURE_UNVERIFIED")

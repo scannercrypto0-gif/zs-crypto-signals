@@ -34,3 +34,12 @@ class RecoveryTests(unittest.TestCase):
     def test_live_scope_or_changed_authority_cannot_enter_recovery(self):
         self.config['scope']='PUBLIC_SPOT_READ_ONLY_NO_TELEGRAM_SQL_TRADING';(self.root/'release.json').write_bytes(canonical(self.config))
         with self.assertRaises(Hold):verify_recovery(self.root,self.head,self.tree)
+    def test_market_child_rejects_recovery_scope_before_network(self):
+        import importlib.util,io,sys
+        from types import SimpleNamespace
+        from zs_smart_gate.ops_windows_watchdog import START
+        script=Path(__file__).resolve().parents[1]/'scripts/ops24-bounded.py'
+        spec=importlib.util.spec_from_file_location('market_child_scope_test',script);module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+        argv=[str(script),'--cycle-child','--output',str(self.root/'cycle'),'--runtime-root',str(self.root),'--boundary','1800']
+        with patch.object(sys,'argv',argv),patch.object(sys,'stdin',SimpleNamespace(buffer=io.BytesIO(START))),patch('urllib.request.urlopen',side_effect=AssertionError('NETWORK_FORBIDDEN')):
+            with self.assertRaisesRegex(Hold,'MARKET_CHILD_SCOPE_NOT_ADMITTED'):module.main()

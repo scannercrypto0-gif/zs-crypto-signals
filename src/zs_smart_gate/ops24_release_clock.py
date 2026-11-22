@@ -35,6 +35,8 @@ def validate_map(root,head,tree):
             or mapping.get('release_tree')!=tree
             or mapping.get('scope')!='DISCOVERY_ONLY_NOT_ACCEPTANCE'):
         raise Hold('CATALOG_MAP_RELEASE_MISMATCH')
+    if set(mapping.get('files',{}))!={'sc.exe','w32tm.exe','w32time.dll','svchost.exe','autotimesvc.dll'}:
+        raise Hold('CATALOG_MAP_FILE_SET_INVALID')
     return config
 
 def map_acl(root,config):
@@ -45,8 +47,8 @@ foreach($p in @($env:OPS_CLOCK_ROOT,(Join-Path $env:OPS_CLOCK_ROOT 'release.json
  if($i.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'REPARSE_REFUSED'}
  $a=Get-Acl -LiteralPath $p
  $rows+=@{path=$p;owner=$a.GetOwner([Security.Principal.SecurityIdentifier]).Value;rules=@($a.GetAccessRules($true,$true,[Security.Principal.SecurityIdentifier])|ForEach-Object{@{sid=$_.IdentityReference.Value;rights=[int64]$_.FileSystemRights;type=$_.AccessControlType.ToString();propagation=[int]$_.PropagationFlags}})}
-};ConvertTo-Json -InputObject @($rows) -Depth8 -Compress
-""".replace('-Depth8','-Depth 8')
+};ConvertTo-Json -InputObject @($rows) -Depth 8 -Compress
+"""
     result=subprocess.run([str(system_directory()/'WindowsPowerShell/v1.0/powershell.exe'),
         '-NoProfile','-NonInteractive','-Command',script],capture_output=True,timeout=10,
         env={**os.environ,'OPS_CLOCK_ROOT':str(Path(root).resolve()),

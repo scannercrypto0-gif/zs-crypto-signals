@@ -11,7 +11,7 @@ class ReleaseClockTests(unittest.TestCase):
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory(dir='D:/ZS-SMART-GATE/temp');self.root=Path(self.temp.name)
         self.head='a'*40;self.tree='b'*40
-        self.mapping=dict(schema='zs.ops24.catalog-map.v2',scope='DISCOVERY_ONLY_NOT_ACCEPTANCE',release_head=self.head,release_tree=self.tree,files={})
+        self.mapping=dict(schema='zs.ops24.catalog-map.v2',scope='DISCOVERY_ONLY_NOT_ACCEPTANCE',release_head=self.head,release_tree=self.tree,files={name:{} for name in ('sc.exe','w32tm.exe','w32time.dll','svchost.exe','autotimesvc.dll')})
         self.raw=canonical(self.mapping);(self.root/'clock-catalog-map.json').write_bytes(self.raw)
         self.config=dict(schema='zs.ops24.disabled-release.v2',head=self.head,tree=self.tree,task_profile=TASK_PROFILE,task_logon_type='Password',clock_contract=CONTRACT,owner_sid='owner-fixture',worker_sid='worker-fixture',clock_catalog_map_sha256=digest(self.raw))
         self.save()
@@ -47,3 +47,17 @@ class ReleaseClockTests(unittest.TestCase):
         def drift(**_):self.config['extra']='changed';self.save();return {}
         clock=ReleaseClock(self.root,self.head,self.tree,acl=lambda *_:None,collect=drift)
         with self.assertRaisesRegex(Hold,'RELEASE_CHANGED'):clock.provenance()
+    def test_v2_rechecks_real_catalogs_even_when_auto_signature_is_valid(self):
+        from zs_smart_gate.ops24_catalog import member_proof
+        from zs_smart_gate.ops24_normal_clock import inspect,bind_catalogs,verify_provenance,system_directory
+        from copy import deepcopy
+        observed=inspect();mapping={**self.mapping,'files':{}}
+        for name in self.mapping['files']:
+            proof=member_proof(system_directory()/name)
+            mapping['files'][name]={k:proof[k] for k in ('file_sha256','catalog','catalog_sha256')}
+        path=self.root/'native-map.json';path.write_bytes(canonical(mapping))
+        bound=bind_catalogs(deepcopy(observed),path)
+        self.assertTrue(verify_provenance(bound))
+        self.assertEqual(len([r for r in bound['signatures'] if 'explicit_catalog' in r]),5)
+        mapping['files']['svchost.exe']['file_sha256']='0'*64;path.write_bytes(canonical(mapping))
+        with self.assertRaisesRegex(Hold,'BINARY_CHANGED'):bind_catalogs(deepcopy(observed),path)

@@ -310,3 +310,10 @@ and new Serve receipts. Production default/bootstrap now provisions bound maps
 and selects the existing secured ZS_SG_Worker role. The merged public-mode
 admission gate remains; recovery validation has its own hard no-market scope.
 No merge, Telegram production, SQL or trading. 24h market soak has NOT started.
+
+Version2 wiring hardens all five catalog-map entries, including directly Valid
+binaries: every actual V2 collection checks native catalog membership/hashes/ACLs
+for all five, not only NotSigned; missing/mutated maps fail before cached use.
+V1 historical/accepted Health behavior remains unchanged. Forward audit includes
+review6011308846 as a reference plus a boolean exact reviewed-OS digest match;
+it never silently upgrades a differing profile to independent acceptance.

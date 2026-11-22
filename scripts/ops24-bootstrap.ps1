@@ -19,13 +19,8 @@ if(Test-Path (Join-Path $Root 'release.json')){if(-not(Test-Path (Join-Path $Roo
 New-Item -ItemType Directory -Path $Root -Force|Out-Null
 # DACL-only construction avoids copying a SACL or requiring SeSecurityPrivilege.
 $sid=[Security.Principal.WindowsIdentity]::GetCurrent().User
-$acl=New-Object Security.AccessControl.DirectorySecurity
-$acl.SetOwner($sid);$acl.SetAccessRuleProtection($true,$false)
-foreach($principal in @($sid.Value,'S-1-5-18','S-1-5-32-544')){
- $rule=New-Object Security.AccessControl.FileSystemAccessRule ([Security.Principal.SecurityIdentifier]::new($principal),'FullControl','ContainerInherit,ObjectInherit','None','Allow')
- $acl.AddAccessRule($rule)
-}
-[IO.Directory]::SetAccessControl($Root,$acl)
+. (Join-Path $PSScriptRoot 'ops24-owned-acl.ps1')
+[ZsOwnedDacl]::Set($Root,('D:P(A;OICI;FA;;;'+$sid.Value+')(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)'))
 $env:TEMP='D:\ZS-SMART-GATE\temp';$env:TMP=$env:TEMP
 $source=Join-Path $Root ('release-'+$head)
 if(-not(Test-Path $source)){
