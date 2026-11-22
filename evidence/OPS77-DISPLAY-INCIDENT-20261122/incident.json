@@ -1,0 +1,30 @@
+{
+  "schema": "zs.ops77.display-incident.v1",
+  "observed_utc": "2026-11-22T11:25:55.7160535Z",
+  "owner_report": "Persistent whole-screen flicker after reboot; Task Manager also flickers",
+  "runner": "GRACEFULLY_STOPPED",
+  "running_project_tasks": 0,
+  "display": {
+    "refresh_hz": 60,
+    "driver": "27.20.100.9664",
+    "resolution": "1600x900",
+    "name": "Intel HD Graphics 530",
+    "wmi_status": "OK"
+  },
+  "visible_window_monitor": {
+    "limitation": "Does not observe physical monitor blackouts or establish GPU health",
+    "visibility_transitions": 0,
+    "samples": 100,
+    "duration_seconds": 10
+  },
+  "event_review": "No recent Display4101 seen; no recent explorer/dwm application crash identified. Other unrelated OS warnings not treated as cause.",
+  "cause": "UNDETERMINED",
+  "changes": "Runner STOP only; no driver uninstall, registry display changes or security changes",
+  "next": "Owner testing Microsoft Windows+Ctrl+Shift+B graphics reset; result pending",
+  "sources": [
+    "https://support.microsoft.com/en-us/windows/hardware/display-graphics/troubleshoot-screen-flickering-in-windows",
+    "https://support.microsoft.com/en-us/windows/hardware/display-graphics/troubleshooting-blank-screens-in-windows"
+  ],
+  "market_calls": 0,
+  "telegram_calls": 0
+}
