@@ -1,0 +1,45 @@
+{
+  "schema": "zs.ops77.actual-owner-recovery-audit.v1",
+  "step": "before_logoff",
+  "head": "2f39c1ba4c8777d7d5345834a7146c8a10d2a1d4",
+  "tree": "1faff74fbe8d3dc0158c25afd547af2239e28bdc",
+  "utc": "2026-11-22T10:42:03.3170183Z",
+  "boot_utc": "2026-11-11T05:45:30.5007860Z",
+  "task_state": "Running",
+  "task_logon": "Password",
+  "last_result": 267009,
+  "last_run_utc": "2026-11-22T10:15:12.0000000Z",
+  "security_status": "BOUNDED_OWNER_EVENTS_READ_NOT_AN_AUTOMATIC_LOGOFF_PASS",
+  "owner_security_events": [],
+  "acceptance": "NOT_AUTOMATIC_REQUIRES_RECEIPT_CORRELATION",
+  "serve_status_sha256": "e5cb1112a3271946117c45df77a2565de9464b1cb9052aeac72a39484462fbba",
+  "serve_status": {
+    "at": 1795344120.6144087,
+    "clock": {
+      "status": "OPERATIONAL_TIME_ACCEPTED",
+      "witness_sha256": "44dea9649f80985c09a46842955c2fefa0e0470792dd3fa43ca1097d32ddf48f"
+    },
+    "expires_epoch": 1795428907,
+    "head": "2f39c1ba4c8777d7d5345834a7146c8a10d2a1d4",
+    "market_calls": 0,
+    "resources": {
+      "cpu_seconds": 3.828125,
+      "disk_bytes": 4172575,
+      "disk_free_bytes": 170899337216,
+      "working_set_bytes": 17707008
+    },
+    "schema": "zs.ops77.serve-recovery-status.v1",
+    "scope": "DEPLOYMENT_RECOVERY_NO_MARKET_V1",
+    "session": "2b73f7057caa4334a4d322525a553ceb",
+    "sql_writes": 0,
+    "stability": "RECOVERY_VALIDATION_ONLY_NOT_24H_MARKET_SOAK",
+    "telegram_calls": 0,
+    "tree": "1faff74fbe8d3dc0158c25afd547af2239e28bdc",
+    "windows": {
+      "boot_utc": "2026-11-11T05:45:30.5007860Z",
+      "normal_token": true,
+      "pid": 24736,
+      "session": 0
+    }
+  }
+}

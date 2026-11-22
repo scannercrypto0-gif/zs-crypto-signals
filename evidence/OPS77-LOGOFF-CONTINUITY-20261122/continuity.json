@@ -1,0 +1,20 @@
+{
+  "schema": "zs.ops77.logoff-continuity.v1",
+  "head": "2f39c1ba4c8777d7d5345834a7146c8a10d2a1d4",
+  "tree": "1faff74fbe8d3dc0158c25afd547af2239e28bdc",
+  "journal_quick_check": "ok",
+  "verified_events": 96,
+  "heartbeats": 95,
+  "window_start_epoch": 1795344120.6144087,
+  "window_end_epoch": 1795344634.6079564,
+  "max_heartbeat_gap_seconds": 28.520971298217773,
+  "same_serve_session_and_pid": true,
+  "normal_token_session_zero": true,
+  "clock_statuses": [
+    "OPERATIONAL_TIME_ACCEPTED"
+  ],
+  "external_calls_zero": true,
+  "logoff_attestation": "OWNER_REPORTED",
+  "independent_security_event_confirmation": "PENDING_ADMIN_AUDIT",
+  "real_reboot": "NOT_EXECUTED"
+}
