@@ -68,6 +68,10 @@ class Ops24ControllerTests(unittest.TestCase):
             self.assertIn(' Serve --root ',xml)
             self.assertEqual(record['task_profile'],'ZS_OPS77_STANDARD_PASSWORD_SERVE_V2')
             self.assertNotIn("HighestAvailable",xml)
+            validation=" $s=New-Object -ComObject Schedule.Service;$s.Connect();$d=$s.NewTask(0);$d.XmlText=[IO.File]::ReadAllText('"+str(root/'worker.disabled.xml')+"'); 'NATIVE_TASK_SCHEMA_VALID_NO_REGISTRATION'"
+            parsed=subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-Command',validation],capture_output=True,text=True,timeout=15,creationflags=subprocess.CREATE_NO_WINDOW)
+            self.assertEqual(parsed.returncode,0,parsed.stderr)
+            self.assertIn('NATIVE_TASK_SCHEMA_VALID_NO_REGISTRATION',parsed.stdout)
             status=run("Status")
             self.assertEqual(status.returncode,0,status.stderr.decode(errors="replace"))
             self.assertTrue(json.loads(status.stdout)["disabled"])

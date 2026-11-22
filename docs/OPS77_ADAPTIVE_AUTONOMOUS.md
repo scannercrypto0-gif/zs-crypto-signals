@@ -317,3 +317,11 @@ for all five, not only NotSigned; missing/mutated maps fail before cached use.
 V1 historical/accepted Health behavior remains unchanged. Forward audit includes
 review6011308846 as a reference plus a boolean exact reviewed-OS digest match;
 it never silently upgrades a differing profile to independent acceptance.
+
+Owner-side recovery audit helper is prepared to correlate actual task state,
+boot UTC and bounded matching Windows Security logon/logoff events. A supplied
+step label never confers PASS; absent/denied Security audit remains UNVERIFIED.
+It stores owner-only raw local receipts and event hashes; only redacted allowed
+copies may go to GitHub. No logoff/reboot has been executed by preparing it.
+Task XML is additionally parsed by the native Scheduler definition engine in
+unit tests without registering or starting any task.
