@@ -49,7 +49,7 @@
 6. **Review cadence:** update the front-of-file status and evidence links after every accepted new original receipt and for each daily checkpoint; a completed gate is permanently tied to its original source version and scope. If a new version regresses, record **new** HOLD, do not rewrite the historical PASS. Keep 03B3 canceled/deferred, and preserve unpublished Stage07/13 WIP without promotion.
 7. **Current next command to SD:** `R00_READ_ONLY_INVENTORY`, then `R01_CLOCK_DISPERSION_BOUNDED_REMEASUREMENT`. No next-market or new Telegram calls until clock GO. Existing STOP remains; don't overwrite `D:\ZS-SMART-GATE\repo`.
 
-**This v1 ledger records a sourced snapshot and future updating procedure; it does NOT claim that automatic live GitHub synchronization, Windows monitoring, recurring check-ins or an agent task has already been configured.**
+**Automation status (newly created after v1 publication):** ChatGPT task `ZS Gate Status Audit` ID `6b02ef6a023c8191a341b6b24978bb8d`, DAILY FLEXIBLE, Asia/Riyadh first scheduled 2026-11-23 08:00+03:00, enabled=true. Task checks GitHub and requests evidence-driven PM draft updates only when connector permissions and original pinned receipts permit. It cannot act on owner's Windows, does not guarantee uninterrupted repo sync, and never itself certifies a PASS; SD Coding must still publish real local Windows source receipts and owner run PowerShell batches. A scheduled status check is not a Windows production monitor or an accepted 24h soak.**
 
 ---
 
