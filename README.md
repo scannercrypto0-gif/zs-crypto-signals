@@ -1,5 +1,44 @@
 # ZS Crypto Signals — SMART GATE
 
+## قرار PM/Owner الجديد — 22 نوفمبر 2026 — خطة READY/GO الحية ومصفوفة PASS/HOLD (SD Coding يدويًا)
+
+**المرجع الحاكم الحالي الأعلى أولوية (لقطة مؤرخة وليست تحديثًا تلقائيًا):** [مصفوفة التنفيذ والقبول والتحديث المستمر](docs/OPS_FULL_MARKET_24H_OWNER_ORDER_20261121.md#pm-canonical-readiness-ledger--2026-11-22-1630-asiariyadh-v1) · [Issue #77](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/77) · [تسليم SD Coding المؤرخ](https://github.com/scannercrypto0-gif/zs-crypto-signals/blob/13d82aa5fe749885ca4325fd38013900e4fc68ef/handoff/SD-CODING-20261122/HANDOFF.md). **Codex توقف بسبب limits؛ SD Coding يتولى تطوير GitHub وتجهيز حزم PowerShell؛ المالك ينفذ فقط الفحوص/التغييرات المحلية على Windows ويعيد سجلًا مُنقحًا من الأسرار.** يُعاد التحقق من GitHub HEAD/TREE وWindows عند كل حزمة. لا دمج تلقائي ولا ادعاء تشغيل بالخلفية.
+
+**الحالة الحقيقية الآن:** 14/14 مراحل مقبولة في نطاق `BOUNDED_ENGINEERING` فقط؛ 56/56 زوج Spot USDT من سوق مؤهل في **جولة حقيقية واحدة بتاريخ 21 نوفمبر** (59.485s، 227 GET، missing0) وليس 24h؛ 28/28 اختبار Windows للربط البحثي في PR78 بوسائل اتصال fake وليس تسليم Telegram حقيقي؛ اتصال البوتات الثلاثة السابق نجح **منفصلًا**؛ حساب A+B للـInteractive مخزن Owner CurrentUser-DPAPI 8/8 لكنه لم ينتقل إلى scheduled worker. نجاح Service logoff/sign-in فعلًا محدود؛ **أول actual reboot FAIL**، وبعد الإصلاح لا يوجد reboot نظيف ناجح. STOP_REQUESTED لا يزال قائمًا وTask Ready≠Running. **الساعة الحالية HOLD**: عند 12:06:59Z/15:06:59 الرياض عدم يقين 3.8480093s وroot dispersion 3.7609734s > حد 0.5s؛ لا تُعاد تسمية القياس الصباحي الناجح 0.10536035s على أنه نجاح الآن. QV1 real policy/witness/source registries فارغة، والإشارات الإنتاجية **0**. لم تبدأ private pilot الجديدة أو full E2E/24h. PR75/PR76/PR78 **Draft/unmerged**؛ PR78 مبني فوق PR76. SQL **DEFERRED_BY_OWNER**؛ الأوامر المالية والتحويلات **غير مصرح بها**.
+
+### ترتيب التنفيذ الإلزامي + ماذا يغلق كل مرحلة
+| ID | البوابة المطلوبة | PASS الذي يغلقها (غير ذلك PARTIAL/HOLD/NOT_RUN) | الوضع الموثق الآن |
+| --- | --- | --- | --- |
+| **R00** | استلام SD Coding وجرد Windows قراءة فقط | تقرير فعلي بمطابقة HEAD/TREE والهوية وSTOP/الأسرار المغلقة والمسارات وحالة المهام | `PARTIAL` — تسليم موجود، جرد بعده مطلوب |
+| **R01** | إصلاح الساعة أولًا | قياسات مستقلة حديثة تحت0.5s وبسياسة المصدر/ACL/حساب العامل وquorum4 | **`HOLD`** 3.848s |
+| **R02** | تشغيل Windows/التعافي | actual service session0 كحساب عادي + reboot نظيف + logoff + network/crash + STOP/restore/rollback | `PARTIAL` مع reboot FAIL |
+| **R03** | Binance full-market | جولة حقيقة حديثة same-boundary كاملة N/N و0 missing، قيود quota/clock/closed bars/sha | `PASS_LIVE_BOUNDED` تاريخية 56/56، إصدار جديد غير مقبول |
+| **R04** | Telegram research pilot خاص | actual owner A+B replies و05B أرشيف C=A موثق، فقط TEST، بلا إشارات توصية غير مؤهلة | `PASS_BOUNDED` محاكاة؛ actual pilot `NOT_RUN` |
+| **R05** | تأهيل علمي QV1 لـUP/DOWN | real verified policy+witness+source، DEV/OOS/Forward PIT frozen مع عينات/تكلفة/قياس مستقل لكل اتجاه | **`HOLD`** registries فارغة |
+| **R06** | Full real 00→13 DAG | lineage لكل مرحلة وإشارة qualified/rejected+stable IDs+archive+outcome دون mock substitution | `NOT_RUN` LIVE |
+| **R07** | Telegram unattended service | worker secrets/least privilege ثم 05A A+B نفس signal_id، 05B C، 05C A+B، ACK/dedup/recovery بعد Science GO | `PARTIAL/HOLD` worker & science |
+| **R08** | 24h بحث حقيقي دون إشارات إنتاجية | 288 خانة 5min و48 فرصة 30min بملف نتائج وN/N/partial وuptime/recovery وأسباب missing | `NOT_RUN` |
+| **R09** | 24h FULL live signals-only E2E | إثبات كل سلاسل المصدر/الساعة/الاستراتيجية/التأهيل/الأرشفة/Telegram/التعافي، وبعد دمج النسخ المعتمدة | `NOT_RUN / NO_GO` |
+| **R10** | تشغيل ممتد أسبوع/شهر/سنة | أدلة متراكمة 7/30/90/365 يوم، نسخ واستعادة ومراقبة وتقرير SLA وإدارة أعطال وتحديثات | `NOT_RUN` |
+
+**التنفيذ والأولوية:** R00→R01→R02→R03، ثم R08 جمع بحثي 24h **يمكن موازنته مع تنفيذ R05 العلمي**؛ R04 private TEST بعد قبول R01 وهوية A+B، وR06 دمج المراحل (البرمجة والاختبارات ممكنة بالتوازي دون GO)، ثم R07 بعد قبول العلم، ثم R09، ثم R10. لا تُختلق signals إذا لم يحدث تأهيل علمي، وعدم وجود qualified event لا يبيح توصية وهمية. كل بوابة لها دليل Windows أصلي مع HEAD/TREE وSHA256 وraw exit وPM acceptance؛ اختبار fake لا يغلق LIVE، ونجاح الأمس لا يغلق فشل اليوم. راجع العقد الكامل للبنود والـdependency والتراجع.
+
+### بعد الإطلاق: day → week → month → year
+- **24h:** مراقبة actual uptime و288 health slots و48 boundary scans، coverage N/N، latency p50/p95، ساعة/حصة/قرص/CPU/RAM، Telegram ACK/unknown/dedup وإثبات الاسترداد.
+- **7 أيام:** تقرير يومي آلي + ملخص أسبوعي؛ خدمة تعمل بلا فتح PowerShell يوميًا، إنذار تدهور أو توقف، إعادة تشغيل/شبكة وrestore drill.
+- **30 يومًا:** تقرير توافر شهري وأسباب الانقطاع، مراجعة الاستراتيجيات بعد استحقاق outcomes، أرشيف واستعادة، نسخة احتياطية، تغييرات Windows وتعافي.
+- **90/365 يومًا:** مراجعات فصلية/سنوية بناءً على **وقت مرصود فعليًا** وليس وعدًا مسبقًا، دوران أسرار، نسخ متعددة وتراجع آمن، قياس الانقطاع/RTO/RPO. لا يمكن ضمان `100% uptime` سنويًا على جهاز واحد وإنترنت/كهرباء واحدة؛ لتوافر أعلى توضع خطة احتياطي وfencing/dedup منفصلة.
+
+### عملية التحديث المستمر في GitHub
+**SD Coding** بعد **كل** حدث Windows/Commit/اختبار/حالة HOLD يحدّث Issue77 والتعليق في PR76 أوPR78 مع evidence SHA وhead/tree والنطاق والحالة وما سيأتي؛ و**يوميًا أثناء التنفيذ** يكتب DAILY_STATUS حتى لو `NO_CHANGE`. **PM** بعد مراجعة الأدلة يحدّث مصفوفة PASS/HOLD الحالية في PR75 ثم أعلى MASTER وREADME، دون تحرير الملفات الجذرية من SD وبدون إعادة كتابة PASS/HOLD تاريخي أو حذف WIP قديم. لا تغيّر الحالة إلى PASS من مجرد وصف عمل أو Task Ready؛ كل انتقال نسخة/دليل مؤرخ. استقرار أسبوع/شهر/سنة يُحدَّث فقط بعد مرور نافذته ورصدها. **هذا واجب سير عمل وليس خدمة background أُنشئت تلقائيًا.**
+
+**حزمة PowerShell SD→Owner:** افصل `PRECHECK/APPLY/VERIFY/ROLLBACK` في أوامر قابلة للنسخ داخل D، ثبّت الرأس والشجرة وبيئة 3.12.10/PowerShell5.1، ميّز Administrator من Normal، حدّد network/Telegram calls وSTOP/rollback والـexpected output؛ لا تطلب tokens أو DPAPI أو private IDs في الدردشة ولا تُشغّل Restart/Logoff آليًا. لا تكرر اختبارات الـ28/28 المقبولة أو bot smoke سابق دون تغيير معني؛ أول طلب SD الآن `R00_READ_ONLY_INVENTORY` ثم `R01_CLOCK_DISPERSION_BOUNDED_REMEASUREMENT`.
+
+**حاكم الدمج:** مع بقاء PR75/76/78 Draft، كل PR يخضع لمراجعة PM وWindows exact-final-head + قرار دمج مالك منفصل وفق سياسة الفرع؛ لا يعني دمج الكود صلاحية إرسال توصيات أو التداول. التسلسل التقني PR76 قبل PR78 لأن PR78 stacked. يُحفظ سجل 03B3 السابق/Stage07&13 WIP، ولا يُفعّل SQL المؤجل.
+
+---
+
+
 ## تعديل قرار المالك — 21 نوفمبر 2026 — «AUTONOMOUS READ-ONLY / MAXIMUM SAFE CAPACITY»
 
 **الأحدث والأعلى أولوية داخل نطاق الإشارات للقراءة فقط:** المالك ألغى الحاجة إلى موافقته المتكررة قبل طلبات «Binance Spot/time» العامة والجولات الحية وتشغيل خدمة البحث «Windows 24/7» منخفضة الصلاحيات؛ ينفذ «Codex/SD Coding» ذلك تلقائيًا **بعد** اجتياز اختبارات «Windows» الفعلية ومراجعة «PM» المستقلة وتأمين «Stop/Disable/Rollback»، من غير استئذان لكل جولة أو موعد أو تجربة استمرار. يسمح القرار بإتمام مسار الدمج والنشر الروتيني الآمن ضمن نفس النطاق بعد مراجعة رأس الكود وتحقق قواعد حماية «GitHub»، ولا يسمح بتجاوز تلك القواعد أو اختلاق نتيجة مراجعة.
