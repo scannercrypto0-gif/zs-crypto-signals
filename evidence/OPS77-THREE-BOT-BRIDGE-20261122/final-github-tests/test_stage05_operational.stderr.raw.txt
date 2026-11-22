@@ -1,0 +1,12 @@
+test_crash_attempt_reopen_no_send (test_stage05_operational.OperationalTests.test_crash_attempt_reopen_no_send) ... ok
+test_live_baseline_gate_claim_and_nonacknowledging_poll (test_stage05_operational.OperationalTests.test_live_baseline_gate_claim_and_nonacknowledging_poll) ... ok
+test_local_atomic_claim_and_append_only (test_stage05_operational.OperationalTests.test_local_atomic_claim_and_append_only) ... ok
+test_missing_human_and_unknown_first_reply_stop (test_stage05_operational.OperationalTests.test_missing_human_and_unknown_first_reply_stop) ... ok
+test_outbox_backup_reopen_and_corruption_fail_closed (test_stage05_operational.OperationalTests.test_outbox_backup_reopen_and_corruption_fail_closed) ... ok
+test_two_real_shaped_humans_readback_and_restart (test_stage05_operational.OperationalTests.test_two_real_shaped_humans_readback_and_restart) ... ok
+test_upstream_source_replay_and_policy_veto (test_stage05_operational.OperationalTests.test_upstream_source_replay_and_policy_veto) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 1.727s
+
+OK

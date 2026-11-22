@@ -1,0 +1,14 @@
+test_429_bounded_retry_and_unknown_outcome_never_replayed (test_stage05_real_telegram.Stage05RealTransportTargeted.test_429_bounded_retry_and_unknown_outcome_never_replayed) ... ok
+test_independent_per_chat_receipts_and_duplicate_suppression (test_stage05_real_telegram.Stage05RealTransportTargeted.test_independent_per_chat_receipts_and_duplicate_suppression) ... ok
+test_interactive_lowercase_auth_no_new_signal_separate_bot (test_stage05_real_telegram.Stage05RealTransportTargeted.test_interactive_lowercase_auth_no_new_signal_separate_bot) ... ok
+test_owner_two_account_contract_rejects_cross_account_and_third_chat (test_stage05_real_telegram.Stage05RealTransportTargeted.test_owner_two_account_contract_rejects_cross_account_and_third_chat) ... ok
+test_qualified_abc_same_signal_rejected_only_c (test_stage05_real_telegram.Stage05RealTransportTargeted.test_qualified_abc_same_signal_rejected_only_c) ... ok
+test_real_http_request_shapes_429_5xx_network_and_seconds (test_stage05_real_telegram.Stage05RealTransportTargeted.test_real_http_request_shapes_429_5xx_network_and_seconds) ... ok
+test_sql_server_ddl_primary_foreign_unique_and_no_runtime_connection (test_stage05_real_telegram.Stage05RealTransportTargeted.test_sql_server_ddl_primary_foreign_unique_and_no_runtime_connection) ... ok
+test_three_distinct_bot_config_and_live_switches_fail_closed (test_stage05_real_telegram.Stage05RealTransportTargeted.test_three_distinct_bot_config_and_live_switches_fail_closed) ... ok
+test_utc_sha_archive_desktop_and_sql_normalization_conflicts (test_stage05_real_telegram.Stage05RealTransportTargeted.test_utc_sha_archive_desktop_and_sql_normalization_conflicts) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.030s
+
+OK

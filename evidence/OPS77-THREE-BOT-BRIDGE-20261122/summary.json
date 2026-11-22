@@ -1,7 +1,7 @@
 {
   "schema": "zs.ops77.three-bot-evidence.v1",
-  "head": "0b5acb6db168174297ba754b3b8d125f3d565d25",
-  "tree": "fe4dae52b1cd452f7dd78a8f33c73f1cbe7c88c4",
+  "head": "0263c7819c3004a91a79563f1f24f47c609b539d",
+  "tree": "5b506c82613444ccf929f1e73f9943d3f082b9fe",
   "private_store": {
     "partition": "D",
     "original_store": "UNCHANGED",
@@ -23,11 +23,12 @@
   "production_signals_sent": 0,
   "new_market_requests": 0,
   "new_telegram_requests": 0,
-  "windows_local_tests": 26,
-  "github_only_reproduction_tests": 26,
+  "windows_local_tests": 28,
+  "github_only_reproduction_tests": 28,
   "ci": "NOT_CLAIMED",
   "scope": "FINITE_PRIVATE_RESEARCH_BRIDGE_NOT_PRODUCTION_OR_24H",
   "display_incident": "OWNER_CONFIRMED_REPLACED_POWER_CABLE_RESOLVED_FLICKER",
   "development_receipt": "8-test pre-freeze development run, NOT final-head acceptance",
-  "next": "Administrator clock configuration then actual normal-token clock remeasurement before finite private pilot"
+  "next": "Administrator clock configuration then actual normal-token clock remeasurement before finite private pilot",
+  "earlier_tests": "Original 26/26 at0b5acb6 retained. Final28/28 at0263c78 adds distinct A/B coverage and bounded acknowledgment tests."
 }

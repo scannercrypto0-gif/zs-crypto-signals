@@ -1,0 +1,15 @@
+test_both_real_account_routes_are_served_offline_fixture (test_stage05_runtime_bridge.BridgeTests.test_both_real_account_routes_are_served_offline_fixture) ... ok
+test_changed_update_identity_is_rejected (test_stage05_runtime_bridge.BridgeTests.test_changed_update_identity_is_rejected) ... ok
+test_clock_or_stop_prevents_poll_and_delivery (test_stage05_runtime_bridge.BridgeTests.test_clock_or_stop_prevents_poll_and_delivery) ... ok
+test_cross_account_or_third_account_never_receives_reply (test_stage05_runtime_bridge.BridgeTests.test_cross_account_or_third_account_never_receives_reply) ... ok
+test_old_or_future_human_messages_are_not_replied_to (test_stage05_runtime_bridge.BridgeTests.test_old_or_future_human_messages_are_not_replied_to) ... ok
+test_reply_limit_keeps_later_updates_unacknowledged (test_stage05_runtime_bridge.BridgeTests.test_reply_limit_keeps_later_updates_unacknowledged) ... ok
+test_restart_never_resends_acknowledged_update (test_stage05_runtime_bridge.BridgeTests.test_restart_never_resends_acknowledged_update) ... ok
+test_stale_snapshot_never_dispatches_archive_or_signal (test_stage05_runtime_bridge.BridgeTests.test_stale_snapshot_never_dispatches_archive_or_signal) ... ok
+test_uncertain_send_is_durable_and_not_retried_after_restart (test_stage05_runtime_bridge.BridgeTests.test_uncertain_send_is_durable_and_not_retried_after_restart) ... ok
+test_verified_rejection_archived_once_and_never_sent_as_signal (test_stage05_runtime_bridge.BridgeTests.test_verified_rejection_archived_once_and_never_sent_as_signal) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 1.984s
+
+OK

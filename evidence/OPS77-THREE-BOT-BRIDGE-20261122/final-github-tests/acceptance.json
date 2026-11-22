@@ -1,0 +1,90 @@
+{
+    "schema":  "zs.ops24.windows-acceptance.v1",
+    "head":  "0263c7819c3004a91a79563f1f24f47c609b539d",
+    "tree":  "5b506c82613444ccf929f1e73f9943d3f082b9fe",
+    "clean":  true,
+    "python":  "3.12.10",
+    "powershell":  "5.1.26100.9818",
+    "started_utc":  "2026-11-22T12:00:39.6135397Z",
+    "finished_utc":  "2026-11-22T12:00:49.7732191Z",
+    "tests":  28,
+    "failures":  0,
+    "errors":  0,
+    "skipped":  0,
+    "network_attempts":  0,
+    "suites":  [
+                   {
+                       "suite":  "test_stage05_runtime_bridge",
+                       "exit":  0,
+                       "result":  {
+                                      "suite":  "test_stage05_runtime_bridge",
+                                      "tests":  10,
+                                      "failures":  0,
+                                      "errors":  0,
+                                      "skipped":  0,
+                                      "passed":  10,
+                                      "success":  true,
+                                      "duration_seconds":  2.25,
+                                      "python_network_attempts":  0,
+                                      "network_scope":  "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS"
+                                  },
+                       "stdout_sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                       "stderr_sha256":  "6944b111ada6327ea4d8380b17b724036d82b8147e492df75fd0cad461cccd0c"
+                   },
+                   {
+                       "suite":  "test_ops77_bridge_launchers",
+                       "exit":  0,
+                       "result":  {
+                                      "suite":  "test_ops77_bridge_launchers",
+                                      "tests":  2,
+                                      "failures":  0,
+                                      "errors":  0,
+                                      "skipped":  0,
+                                      "passed":  2,
+                                      "success":  true,
+                                      "duration_seconds":  2.828,
+                                      "python_network_attempts":  0,
+                                      "network_scope":  "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS"
+                                  },
+                       "stdout_sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                       "stderr_sha256":  "b3e86e91e8e9941d9d1a7a9ac16fe08319f76c7e6ea6ba5499d90dc7e02fff89"
+                   },
+                   {
+                       "suite":  "test_stage05_operational",
+                       "exit":  0,
+                       "result":  {
+                                      "suite":  "test_stage05_operational",
+                                      "tests":  7,
+                                      "failures":  0,
+                                      "errors":  0,
+                                      "skipped":  0,
+                                      "passed":  7,
+                                      "success":  true,
+                                      "duration_seconds":  2.0,
+                                      "python_network_attempts":  0,
+                                      "network_scope":  "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS"
+                                  },
+                       "stdout_sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                       "stderr_sha256":  "6ab743fb972dd4680f57bfc4806cef0b531c871d89fddede037b0a3d60ceeb2d"
+                   },
+                   {
+                       "suite":  "test_stage05_real_telegram",
+                       "exit":  0,
+                       "result":  {
+                                      "suite":  "test_stage05_real_telegram",
+                                      "tests":  9,
+                                      "failures":  0,
+                                      "errors":  0,
+                                      "skipped":  0,
+                                      "passed":  9,
+                                      "success":  true,
+                                      "duration_seconds":  0.297,
+                                      "python_network_attempts":  0,
+                                      "network_scope":  "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS"
+                                  },
+                       "stdout_sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                       "stderr_sha256":  "43e82e708beed709db5468512faec7bf0bb0f9814084d493ba8bf268c515c672"
+                   }
+               ],
+    "success":  true
+}

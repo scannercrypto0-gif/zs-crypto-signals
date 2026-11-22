@@ -11,8 +11,138 @@
   },
   {
     "file": "summary.json",
-    "sha256": "36963b54fa632ac26c247c8b2272600e27871f6a1ebdf1e449331006f6ddd170",
-    "bytes": 1344
+    "sha256": "026b8aa8e2b435d9bf451a9e6847ba5692f5fe6b587d48abb768c5d6db0edc94",
+    "bytes": 1484
+  },
+  {
+    "file": "final-github-tests/acceptance.json",
+    "sha256": "bc0b9fcdf8b42de199c2d1bc87b8446160728c9c425d60cf192b2675749d5dd8",
+    "bytes": 4864
+  },
+  {
+    "file": "final-github-tests/test_ops77_bridge_launchers.json",
+    "sha256": "6aaff7001816214c941d08b7452dc907c0d6b872893cad2c7a5cd1587d75f201",
+    "bytes": 282
+  },
+  {
+    "file": "final-github-tests/test_ops77_bridge_launchers.stderr.raw.txt",
+    "sha256": "b3e86e91e8e9941d9d1a7a9ac16fe08319f76c7e6ea6ba5499d90dc7e02fff89",
+    "bytes": 447
+  },
+  {
+    "file": "final-github-tests/test_ops77_bridge_launchers.stdout.raw.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "file": "final-github-tests/test_stage05_operational.json",
+    "sha256": "9de4697d6fd1ab1d2df3493f6816e0952bc80f23df51b7843264f96b54a28aa8",
+    "bytes": 277
+  },
+  {
+    "file": "final-github-tests/test_stage05_operational.stderr.raw.txt",
+    "sha256": "6ab743fb972dd4680f57bfc4806cef0b531c871d89fddede037b0a3d60ceeb2d",
+    "bytes": 1115
+  },
+  {
+    "file": "final-github-tests/test_stage05_operational.stdout.raw.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "file": "final-github-tests/test_stage05_real_telegram.json",
+    "sha256": "495ffd92e931a0ba591f7bdeb07c8047065b2ffdc79dcec61e3016306b9b3619",
+    "bytes": 281
+  },
+  {
+    "file": "final-github-tests/test_stage05_real_telegram.stderr.raw.txt",
+    "sha256": "43e82e708beed709db5468512faec7bf0bb0f9814084d493ba8bf268c515c672",
+    "bytes": 1783
+  },
+  {
+    "file": "final-github-tests/test_stage05_real_telegram.stdout.raw.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "file": "final-github-tests/test_stage05_runtime_bridge.json",
+    "sha256": "a639fd2fd0b5da12c14055207919cf52ae91287b8153569f8c7ebdb5a07388d7",
+    "bytes": 283
+  },
+  {
+    "file": "final-github-tests/test_stage05_runtime_bridge.stderr.raw.txt",
+    "sha256": "6944b111ada6327ea4d8380b17b724036d82b8147e492df75fd0cad461cccd0c",
+    "bytes": 1668
+  },
+  {
+    "file": "final-github-tests/test_stage05_runtime_bridge.stdout.raw.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "file": "final-local-tests/acceptance.json",
+    "sha256": "c5ffc796db9f166164c20c49d35eef77e68111ea4ece8a0d4f1c4131b3c95e8c",
+    "bytes": 4867
+  },
+  {
+    "file": "final-local-tests/test_ops77_bridge_launchers.json",
+    "sha256": "13ac1c1b5005c9ba47c898af69889fbd5ea864271cfa142763c586e67442b12a",
+    "bytes": 282
+  },
+  {
+    "file": "final-local-tests/test_ops77_bridge_launchers.stderr.raw.txt",
+    "sha256": "8b6f6696b7dee2b230b3917885f20bd3f858b3145943d515585d0a783eb619ed",
+    "bytes": 447
+  },
+  {
+    "file": "final-local-tests/test_ops77_bridge_launchers.stdout.raw.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "file": "final-local-tests/test_stage05_operational.json",
+    "sha256": "f4b9ba0a0e4e8aeb960545cf0e16ee2000487d6ba6c4d0626a635755b29918cf",
+    "bytes": 279
+  },
+  {
+    "file": "final-local-tests/test_stage05_operational.stderr.raw.txt",
+    "sha256": "6fb1850fe0d75cf170d7657a148644fd52aa745b8a33c36174379df074630f2e",
+    "bytes": 1115
+  },
+  {
+    "file": "final-local-tests/test_stage05_operational.stdout.raw.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "file": "final-local-tests/test_stage05_real_telegram.json",
+    "sha256": "8eba0243ac4a7b0f197cc21caffc63a158f034306c809ed2442ca910b67e94b5",
+    "bytes": 281
+  },
+  {
+    "file": "final-local-tests/test_stage05_real_telegram.stderr.raw.txt",
+    "sha256": "43e82e708beed709db5468512faec7bf0bb0f9814084d493ba8bf268c515c672",
+    "bytes": 1783
+  },
+  {
+    "file": "final-local-tests/test_stage05_real_telegram.stdout.raw.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "file": "final-local-tests/test_stage05_runtime_bridge.json",
+    "sha256": "7ff4ff824ff5e261f04483a5f9c4cd18a3a48f0407b0c50a18826380df8f0835",
+    "bytes": 284
+  },
+  {
+    "file": "final-local-tests/test_stage05_runtime_bridge.stderr.raw.txt",
+    "sha256": "fba6019b1553f505cc45f36860647a2b84331ffdc855c6e0e9d8ffeb2ac53943",
+    "bytes": 1668
+  },
+  {
+    "file": "final-local-tests/test_stage05_runtime_bridge.stdout.raw.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
   },
   {
     "file": "github-tests/acceptance.json",

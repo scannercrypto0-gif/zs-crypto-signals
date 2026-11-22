@@ -1,0 +1,12 @@
+{
+  "suite": "test_stage05_operational",
+  "tests": 7,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "passed": 7,
+  "success": true,
+  "duration_seconds": 2.0,
+  "python_network_attempts": 0,
+  "network_scope": "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS"
+}
