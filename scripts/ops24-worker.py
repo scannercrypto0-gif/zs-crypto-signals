@@ -28,7 +28,12 @@ def windows_observation():
     from zs_smart_gate.ops24_normal_clock import system_directory
     command=[str(system_directory()/'WindowsPowerShell/v1.0/powershell.exe'),'-NoProfile','-NonInteractive','-Command',
         "@{boot_utc=(Get-CimInstance Win32_OperatingSystem).LastBootUpTime.ToUniversalTime().ToString('o');session=[Diagnostics.Process]::GetCurrentProcess().SessionId}|ConvertTo-Json -Compress"]
-    record=json.loads(subprocess.check_output(command,text=True,timeout=10,creationflags=subprocess.CREATE_NO_WINDOW))
+    try:
+        record=json.loads(subprocess.check_output(command,text=True,timeout=60,creationflags=subprocess.CREATE_NO_WINDOW))
+    except subprocess.TimeoutExpired:
+        raise Hold("WINDOWS_BOOT_OBSERVATION_TIMEOUT_60S") from None
+    except subprocess.CalledProcessError:
+        raise Hold("WINDOWS_BOOT_OBSERVATION_COMMAND_FAILED") from None
     record.update(pid=os.getpid(),normal_token=not is_admin())
     return record
 
@@ -181,7 +186,8 @@ def main():
 if __name__=="__main__":
     try:
         raise SystemExit(main())
-    except (Hold,OSError,ValueError,KeyError,ImportError) as exc:
+    except Exception as exc:
+        # Persist boot failures including SQLite/subprocess exceptions; never log arguments or credentials.
         result=dict(status="HOLD",reason=str(exc) if isinstance(exc,Hold) else type(exc).__name__)
         if '--root' in sys.argv:
             try:

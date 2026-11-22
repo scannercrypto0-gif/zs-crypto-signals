@@ -153,7 +153,7 @@ if($Action -eq 'BuildTask'){
  $sid=[Security.SecurityElement]::Escape($config.worker_sid)
  $xml='<?xml version="1.0" encoding="UTF-16"?>'+
  '<Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">'+
- '<Triggers><BootTrigger><Enabled>true</Enabled></BootTrigger></Triggers>'+
+ '<Triggers><BootTrigger><Enabled>true</Enabled><Delay>PT1M</Delay></BootTrigger></Triggers>'+
  '<Principals><Principal id="Owner"><UserId>'+$sid+'</UserId><LogonType>Password</LogonType><RunLevel>LeastPrivilege</RunLevel></Principal></Principals>'+
  '<Settings><MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy><DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>'+
  '<StopIfGoingOnBatteries>false</StopIfGoingOnBatteries><Enabled>false</Enabled><Hidden>true</Hidden>'+
