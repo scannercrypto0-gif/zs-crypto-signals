@@ -1,0 +1,123 @@
+"""Actual Windows PowerShell disabled install, task XML and Git bundle restore."""
+from pathlib import Path
+import json
+import subprocess
+import tempfile
+import unittest
+
+ROOT=Path(__file__).resolve().parents[1]
+
+
+class Ops24ControllerTests(unittest.TestCase):
+    def test_password_task_uses_matching_standard_principal_and_rejects_other_modes(self):
+        helper=ROOT/'scripts/ops24-register-probe.ps1'
+        command=". '"+str(helper)+"'; $ErrorActionPreference='Stop';$id=[Security.Principal.WindowsIdentity]::GetCurrent();$s=ConvertTo-SecureString 'fixture-only' -AsPlainText -Force;$c=[PSCredential]::new($id.Name,$s);$script:count=0;function Register-ScheduledTask {param($TaskName,$Xml,$User,$Password,$ErrorAction) if($Password -cne 'fixture-only'){throw 'MISSING_CREDENTIAL'};$script:count++};foreach($case in @(@('Password','LeastPrivilege'),@('S4U','LeastPrivilege'),@('Password','HighestAvailable'))){$x='<Task><Principals><Principal><UserId>'+$id.User.Value+'</UserId><LogonType>'+$case[0]+'</LogonType><RunLevel>'+$case[1]+'</RunLevel></Principal></Principals></Task>';try{Register-ZsIsolatedProbe -TaskName test -Xml $x -WorkerSid $id.User.Value -WorkerCredential $c -LogonType Password;if($case[0] -ne 'Password' -or $case[1] -ne 'LeastPrivilege'){throw 'UNSAFE_CASE_ACCEPTED'}}catch{if($_.Exception.Message -cne 'ISOLATED_TASK_PRINCIPAL_MISMATCH'){throw}}};if($script:count -ne 1){throw 'REGISTRATION_COUNT_INVALID'};try{Register-ZsIsolatedProbe -TaskName test -Xml '<Task/>' -LogonType Password;throw 'MISSING_ROLE_ACCEPTED'}catch{if($_.Exception.Message -cne 'PASSWORD_TASK_REQUIRES_MANAGED_WORKER_CREDENTIAL'){throw}};$s.Dispose();'PASSWORD_STANDARD_MODE_GUARDS_PASS'"
+        process=subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-Command',command],capture_output=True,text=True,timeout=20,creationflags=subprocess.CREATE_NO_WINDOW)
+        self.assertEqual(process.returncode,0,process.stderr)
+        self.assertEqual(process.stdout.strip(),'PASSWORD_STANDARD_MODE_GUARDS_PASS')
+
+    def test_batch_logon_native_helper_compiles_and_refuses_nonadmin_mutation(self):
+        helper=ROOT/'scripts/ops24-batch-logon.ps1'
+        command=". '"+str(helper)+"'; if(-not ('ZsBatchLogon' -as [type])){throw 'NATIVE_HELPER_NOT_COMPILED'}; try{Enable-ZsProjectBatchLogon; exit 9}catch{if($_.Exception.Message -cne 'BATCH_LOGON_SETUP_REQUIRES_ADMIN'){throw}; 'NATIVE_COMPILED_NONADMIN_REJECTED'}"
+        process=subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-Command',command],capture_output=True,text=True,timeout=30,creationflags=subprocess.CREATE_NO_WINDOW)
+        self.assertEqual(process.returncode,0,process.stderr)
+        self.assertEqual(process.stdout.strip(),'NATIVE_COMPILED_NONADMIN_REJECTED')
+
+    def test_other_user_s4u_registration_passes_transient_credentials(self):
+        helper=ROOT/'scripts/ops24-register-probe.ps1'
+        command=". '"+str(helper)+"'; $id=[Security.Principal.WindowsIdentity]::GetCurrent(); $s=ConvertTo-SecureString 'unit-test-only' -AsPlainText -Force; $c=[PSCredential]::new($id.Name,$s); function Register-ScheduledTask {param($TaskName,$Xml,$User,$Password,$ErrorAction) if($Password -cne 'unit-test-only' -or $User -cne $c.UserName){throw 'CREDENTIAL_NOT_PASSED'}; $script:called=$true}; $x='<Task><Principals><Principal><UserId>'+$id.User.Value+'</UserId><LogonType>S4U</LogonType><RunLevel>LeastPrivilege</RunLevel></Principal></Principals></Task>'; Register-ZsIsolatedProbe -TaskName test -Xml $x -WorkerSid $id.User.Value -WorkerCredential $c; if(-not $script:called){throw 'NOT_CALLED'}; $s.Dispose(); 'TRANSIENT_CREDENTIAL_PATH_PASS'"
+        process=subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-Command',command],capture_output=True,text=True,timeout=20,creationflags=subprocess.CREATE_NO_WINDOW)
+        self.assertEqual(process.returncode,0,process.stderr)
+        self.assertEqual(process.stdout.strip(),'TRANSIENT_CREDENTIAL_PATH_PASS')
+
+    def test_other_user_s4u_without_credentials_is_rejected_before_registration(self):
+        helper=ROOT/'scripts/ops24-register-probe.ps1'
+        command=". '"+str(helper)+"'; function Register-ScheduledTask {throw 'MUST_NOT_REGISTER'}; try {Register-ZsIsolatedProbe -TaskName test -Xml '<Task/>' -WorkerSid 'S-1-5-18'; exit 9} catch {if($_.Exception.Message -cne 'OTHER_USER_S4U_CREDENTIAL_REQUIRED'){throw}; 'MISSING_CREDENTIAL_REJECTED'}"
+        process=subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-Command',command],capture_output=True,text=True,timeout=20,creationflags=subprocess.CREATE_NO_WINDOW)
+        self.assertEqual(process.returncode,0,process.stderr)
+        self.assertEqual(process.stdout.strip(),'MISSING_CREDENTIAL_REJECTED')
+
+    def test_disabled_install_status_task_and_offline_restore_with_activation_hold(self):
+        head=subprocess.check_output(["git","rev-parse","HEAD"],cwd=ROOT,text=True).strip()
+        tree=subprocess.check_output(["git","rev-parse","HEAD^{tree}"],cwd=ROOT,text=True).strip()
+        worker_sid=subprocess.check_output(['powershell.exe','-NoProfile','-NonInteractive','-Command',"(Get-LocalUser -Name ZS_SG_Worker).SID.Value"],text=True).strip()
+        with tempfile.TemporaryDirectory(dir="D:/ZS-SMART-GATE/temp") as folder:
+            root=Path(folder)/"installation"
+            def run(action):
+                return subprocess.run(
+                    ["powershell.exe","-NoProfile","-NonInteractive","-ExecutionPolicy","Bypass",
+                     "-File",str(ROOT/"scripts"/"ops24-windows.ps1"),"-Action",action,
+                     "-Root",str(root),"-Source",str(ROOT),"-Head",head,"-Tree",tree,'-WorkerSid',worker_sid],
+                    capture_output=True,timeout=120,creationflags=subprocess.CREATE_NO_WINDOW)
+            installed=run("InstallDisabled")
+            self.assertEqual(installed.returncode,0,installed.stderr.decode(errors="replace"))
+            self.assertTrue((root/"DISABLED").exists())
+            self.assertTrue((root/"STOP_REQUESTED").exists())
+            record=json.loads((root/"release.json").read_bytes())
+            self.assertEqual(record["clock_profile"],"WINDOWS_STATUS_PROTECTED_REGISTRY_V1")
+            self.assertEqual(record["head"],head)
+            self.assertTrue(Path(record['git_executable']).is_absolute())
+            self.assertEqual(len(record['git_sha256']),64)
+            self.assertIn('runtime',record['python'])
+            built=run("BuildTask")
+            self.assertEqual(built.returncode,0,built.stderr.decode(errors="replace"))
+            xml=(root/"worker.disabled.xml").read_text(encoding="utf-16")
+            self.assertIn("<Enabled>false</Enabled>",xml)
+            self.assertIn("<RunLevel>LeastPrivilege</RunLevel>",xml)
+            self.assertIn("<LogonType>Password</LogonType>",xml)
+            self.assertIn(' Serve --root ',xml)
+            self.assertEqual(record['task_profile'],'ZS_OPS77_STANDARD_PASSWORD_SERVE_V2')
+            self.assertNotIn("HighestAvailable",xml)
+            validation=" $s=New-Object -ComObject Schedule.Service;$s.Connect();$d=$s.NewTask(0);$d.XmlText=[IO.File]::ReadAllText('"+str(root/'worker.disabled.xml')+"'); 'NATIVE_TASK_SCHEMA_VALID_NO_REGISTRATION'"
+            parsed=subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-Command',validation],capture_output=True,text=True,timeout=15,creationflags=subprocess.CREATE_NO_WINDOW)
+            self.assertEqual(parsed.returncode,0,parsed.stderr)
+            self.assertIn('NATIVE_TASK_SCHEMA_VALID_NO_REGISTRATION',parsed.stdout)
+            status=run("Status")
+            self.assertEqual(status.returncode,0,status.stderr.decode(errors="replace"))
+            self.assertTrue(json.loads(status.stdout)["disabled"])
+            blocked=run("Register")
+            self.assertNotEqual(blocked.returncode,0)
+            self.assertIn("STANDING_REVIEWED_RELEASE_EVIDENCE",blocked.stderr.decode(errors="replace"))
+            restored=run("Restore")
+            self.assertEqual(restored.returncode,0,restored.stderr.decode(errors="replace"))
+            self.assertIn("OFFLINE_RESTORE_VERIFIED",restored.stdout.decode(errors="replace"))
+            # Reinstalling the identical disabled release is safe and allows
+            # a real rollback pointer without starting any scheduled worker.
+            repeated=run("InstallDisabled")
+            self.assertEqual(repeated.returncode,0,repeated.stderr.decode(errors="replace"))
+            rolled=run("Rollback")
+            self.assertEqual(rolled.returncode,0,rolled.stderr.decode(errors="replace"))
+            self.assertIn("ROLLED_BACK_DISABLED",rolled.stdout.decode(errors="replace"))
+
+    def test_standard_role_setup_cannot_self_elevate_from_normal_operator(self):
+        result=subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass',
+            '-File',str(ROOT/'scripts/ops24-standard-role-probe.ps1'),'-Source',str(ROOT),
+            '-Head','a'*40,'-Tree','b'*40,'-Root','D:/ZS-SMART-GATE/temp/never-created-by-nonadmin'],
+             capture_output=True,timeout=15,creationflags=subprocess.CREATE_NO_WINDOW)
+        self.assertNotEqual(result.returncode,0)
+        self.assertIn(b'REQUIRES_ADMIN',result.stderr)
+
+    def test_service_account_description_fits_actual_windows_parameter_limit(self):
+        import re
+        source=(ROOT/'scripts/ops24-standard-role-probe.ps1').read_text(encoding='utf-8-sig')
+        marker=re.search(r"\$marker='([^']+)'",source)[1]
+        command="(Get-Command New-LocalUser).Parameters['Description'].Attributes | Where-Object {$_ -is [System.Management.Automation.ValidateLengthAttribute]} | Select-Object -ExpandProperty MaxLength"
+        result=subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-Command',command],
+                 capture_output=True,text=True,timeout=15,creationflags=subprocess.CREATE_NO_WINDOW)
+        self.assertEqual(result.returncode,0,result.stderr)
+        maximum=int(result.stdout.strip())
+        self.assertLessEqual(len(marker),maximum)
+
+    def test_owned_dacl_repair_keeps_file_contents_and_explicit_owner_rights(self):
+        with tempfile.TemporaryDirectory(dir='D:/ZS-SMART-GATE/temp') as folder:
+            root=Path(folder);data=root/'nested'/'input.txt';data.parent.mkdir();data.write_bytes(b'original source bytes')
+            helper=ROOT/'scripts/ops24-owned-acl.ps1'
+            command=". '"+str(helper)+"'; [ZsOwnedDacl]::Set('"+str(data)+"','D:P'); $null=Set-ZsOwnedReadOnlyTree -Root '"+str(root)+"' -WorkerSid 'S-1-5-32-545'; $a=Get-Acl -LiteralPath '"+str(data)+"'; @{rules=@($a.Access).Count;owner_full=@($a.Access|Where-Object {$_.FileSystemRights -eq 'FullControl' -and $_.InheritanceFlags -eq 'None'}).Count;contents=[IO.File]::ReadAllText('"+str(data)+"')}|ConvertTo-Json -Compress"
+            process=subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-Command',command],
+                capture_output=True,text=True,timeout=30,creationflags=subprocess.CREATE_NO_WINDOW,
+                env={**__import__('os').environ,'TEMP':'D:/ZS-SMART-GATE/temp','TMP':'D:/ZS-SMART-GATE/temp'})
+            self.assertEqual(process.returncode,0,process.stderr)
+            proof=json.loads(process.stdout)
+            self.assertGreaterEqual(proof['rules'],4)
+            self.assertGreaterEqual(proof['owner_full'],3)
+            self.assertEqual(proof['contents'],'original source bytes')
