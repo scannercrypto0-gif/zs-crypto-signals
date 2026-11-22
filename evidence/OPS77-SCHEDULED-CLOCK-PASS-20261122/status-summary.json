@@ -1,0 +1,40 @@
+{
+  "schema": "zs.ops77.actual-scheduled-clock-pass.v1",
+  "head": "c7d11d80fa6821c8a88befe042e4a0752f715a53",
+  "tree": "6d8daba2eb26a81cf5c82b8c84d56ab60595b9e7",
+  "origin": "ACTUAL_WINDOWS_SCHEDULER",
+  "normal_token": true,
+  "session": 0,
+  "task_result": 0,
+  "clock_status": "OPERATIONAL_TIME_ACCEPTED",
+  "blockers": [],
+  "conditional_uncertainty_s": 0.10536034999999999,
+  "max_observed_abs_offset_s": 0.0013428,
+  "sync_age_s": 157.2147822,
+  "source": "time.cloudflare.com,0x8",
+  "samples": 4,
+  "service_query_exit": 0,
+  "status_query_exit": 0,
+  "retained_original_rpc_blockers": [
+    "SOURCE_COMMAND_FAILED",
+    "CONFIGURATION_COMMAND_FAILED"
+  ],
+  "signature_review": "NATIVE_CATALOG_BINDING_PENDING_INDEPENDENT_REVIEW",
+  "independent_time": "INDEPENDENT_CRYPTOGRAPHIC_TIME_NOT_PROVEN",
+  "reboot": "NOT_EXECUTED",
+  "logoff": "NOT_EXECUTED",
+  "cleanup": true,
+  "market_calls": 0,
+  "telegram_calls": 0,
+  "sql_writes": 0,
+  "observed_service_read_grant": {
+    "receipt_origin": "OWNER_TERMINAL_OUTPUT",
+    "service": "W32Time",
+    "added_mask": 131077,
+    "changed": true,
+    "before_sha256": "3b49ce58299c3e3ffc4f2a3f0bea8e5c1c7046acd30f16a3448d3ae008af2004",
+    "after_sha256": "faf38078a799cc2619dfbd21a17577f233565daecec473c32de04eab6afa58ae",
+    "backup_hash_independently_checked": true,
+    "worker_mutating_service_rights_added": false
+  }
+}

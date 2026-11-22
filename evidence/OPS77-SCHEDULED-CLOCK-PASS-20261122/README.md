@@ -1,0 +1,11 @@
+# Actual scheduled normal-token operational clock PASS
+
+Source c7d11d80fa6821c8a88befe042e4a0752f715a53 / tree 6d8daba2eb26a81cf5c82b8c84d56ab60595b9e7. Actual Windows Scheduler Password task ran at 2026-11-22T08:29:16Z, standard token/session0, worker exit0, clock OPERATIONAL_TIME_ACCEPTED, blockers empty, finite task cleaned up. Probe/stdout/stderr SHA-256 independently matched native task report before redaction/publication. No repeat test or new market/Telegram/SQL call performed to publish this result.
+
+Observed operational conditional uncertainty 0.10536035s under unchanged 0.5s candidate ceiling; maximum observed sample absolute offset 0.0013428s, sync age157.2147822s under600s, four samples, source time.cloudflare.com,0x8. These are conditional operational measurements, not independently certified UTC accuracy. Original source/configuration RPC AccessDenied retained; status/service queries genuinely returned0. No exit codes rewritten.
+
+Owner terminal reports actual additive read-only W32Time service grant0x20005; original protected D backup SHA independently checked. Before/after DACL hashes retained as operator receipt. Private original DACL/ciphertext/credentials excluded. No worker start/stop/change-config/WRITE_DAC/WRITE_OWNER/admin rights added. No service restart, time/source/poll change or other-service security modification in the repair.
+
+New native catalog signature method remains pending independent PM review. This is one actual finite scheduled Health acceptance, not production deployment, a scientific clock closure, real reboot/logoff recovery,24-hour stability or00–13 live integration. Existing production Serve/default observer not yet migrated to this Health-only catalog-bound path. No merge or continuous collector enabled. Existing source/configuration fallback policy and scientific independent-time limitations preserved. Old failures remain intact on their historical heads.
+
+Local SIDs redacted with original hashes, XML UTF16 conversion labelled, published byte preservation enforced. Windows source code and targeted10/10 tests/reproduction already on PR76; previous21/21 remains at28b5b2a. No unnecessary rerun of accepted tests.
