@@ -1,0 +1,72 @@
+{
+    "schema":  "zs.ops24.windows-acceptance.v1",
+    "head":  "809a8c19814e48c1ae77984ea216a88d2430b773",
+    "tree":  "22592f3a4e74a6146812fcbd96577d89d2d3394c",
+    "clean":  true,
+    "python":  "3.12.10",
+    "powershell":  "5.1.26100.9818",
+    "started_utc":  "2026-11-22T11:12:32.5791358Z",
+    "finished_utc":  "2026-11-22T11:12:57.1784703Z",
+    "tests":  14,
+    "failures":  0,
+    "errors":  0,
+    "skipped":  0,
+    "network_attempts":  0,
+    "suites":  [
+                   {
+                       "suite":  "test_ops24_boot",
+                       "exit":  0,
+                       "result":  {
+                                      "suite":  "test_ops24_boot",
+                                      "tests":  3,
+                                      "failures":  0,
+                                      "errors":  0,
+                                      "skipped":  0,
+                                      "passed":  3,
+                                      "success":  true,
+                                      "duration_seconds":  0.453,
+                                      "python_network_attempts":  0,
+                                      "network_scope":  "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS"
+                                  },
+                       "stdout_sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                       "stderr_sha256":  "5624174f486268481df8e090a3d95472a0318309f0d77eb547cfadc0cdf2a2ed"
+                   },
+                   {
+                       "suite":  "test_ops24_control",
+                       "exit":  0,
+                       "result":  {
+                                      "suite":  "test_ops24_control",
+                                      "tests":  8,
+                                      "failures":  0,
+                                      "errors":  0,
+                                      "skipped":  0,
+                                      "passed":  8,
+                                      "success":  true,
+                                      "duration_seconds":  20.563,
+                                      "python_network_attempts":  0,
+                                      "network_scope":  "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS"
+                                  },
+                       "stdout_sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                       "stderr_sha256":  "5b12eb32a6aa268d056d7c3f2bb30de2bb1fd573365407730c00a3f0a02f8593"
+                   },
+                   {
+                       "suite":  "test_ops24_recovery",
+                       "exit":  0,
+                       "result":  {
+                                      "suite":  "test_ops24_recovery",
+                                      "tests":  3,
+                                      "failures":  0,
+                                      "errors":  0,
+                                      "skipped":  0,
+                                      "passed":  3,
+                                      "success":  true,
+                                      "duration_seconds":  0.562,
+                                      "python_network_attempts":  0,
+                                      "network_scope":  "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS"
+                                  },
+                       "stdout_sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                       "stderr_sha256":  "28dfec17c2cddbd33482d4d2867be9774e1edf4cb90dc524921a09ced563fb3c"
+                   }
+               ],
+    "success":  true
+}

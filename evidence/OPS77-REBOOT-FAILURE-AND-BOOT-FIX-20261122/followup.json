@@ -1,0 +1,26 @@
+{
+  "schema": "zs.ops77.reboot-followup.v1",
+  "failed_head": "2f39c1ba4c8777d7d5345834a7146c8a10d2a1d4",
+  "boot_utc": "2026-11-22T11:04:44.5000000Z",
+  "task_last_run_local": "2026-11-22T14:04:55+03:00",
+  "task_last_result": 1,
+  "automatic_serve_recovery": "FAIL",
+  "journal_integrity": "ok",
+  "precise_exception": "NOT_CAPTURED_BY_OLD_HANDLER",
+  "diagnostic_launch": "OWNER_CREDENTIAL_STANDARD_ROLE_SESSION1_NOT_AUTOSTART_PROOF",
+  "diagnostic_clock_uncertainty_s": 0.8338788,
+  "clock_limit_s": 0.5,
+  "diagnostic_clock_status": "BLOCKED",
+  "diagnostic_stop": "GRACEFUL",
+  "new_head": "809a8c19814e48c1ae77984ea216a88d2430b773",
+  "changes": [
+    "Persist all ordinary exceptions as sanitized HOLD, no arguments/secrets",
+    "Bound Windows boot observation to 60 seconds; explicit timeout/command HOLD",
+    "One minute boot trigger delay"
+  ],
+  "root_cause_resolved": "NOT_PROVEN_NEW_PHYSICAL_TEST_REQUIRED",
+  "market_calls": 0,
+  "telegram_calls": 0,
+  "sql_writes": 0,
+  "soak": "NOT_STARTED"
+}

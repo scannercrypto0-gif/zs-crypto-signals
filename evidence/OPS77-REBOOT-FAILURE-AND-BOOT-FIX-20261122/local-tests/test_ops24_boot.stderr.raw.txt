@@ -1,0 +1,8 @@
+test_command_failure_is_explicit_hold (test_ops24_boot.BootTests.test_command_failure_is_explicit_hold) ... ok
+test_slow_boot_observation_has_bounded_budget (test_ops24_boot.BootTests.test_slow_boot_observation_has_bounded_budget) ... ok
+test_timeout_is_explicit_hold (test_ops24_boot.BootTests.test_timeout_is_explicit_hold) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.017s
+
+OK

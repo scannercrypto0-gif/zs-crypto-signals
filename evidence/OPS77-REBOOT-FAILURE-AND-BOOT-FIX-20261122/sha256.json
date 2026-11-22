@@ -1,0 +1,112 @@
+[
+  {
+    "sha256": "8b9c3028d6467ff3be7c793141927841d70f47f52d0590677438f488ca154992",
+    "bytes": 9,
+    "file": ".gitattributes"
+  },
+  {
+    "sha256": "4ab1cb66a8fb66278adee4e975eeddacab96975901c3ced23b47e9dfa054297c",
+    "bytes": 1039,
+    "file": "followup.json"
+  },
+  {
+    "sha256": "65e5ed712bac82d7e6a35a5520b4d1e4f6c0109ac180f1d1b1a1f18f7e1636e6",
+    "bytes": 3730,
+    "file": "github-tests/acceptance.json"
+  },
+  {
+    "sha256": "fa9e0d48f04178aaa1d1b7c321d955c1f25f6df519e81cf70ac358888d335a18",
+    "bytes": 270,
+    "file": "github-tests/test_ops24_boot.json"
+  },
+  {
+    "sha256": "5624174f486268481df8e090a3d95472a0318309f0d77eb547cfadc0cdf2a2ed",
+    "bytes": 439,
+    "file": "github-tests/test_ops24_boot.stderr.raw.txt"
+  },
+  {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0,
+    "file": "github-tests/test_ops24_boot.stdout.raw.txt"
+  },
+  {
+    "sha256": "3858a9cf8cc368f69523297aedd0a0e135ea5078d169f4b06d7fdb6f0e144af8",
+    "bytes": 274,
+    "file": "github-tests/test_ops24_control.json"
+  },
+  {
+    "sha256": "5b12eb32a6aa268d056d7c3f2bb30de2bb1fd573365407730c00a3f0a02f8593",
+    "bytes": 1622,
+    "file": "github-tests/test_ops24_control.stderr.raw.txt"
+  },
+  {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0,
+    "file": "github-tests/test_ops24_control.stdout.raw.txt"
+  },
+  {
+    "sha256": "d446543ea62da7ed729f15b393fba4e8c8b4576cb62d3cb561d01ae2448fd158",
+    "bytes": 274,
+    "file": "github-tests/test_ops24_recovery.json"
+  },
+  {
+    "sha256": "28dfec17c2cddbd33482d4d2867be9774e1edf4cb90dc524921a09ced563fb3c",
+    "bytes": 603,
+    "file": "github-tests/test_ops24_recovery.stderr.raw.txt"
+  },
+  {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0,
+    "file": "github-tests/test_ops24_recovery.stdout.raw.txt"
+  },
+  {
+    "sha256": "d4a99a71a97a9da85ce13cbfc86bbc63887502d609ba00aed3dabda620584c7c",
+    "bytes": 3728,
+    "file": "local-tests/acceptance.json"
+  },
+  {
+    "sha256": "34655fd494ce16394b66f2e42122dfe18ac207684df6e7a50da4da5770a6542e",
+    "bytes": 268,
+    "file": "local-tests/test_ops24_boot.json"
+  },
+  {
+    "sha256": "5724c8312674485251fb723bd768cad70faccf735d9fd1c62d7859d1cff64a5a",
+    "bytes": 439,
+    "file": "local-tests/test_ops24_boot.stderr.raw.txt"
+  },
+  {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0,
+    "file": "local-tests/test_ops24_boot.stdout.raw.txt"
+  },
+  {
+    "sha256": "d1c4958462ee18a42869ac0dccd9d224c2bd4411d3e72374fc4653e589929187",
+    "bytes": 274,
+    "file": "local-tests/test_ops24_control.json"
+  },
+  {
+    "sha256": "7c3aecab5206bb5415d71407f303653e428f48237b333d41d142e842eecbf637",
+    "bytes": 1622,
+    "file": "local-tests/test_ops24_control.stderr.raw.txt"
+  },
+  {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0,
+    "file": "local-tests/test_ops24_control.stdout.raw.txt"
+  },
+  {
+    "sha256": "205a2e367ef9b31b83fccc82bdec89f3d1d19b13d1fd6b375138648264439fd9",
+    "bytes": 274,
+    "file": "local-tests/test_ops24_recovery.json"
+  },
+  {
+    "sha256": "a0e1e65bfba7ec46f30bccbbce02b85d9a969fbf38712284e61f98ab47dc9b2c",
+    "bytes": 603,
+    "file": "local-tests/test_ops24_recovery.stderr.raw.txt"
+  },
+  {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0,
+    "file": "local-tests/test_ops24_recovery.stdout.raw.txt"
+  }
+]

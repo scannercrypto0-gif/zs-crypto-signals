@@ -1,0 +1,8 @@
+test_live_scope_or_changed_authority_cannot_enter_recovery (test_ops24_recovery.RecoveryTests.test_live_scope_or_changed_authority_cannot_enter_recovery) ... ok
+test_market_child_rejects_recovery_scope_before_network (test_ops24_recovery.RecoveryTests.test_market_child_rejects_recovery_scope_before_network) ... ok
+test_serve_lifecycle_journals_and_stops_without_any_market_transport (test_ops24_recovery.RecoveryTests.test_serve_lifecycle_journals_and_stops_without_any_market_transport) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.110s
+
+OK
