@@ -1,0 +1,7 @@
+SERVICE_SID_QUERY_FAILED
+At line:28 char:26
++  if($LASTEXITCODE -ne 0){throw 'SERVICE_SID_QUERY_FAILED'}
++                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (SERVICE_SID_QUERY_FAILED:String) [], RuntimeException
+    + FullyQualifiedErrorId : SERVICE_SID_QUERY_FAILED
+ 

@@ -1,0 +1,77 @@
+{
+  "schema": "zs.ops77.service-sid.evidence.v1",
+  "source_head": "4b173811970c65f6b1a79f6b569963ff9d8f016b",
+  "source_tree": "158ad8a038cbc8647fd9642c5d951732ff800dda",
+  "files": [
+    {
+      "path": "OPS77-service-sid-tests-20261122/stderr.raw.txt",
+      "bytes": 1686,
+      "sha256": "95dd76a42d1d58d7b147c1dbeafef33a01c37d37890380256e656e29040b33a2"
+    },
+    {
+      "path": "OPS77-service-sid-tests-20261122/stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-service-sid-tests-20261122/tests.json",
+      "bytes": 278,
+      "sha256": "1b187ddba7aed10e581eb20abd7091f2579619694a72e03f0f7e149566eddeda"
+    },
+    {
+      "path": "OPS77-service-sid-reproduction-20261122/stderr.raw.txt",
+      "bytes": 1686,
+      "sha256": "2daafba030a63fee5604dad8669696a6d46654de74f3c592e4471de2f5a204fe"
+    },
+    {
+      "path": "OPS77-service-sid-reproduction-20261122/stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-service-sid-reproduction-20261122/tests.json",
+      "bytes": 277,
+      "sha256": "682746419ad50cdc713ed642ddeb97134e9317e8f2f44c1f412e71106b182c2b"
+    },
+    {
+      "path": "original-attempt/task-probe-report.json",
+      "bytes": 1268,
+      "sha256": "850f59d41e3b971060343c579bf01cdce89b34a7f7d85a3494aa43d02c56a562"
+    },
+    {
+      "path": "original-attempt/probe.json",
+      "bytes": 544,
+      "sha256": "e7c6aec8800fca3108bae9ccd414596eb59b6a26291873664889038d74c6493f"
+    },
+    {
+      "path": "original-attempt/task.stdout.raw.txt",
+      "bytes": 72,
+      "sha256": "891837c0fc5942a7b0c4180ef95b78faa8fc03ca7fb5a01ffd42ca6dcd9f433a"
+    },
+    {
+      "path": "original-attempt/task.stderr.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "original-attempt/task.exit.txt",
+      "bytes": 1,
+      "sha256": "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35"
+    },
+    {
+      "path": "original-attempt/clock-provenance.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "original-attempt/clock-provenance.stderr.raw.txt",
+      "bytes": 332,
+      "sha256": "5281db810f733dad1467c858a570f9399dbcff6e712d7bc78d75c39101f528da"
+    },
+    {
+      "path": "original-attempt/clock-provenance.failure.json",
+      "bytes": 221,
+      "sha256": "fa6b35a85459e88d0a1e09dc5368a5f6aad014f40213f5ee39bf135471d9cfc5"
+    }
+  ]
+}
