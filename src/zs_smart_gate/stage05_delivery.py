@@ -201,7 +201,7 @@ class DeliveryCoordinator:
     """
 
     def __init__(self, *, store, config, flags=None, permit=None,
-                 head_sha=None, clock=None, transports=None, simulation=False):
+                 head_sha=None, clock=None, transports=None, simulation=False, research_test=False):
         config.validate()
         self.store = store
         self.config = config
@@ -210,6 +210,7 @@ class DeliveryCoordinator:
         self.head_sha = head_sha
         self.clock = clock if clock is not None else (lambda: datetime.now(timezone.utc))
         self.simulation = simulation
+        self.research_test = research_test
         self.transports = transports if transports is not None else {}
         self._last_attempt = {}
 
@@ -247,6 +248,8 @@ class DeliveryCoordinator:
 
     def _step(self, event, destination, *, network_available):
         ensure_event(event)
+        if self.research_test and event['qualification_status'] != 'REJECTED':
+            raise ContractError('RESEARCH_TEST_CANNOT_DISTRIBUTE_SIGNALS')
         jobs = {job.destination: job for job in plan(event)}
         if destination not in jobs:
             raise ContractError("UNAUTHORIZED_DESTINATION_FOR_CANDIDATE")
@@ -335,7 +338,7 @@ class DeliveryCoordinator:
             else:
                 report = make_document(event)
                 outcome = transport.send_document(
-                    self._chat(destination), report["caption"],
+                    self._chat(destination), ('TEST / RESEARCH ONLY / NOT A TRADING SIGNAL\n' if self.research_test else '') + report["caption"],
                     report["manifest"]["file_name"], report["document"],
                     flags=self.flags, permit=self.permit, head_sha=self.head_sha,
                     action="ANALYTICS")
