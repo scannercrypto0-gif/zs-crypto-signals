@@ -1,0 +1,11 @@
+# Actual signature HOLD; complete collector diagnostic retention
+
+Original 4b17381 S4U scheduled worker: normal_token=true, probe_observed=true, clock BLOCKED, reason SYSTEM_BINARY_SIGNATURE_UNVERIFIED, cleanup=true. Original raw probe hash verified against native task report. No particular binary/status-message can yet be identified: the prior collector discarded successful collection output when subsequent signature validation failed.
+
+Head 2d39930d5943e2325624e55cd2de41865a9fd652 / tree a15a920853c69010fbaca9382bcaf3136ef56e79 retains raw collector output for both exit-success and exit-failure before validation, labels success COLLECTED_UNVALIDATED, and records Authenticode StatusMessage for all five binaries. No signature/ACL/source/time policy is loosened. Negative test proves retained invalid signature remains rejected.
+
+Affected Windows tests 10/10 PASS; fresh GitHub source clone reproduces 10/10, zero failures/errors/skips/Python network attempts. No claim of corrected actual S4U clock acceptance.
+
+Additional bounded diagnostics used the existing owner-DPAPI credential in memory to launch the STANDARD worker account via Windows Start-Process -Credential, never an elevated account. No password argument/output/reset. Initial inherited PowerShell module-path attempt failed; preserved. Native-module-path attempt collected five Valid Microsoft signatures. This password-authenticated logon differs from S4U and is NOT a replacement witness. Raw profile local-account SIDs are redacted for publication, original SHA retained. Local Windows RPC query status exit=0 with source/last-sync data; source/configuration retain AccessDenied. These are diagnostics only, not a full clock gate. Standard-user self-registration of finite S4U diagnostic failed 0x80070005 before task registration. No task left running. Parent Start-Process ExitCode was unavailable: no invented zero exit receipt; structured child output is the actual recorded evidence. Derived module caches excluded. No market/Telegram/SQL requests in any attempt.
+
+Actual corrected S4U diagnostic therefore requires existing administrator registration path. Reuse current standard account/DPAPI credential, never reset password. Clock, reboot/logoff/24h/scientific independent UTC remain NOT_PROVED. PR76 remains Draft, no merge. Secret/ciphertext excluded.

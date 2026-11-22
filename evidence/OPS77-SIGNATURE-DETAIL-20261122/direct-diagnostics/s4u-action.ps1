@@ -1,0 +1,1 @@
+$ErrorActionPreference='Stop'; $r='D:\ZS-SMART-GATE\validation\OPS77-signature-direct-diagnostic-20261122'; try{$x=& (Join-Path $r 'inspect-native.ps1');[IO.File]::WriteAllText((Join-Path $r 's4u-profile.raw.json'),($x|Out-String),[Text.UTF8Encoding]::new($false))}catch{[IO.File]::WriteAllText((Join-Path $r 's4u-error.raw.txt'),($_|Out-String));exit 2}

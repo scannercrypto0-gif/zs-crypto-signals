@@ -1,0 +1,11 @@
+{
+    "schema":  "zs.ops77.self-s4u-diagnostic.v1",
+    "origin":  "ACTUAL_STANDARD_USER_SELF_REGISTRATION",
+    "market_calls":  0,
+    "telegram_calls":  0,
+    "sql_writes":  0,
+    "registered":  false,
+    "error_id":  "HRESULT 0x80070005,Register-ScheduledTask",
+    "hresult":  -2146233088,
+    "cleanup":  true
+}

@@ -1,0 +1,17 @@
+[
+    {
+        "stdout":  "Leap Indicator: 0(no warning)\r\nStratum: 4 (secondary reference - syncd by (S)NTP)\r\nPrecision: -23 (119.209ns per tick)\r\nRoot Delay: 0.0948902s\r\nRoot Dispersion: 0.0169205s\r\nReferenceId: 0xA29FC801 (source IP:  162.159.200.1)\r\nLast Successful Sync Time: 11/22/2026 9:14:41 AM\r\nSource: time.cloudflare.com,0x8 \r\nPoll Interval: 8 (256s)\r\n\r\nPhase Offset: 0.0000639s\r\nClockRate: 0.0156249s\r\nState Machine: 2 (Sync)\r\nTime Source Flags: 0 (None)\r\nServer Role: 0 (None)\r\nLast Sync Error: 0 (The command completed successfully.)\r\nTime since Last Good Sync Time: 122.5764954s\r\n\r\n",
+        "exit":  0,
+        "kind":  "status"
+    },
+    {
+        "stdout":  "The following error occurred: Access is denied. (0x80070005)\r\n",
+        "exit":  -2147024891,
+        "kind":  "source"
+    },
+    {
+        "stdout":  "The following error occurred: Access is denied. (0x80070005)\r\n",
+        "exit":  -2147024891,
+        "kind":  "configuration"
+    }
+]
