@@ -116,6 +116,7 @@ class TelegramBridge:
                or row['update_id'] < 0 or row['update_id'] >= 2**63-1 for row in rows):
             raise ContractError('BRIDGE_UPDATE_ID_INVALID')
         replies = []
+        processed = 0
         for update in sorted(rows, key=lambda row: row['update_id']):
             if len(replies) >= max_replies:
                 break  # Leave later updates unacknowledged for the next bounded poll.
@@ -155,4 +156,5 @@ class TelegramBridge:
                             destination_label='A' if str(chat['id']) == self.config.signals_chat_a else 'B'))
             with closing(self._db()) as db, db:
                 db.execute('INSERT INTO ingress VALUES(?,?,?)', (uid, pin, state))
-        return dict(status='ACCEPTED', processed=len(rows), replies=replies)
+            processed += 1
+        return dict(status='ACCEPTED', processed=processed, replies=replies)

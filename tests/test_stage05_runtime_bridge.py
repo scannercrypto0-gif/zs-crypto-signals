@@ -104,6 +104,7 @@ class BridgeTests(unittest.TestCase):
     def test_reply_limit_keeps_later_updates_unacknowledged(self):
         self.fake.updates=(self.inbound(101,1),self.inbound(202,2))
         first=self.bridge().poll_once(max_replies=1)
+        self.assertEqual(first['processed'],1)
         self.assertEqual([r['destination_label'] for r in first['replies']],['A'])
         second=self.bridge().poll_once(max_replies=1)
         self.assertEqual([r['destination_label'] for r in second['replies']],['B'])
