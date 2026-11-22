@@ -1,0 +1,153 @@
+{
+  "schema": "zs.ops77.password-comparison.evidence.v1",
+  "head": "daa6222897d2da3d6fb31e5c7e293abcbec04e39",
+  "tree": "367a6ed160556fd0f3a9ef5eebe06dea700f415c",
+  "files": [
+    {
+      "path": "OPS77-password-probe-tests-20261122/test_ops24_control.json",
+      "bytes": 274,
+      "sha256": "8b295df8fc663969a72f454dfee2d8a637fa46ba9057fcb45a57cf9cb92a2270",
+      "original_sha256": "8b295df8fc663969a72f454dfee2d8a637fa46ba9057fcb45a57cf9cb92a2270",
+      "redacted": false
+    },
+    {
+      "path": "OPS77-password-probe-tests-20261122/test_ops24_control.stderr.raw.txt",
+      "bytes": 1622,
+      "sha256": "de8e4184c6a630d82ed8a417cd3ecb36d639f3d0461d36fd4152317c9a97a9a2",
+      "original_sha256": "de8e4184c6a630d82ed8a417cd3ecb36d639f3d0461d36fd4152317c9a97a9a2",
+      "redacted": false
+    },
+    {
+      "path": "OPS77-password-probe-tests-20261122/test_ops24_control.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redacted": false
+    },
+    {
+      "path": "OPS77-password-probe-tests-20261122/test_ops24_normal_clock.json",
+      "bytes": 279,
+      "sha256": "14a67a164f4183deac97b66e1dc77dc4e7f217ed960b674958b5d2fc0a943eef",
+      "original_sha256": "14a67a164f4183deac97b66e1dc77dc4e7f217ed960b674958b5d2fc0a943eef",
+      "redacted": false
+    },
+    {
+      "path": "OPS77-password-probe-tests-20261122/test_ops24_normal_clock.stderr.raw.txt",
+      "bytes": 1874,
+      "sha256": "95dfdcc0c9af8fa3e6a9f70bc4063c49784c652cb87af7226fc96d71ebd4034d",
+      "original_sha256": "95dfdcc0c9af8fa3e6a9f70bc4063c49784c652cb87af7226fc96d71ebd4034d",
+      "redacted": false
+    },
+    {
+      "path": "OPS77-password-probe-tests-20261122/test_ops24_normal_clock.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redacted": false
+    },
+    {
+      "path": "OPS77-password-probe-reproduction-20261122/test_ops24_control.json",
+      "bytes": 274,
+      "sha256": "6509f4ff07e98644e3c0c6dcb0b7bbfa9062160157d44eea7fb111d61c995fc4",
+      "original_sha256": "6509f4ff07e98644e3c0c6dcb0b7bbfa9062160157d44eea7fb111d61c995fc4",
+      "redacted": false
+    },
+    {
+      "path": "OPS77-password-probe-reproduction-20261122/test_ops24_control.stderr.raw.txt",
+      "bytes": 1622,
+      "sha256": "f1c4229e758632cbb91f42ec9e71c8080bfda3248e4981f261ce7d7cfc5efed6",
+      "original_sha256": "f1c4229e758632cbb91f42ec9e71c8080bfda3248e4981f261ce7d7cfc5efed6",
+      "redacted": false
+    },
+    {
+      "path": "OPS77-password-probe-reproduction-20261122/test_ops24_control.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redacted": false
+    },
+    {
+      "path": "OPS77-password-probe-reproduction-20261122/test_ops24_normal_clock.json",
+      "bytes": 280,
+      "sha256": "5792cb124c3619561023f5ca42fc87dcf4ce5710ca77346d8f46f7ac89b7336d",
+      "original_sha256": "5792cb124c3619561023f5ca42fc87dcf4ce5710ca77346d8f46f7ac89b7336d",
+      "redacted": false
+    },
+    {
+      "path": "OPS77-password-probe-reproduction-20261122/test_ops24_normal_clock.stderr.raw.txt",
+      "bytes": 1874,
+      "sha256": "84c707324f0fc660068183f5f51750a6ba18c70c14ad82b3d028318757f7c843",
+      "original_sha256": "84c707324f0fc660068183f5f51750a6ba18c70c14ad82b3d028318757f7c843",
+      "redacted": false
+    },
+    {
+      "path": "OPS77-password-probe-reproduction-20261122/test_ops24_normal_clock.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redacted": false
+    },
+    {
+      "path": "original-s4u-attempt/task-probe-report.json",
+      "bytes": 1268,
+      "sha256": "1a2d80e2ade4230b8f2bd220c49dbceddaf40aa5399d838404e04b6df00184f9",
+      "original_sha256": "1a2d80e2ade4230b8f2bd220c49dbceddaf40aa5399d838404e04b6df00184f9",
+      "redacted": false
+    },
+    {
+      "path": "original-s4u-attempt/probe.json",
+      "bytes": 540,
+      "sha256": "d9a0d0ad8956595f825b27ee24101eb039c301f17dae57adf8c6116901297489",
+      "original_sha256": "d9a0d0ad8956595f825b27ee24101eb039c301f17dae57adf8c6116901297489",
+      "redacted": false
+    },
+    {
+      "path": "original-s4u-attempt/task.stdout.raw.txt",
+      "bytes": 68,
+      "sha256": "48872d1440e5a7d783750b24eaa0b855abb9d716ac3d4bf7cd5f2865e37dc8a0",
+      "original_sha256": "48872d1440e5a7d783750b24eaa0b855abb9d716ac3d4bf7cd5f2865e37dc8a0",
+      "redacted": false
+    },
+    {
+      "path": "original-s4u-attempt/task.stderr.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redacted": false
+    },
+    {
+      "path": "original-s4u-attempt/task.exit.txt",
+      "bytes": 1,
+      "sha256": "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35",
+      "original_sha256": "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35",
+      "redacted": false
+    },
+    {
+      "path": "original-s4u-attempt/clock-provenance.stderr.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redacted": false
+    },
+    {
+      "path": "original-s4u-attempt/clock-provenance.collection.json",
+      "bytes": 214,
+      "sha256": "9c5b7741a1c3592431e7dcd94a56fde16ec0e2c9e8d0df0550a6c8ec0c0470a9",
+      "original_sha256": "9c5b7741a1c3592431e7dcd94a56fde16ec0e2c9e8d0df0550a6c8ec0c0470a9",
+      "redacted": false
+    },
+    {
+      "path": "original-s4u-attempt/clock-profile.redacted.json",
+      "bytes": 10384,
+      "sha256": "c145bc9024d497c5c7d0a0b1d39c28c133a755cc1d049f40d28b1c49b64a20a0",
+      "original_sha256": "c145bc9024d497c5c7d0a0b1d39c28c133a755cc1d049f40d28b1c49b64a20a0",
+      "redacted": true
+    },
+    {
+      "path": "same-binary-comparison.json",
+      "bytes": 2769,
+      "sha256": "aa5d9ab0be45f80467d6abd80da368f20c3f1175fc57f533dfa56d2b1cd3cb10",
+      "redacted": false
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+# Actual S4U signature failure and finite Password-logon comparison
+
+Original 2d39930 native S4U report/probe/profile retained with original hashes; local account SIDs redacted from published profile only. Collector output hash verified against collection receipt; raw probe hash verified against native task report. Four binaries NotSigned, svchost Valid. Every binary SHA exactly matches prior direct credential-authenticated standard-account profile, which returned all five Valid. Captures were at different times; cache/internal crypto cause is not proven. Windows operator Get-AuthenticodeSignature reported Catalog signatures; Get-AuthenticodeSignature may choose catalog over an embedded signature. Do not infer binaries are unsigned or tampered from the S4U result.
+
+Source daa6222897d2da3d6fb31e5c7e293abcbec04e39 / tree 367a6ed160556fd0f3a9ef5eebe06dea700f415c prepares a controlled finite Password-logon Health task using the existing managed standard-user credential. LeastPrivilege, actual normal-token check and every native signature/ACL/source/time gate remain. No certificate import or failed-signature fallback. Windows Task Scheduler retains its protected account credential as OS configuration while task is registered; project DPAPI credential remains only on D. No plaintext/ciphertext published, account reset or administrative membership. The finite task is unregistered afterward. Exact secret-erasure beyond task cleanup is not claimed. Production disabled S4U template/bootstrap is not silently changed or enabled.
+
+Tests: Windows controller 8/8 and clock 10/10 = 18/18 PASS, independent GitHub source clone reproduces both, zero failures/errors/skips/Python network attempts. Guard tests reject missing credentials, wrong logon XML and elevated principal. Actual scheduled Password result PENDING administrator execution; this is a proposed environment correction, not a proved clock fix. Preserve all original S4U failures. No Binance/Telegram/SQL calls or merge. PR76 remains Draft. Reboot/logoff/24h and independent scientific UTC unproved.
+
+References:
+https://learn.microsoft.com/en-us/windows/win32/taskschd/taskschedulerschema-logontype-principaltype-element
+https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.security/get-authenticodesignature
