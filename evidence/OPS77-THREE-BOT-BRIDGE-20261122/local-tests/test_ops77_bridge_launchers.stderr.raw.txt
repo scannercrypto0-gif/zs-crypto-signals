@@ -1,0 +1,7 @@
+test_actual_powershell51_parser_accepts_all_new_launchers (test_ops77_bridge_launchers.LauncherTests.test_actual_powershell51_parser_accepts_all_new_launchers) ... ok
+test_clock_repair_refuses_normal_token_before_creating_output (test_ops77_bridge_launchers.LauncherTests.test_clock_repair_refuses_normal_token_before_creating_output) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 2.873s
+
+OK

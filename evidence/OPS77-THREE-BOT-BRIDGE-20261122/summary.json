@@ -1,0 +1,33 @@
+{
+  "schema": "zs.ops77.three-bot-evidence.v1",
+  "head": "0b5acb6db168174297ba754b3b8d125f3d565d25",
+  "tree": "fe4dae52b1cd452f7dd78a8f33c73f1cbe7c88c4",
+  "private_store": {
+    "partition": "D",
+    "original_store": "UNCHANGED",
+    "interactive_routes": "A_AND_B",
+    "protection": "CURRENT_USER_DPAPI_OWNER_SYSTEM_ADMIN_ACL",
+    "verified_fields": 8,
+    "secrets_published": false
+  },
+  "clock": {
+    "ceiling_s": 0.5,
+    "sync_age_s": 64.9021656,
+    "root_dispersion_s": 0.670141,
+    "conditional_uncertainty_s": 0.75734775,
+    "acceptance": "NOT_PASSED",
+    "tuning": "PREPARED_NOT_APPLIED_REQUIRES_WINDOWS_ADMIN_TOKEN",
+    "status": "BLOCKED"
+  },
+  "qualification": "BLOCKED_REAL_TRUST_REGISTRIES_EMPTY_AND_QUALIFIED_UPSTREAM_VERIFIER_UNIMPLEMENTED",
+  "production_signals_sent": 0,
+  "new_market_requests": 0,
+  "new_telegram_requests": 0,
+  "windows_local_tests": 26,
+  "github_only_reproduction_tests": 26,
+  "ci": "NOT_CLAIMED",
+  "scope": "FINITE_PRIVATE_RESEARCH_BRIDGE_NOT_PRODUCTION_OR_24H",
+  "display_incident": "OWNER_CONFIRMED_REPLACED_POWER_CABLE_RESOLVED_FLICKER",
+  "development_receipt": "8-test pre-freeze development run, NOT final-head acceptance",
+  "next": "Administrator clock configuration then actual normal-token clock remeasurement before finite private pilot"
+}

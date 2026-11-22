@@ -1,0 +1,12 @@
+{
+  "suite": "test_stage05_real_telegram",
+  "tests": 9,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "passed": 9,
+  "success": true,
+  "duration_seconds": 0.266,
+  "python_network_attempts": 0,
+  "network_scope": "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS"
+}
