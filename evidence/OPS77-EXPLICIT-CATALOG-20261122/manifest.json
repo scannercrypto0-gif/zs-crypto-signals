@@ -1,0 +1,426 @@
+{
+  "schema": "zs.ops77.explicit-catalog.execution.v1",
+  "head": "28b5b2ad6d9c03adb1795b313fa11db9dc252ee7",
+  "tree": "671d1a033c9c864dc5640e67253e2f5824f945f8",
+  "files": [
+    {
+      "path": "OPS77-explicit-catalog-tests-20261122/operator-catalog-map.json",
+      "bytes": 1857,
+      "sha256": "8b9961ae7766b967124b496be9b9c816d2cd156a9c242de83f12e54a7ad4ff31",
+      "original_sha256": "8b9961ae7766b967124b496be9b9c816d2cd156a9c242de83f12e54a7ad4ff31",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-explicit-catalog-tests-20261122/test_ops24_catalog.json",
+      "bytes": 273,
+      "sha256": "d1314f6ad428d1226a52b865270e6a7e8882f057b0d6fac70c2d9a4bdc2f90ab",
+      "original_sha256": "d1314f6ad428d1226a52b865270e6a7e8882f057b0d6fac70c2d9a4bdc2f90ab",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-explicit-catalog-tests-20261122/test_ops24_catalog.stderr.raw.txt",
+      "bytes": 607,
+      "sha256": "84dfaca37e97a76530b4be1121e256aa12907b9fa18c78b68bf6dda150bdf3ca",
+      "original_sha256": "84dfaca37e97a76530b4be1121e256aa12907b9fa18c78b68bf6dda150bdf3ca",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-explicit-catalog-tests-20261122/test_ops24_catalog.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-explicit-catalog-tests-20261122/test_ops24_control.json",
+      "bytes": 274,
+      "sha256": "2bf458efb997be0d1aef2c7e77fd3b507f05bf8e334dcef59d442106165a69ea",
+      "original_sha256": "2bf458efb997be0d1aef2c7e77fd3b507f05bf8e334dcef59d442106165a69ea",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-explicit-catalog-tests-20261122/test_ops24_control.stderr.raw.txt",
+      "bytes": 1622,
+      "sha256": "c100e4866680f4a6d3215490838c19a294498dbcb160dac29a20509c0d02640a",
+      "original_sha256": "c100e4866680f4a6d3215490838c19a294498dbcb160dac29a20509c0d02640a",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-explicit-catalog-tests-20261122/test_ops24_control.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-explicit-catalog-tests-20261122/test_ops24_normal_clock.json",
+      "bytes": 280,
+      "sha256": "991f2d90530dbea547dc17e38dc9069a8e60a8997ed16308bbf286e89fbe38a2",
+      "original_sha256": "991f2d90530dbea547dc17e38dc9069a8e60a8997ed16308bbf286e89fbe38a2",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-explicit-catalog-tests-20261122/test_ops24_normal_clock.stderr.raw.txt",
+      "bytes": 1874,
+      "sha256": "ee61c95937afb685298c6c0e617eb119af213649d4c385849168793611b4b9fe",
+      "original_sha256": "ee61c95937afb685298c6c0e617eb119af213649d4c385849168793611b4b9fe",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-explicit-catalog-tests-20261122/test_ops24_normal_clock.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-explicit-catalog-reproduction-20261122/test_ops24_catalog.json",
+      "bytes": 273,
+      "sha256": "6d9b46eef414cb83dc04e0ae5a0cb4f078ddacec6e219521b01d3d7c0ecb6976",
+      "original_sha256": "6d9b46eef414cb83dc04e0ae5a0cb4f078ddacec6e219521b01d3d7c0ecb6976",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-explicit-catalog-reproduction-20261122/test_ops24_catalog.stderr.raw.txt",
+      "bytes": 607,
+      "sha256": "da337e0f82899c0161f363dfde7ff7e76514d45fd706c74be101dbf33bee87b9",
+      "original_sha256": "da337e0f82899c0161f363dfde7ff7e76514d45fd706c74be101dbf33bee87b9",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-explicit-catalog-reproduction-20261122/test_ops24_catalog.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-explicit-catalog-reproduction-20261122/test_ops24_control.json",
+      "bytes": 274,
+      "sha256": "296ced8dcd6ba98cd443d7b1e80a77b8cd0e9fe240f88a41c40542b65939dfc4",
+      "original_sha256": "296ced8dcd6ba98cd443d7b1e80a77b8cd0e9fe240f88a41c40542b65939dfc4",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-explicit-catalog-reproduction-20261122/test_ops24_control.stderr.raw.txt",
+      "bytes": 1622,
+      "sha256": "1eb3f2e93c12c3cd32f76f489207add74fdfb87e85b1d4ff4589a93bdb589393",
+      "original_sha256": "1eb3f2e93c12c3cd32f76f489207add74fdfb87e85b1d4ff4589a93bdb589393",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-explicit-catalog-reproduction-20261122/test_ops24_control.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-explicit-catalog-reproduction-20261122/test_ops24_normal_clock.json",
+      "bytes": 280,
+      "sha256": "75ea0bce773cf8bdb72955a19c20ea1c59115d2ffae9987169977e345bd3cd86",
+      "original_sha256": "75ea0bce773cf8bdb72955a19c20ea1c59115d2ffae9987169977e345bd3cd86",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-explicit-catalog-reproduction-20261122/test_ops24_normal_clock.stderr.raw.txt",
+      "bytes": 1874,
+      "sha256": "ea7c6cd5b2a61cafd5e9c2a2622ac5f6fc387409d37130feebb3d58115d2cd62",
+      "original_sha256": "ea7c6cd5b2a61cafd5e9c2a2622ac5f6fc387409d37130feebb3d58115d2cd62",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-explicit-catalog-reproduction-20261122/test_ops24_normal_clock.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redactions": []
+    },
+    {
+      "path": "original-password-failure/task-probe-report.json",
+      "bytes": 1375,
+      "sha256": "bf70946e517091fde2e24cb9ad491738cdb9918b97b0cc58d63cb37f7a2ec4ac",
+      "original_sha256": "bf70946e517091fde2e24cb9ad491738cdb9918b97b0cc58d63cb37f7a2ec4ac",
+      "redactions": []
+    },
+    {
+      "path": "original-password-failure/probe.json",
+      "bytes": 540,
+      "sha256": "55f1405ba11f9f0bd72d8ea1a09788b2553dba16baf11db68161ae1c2610d7a9",
+      "original_sha256": "55f1405ba11f9f0bd72d8ea1a09788b2553dba16baf11db68161ae1c2610d7a9",
+      "redactions": []
+    },
+    {
+      "path": "original-password-failure/task.stdout.raw.txt",
+      "bytes": 68,
+      "sha256": "48872d1440e5a7d783750b24eaa0b855abb9d716ac3d4bf7cd5f2865e37dc8a0",
+      "original_sha256": "48872d1440e5a7d783750b24eaa0b855abb9d716ac3d4bf7cd5f2865e37dc8a0",
+      "redactions": []
+    },
+    {
+      "path": "original-password-failure/task.stderr.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redactions": []
+    },
+    {
+      "path": "original-password-failure/task.exit.txt",
+      "bytes": 1,
+      "sha256": "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35",
+      "original_sha256": "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35",
+      "redactions": []
+    },
+    {
+      "path": "original-password-failure/clock-provenance.stdout.raw.txt",
+      "bytes": 10512,
+      "sha256": "6323a0259044a8cf1ea9fbaeab90ceb86334b8ebc2cd41a47913fa0ea5ff46d1",
+      "original_sha256": "6323a0259044a8cf1ea9fbaeab90ceb86334b8ebc2cd41a47913fa0ea5ff46d1",
+      "redactions": []
+    },
+    {
+      "path": "original-password-failure/clock-provenance.stderr.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redactions": []
+    },
+    {
+      "path": "original-password-failure/clock-provenance.collection.json",
+      "bytes": 214,
+      "sha256": "69b53b7524d81d0e55e16555cb2ee811b5a4da677f0a4275e281354c9cb75a28",
+      "original_sha256": "69b53b7524d81d0e55e16555cb2ee811b5a4da677f0a4275e281354c9cb75a28",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-password-context-differential-20261122/clock-provenance.collection.json",
+      "bytes": 214,
+      "sha256": "0a8bd2f586f58a6f554a6f08fdbe91f9224fce549a6aa5c92f1b56fc8100dfed",
+      "original_sha256": "0a8bd2f586f58a6f554a6f08fdbe91f9224fce549a6aa5c92f1b56fc8100dfed",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-password-context-differential-20261122/clock-provenance.stderr.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-password-context-differential-20261122/clock-provenance.stdout.raw.txt",
+      "bytes": 9792,
+      "sha256": "798be8133878fae8970740f1b5f5d29b8eb6f857e54b39827323d904087fdbef",
+      "original_sha256": "798be8133878fae8970740f1b5f5d29b8eb6f857e54b39827323d904087fdbef",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-password-context-differential-20261122/context.json",
+      "bytes": 475,
+      "sha256": "69431232c7c6e72506512e4d003c8338afeb2e51df65c8a8a4c90c4ee2e9366b",
+      "original_sha256": "74de85b9e411ff140cdbf7d19ca5c51589607ab46f8439839378c866f9ca31a0",
+      "redactions": [
+        "USER_ENVIRONMENT"
+      ]
+    },
+    {
+      "path": "OPS77-password-context-differential-20261122/inspect-python.py",
+      "bytes": 558,
+      "sha256": "41f4c46847ae51f6bedc2778e4c71f118f495865aa93d72b58726ec7db788cc0",
+      "original_sha256": "41f4c46847ae51f6bedc2778e4c71f118f495865aa93d72b58726ec7db788cc0",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-password-context-differential-20261122/profile.json",
+      "bytes": 10622,
+      "sha256": "b1d916849c05e40baa6b16d874def440a5afe6998725476a57e8f7dfe4144e62",
+      "original_sha256": "b1d916849c05e40baa6b16d874def440a5afe6998725476a57e8f7dfe4144e62",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-password-context-differential-20261122/stderr.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-password-context-differential-20261122/stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-password-context-differential-20261122/correct-profile-environment/clock-provenance.collection.json",
+      "bytes": 214,
+      "sha256": "0a8bd2f586f58a6f554a6f08fdbe91f9224fce549a6aa5c92f1b56fc8100dfed",
+      "original_sha256": "0a8bd2f586f58a6f554a6f08fdbe91f9224fce549a6aa5c92f1b56fc8100dfed",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-password-context-differential-20261122/correct-profile-environment/clock-provenance.stderr.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-password-context-differential-20261122/correct-profile-environment/clock-provenance.stdout.raw.txt",
+      "bytes": 9792,
+      "sha256": "798be8133878fae8970740f1b5f5d29b8eb6f857e54b39827323d904087fdbef",
+      "original_sha256": "798be8133878fae8970740f1b5f5d29b8eb6f857e54b39827323d904087fdbef",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-password-context-differential-20261122/correct-profile-environment/context.json",
+      "bytes": 474,
+      "sha256": "eba535235b314ca4a98f6e2e7dd9d6a80223b6c97eee1fe57b66c7f1d9496c29",
+      "original_sha256": "324d8d8fbf9f31f91cd08f25c9b10ac691d7ea8dc02ce132541542b129fe091a",
+      "redactions": [
+        "USER_ENVIRONMENT"
+      ]
+    },
+    {
+      "path": "OPS77-password-context-differential-20261122/correct-profile-environment/inspect-python.py",
+      "bytes": 558,
+      "sha256": "41f4c46847ae51f6bedc2778e4c71f118f495865aa93d72b58726ec7db788cc0",
+      "original_sha256": "41f4c46847ae51f6bedc2778e4c71f118f495865aa93d72b58726ec7db788cc0",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-password-context-differential-20261122/correct-profile-environment/profile.json",
+      "bytes": 10622,
+      "sha256": "b1d916849c05e40baa6b16d874def440a5afe6998725476a57e8f7dfe4144e62",
+      "original_sha256": "b1d916849c05e40baa6b16d874def440a5afe6998725476a57e8f7dfe4144e62",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-password-context-differential-20261122/correct-profile-environment/run.ps1",
+      "bytes": 578,
+      "sha256": "e682483c29aed06d72886cacb2cf07092380be5a0f7fbcb4fa7dc84ea55badc3",
+      "original_sha256": "e682483c29aed06d72886cacb2cf07092380be5a0f7fbcb4fa7dc84ea55badc3",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-password-context-differential-20261122/correct-profile-environment/stderr.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-password-context-differential-20261122/correct-profile-environment/stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-password-context-differential-20261122/loaded-profile/clock-provenance.collection.json",
+      "bytes": 214,
+      "sha256": "0a8bd2f586f58a6f554a6f08fdbe91f9224fce549a6aa5c92f1b56fc8100dfed",
+      "original_sha256": "0a8bd2f586f58a6f554a6f08fdbe91f9224fce549a6aa5c92f1b56fc8100dfed",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-password-context-differential-20261122/loaded-profile/clock-provenance.stderr.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-password-context-differential-20261122/loaded-profile/clock-provenance.stdout.raw.txt",
+      "bytes": 9792,
+      "sha256": "798be8133878fae8970740f1b5f5d29b8eb6f857e54b39827323d904087fdbef",
+      "original_sha256": "798be8133878fae8970740f1b5f5d29b8eb6f857e54b39827323d904087fdbef",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-password-context-differential-20261122/loaded-profile/context.json",
+      "bytes": 475,
+      "sha256": "69431232c7c6e72506512e4d003c8338afeb2e51df65c8a8a4c90c4ee2e9366b",
+      "original_sha256": "74de85b9e411ff140cdbf7d19ca5c51589607ab46f8439839378c866f9ca31a0",
+      "redactions": [
+        "USER_ENVIRONMENT"
+      ]
+    },
+    {
+      "path": "OPS77-password-context-differential-20261122/loaded-profile/inspect-python.py",
+      "bytes": 558,
+      "sha256": "41f4c46847ae51f6bedc2778e4c71f118f495865aa93d72b58726ec7db788cc0",
+      "original_sha256": "41f4c46847ae51f6bedc2778e4c71f118f495865aa93d72b58726ec7db788cc0",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-password-context-differential-20261122/loaded-profile/profile.json",
+      "bytes": 10622,
+      "sha256": "b1d916849c05e40baa6b16d874def440a5afe6998725476a57e8f7dfe4144e62",
+      "original_sha256": "b1d916849c05e40baa6b16d874def440a5afe6998725476a57e8f7dfe4144e62",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-password-context-differential-20261122/loaded-profile/stderr.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-password-context-differential-20261122/loaded-profile/stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-explicit-catalog-standard-context-20261122/bound-profile.json",
+      "bytes": 18103,
+      "sha256": "c8b8ce8cc67752f62474c6d8f8b350e7b6b30f98029ce2a2914a154257966a5c",
+      "original_sha256": "c8b8ce8cc67752f62474c6d8f8b350e7b6b30f98029ce2a2914a154257966a5c",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-explicit-catalog-standard-context-20261122/clock-catalog-map.json",
+      "bytes": 1857,
+      "sha256": "8b9961ae7766b967124b496be9b9c816d2cd156a9c242de83f12e54a7ad4ff31",
+      "original_sha256": "8b9961ae7766b967124b496be9b9c816d2cd156a9c242de83f12e54a7ad4ff31",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-explicit-catalog-standard-context-20261122/input-profile.json",
+      "bytes": 10512,
+      "sha256": "6323a0259044a8cf1ea9fbaeab90ceb86334b8ebc2cd41a47913fa0ea5ff46d1",
+      "original_sha256": "6323a0259044a8cf1ea9fbaeab90ceb86334b8ebc2cd41a47913fa0ea5ff46d1",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-explicit-catalog-standard-context-20261122/report.json",
+      "bytes": 943,
+      "sha256": "94ce0a00aad5a31a9dd2f29e96b648f478d0155e8419d25acc32a0a72e2b446e",
+      "original_sha256": "94ce0a00aad5a31a9dd2f29e96b648f478d0155e8419d25acc32a0a72e2b446e",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-explicit-catalog-standard-context-20261122/run.py",
+      "bytes": 996,
+      "sha256": "265e230bc2c4d1889cf8129fb5879ece5316b88c9f41992874a722c627d7c449",
+      "original_sha256": "265e230bc2c4d1889cf8129fb5879ece5316b88c9f41992874a722c627d7c449",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-explicit-catalog-standard-context-20261122/stderr.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redactions": []
+    },
+    {
+      "path": "OPS77-explicit-catalog-standard-context-20261122/stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redactions": []
+    }
+  ]
+}

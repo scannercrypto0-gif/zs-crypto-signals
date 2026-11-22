@@ -1,0 +1,40 @@
+{
+  "origin": "DIRECT_CREDENTIAL_STANDARD_USER_DIAGNOSTIC_NOT_SCHEDULED_CLOCK",
+  "admin": false,
+  "market_calls": 0,
+  "telegram_calls": 0,
+  "sql_writes": 0,
+  "provenance_verifier_pass": true,
+  "members": [
+    {
+      "file": "sc.exe",
+      "original_status": "NotSigned",
+      "native_code": 0,
+      "catalog_signature": "Valid"
+    },
+    {
+      "file": "w32tm.exe",
+      "original_status": "NotSigned",
+      "native_code": 0,
+      "catalog_signature": "Valid"
+    },
+    {
+      "file": "w32time.dll",
+      "original_status": "NotSigned",
+      "native_code": 0,
+      "catalog_signature": "Valid"
+    },
+    {
+      "file": "svchost.exe",
+      "original_status": "Valid",
+      "native_code": null,
+      "catalog_signature": null
+    },
+    {
+      "file": "autotimesvc.dll",
+      "original_status": "NotSigned",
+      "native_code": 0,
+      "catalog_signature": "Valid"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+test_actual_windows_catalog_member_and_microsoft_signature (test_ops24_catalog.CatalogNativeTests.test_actual_windows_catalog_member_and_microsoft_signature) ... ok
+test_changed_pe_member_is_rejected_even_with_real_signed_catalog (test_ops24_catalog.CatalogNativeTests.test_changed_pe_member_is_rejected_even_with_real_signed_catalog) ... ok
+test_complete_native_binding_retains_original_notsigned (test_ops24_catalog.CatalogNativeTests.test_complete_native_binding_retains_original_notsigned) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 1.231s
+
+OK
