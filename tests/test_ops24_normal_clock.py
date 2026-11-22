@@ -43,6 +43,21 @@ def observations():
 
 
 class NormalClockTests(unittest.TestCase):
+    def test_collector_success_retains_bad_signature_and_does_not_accept_it(self):
+        import tempfile,subprocess,json
+        from pathlib import Path
+        from zs_smart_gate.ops24_normal_clock import inspect
+        data=profile();data['signatures'][0]['status']='UnknownError'
+        raw=json.dumps(data).encode()
+        with tempfile.TemporaryDirectory(dir='D:/ZS-SMART-GATE/temp') as folder:
+            with patch('zs_smart_gate.ops24_normal_clock.subprocess.run',return_value=subprocess.CompletedProcess([],0,raw,b'')):
+                observed=inspect(diagnostic_root=folder)
+            self.assertEqual((Path(folder)/'clock-provenance.stdout.raw.txt').read_bytes(),raw)
+            receipt=json.loads((Path(folder)/'clock-provenance.collection.json').read_bytes())
+            self.assertEqual(receipt['status'],'COLLECTED_UNVALIDATED')
+            with self.assertRaisesRegex(Hold,'SYSTEM_BINARY_SIGNATURE_UNVERIFIED'):
+                verify_provenance(observed)
+
     def test_native_service_account_translation_matches_original_sc_sid(self):
         import subprocess,json,re
         command="$ErrorActionPreference='Stop'; $rows=@();foreach($n in @('W32Time','autotimesvc')){$sid=([Security.Principal.NTAccount]::new('NT SERVICE',$n)).Translate([Security.Principal.SecurityIdentifier]).Value;$old=(& ($env:SystemRoot+'\\System32\\sc.exe') showsid $n|Out-String);if($LASTEXITCODE -ne 0){throw 'COMPARISON_SC_FAILED'};$rows+=@{name=$n;translated=$sid;original=$old}};$rows|ConvertTo-Json -Compress"

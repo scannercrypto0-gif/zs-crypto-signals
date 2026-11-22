@@ -132,3 +132,24 @@ Native comparison tests verify translated SIDs match actual original sc.exe
 showsid on the normal operator. Actual S4U worker Health still needs execution;
 operator comparison is not evidence of acceptance under the worker identity.
 Reference: https://learn.microsoft.com/en-us/windows/win32/api/winsvc/ns-winsvc-service_sid_info
+
+## Scheduled signature HOLD, 2026-11-22T05:59:54Z
+
+Actual 4b17381 S4U worker resolved both service identities and reached
+SYSTEM_BINARY_SIGNATURE_UNVERIFIED. Normal-token scheduled execution is proved;
+clock acceptance remains BLOCKED. Earlier inspection retained output only if
+the collector exited nonzero, losing rejected signature details on exit zero.
+Persist raw collector stdout/stderr/hash for every diagnostic collection before
+validation, with COLLECTED_UNVALIDATED explicitly separate from acceptance.
+Also retain each Authenticode StatusMessage. No signature verifier is loosened.
+
+A bounded direct credential-authenticated standard-user inspection collected
+five Valid Microsoft signatures, but this differs from S4U and cannot substitute
+for scheduled evidence. Initial direct attempt failed inherited PSModulePath;
+that failed receipt is preserved. Native Windows module-path retry collected
+all five signatures. Actual standard-user self-registration of a finite S4U
+no-trigger diagnostic was refused 0x80070005, no task registered. These attempts
+made zero market/Telegram/SQL calls; no elevated credentials were used. Actual
+S4U status messages therefore still require the administrator registration path.
+Source account/DPAPI credential remains unchanged. Do not weaken signature checks
+or claim cache warming, trust repair or equivalence on this evidence alone.

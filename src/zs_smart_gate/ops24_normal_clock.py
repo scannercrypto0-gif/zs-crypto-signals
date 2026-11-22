@@ -59,7 +59,7 @@ foreach($name in @('sc.exe','w32tm.exe','w32time.dll','svchost.exe','autotimesvc
  $file=Join-Path $system32 $name
  $signature=Get-AuthenticodeSignature -LiteralPath $file
  $acl=Get-Acl -LiteralPath $file
- $signatures+=@{file=$name;status=$signature.Status.ToString();signer=$signature.SignerCertificate.Subject;
+ $signatures+=@{file=$name;status=$signature.Status.ToString();status_message=$signature.StatusMessage;signer=$signature.SignerCertificate.Subject;
   sha256=(Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash.ToLowerInvariant();
   owner=$acl.GetOwner([Security.Principal.SecurityIdentifier]).Value;
   rules=@($acl.GetAccessRules($true,$true,[Security.Principal.SecurityIdentifier])|ForEach-Object{
@@ -82,17 +82,19 @@ def inspect(*, diagnostic_root=None):
     result=subprocess.run([str(binary),"-NoProfile","-NonInteractive","-ExecutionPolicy","Bypass","-Command",INSPECT],
                           env={**os.environ,"PSModulePath":str(system_directory()/"WindowsPowerShell"/"v1.0"/"Modules")},
                           capture_output=True,timeout=20,creationflags=subprocess.CREATE_NO_WINDOW)
+    # A successful collector may return a rejected signature/ACL. Preserve its
+    # raw output before validation too; collection success is never acceptance.
+    if diagnostic_root is not None:
+        from .ops24_source import atomic
+        root=Path(diagnostic_root).resolve()
+        if Path('D:/ZS-SMART-GATE').resolve() not in root.parents:
+            raise Hold('D_OWNED_DIAGNOSTIC_ROOT_REQUIRED')
+        atomic(root/'clock-provenance.stdout.raw.txt',result.stdout)
+        atomic(root/'clock-provenance.stderr.raw.txt',result.stderr)
+        atomic(root/'clock-provenance.collection.json',canonical(dict(
+            exit_code=result.returncode,stdout_sha256=digest(result.stdout),
+            stderr_sha256=digest(result.stderr),status='COLLECTED_UNVALIDATED' if result.returncode==0 else 'PROVENANCE_COLLECTION_FAILED')))
     if result.returncode!=0:
-        if diagnostic_root is not None:
-            from .ops24_source import atomic
-            root=Path(diagnostic_root).resolve()
-            if Path('D:/ZS-SMART-GATE').resolve() not in root.parents:
-                raise Hold('D_OWNED_DIAGNOSTIC_ROOT_REQUIRED')
-            atomic(root/'clock-provenance.stdout.raw.txt',result.stdout)
-            atomic(root/'clock-provenance.stderr.raw.txt',result.stderr)
-            atomic(root/'clock-provenance.failure.json',canonical(dict(
-                exit_code=result.returncode,stdout_sha256=digest(result.stdout),
-                stderr_sha256=digest(result.stderr),status='PROVENANCE_COLLECTION_FAILED')))
         raise Hold("NORMAL_CLOCK_OS_PROVENANCE_UNAVAILABLE")
     return json.loads(result.stdout)
 
