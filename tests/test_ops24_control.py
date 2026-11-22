@@ -40,13 +40,14 @@ class Ops24ControllerTests(unittest.TestCase):
     def test_disabled_install_status_task_and_offline_restore_with_activation_hold(self):
         head=subprocess.check_output(["git","rev-parse","HEAD"],cwd=ROOT,text=True).strip()
         tree=subprocess.check_output(["git","rev-parse","HEAD^{tree}"],cwd=ROOT,text=True).strip()
+        worker_sid=subprocess.check_output(['powershell.exe','-NoProfile','-NonInteractive','-Command',"(Get-LocalUser -Name ZS_SG_Worker).SID.Value"],text=True).strip()
         with tempfile.TemporaryDirectory(dir="D:/ZS-SMART-GATE/temp") as folder:
             root=Path(folder)/"installation"
             def run(action):
                 return subprocess.run(
                     ["powershell.exe","-NoProfile","-NonInteractive","-ExecutionPolicy","Bypass",
                      "-File",str(ROOT/"scripts"/"ops24-windows.ps1"),"-Action",action,
-                     "-Root",str(root),"-Source",str(ROOT),"-Head",head,"-Tree",tree],
+                     "-Root",str(root),"-Source",str(ROOT),"-Head",head,"-Tree",tree,'-WorkerSid',worker_sid],
                     capture_output=True,timeout=120,creationflags=subprocess.CREATE_NO_WINDOW)
             installed=run("InstallDisabled")
             self.assertEqual(installed.returncode,0,installed.stderr.decode(errors="replace"))
@@ -63,7 +64,9 @@ class Ops24ControllerTests(unittest.TestCase):
             xml=(root/"worker.disabled.xml").read_text(encoding="utf-16")
             self.assertIn("<Enabled>false</Enabled>",xml)
             self.assertIn("<RunLevel>LeastPrivilege</RunLevel>",xml)
-            self.assertIn("<LogonType>S4U</LogonType>",xml)
+            self.assertIn("<LogonType>Password</LogonType>",xml)
+            self.assertIn(' Serve --root ',xml)
+            self.assertEqual(record['task_profile'],'ZS_OPS77_STANDARD_PASSWORD_SERVE_V2')
             self.assertNotIn("HighestAvailable",xml)
             status=run("Status")
             self.assertEqual(status.returncode,0,status.stderr.decode(errors="replace"))

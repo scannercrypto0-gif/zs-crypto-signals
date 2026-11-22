@@ -24,6 +24,14 @@ def release(source,git="git"):
     return tuple(subprocess.check_output([git,"-c","safe.directory="+str(source),"-C",str(source),"rev-parse",value],text=True).strip()
                  for value in ("HEAD","HEAD^{tree}"))
 
+def windows_observation():
+    from zs_smart_gate.ops24_normal_clock import system_directory
+    command=[str(system_directory()/'WindowsPowerShell/v1.0/powershell.exe'),'-NoProfile','-NonInteractive','-Command',
+        "@{boot_utc=(Get-CimInstance Win32_OperatingSystem).LastBootUpTime.ToUniversalTime().ToString('o');session=[Diagnostics.Process]::GetCurrentProcess().SessionId}|ConvertTo-Json -Compress"]
+    record=json.loads(subprocess.check_output(command,text=True,timeout=10,creationflags=subprocess.CREATE_NO_WINDOW))
+    record.update(pid=os.getpid(),normal_token=not is_admin())
+    return record
+
 
 def activation(root, head, tree):
     config=json.loads((root/"release.json").read_bytes())
@@ -106,6 +114,11 @@ def main():
         print(json.dumps(dict(head=head,tree=tree,files=rows,scope='LOCAL_HASH_INDEX_NO_SECRET_CONTENT')))
         return 0
     if args.action=='Serve':
+        from zs_smart_gate.ops24_release_clock import RECOVERY,ReleaseClock
+        if installed.get('scope')==RECOVERY:
+            from zs_smart_gate.ops24_recovery import serve_recovery
+            recovery_clock=ReleaseClock(root,head,tree)
+            return serve_recovery(root,head,tree,recovery_clock,observe=windows_observation)
         failures=0
         while True:
             if (root/'STOP_REQUESTED').exists() or (root/'DISABLED').exists():
@@ -135,8 +148,8 @@ def main():
     release_bytes=(root/"release.json").read_bytes()
     journal=RuntimeJournal(root)
     window=journal.plan(start,head)
-    from zs_smart_gate.ops24_normal_clock import NormalClock
-    normal_clock=NormalClock()
+    from zs_smart_gate.ops24_release_clock import ReleaseClock
+    normal_clock=ReleaseClock(root,head,tree)
     def clock():
         return normal_clock.accepted()
     def admitted():
@@ -169,5 +182,12 @@ if __name__=="__main__":
     try:
         raise SystemExit(main())
     except (Hold,OSError,ValueError,KeyError,ImportError) as exc:
-        print(json.dumps(dict(status="HOLD",reason=str(exc) if isinstance(exc,Hold) else type(exc).__name__)))
+        result=dict(status="HOLD",reason=str(exc) if isinstance(exc,Hold) else type(exc).__name__)
+        if '--root' in sys.argv:
+            try:
+                root=Path(sys.argv[sys.argv.index('--root')+1]).resolve()
+                if Path('D:/ZS-SMART-GATE').resolve() in root.parents:
+                    atomic(root/('serve-error-'+str(time.time_ns())+'.json'),canonical(result))
+            except (OSError,IndexError):pass
+        print(json.dumps(result))
         raise SystemExit(2)

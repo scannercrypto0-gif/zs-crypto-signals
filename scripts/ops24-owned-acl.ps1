@@ -47,8 +47,32 @@ function Set-ZsWorkerStateRoot([string]$Root,[string]$WorkerSid){
  $owner=[Security.Principal.WindowsIdentity]::GetCurrent().User.Value
  $worker=[Security.Principal.SecurityIdentifier]::new($WorkerSid).Value
  [ZsOwnedDacl]::Set($base,('D:P(A;OICI;FA;;;'+$owner+')(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;;FRFXFW;;;'+$worker+')(A;OICIIO;0x1301bf;;;'+$worker+')'))
- foreach($name in @('release.json','standing-authority.json','deployment-proof.json','DISABLED','STOP_REQUESTED','window.json','clock-catalog-map.json')){
+ foreach($name in @('release.json','previous.release.json','standing-authority.json','recovery-authority.json','deployment-proof.json','DISABLED','STOP_REQUESTED','window.json','clock-catalog-map.json','FAULT_NETWORK')){
   $path=Join-Path $base $name
   if(Test-Path -LiteralPath $path){[ZsOwnedDacl]::Set($path,('D:P(A;;FA;;;'+$owner+')(A;;FA;;;SY)(A;;FA;;;BA)(A;;FRFX;;;'+$worker+')'))}
  }
 }
+function Protect-ZsDeploymentContainers([string]$Source,[string]$WorkerSid,[string]$BackupRoot){
+ $owner=[Security.Principal.WindowsIdentity]::GetCurrent().User.Value
+ $trusted=@($owner,'S-1-5-18','S-1-5-32-544')
+ foreach($ace in (Get-Acl -LiteralPath 'D:\').GetAccessRules($true,$true,[Security.Principal.SecurityIdentifier])){
+  if($ace.AccessControlType -eq 'Allow' -and -not([int]$ace.PropagationFlags -band 2) -and $ace.IdentityReference.Value -notin $trusted -and ([int64]$ace.FileSystemRights -band 0xC0040)){throw 'DRIVE_SECURITY_OUTSIDE_PROJECT_MUST_NOT_BE_OVERRIDDEN'}
+ }
+ $paths=@('D:\ZS-SMART-GATE','D:\ZS-SMART-GATE\runtime','D:\ZS-SMART-GATE\secrets')
+ $parent=Split-Path ([IO.Path]::GetFullPath($Source)) -Parent
+ while($parent.StartsWith('D:\ZS-SMART-GATE\',[StringComparison]::OrdinalIgnoreCase)){$paths+=$parent;$parent=Split-Path $parent -Parent}
+ $backup=Join-Path $BackupRoot 'deployment-containers-before.json'
+ if(-not(Test-Path $backup)){
+  $rows=@($paths|Select-Object -Unique|ForEach-Object{@{path=$_;dacl=(Get-Acl -LiteralPath $_).GetSecurityDescriptorSddlForm([Security.AccessControl.AccessControlSections]::Access)}})
+  [IO.File]::WriteAllText($backup,($rows|ConvertTo-Json -Depth 5),[Text.UTF8Encoding]::new($false))
+ }
+ foreach($path in ($paths|Select-Object -Unique)){
+  if((Get-Item -LiteralPath $path).Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'DEPLOYMENT_PARENT_REPARSE_REFUSED'}
+  $sddl='D:P(A;OICI;FA;;;'+$owner+')(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)'
+  if($path -cne 'D:\ZS-SMART-GATE\secrets'){$sddl+='(A;;FRFX;;;'+$WorkerSid+')'}
+  [ZsOwnedDacl]::Set($path,$sddl)
+ }
+ # Worker temporary files stay on D without making code/credential parents mutable.
+ [ZsOwnedDacl]::Set('D:\ZS-SMART-GATE\temp',('D:P(A;OICI;FA;;;'+$owner+')(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;0x1301bf;;;'+$WorkerSid+')'))
+}
+

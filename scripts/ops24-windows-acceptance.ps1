@@ -5,7 +5,8 @@ param(
  [Parameter(Mandatory=$true)][string]$ExpectedTree,
  [Parameter(Mandatory=$true)][string]$Output,
  [string]$Dependencies='',
- [string]$Source=''
+ [string]$Source='',
+ [string[]]$AffectedSuites=@()
 )
 $ErrorActionPreference='Stop'
 Set-StrictMode -Version Latest
@@ -25,6 +26,7 @@ $env:PYTHONDONTWRITEBYTECODE='1'
 $env:PYTHONPATH=(Join-Path $Source 'src')+$(if($Dependencies){';'+$Dependencies}else{''})
 $suites=@('test_ops24','test_ops24_runtime','test_ops24_normal_clock','test_ops24_catalog','test_ops24_service_read','test_ops24_intervals','test_ops24_authority','test_ops24_control',
  'test_marketwide_capture.MarketCaptureTests.test_exact_eleventh_http_receipt_accepted_twelfth_forbidden')
+if($AffectedSuites.Count){$suites=$AffectedSuites}
 $rows=@()
 $started=[DateTime]::UtcNow.ToString('o')
 foreach($suite in $suites){

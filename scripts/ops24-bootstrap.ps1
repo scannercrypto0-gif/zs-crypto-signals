@@ -34,11 +34,14 @@ if(-not(Test-Path $source)){
  & git -C $source checkout --detach $head
  if($LASTEXITCODE -ne 0){throw 'EXACT_RELEASE_CHECKOUT_FAILED'}
 }
-$role=Get-LocalUser -Name 'ZS_SG_Research' -ErrorAction SilentlyContinue
+$role=Get-LocalUser -Name 'ZS_SG_Worker' -ErrorAction SilentlyContinue
 if(-not $role -or $role.Description -cne 'ZS SMART GATE read-only standard worker'){throw 'ONE_TIME_STANDARD_ROLE_SETUP_PENDING'}
 $workerSid=$role.SID.Value
+ . (Join-Path $source 'scripts\ops24-owned-acl.ps1')
+Protect-ZsDeploymentContainers -Source $source -WorkerSid $workerSid -BackupRoot 'D:\ZS-SMART-GATE\secrets\ops77-worker'
 $controller=Join-Path $source 'scripts\ops24-windows.ps1'
 & $controller -Action InstallDisabled -Root $Root -Source $source -Head $head -Tree $tree -WorkerSid $workerSid
+& $controller -Action PrepareClock -Root $Root
 $python='D:\ZS-SMART-GATE\runtime\python-3.12.10-ops77\python.exe'
 $decision=Join-Path $Root ('standing-'+[guid]::NewGuid().ToString('N')+'.json')
 & $python -B (Join-Path $source 'scripts\ops24-standing-release.py') --head $windows.head --tree $tree --windows $WindowsEvidence --source-proof $SourceEvidence --output $decision

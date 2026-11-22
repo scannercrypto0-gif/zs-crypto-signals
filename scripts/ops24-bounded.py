@@ -57,12 +57,24 @@ def main():
     if sys.stdin.buffer.readline()!=START:
         return 2
     source=Path(__file__).resolve().parents[1]
-    code_head=subprocess.check_output(["git","-C",str(source),"rev-parse","HEAD"],text=True).strip()
-    code_tree=subprocess.check_output(["git","-C",str(source),"rev-parse","HEAD^{tree}"],text=True).strip()
+    git='git'
+    if args.runtime_root:
+        config=json.loads((args.runtime_root/'release.json').read_bytes())
+        if config.get('scope')!='PUBLIC_SPOT_READ_ONLY_NO_TELEGRAM_SQL_TRADING':
+            raise Hold('MARKET_CHILD_SCOPE_NOT_ADMITTED')
+        git=config['git_executable']
+        if not Path(git).is_absolute() or digest(Path(git).read_bytes())!=config['git_sha256']:
+            raise Hold('PINNED_GIT_TOOLCHAIN_UNVERIFIED')
+    code_head=subprocess.check_output([git,'-c','safe.directory='+str(source),"-C",str(source),"rev-parse","HEAD"],text=True).strip()
+    code_tree=subprocess.check_output([git,'-c','safe.directory='+str(source),"-C",str(source),"rev-parse","HEAD^{tree}"],text=True).strip()
     cycle=digest(canonical([code_head,code_tree,args.boundary])) if (args.cycle_child or args.full_market_preflight) else "discovery-"+str(time.time_ns())
     budget=Budget(output,cycle,quota_root=(args.runtime_root/"provider-quota") if args.runtime_root else None)
     from zs_smart_gate.ops24_normal_clock import NormalClock
-    normal_clock=NormalClock()
+    if args.runtime_root:
+        from zs_smart_gate.ops24_release_clock import ReleaseClock
+        normal_clock=ReleaseClock(args.runtime_root,code_head,code_tree)
+    else:
+        normal_clock=NormalClock()
     started_cpu=time.process_time()
     clock_proof=[None]
     health_lock=threading.Lock()

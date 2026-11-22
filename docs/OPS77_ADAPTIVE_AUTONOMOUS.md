@@ -263,3 +263,50 @@ Windows service security is modified by these tests. This patch leaves clock
 math and catalog verifier blobs unchanged; accepted tests are not rerun broadly.
 
 Reference: https://learn.microsoft.com/en-us/windows/win32/services/service-security-and-access-rights
+
+## PM7076686518 follow-up — versioned Serve wiring and recovery validation
+
+Production BuildTask now emits ZS_OPS77_STANDARD_PASSWORD_SERVE_V2, dedicated
+standard account/Password/LeastPrivilege, boot trigger, bounded failure restart
+and25h task ceiling. Registration loads only owner-private CurrentUser DPAPI,
+validates credential SID and actual registered profile, sets owner-controlled
+task security (worker read/execute only); no password command-line/log/Git.
+Historical S4U templates/receipts are not rewritten. Existing installations must
+be disabled/reinstalled, never silently upgraded while active.
+
+Serve and market cycle children now use ReleaseClock with a release HEAD/TREE-
+bound v2 catalog map pinned in release.json. Native membership/signature/ACL
+checks run for every actual OS collection; the existing<=20s observation cache
+is retained, map/release drift checked even on cache access. No old Health file
+is consumed. Mapping release/bytes/ACL drift or missing map fails closed. Market
+children use the pinned absolute Git toolchain/specific safe.directory and refuse
+a recovery-only scope. No science/time tolerances changed; old receipts immutable.
+New forward audit names PM review6011308846 only when digest matches the exact
+reviewed OS profile; it never claims independent UTC.
+
+A no-market G3 validation mode is inside the actual Serve entrypoint, using the
+same Password task and ReleaseClock, not a renamed finite Health test. Owner
+bootstrap pins official directive7076686518, current PR head and actual new-head
+Windows test evidence into protected recovery-authority. It does NOT admit the
+market mode or skip live admission/G3/merge requirements. It runs at most24h for
+recovery evidence, not a market24h soak, with real local append-only SQLite WAL/
+FULL journal, integrity checking, process singleton, actual boot/session/PID,
+clock witnesses and graceful STOP. Abnormal previous session is labelled unknown
+cause, never fabricated power loss. Actual logoff/reboot/outage still unexecuted.
+
+Recovery installer protects project container ancestry and private credential
+parents to prevent worker deletion/rename of protected map/source/vault paths;
+owner/System/Admin full access retained, worker read/traverse only on containers,
+write only runtime state/D temp. Original container DACLs saved privately before
+mutation. It refuses unexpected running ZS principals or permissive whole-drive
+security rather than modifying unrelated drive settings. Source/runtime trees
+become worker read-only. No change to03B3 source/task, no parallel market run.
+This security provisioning is prepared code, NOT claimed applied yet.
+
+Code/tests and G3 source will be frozen and published before owner administrator
+execution. No rerun of accepted c7d11d8 scheduled Health. No automatic logoff or
+reboot with open work: coordinate readiness, then collect original Windows audit
+and new Serve receipts. Production default/bootstrap now provisions bound maps
+and selects the existing secured ZS_SG_Worker role. The merged public-mode
+admission gate remains; recovery validation has its own hard no-market scope.
+No merge, Telegram production, SQL or trading. 24h market soak has NOT started.

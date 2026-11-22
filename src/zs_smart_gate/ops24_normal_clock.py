@@ -138,7 +138,7 @@ def catalog_signature(path):
 def bind_catalogs(profile,map_path):
     from .ops24_catalog import member_proof
     mapping=json.loads(Path(map_path).read_bytes())
-    if mapping.get('schema')!='zs.ops24.catalog-map.v1' or mapping.get('scope')!='DISCOVERY_ONLY_NOT_ACCEPTANCE':
+    if mapping.get('schema') not in ('zs.ops24.catalog-map.v1','zs.ops24.catalog-map.v2') or mapping.get('scope')!='DISCOVERY_ONLY_NOT_ACCEPTANCE':
         raise Hold('CATALOG_MAP_UNQUALIFIED')
     cache={}
     for row in profile['signatures']:
