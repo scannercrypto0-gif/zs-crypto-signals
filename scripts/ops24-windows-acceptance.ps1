@@ -23,7 +23,7 @@ New-Item -ItemType Directory -Path $Output|Out-Null
 $env:TEMP='D:\ZS-SMART-GATE\temp'; $env:TMP=$env:TEMP
 $env:PYTHONDONTWRITEBYTECODE='1'
 $env:PYTHONPATH=(Join-Path $Source 'src')+$(if($Dependencies){';'+$Dependencies}else{''})
-$suites=@('test_ops24','test_ops24_runtime','test_ops24_normal_clock','test_ops24_intervals','test_ops24_authority','test_ops24_control',
+$suites=@('test_ops24','test_ops24_runtime','test_ops24_normal_clock','test_ops24_catalog','test_ops24_intervals','test_ops24_authority','test_ops24_control',
  'test_marketwide_capture.MarketCaptureTests.test_exact_eleventh_http_receipt_accepted_twelfth_forbidden')
 $rows=@()
 $started=[DateTime]::UtcNow.ToString('o')

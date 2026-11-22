@@ -96,7 +96,106 @@ def inspect(*, diagnostic_root=None):
             stderr_sha256=digest(result.stderr),status='COLLECTED_UNVALIDATED' if result.returncode==0 else 'PROVENANCE_COLLECTION_FAILED')))
     if result.returncode!=0:
         raise Hold("NORMAL_CLOCK_OS_PROVENANCE_UNAVAILABLE")
+    profile=json.loads(result.stdout)
+    if diagnostic_root is not None and (Path(diagnostic_root)/'clock-catalog-map.json').exists():
+        from .ops24_source import atomic
+        try:
+            profile=bind_catalogs(profile,Path(diagnostic_root)/'clock-catalog-map.json')
+        except Exception as exc:
+            profile['catalog_binding_error']=str(exc) if isinstance(exc,(Hold,OSError,ValueError)) else type(exc).__name__
+            raise
+        finally:
+            atomic(Path(diagnostic_root)/'clock-provenance.bound-catalog.json',canonical(profile))
+    return profile
+
+
+CATALOG_INSPECT=r"""
+$ErrorActionPreference='Stop'
+$file=$env:TASK_CLOCK_CATALOG_PATH
+$signature=Get-AuthenticodeSignature -LiteralPath $file
+$acl=Get-Acl -LiteralPath $file
+@{file=$file;status=$signature.Status.ToString();status_message=$signature.StatusMessage;signer=$signature.SignerCertificate.Subject;
+ sha256=(Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash.ToLowerInvariant();
+ owner=$acl.GetOwner([Security.Principal.SecurityIdentifier]).Value;
+ rules=@($acl.GetAccessRules($true,$true,[Security.Principal.SecurityIdentifier])|ForEach-Object{
+ @{sid=$_.IdentityReference.Value;rights=[int64]$_.FileSystemRights;type=$_.AccessControlType.ToString();propagation=[int]$_.PropagationFlags}})}|ConvertTo-Json -Depth 8 -Compress
+"""
+
+
+def catalog_signature(path):
+    binary=system_directory()/'WindowsPowerShell/v1.0/powershell.exe'
+    result=subprocess.run([str(binary),'-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-Command',CATALOG_INSPECT],
+        env={**os.environ,'TASK_CLOCK_CATALOG_PATH':str(path),
+             'PSModulePath':str(system_directory()/'WindowsPowerShell/v1.0/Modules')},
+        capture_output=True,timeout=10,creationflags=subprocess.CREATE_NO_WINDOW)
+    if result.returncode:
+        return dict(status='COLLECTION_FAILED',exit=result.returncode,
+                    stderr=result.stderr.decode('utf-8',errors='replace'),
+                    stdout=result.stdout.decode('utf-8',errors='replace'))
     return json.loads(result.stdout)
+
+
+def bind_catalogs(profile,map_path):
+    from .ops24_catalog import member_proof
+    mapping=json.loads(Path(map_path).read_bytes())
+    if mapping.get('schema')!='zs.ops24.catalog-map.v1' or mapping.get('scope')!='DISCOVERY_ONLY_NOT_ACCEPTANCE':
+        raise Hold('CATALOG_MAP_UNQUALIFIED')
+    cache={}
+    for row in profile['signatures']:
+        # Never substitute for HashMismatch/NotTrusted/unknown failures.
+        if row['status']!='NotSigned':
+            continue
+        item=mapping['files'][row['file']]
+        if item['file_sha256']!=row['sha256']:
+            raise Hold('CATALOG_MAP_BINARY_CHANGED')
+        path=Path(item['catalog']).resolve(strict=True)
+        if not path.is_relative_to(system_directory()/'CatRoot') or path.suffix.lower()!='.cat':
+            raise Hold('CATALOG_OUTSIDE_PROTECTED_STORE')
+        proof=member_proof(system_directory()/row['file'],catalog=path)
+        row['explicit_catalog']=proof
+        if proof['catalog_sha256']!=item['catalog_sha256']:
+            raise Hold('CATALOG_MAP_CATALOG_CHANGED')
+        if str(path) not in cache:
+            cache[str(path)]=catalog_signature(path)
+        # Preserve original NotSigned and its message; a separate actual member
+        # verification, signed catalog and protected ACL must ALL validate.
+        row['explicit_catalog']['signature']=cache[str(path)]
+    return profile
+
+
+def microsoft_signer(value):
+    return isinstance(value,str) and value.startswith(('CN=Microsoft Windows,','CN=Microsoft Windows Publisher,')) and 'O=Microsoft Corporation' in value
+
+
+def signature_verified(row):
+    if row['status']=='Valid':
+        return microsoft_signer(row['signer'])
+    if row['status']!='NotSigned':
+        return False
+    proof=row.get('explicit_catalog',{})
+    if (proof.get('version')!='WINDOWS_EXPLICIT_CATALOG_MEMBER_V1'
+            or type(proof.get('winverifytrust_code')) is not int or proof['winverifytrust_code']!=0
+            or proof.get('verified') is not True or proof.get('hash_algorithm')!='SHA256'
+            or not re.fullmatch(r'[A-F0-9]{64}',proof.get('sip_member_tag',''))
+            or proof.get('file_sha256')!=row['sha256']
+            or Path(proof.get('file',''))!=system_directory()/row['file']):
+        return False
+    path=Path(proof.get('catalog','')).resolve()
+    if not path.is_relative_to(system_directory()/'CatRoot') or path.suffix.lower()!='.cat':
+        return False
+    signed=proof.get('signature',{})
+    if (signed.get('status')!='Valid' or not microsoft_signer(signed.get('signer'))
+            or signed.get('sha256')!=proof.get('catalog_sha256')
+            or not re.fullmatch(r'[a-f0-9]{64}',signed.get('sha256',''))
+            or Path(signed.get('file',''))!=path or signed.get('owner') not in TRUSTED):
+        return False
+    if not isinstance(signed.get('rules'),list) or not signed['rules']:
+        return False
+    for ace in signed['rules']:
+        if ((ace['propagation']&2)==0 and ace['type']=='Allow'
+                and ace['rights']&0xD0156 and ace['sid'] not in TRUSTED|{'S-1-3-0'}):
+            return False
+    return True
 
 
 def verify_provenance(profile):
@@ -108,9 +207,7 @@ def verify_provenance(profile):
     if set(signatures)!={"sc.exe","w32tm.exe","w32time.dll","svchost.exe","autotimesvc.dll"}:
         raise Hold("SYSTEM_BINARY_SET_UNVERIFIED")
     for row in signatures.values():
-        if (row["status"]!="Valid" or not row["signer"].startswith(
-                ("CN=Microsoft Windows,","CN=Microsoft Windows Publisher,"))
-                or "O=Microsoft Corporation" not in row["signer"]
+        if (not signature_verified(row)
                 or not re.fullmatch(r"[a-f0-9]{64}",row["sha256"])):
             raise Hold("SYSTEM_BINARY_SIGNATURE_UNVERIFIED")
         if row["owner"] not in TRUSTED:
@@ -171,7 +268,10 @@ def assess_normal(observations, profile, age):
             "blockers":blockers,"original_rpc_blockers":retained,
             "observation_profile":PROFILE,"provenance_sha256":digest(canonical(profile)),
             "rpc_exit_codes":{name:observations[name]["exit"] for name in COMMANDS},
-            "equivalence_review":"BOUNDED_PROFILE_ACCEPTED_PM_REVIEW_6004705942_CURRENT_PROVENANCE_RECHECKED"}
+            "signature_method":"WINDOWS_AUTHENTICODE_OR_EXPLICIT_CATALOG_MEMBER_V1",
+            "equivalence_review":("NATIVE_CATALOG_BINDING_PENDING_INDEPENDENT_REVIEW" if any(
+                row['status']=='NotSigned' for row in profile['signatures']) else
+                "BOUNDED_PROFILE_ACCEPTED_PM_REVIEW_6004705942_CURRENT_PROVENANCE_RECHECKED")}
 
 
 class NormalClock:

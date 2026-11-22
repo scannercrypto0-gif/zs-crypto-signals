@@ -19,6 +19,15 @@ $record=[ordered]@{schema='zs.ops24.task-probe-driver.v2';head=$Head;tree=$Tree;
 try{
  & $controller -Action InstallDisabled -Root $Root -Source $Source -Head $Head -Tree $Tree -Python $Python -WorkerSid $WorkerSid
  if($LASTEXITCODE -ne 0){throw 'DISABLED_INSTALL_FAILED'}
+ if($ProbeAction -eq 'Health'){
+  $builder=Join-Path $Source 'scripts\ops24-catalog-map.py'
+  $map=Join-Path $Root 'clock-catalog-map.json'
+  $discovery=Start-Process -FilePath $Python -ArgumentList @('-I','-B',('"'+$builder+'"'),'--output',('"'+$map+'"')) -WorkingDirectory $Source -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $Root 'catalog-map.stdout.raw.txt') -RedirectStandardError (Join-Path $Root 'catalog-map.stderr.raw.txt')
+  $null=$discovery.Handle
+  if(-not $discovery.WaitForExit(30000)){& taskkill.exe /PID $discovery.Id /T /F|Out-Null;throw 'CATALOG_LOCATION_DISCOVERY_TIMEOUT'}
+  $discovery.WaitForExit()
+  if($discovery.ExitCode -ne 0){throw 'CATALOG_LOCATION_DISCOVERY_FAILED'}
+ }
  if($WorkerSid){
   . (Join-Path $Source 'scripts\ops24-owned-acl.ps1')
   Set-ZsWorkerStateRoot -Root $Root -WorkerSid $WorkerSid

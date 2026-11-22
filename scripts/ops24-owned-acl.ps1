@@ -47,7 +47,7 @@ function Set-ZsWorkerStateRoot([string]$Root,[string]$WorkerSid){
  $owner=[Security.Principal.WindowsIdentity]::GetCurrent().User.Value
  $worker=[Security.Principal.SecurityIdentifier]::new($WorkerSid).Value
  [ZsOwnedDacl]::Set($base,('D:P(A;OICI;FA;;;'+$owner+')(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;;FRFXFW;;;'+$worker+')(A;OICIIO;0x1301bf;;;'+$worker+')'))
- foreach($name in @('release.json','standing-authority.json','deployment-proof.json','DISABLED','STOP_REQUESTED','window.json')){
+ foreach($name in @('release.json','standing-authority.json','deployment-proof.json','DISABLED','STOP_REQUESTED','window.json','clock-catalog-map.json')){
   $path=Join-Path $base $name
   if(Test-Path -LiteralPath $path){[ZsOwnedDacl]::Set($path,('D:P(A;;FA;;;'+$owner+')(A;;FA;;;SY)(A;;FA;;;BA)(A;;FRFX;;;'+$worker+')'))}
  }

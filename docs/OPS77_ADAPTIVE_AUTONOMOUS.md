@@ -184,3 +184,51 @@ SignatureType is informational, not an alternative acceptance criterion.
 Microsoft references:
 https://learn.microsoft.com/en-us/windows/win32/taskschd/taskschedulerschema-logontype-principaltype-element
 https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.security/get-authenticodesignature
+
+## Explicit catalog-member verification implementation (pending actual scheduled test)
+
+Password-logon actual daa6222 still returned four NotSigned/None signatures and
+one embedded Valid signature. Its profile preserves original status messages;
+changing S4U alone was not a proved fix. Direct credential-authenticated Python
+inspection, including loaded user profile and corrected profile environment,
+still returned five Valid Catalog signatures. Therefore no exact Windows
+internal catalog-discovery cause is asserted and no OS trust-store/ACL repair
+is attempted speculatively.
+
+Implement a distinct explicit catalog-member path using Windows WinVerifyTrust
+WTD_CHOICE_CATALOG and CryptCATAdmin SHA256 SIP hashing. Provision a protected
+read-only DISCOVERY_ONLY catalog-location map under the operator; NEVER accept
+its status as a witness. The actual standard worker recomputes the binary's
+SIP hash/member tag, verifies the specific member/catalog/chain with native
+WinVerifyTrust, independently checks the catalog's own embedded Microsoft
+Authenticode signature, whole catalog/binary SHA256 and protected Windows ACLs.
+Only NotSigned auto-discovery can use this separate evidence; HashMismatch,
+NotTrusted, unknown signature failures, changed bytes, nonzero native code,
+unqualified signer and mutable/out-of-store catalogs remain rejected. Original
+NotSigned results are retained; no failed result is rewritten to Valid.
+
+Native module loads wintrust.dll by absolute GetSystemDirectoryW path, closes
+all native state/catalog handles, and bounds file/catalog bytes. Diagnostic
+map discovery has a 30-second process-tree watchdog; signature child queries
+have 10-second timeouts and task Health retains its overall finite watchdog.
+Partial catalog details persist on failure. New Native-catalog evidence requires
+independent PM review; the assessment explicitly says so. No independent UTC,
+revocation freshness, reboot/logoff, 24-hour or production GO is implied.
+
+The finite Health probe uses the map only for this diagnostic path. Existing
+Serve/default observer and production disabled deployment are not silently
+activated or migrated. Owner OS configuration permission covers the existing
+standard account and protected Scheduler credential; project code/maps/receipts
+remain on D and allowed artifacts on GitHub, secrets/ciphertext stay local.
+
+Windows native positive test proves real sc.exe membership and Microsoft-signed
+catalog. A changed .text byte fails native WinVerifyTrust even with the original
+real signed catalog. Metadata-negative tests reject altered member/binary/catalog,
+non-Microsoft signers, mutable or absent catalog ACLs, original HashMismatch and
+boolean/uncertain native return codes. Clock fixtures in these tests are synthetic
+and do not establish actual scheduled clock acceptance.
+
+SDK references:
+https://learn.microsoft.com/en-us/windows/win32/api/wintrust/ns-wintrust-wintrust_catalog_info
+https://learn.microsoft.com/en-us/windows/win32/api/mscat/nf-mscat-cryptcatadmincalchashfromfilehandle2
+https://learn.microsoft.com/en-us/windows/win32/api/wintrust/nf-wintrust-winverifytrust
