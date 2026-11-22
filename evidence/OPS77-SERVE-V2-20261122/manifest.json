@@ -1,0 +1,107 @@
+{
+  "schema": "zs.ops77.serve-v2.execution.v1",
+  "head": "2f39c1ba4c8777d7d5345834a7146c8a10d2a1d4",
+  "tree": "1faff74fbe8d3dc0158c25afd547af2239e28bdc",
+  "files": [
+    {
+      "path": "OPS77-serve-v2-final-tests-20261122/acceptance.json",
+      "bytes": 3748,
+      "sha256": "7b39986b23f5f3c2a83a146406a58de8cc878a999f235533652dcb0b01d7655b"
+    },
+    {
+      "path": "OPS77-serve-v2-final-tests-20261122/test_ops24_control.json",
+      "bytes": 274,
+      "sha256": "43d2e1677c98e4c4bae226a4f23a48ccce0cb0e3efa5e0100a04be4a4893f734"
+    },
+    {
+      "path": "OPS77-serve-v2-final-tests-20261122/test_ops24_control.stderr.raw.txt",
+      "bytes": 1622,
+      "sha256": "f58df99fb58ebbbc4c1a4b03c9bf4ec4e613a2114a0bf778eeeee645f9322ea9"
+    },
+    {
+      "path": "OPS77-serve-v2-final-tests-20261122/test_ops24_control.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-serve-v2-final-tests-20261122/test_ops24_recovery.json",
+      "bytes": 274,
+      "sha256": "205a2e367ef9b31b83fccc82bdec89f3d1d19b13d1fd6b375138648264439fd9"
+    },
+    {
+      "path": "OPS77-serve-v2-final-tests-20261122/test_ops24_recovery.stderr.raw.txt",
+      "bytes": 603,
+      "sha256": "a3c766aa01800fb9f5e4015d11326c2f838fb99188197bd13df638ff7b2c2afd"
+    },
+    {
+      "path": "OPS77-serve-v2-final-tests-20261122/test_ops24_recovery.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-serve-v2-final-tests-20261122/test_ops24_release_clock.json",
+      "bytes": 279,
+      "sha256": "88301f2c5668de329e60636324ffafb0c11a9edb60f37698b40c0f10a33ea921"
+    },
+    {
+      "path": "OPS77-serve-v2-final-tests-20261122/test_ops24_release_clock.stderr.raw.txt",
+      "bytes": 978,
+      "sha256": "e28c5235a68b669b91d21c672f86e65b60d45d33e4765264cd1ce2ff7a4cfdf0"
+    },
+    {
+      "path": "OPS77-serve-v2-final-tests-20261122/test_ops24_release_clock.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-serve-v2-github-tests-20261122/acceptance.json",
+      "bytes": 3748,
+      "sha256": "b20d7929f7b4e0953a7da259d5c62e555cf2481a084fa99eec8fc28d95f4782b"
+    },
+    {
+      "path": "OPS77-serve-v2-github-tests-20261122/test_ops24_control.json",
+      "bytes": 274,
+      "sha256": "eee7058868a77686578de01239f5400de5b2078f3234b8c6ef0515e9e9c10ffe"
+    },
+    {
+      "path": "OPS77-serve-v2-github-tests-20261122/test_ops24_control.stderr.raw.txt",
+      "bytes": 1622,
+      "sha256": "9e7b66a242698b2af7855c6e9b978d16b0d3792638955db2d9c8fef9eba63d60"
+    },
+    {
+      "path": "OPS77-serve-v2-github-tests-20261122/test_ops24_control.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-serve-v2-github-tests-20261122/test_ops24_recovery.json",
+      "bytes": 274,
+      "sha256": "080f70c122d93f4b04635442e102a7b46b76ec0fc3fb42f0261dd9d147957599"
+    },
+    {
+      "path": "OPS77-serve-v2-github-tests-20261122/test_ops24_recovery.stderr.raw.txt",
+      "bytes": 603,
+      "sha256": "03532daf9260263e49f8d134e71dd8e8478bc865abe2fc2f69487ad5c74d8416"
+    },
+    {
+      "path": "OPS77-serve-v2-github-tests-20261122/test_ops24_recovery.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "OPS77-serve-v2-github-tests-20261122/test_ops24_release_clock.json",
+      "bytes": 279,
+      "sha256": "be0c4e51c687ad316d35ba9aac0c3113496f6f4d389810d0b1e52a426c48be28"
+    },
+    {
+      "path": "OPS77-serve-v2-github-tests-20261122/test_ops24_release_clock.stderr.raw.txt",
+      "bytes": 978,
+      "sha256": "7b24a8c7888cfd46ac1f9217c1f57b907023fdf57d5cb44d8a52732969003fba"
+    },
+    {
+      "path": "OPS77-serve-v2-github-tests-20261122/test_ops24_release_clock.stdout.raw.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

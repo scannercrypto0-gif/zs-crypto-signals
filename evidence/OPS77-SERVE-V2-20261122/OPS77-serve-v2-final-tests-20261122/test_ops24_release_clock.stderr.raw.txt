@@ -1,0 +1,10 @@
+test_acl_failure_or_drift_during_collection_remains_hold (test_ops24_release_clock.ReleaseClockTests.test_acl_failure_or_drift_during_collection_remains_hold) ... ok
+test_cached_clock_is_not_used_after_release_or_map_drift (test_ops24_release_clock.ReleaseClockTests.test_cached_clock_is_not_used_after_release_or_map_drift) ... ok
+test_live_collection_uses_same_root_and_checks_current_acl (test_ops24_release_clock.ReleaseClockTests.test_live_collection_uses_same_root_and_checks_current_acl) ... ok
+test_missing_changed_wrong_release_or_s4u_map_never_replays_health (test_ops24_release_clock.ReleaseClockTests.test_missing_changed_wrong_release_or_s4u_map_never_replays_health) ... ok
+test_v2_rechecks_real_catalogs_even_when_auto_signature_is_valid (test_ops24_release_clock.ReleaseClockTests.test_v2_rechecks_real_catalogs_even_when_auto_signature_is_valid) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 7.156s
+
+OK

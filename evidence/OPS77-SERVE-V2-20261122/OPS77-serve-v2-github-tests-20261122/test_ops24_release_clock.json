@@ -1,0 +1,12 @@
+{
+  "suite": "test_ops24_release_clock",
+  "tests": 5,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "passed": 5,
+  "success": true,
+  "duration_seconds": 8.265,
+  "python_network_attempts": 0,
+  "network_scope": "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS"
+}

@@ -1,0 +1,72 @@
+{
+    "schema":  "zs.ops24.windows-acceptance.v1",
+    "head":  "2f39c1ba4c8777d7d5345834a7146c8a10d2a1d4",
+    "tree":  "1faff74fbe8d3dc0158c25afd547af2239e28bdc",
+    "clean":  true,
+    "python":  "3.12.10",
+    "powershell":  "5.1.26100.9818",
+    "started_utc":  "2026-11-22T09:39:40.7553780Z",
+    "finished_utc":  "2026-11-22T09:40:10.2503535Z",
+    "tests":  16,
+    "failures":  0,
+    "errors":  0,
+    "skipped":  0,
+    "network_attempts":  0,
+    "suites":  [
+                   {
+                       "suite":  "test_ops24_control",
+                       "exit":  0,
+                       "result":  {
+                                      "suite":  "test_ops24_control",
+                                      "tests":  8,
+                                      "failures":  0,
+                                      "errors":  0,
+                                      "skipped":  0,
+                                      "passed":  8,
+                                      "success":  true,
+                                      "duration_seconds":  18.187,
+                                      "python_network_attempts":  0,
+                                      "network_scope":  "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS"
+                                  },
+                       "stdout_sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                       "stderr_sha256":  "f58df99fb58ebbbc4c1a4b03c9bf4ec4e613a2114a0bf778eeeee645f9322ea9"
+                   },
+                   {
+                       "suite":  "test_ops24_release_clock",
+                       "exit":  0,
+                       "result":  {
+                                      "suite":  "test_ops24_release_clock",
+                                      "tests":  5,
+                                      "failures":  0,
+                                      "errors":  0,
+                                      "skipped":  0,
+                                      "passed":  5,
+                                      "success":  true,
+                                      "duration_seconds":  7.516,
+                                      "python_network_attempts":  0,
+                                      "network_scope":  "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS"
+                                  },
+                       "stdout_sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                       "stderr_sha256":  "e28c5235a68b669b91d21c672f86e65b60d45d33e4765264cd1ce2ff7a4cfdf0"
+                   },
+                   {
+                       "suite":  "test_ops24_recovery",
+                       "exit":  0,
+                       "result":  {
+                                      "suite":  "test_ops24_recovery",
+                                      "tests":  3,
+                                      "failures":  0,
+                                      "errors":  0,
+                                      "skipped":  0,
+                                      "passed":  3,
+                                      "success":  true,
+                                      "duration_seconds":  0.453,
+                                      "python_network_attempts":  0,
+                                      "network_scope":  "PYTHON_SOCKET_AND_URLLIB_BLOCKED_DURING_TESTS"
+                                  },
+                       "stdout_sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                       "stderr_sha256":  "a3c766aa01800fb9f5e4015d11326c2f838fb99188197bd13df638ff7b2c2afd"
+                   }
+               ],
+    "success":  true
+}
