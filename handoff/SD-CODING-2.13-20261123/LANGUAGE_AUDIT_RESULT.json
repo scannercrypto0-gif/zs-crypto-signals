@@ -1,0 +1,10 @@
+{
+  "source": "HANDOFF.md",
+  "source_sha256": "8983c9f8eb8362a811188d5a0f3725dbfd6999c1ef900522f16d8d6f373e3f97",
+  "github_file_blob_sha": "cc2851bdd0b84568b05d6245c38905740d13223a",
+  "github_readback_matches_download": true,
+  "lines": 254,
+  "violations": 0,
+  "findings": [],
+  "scope": "This is a static document audit only. Future assistant responses require fresh pre-send review; no app-setting change or perfect guarantee is implied."
+}
