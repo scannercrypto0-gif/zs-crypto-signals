@@ -1,5 +1,20 @@
 # ZS Crypto Signals — SMART GATE
 
+## تحديث مراجعة PM — 23 نوفمبر 2026 — 08:42 الرياض
+
+**الحالة الحاكمة الجديدة للبوابات R00–R02 (التقارير المرسلة من المالك، وليست قبولًا مستقلًا للأصول):** تم التحقق من رأس PR76 `809a8c19814e48c1ae77984ea216a88d2430b773` وشجرته `22592f3a4e74a6146812fcbd96577d89d2d3394c` عبر GitHub. لم تُتح ملفات Windows الأصلية للتحقق المستقل من SHA256 أو كامل نافذة القياس. لذلك لا تُرفع أي بوابة إلى PASS نهائي.
+
+| البوابة | التطور الموثق / القرار |
+| --- | --- |
+| R00 | PARTIAL — [جرد المالك](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/77#issuecomment-7080197380): تطابق النسخ، STOP، Python3.12.10، عمليتان تشخيصيتان قديمتان READ_ERROR. SHA256 التقرير المحلي `ad9f5f3c9d82f2f1f3b8142440d26059b44d7fe87c6194a9227d017da7515f95`. |
+| R01 | HOLD مستقل / OWNER_REPORTED_SCOPED_PASS — [ثلاث قراءات](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/77#issuecomment-7080197380) متباعدة 90 ثانية: 0.0990583، 0.1009754، 0.10333995 ثانية. [Gate1B](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/77#issuecomment-7080330566): عامل مجدول Session0/LeastPrivilege/Password، 0.1026955s مقابل 0.5s، dispersion 0.0139234s، sync age 64.7525259s، cleanup/STOP reported true. SHA256 محلي `d6904a2c08dfc86446857d9b8632120c24889535e5ab738d955e6e64ab7d9187`. الفشل السابق 3.8480093s تاريخي؛ لا يُعامل كآخر قياس مبلغ عنه. مطلوب أصل منقح قابل للتحقق وقياس حديث عند التفعيل. |
+| R02 | PARTIAL/HOLD — [Gate2A](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/77#issuecomment-7092224015) preflight only، SHA256 محلي `76b5c89a9fdf64946455a487cd0612d6169d2fd22e3803778105447589563e2b`. [Gate2B ARM](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/77#issuecomment-7092515326) تشغيل تعافٍ فقط قبل الإقلاع Session0 مبلغ عنه، SHA256 قبل الإقلاع `24ddc3260e44407538199433a0a713785702e182648205fa01b2bb4684303a2d`. POST_PENDING؛ لا إثبات إعادة إقلاع أو تعافٍ تلقائي. لا تفترض استمرار STOP من لقطة 2A بعد ARM. |
+
+R03–R10 بلا تغيير. لا إنتاج ولا 24h ولا دمج. الخطوة التالية: تنسيق إعادة تشغيل بشرية بعد حفظ العمل وفق حزمة SD المعتمدة، ثم ADMIN POST مرة واحدة، والتحقق من التنظيف وSTOP وROLLBACK عند الحاجة. نشر أدلة منقحة قابلة للتحقق مع التوقيت والهوية والبصمات، دون أسرار. السجل المؤرخ أدناه محفوظ تاريخيًا.
+
+---
+
+
 ## قرار PM/Owner الجديد — 22 نوفمبر 2026 — خطة READY/GO الحية ومصفوفة PASS/HOLD (SD Coding يدويًا)
 
 **المرجع الحاكم الحالي الأعلى أولوية (لقطة مؤرخة وليست تحديثًا تلقائيًا):** [مصفوفة التنفيذ والقبول والتحديث المستمر](docs/OPS_FULL_MARKET_24H_OWNER_ORDER_20261121.md#pm-canonical-readiness-ledger--2026-11-22-1630-asiariyadh-v1) · [Issue #77](https://github.com/scannercrypto0-gif/zs-crypto-signals/issues/77) · [تسليم SD Coding المؤرخ](https://github.com/scannercrypto0-gif/zs-crypto-signals/blob/13d82aa5fe749885ca4325fd38013900e4fc68ef/handoff/SD-CODING-20261122/HANDOFF.md). **Codex توقف بسبب limits؛ SD Coding يتولى تطوير GitHub وتجهيز حزم PowerShell؛ المالك ينفذ فقط الفحوص/التغييرات المحلية على Windows ويعيد سجلًا مُنقحًا من الأسرار.** يُعاد التحقق من GitHub HEAD/TREE وWindows عند كل حزمة. لا دمج تلقائي ولا ادعاء تشغيل بالخلفية.
